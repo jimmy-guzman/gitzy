@@ -13,6 +13,9 @@ export const commitFlags = {
     multiple: false,
     description: messages.flags.breaking,
   }),
+  dryRun: flags.boolean({
+    description: messages.flags.dryRun,
+  }),
   help: flags.help({ char: 'h' }),
   issue: flags.string({
     char: 'i',

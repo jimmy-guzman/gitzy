@@ -1,4 +1,5 @@
 import { spawn } from 'child_process'
+import kleur from 'kleur'
 
 import { Answers, GitzyConfig } from '../interfaces'
 
@@ -63,11 +64,21 @@ const executeCommand = (
   })
 }
 
+const executeDryRun = (message: string): void => {
+  // eslint-disable-next-line no-console
+  console.log(kleur.bold(`Message:`))
+  // eslint-disable-next-line no-console
+  console.log(message)
+}
+
 export const executeGitMessage = (
   { config, answers }: { config: GitzyConfig; answers: Answers },
-  passThrough: string[] = []
+  { args = [], dryRun = false }: { args: string[]; dryRun: boolean }
 ): void => {
   const message = formatCommitMessage(config, answers)
 
-  return executeCommand('git', ['commit', '-m', `"${message}"`, ...passThrough])
+  if (dryRun) {
+    return executeDryRun(message)
+  }
+  return executeCommand('git', ['commit', '-m', `"${message}"`, ...args])
 }

@@ -4,6 +4,7 @@ interface Flags {
   scope: string
   body: string
   breaking: string
+  dryRun: string
   issue: string
   type: string
 }
@@ -30,6 +31,9 @@ export const messages: Messages = {
     },
     get breaking(): string {
       return skipQuestionMessage('breaking')
+    },
+    get dryRun(): string {
+      return 'displays git message but does not commit'
     },
     get issue(): string {
       return skipQuestionMessage('issue')

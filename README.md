@@ -201,6 +201,7 @@ useCommitlintConfig: false
 | `--passThrough` | `-p`  | subsequent command line args passed through to "git"             |
 | `--scope`       | `-s`  | skip "scope" question and provide your own "scope" message       |
 | `--type`        | `-t`  | skip "type" question and provide your own "type" message         |
+| `--dry-run`     |       | displays git message but does not commit                         |
 
 <!-- references -->
 

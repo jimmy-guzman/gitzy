@@ -73,10 +73,18 @@ class GitzyCli extends Command {
   async run(): Promise<void> {
     const { flags: cliFlags } = this.parse(GitzyCli)
 
+    if (cliFlags.dryRun) {
+      // eslint-disable-next-line no-console
+      console.log(kleur.grey('running in dry mode...'))
+    }
+
     await this.start()
     await this.promptQuestions()
 
-    executeGitMessage(this.state, cliFlags.passThrough)
+    executeGitMessage(this.state, {
+      args: cliFlags.passThrough,
+      dryRun: cliFlags.dryRun,
+    })
   }
 
   async catch(error: Error): Promise<void> {
