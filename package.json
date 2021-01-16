@@ -1,0 +1,93 @@
+{
+  "name": "gitzy",
+  "description": "conventional commits git cli",
+  "version": "0.0.0",
+  "author": "jimmy-guzman @jimmy-guzman",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "repository": "jimmy-guzman/gitzy",
+  "bugs": "https://github.com/jimmy-guzman/gitzy/issues",
+  "homepage": "https://github.com/jimmy-guzman/gitzy",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "gitzy": "./bin/run"
+  },
+  "scripts": {
+    "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint/ . --ext .ts,.js",
+    "lint:fix": "yarn lint --fix",
+    "prettify": "prettier '**/**/*.{ts,md,json,js,yml}' --write",
+    "test": "jest",
+    "build": "rm -rf lib && rm -rf lib && tsc -b tsconfig.prod.json",
+    "build:readme": "oclif-dev readme && yarn prettify",
+    "release": "cross-env HUSKY_BYPASS=true npx semantic-release",
+    "cz": "./bin/run"
+  },
+  "oclif": {
+    "bin": "gitzy"
+  },
+  "prettier": "@comparto/prettier-config",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "[[ -n $HUSKY_BYPASS ]] || commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.{md,json,yml}": [
+      "prettier --write"
+    ],
+    "*.{ts}": [
+      "eslint --fix"
+    ]
+  },
+  "dependencies": {
+    "@oclif/command": "^1.8.0",
+    "@oclif/config": "^1.17.0",
+    "@oclif/plugin-help": "^3.2.1",
+    "cosmiconfig": "^7.0.0",
+    "fuzzy-search": "^3.2.1",
+    "kleur": "^3.0.3",
+    "prompts": "^2.4.0",
+    "tslib": "^1"
+  },
+  "devDependencies": {
+    "@comparto/eslint-config": "^5.0.2",
+    "@comparto/prettier-config": "^1.0.0",
+    "@oclif/dev-cli": "^1.26.0",
+    "@semantic-release/changelog": "^5.0.1",
+    "@semantic-release/exec": "^5.0.0",
+    "@semantic-release/git": "^9.0.0",
+    "@types/fuzzy-search": "^2.1.0",
+    "@types/jest": "^26.0.14",
+    "@types/lodash.merge": "^4.6.6",
+    "@types/node": "^10",
+    "@types/prompts": "^2.0.9",
+    "commitlint": "^11.0.0",
+    "cross-env": "^7.0.2",
+    "eslint": "^7.14.0",
+    "eslint-import-resolver-typescript": "^2.3.0",
+    "globby": "^10",
+    "husky": "^4.2.5",
+    "jest": "^26.5.3",
+    "lint-staged": "^10.2.10",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.0.5",
+    "semantic-release": "^17.0.8",
+    "ts-jest": "^26.4.1",
+    "ts-node": "^8",
+    "typescript": "^3.9.5"
+  },
+  "files": [
+    "/bin",
+    "/lib"
+  ],
+  "engines": {
+    "node": ">=8.0.0"
+  }
+}

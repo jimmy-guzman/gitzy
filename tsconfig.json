@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": true,
+    "declaration": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "importHelpers": true,
+    "resolveJsonModule": true,
+    "strictNullChecks": true,
+    "module": "commonjs",
+    "outDir": "lib",
+    "rootDir": "src",
+    "target": "es2017"
+  },
+  "include": ["src/**/*"]
+}
