@@ -1,5 +1,25 @@
 {
   "cSpell.words": [
-    "Gitzy"
+    "Builtins",
+    "Codecov",
+    "Commitlint",
+    "Commitlint's",
+    "Gitzy",
+    "bundlesize",
+    "commandsstop",
+    "comparto",
+    "corejs",
+    "cosmiconfig",
+    "deps",
+    "gitmoji",
+    "gitzyrc",
+    "globby",
+    "kleur",
+    "lcov",
+    "nvmrc",
+    "postbuild",
+    "postpublish",
+    "tocstop",
+    "usagestop"
   ]
 }

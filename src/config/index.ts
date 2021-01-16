@@ -1,0 +1,1 @@
+export { getUserConfig } from './config'

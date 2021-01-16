@@ -108,5 +108,8 @@ lib
 .yalc
 yalc.lock
 
-# oclif
-oclif.manifest.json
+# reports
+.reports/
+
+# python
+.venv/
