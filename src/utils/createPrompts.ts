@@ -1,14 +1,14 @@
 import { PromptObject } from 'prompts'
 
-import { Answers, GitzyConfig, Questions } from '../interfaces'
+import { Answers, GitzyConfig, GitzyPrompts } from '../interfaces'
 import { body, breaking, issues, scope, subject, type } from '../prompts'
 
-type CreatedQuestion = (
+type CreatedPrompt = (
   config: GitzyConfig,
   answers: Answers
 ) => PromptObject | null
 
-const questionCreator: Record<string, CreatedQuestion> = {
+const prompts: Record<string, CreatedPrompt> = {
   body,
   breaking,
   issues,
@@ -21,12 +21,12 @@ const notEmpty = <T>(value: T | null | undefined): value is T => {
   return value !== null && value !== undefined
 }
 
-export const createQuestions = (
+export const createPrompts = (
   { config, answers }: { config: GitzyConfig; answers: Answers },
-  questionSet: Questions[]
+  questionSet: GitzyPrompts[]
 ): PromptObject[] => {
   return config.questions
     .filter(question => questionSet.includes(question))
-    .map(name => questionCreator[name](config, answers))
+    .map(name => prompts[name](config, answers))
     .filter(notEmpty)
 }

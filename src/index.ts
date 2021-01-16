@@ -4,10 +4,10 @@ import kleur from 'kleur'
 
 import { defaultAnswers, defaultConfig } from './defaults'
 import { getUserConfig } from './config'
-import { checkIfStaged, createQuestions, executeGitMessage } from './utils'
+import { checkIfStaged, createPrompts, executeGitMessage } from './utils'
 import { commitFlags } from './flags'
 import { messages } from './messages'
-import { Answers, Questions } from './interfaces'
+import { Answers, GitzyPrompts } from './interfaces'
 
 const shouldCheckIfStaged = (array: string[] = []): boolean => {
   return !['--add', '-a', '--amend'].some(flag => array.includes(flag))
@@ -35,11 +35,11 @@ class GitzyCli extends Command {
   }
 
   customPrompt = async (
-    customPrompts: Questions[],
+    customPrompts: GitzyPrompts[],
     userAnswers?: Answers
   ): Promise<Answers> => {
     return prompts(
-      createQuestions(
+      createPrompts(
         {
           ...this.state,
           answers: { ...this.state.answers, ...userAnswers },

@@ -1,4 +1,4 @@
-export type Questions =
+export type GitzyPrompts =
   | 'type'
   | 'scope'
   | 'subject'
@@ -29,10 +29,8 @@ export interface GitzyConfig {
   scopes: string[]
   maxMessageLength: number
   minMessageLength: number
-  questions: Questions[]
+  questions: GitzyPrompts[]
   disableEmoji: boolean
   useCommitlintConfig: boolean
   types: string[]
 }
-
-export type UserConfig = Partial<GitzyConfig>

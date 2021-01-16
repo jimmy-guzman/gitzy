@@ -1,5 +1,5 @@
 export * from './executeCommand'
-export * from './createQuestions'
+export * from './createPrompts'
 export * from './validateUserConfig'
 export * from './checkIfStaged'
 export * from './cleanObject'
