@@ -1,0 +1,91 @@
+import { program } from 'commander'
+import { cyan, red } from 'ansi-colors'
+import Enquirer from 'enquirer'
+
+import { getUserConfig } from '../config'
+import { defaultConfig, defaultAnswers } from '../defaults'
+import { Answers } from '../interfaces'
+import { lang } from '../lang'
+import { createPrompts } from '../prompts'
+import {
+  shouldCheckIfStaged,
+  abortCli,
+  checkIfStaged,
+  executeGitMessage,
+  formatError,
+  logInfo,
+} from '../utils'
+
+const enquirerOptions = {
+  autofill: true,
+  cancel: () => null,
+  styles: { submitted: cyan, danger: red },
+}
+
+export const cli = async (): Promise<void> => {
+  const state = { config: defaultConfig, answers: defaultAnswers }
+
+  const init = async (passthrough: string[]) => {
+    const loadedUserConfig = await getUserConfig(state.config)
+
+    if (loadedUserConfig) {
+      state.config = loadedUserConfig
+    }
+
+    if (shouldCheckIfStaged(passthrough)) {
+      await checkIfStaged()
+    }
+  }
+
+  const promptQuestions = async (rest: Answers): Promise<Answers> => {
+    const enquirer = new Enquirer(enquirerOptions, rest)
+    const prompts = createPrompts(state, defaultConfig.questions)
+
+    return enquirer.prompt(prompts)
+  }
+
+  program
+    .configureOutput({
+      writeErr: str => process.stdout.write(`${str.replace(' error:', '')}\n`),
+      outputError: (str, write) => write(formatError(str)),
+    })
+    // eslint-disable-next-line import/no-unresolved, @typescript-eslint/no-var-requires
+    .version(require('../package.json').version, '-v, --version')
+    .description(lang.description)
+    .option('-d, --body <body>', lang.flags.body)
+    .option('-b, --breaking <breaking>', lang.flags.breaking)
+    .option('-D, --dry-run', lang.flags.dryRun)
+    .option('-i, --issues <body>', lang.flags.issues)
+    .option('-p, --passthrough <...flags>', lang.flags.passthrough)
+    .option('-s, --scope <scope>', lang.flags.scope)
+    .option('-m, --message <message>', lang.flags.subject)
+    .option('-t, --type <type>', lang.flags.type)
+    .addHelpText(
+      'after',
+      `
+${'Examples'}:
+      ${lang.examples}
+    `
+    )
+    .name('gitzy')
+    .action(async () => {
+      const { dryRun, passthrough: args, ...rest } = program.opts()
+
+      if (dryRun) {
+        logInfo('running in dry mode...')
+      }
+
+      try {
+        await init(args)
+        const answers = await promptQuestions(rest as Answers)
+
+        state.answers = { ...state.answers, ...answers }
+      } catch (error) {
+        abortCli(error)
+      }
+
+      executeGitMessage(state, { args, dryRun })
+    })
+
+  await program.parseAsync(process.argv)
+}

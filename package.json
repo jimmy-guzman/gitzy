@@ -1,0 +1,105 @@
+{
+  "name": "gitzy",
+  "description": "interactive conventional commits cli",
+  "version": "0.0.0",
+  "author": "jimmy-guzman @jimmy-guzman",
+  "main": "dist/index.js",
+  "repository": "jimmy-guzman/gitzy",
+  "bugs": "https://github.com/jimmy-guzman/gitzy/issues",
+  "homepage": "https://github.com/jimmy-guzman/gitzy",
+  "keywords": [
+    "conventional commits",
+    "cli",
+    "git"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "gitzy": "./bin/run"
+  },
+  "scripts": {
+    "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint/ . --ext .ts,.js",
+    "lint:fix": "yarn lint --fix",
+    "prettify": "prettier '**/**/*.{ts,md,json,js,yml}' --write",
+    "test": "jest -c .config/jest.config.js",
+    "build": "rm -rf dist/ && rollup -c .config/rollup.config.js",
+    "build:watch": "yarn build --watch --exclude dist/",
+    "build:debug": "yarn build --environment DEBUG_MODE",
+    "ts-check": "tsc -b tsconfig.json",
+    "ts-check:watch": "yarn ts-check --watch",
+    "dev": "run-p **:watch",
+    "release": "cross-env HUSKY_BYPASS=true npx semantic-release",
+    "cz": "./bin/run"
+  },
+  "prettier": "@comparto/prettier-config",
+  "gitzy": {
+    "useCommitlintConfig": true
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "[[ -n $HUSKY_BYPASS ]] || commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.{md,json,yml}": [
+      "prettier --write"
+    ],
+    "*.{js,ts}": [
+      "eslint --fix"
+    ]
+  },
+  "dependencies": {
+    "ansi-colors": "^4.1.1",
+    "commander": "^7.0.0",
+    "cosmiconfig": "^7.0.0",
+    "enquirer": "^2.3.6"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-typescript": "^7.12.7",
+    "@comparto/eslint-config": "^5.0.2",
+    "@comparto/prettier-config": "^1.0.0",
+    "@rollup/plugin-babel": "^5.2.2",
+    "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-node-resolve": "^11.1.0",
+    "@semantic-release/changelog": "^5.0.1",
+    "@semantic-release/exec": "^5.0.0",
+    "@semantic-release/git": "^9.0.0",
+    "@types/fuzzy-search": "^2.1.0",
+    "@types/jest": "^26.0.14",
+    "@types/node": "^10",
+    "@types/prompts": "^2.0.9",
+    "commitlint": "^11.0.0",
+    "cross-env": "^7.0.2",
+    "eslint": "^7.14.0",
+    "eslint-import-resolver-typescript": "^2.3.0",
+    "globby": "^10",
+    "husky": "^4.2.5",
+    "jest": "^26.5.3",
+    "lint-staged": "^10.2.10",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.0.5",
+    "rollup": "^2.36.2",
+    "rollup-plugin-node-externals": "^2.2.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-visualizer": "^4.2.0",
+    "semantic-release": "^17.0.8",
+    "ts-jest": "^26.4.1",
+    "ts-node": "^8",
+    "typescript": "^3.9.5"
+  },
+  "files": [
+    "/bin",
+    "/dist"
+  ],
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "volta": {
+    "node": "14.15.4"
+  }
+}
