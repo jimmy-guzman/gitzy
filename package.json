@@ -1,6 +1,6 @@
 {
   "name": "gitzy",
-  "description": "conventional commits git cli",
+  "description": "interactive conventional commits cli",
   "version": "0.0.0",
   "author": "jimmy-guzman @jimmy-guzman",
   "main": "lib/index.js",
@@ -9,7 +9,10 @@
   "bugs": "https://github.com/jimmy-guzman/gitzy/issues",
   "homepage": "https://github.com/jimmy-guzman/gitzy",
   "keywords": [
-    "oclif"
+    "oclif",
+    "conventional commits",
+    "cli",
+    "git"
   ],
   "license": "MIT",
   "publishConfig": {
