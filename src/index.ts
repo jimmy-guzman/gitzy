@@ -1,30 +1,87 @@
-import { Command, flags } from '@oclif/command'
+import { Command } from '@oclif/command'
+import prompts from 'prompts'
+import kleur from 'kleur'
 
-class Gitzy extends Command {
-  static description = 'describe the command here'
+import { defaultAnswers, defaultConfig } from './defaults'
+import { getUserConfig } from './config'
+import { checkIfStaged, createQuestions, executeGitMessage } from './utils'
+import { commitFlags } from './flags'
+import { messages } from './messages'
+import { Answers, Questions } from './interfaces'
 
-  static flags = {
-    // add --version flag to show CLI version
-    version: flags.version({ char: 'v' }),
-    help: flags.help({ char: 'h' }),
-    // flag with a value (-n, --name=VALUE)
-    name: flags.string({ char: 'n', description: 'name to print' }),
-    // flag with no value (-f, --force)
-    force: flags.boolean({ char: 'f' }),
+const shouldCheckIfStaged = (array: string[] = []): boolean => {
+  return !['--add', '-a', '--amend'].some(flag => array.includes(flag))
+}
+
+class GitzyCli extends Command {
+  static description = messages.description
+  static examples = messages.examples
+  static flags = commitFlags
+  static aliases = ['', 'c']
+
+  state = { config: defaultConfig, answers: defaultAnswers }
+
+  start = async (): Promise<void> => {
+    const { flags: cliFlags } = this.parse(GitzyCli)
+    const loadedUserConfig = await getUserConfig(this.state.config)
+
+    if (loadedUserConfig) {
+      this.state.config = loadedUserConfig
+    }
+
+    if (shouldCheckIfStaged(cliFlags.passThrough)) {
+      await checkIfStaged()
+    }
   }
 
-  static args = [{ name: 'file' }]
+  customPrompt = async (
+    customPrompts: Questions[],
+    userAnswers?: Answers
+  ): Promise<Answers> => {
+    return prompts(
+      createQuestions(
+        {
+          ...this.state,
+          answers: { ...this.state.answers, ...userAnswers },
+        },
+        customPrompts
+      ),
+      {
+        onCancel: () => {
+          throw new Error('gitzy was aborted!')
+        },
+      }
+    ) as Promise<Answers>
+  }
+
+  promptQuestions = async (): Promise<void> => {
+    const { flags: cliFlags } = this.parse(GitzyCli)
+    const [first, second, ...rest] = defaultConfig.questions
+
+    prompts.override(cliFlags)
+
+    const firstAnswers = await this.customPrompt([first, second])
+    const secondAnswers = await this.customPrompt(rest, firstAnswers)
+
+    this.state.answers = {
+      ...this.state.answers,
+      ...firstAnswers,
+      ...secondAnswers,
+    }
+  }
 
   async run(): Promise<void> {
-    const { args, flags: cliFlags } = this.parse(Gitzy)
+    const { flags: cliFlags } = this.parse(GitzyCli)
 
-    const name = cliFlags.name ?? 'world'
+    await this.start()
+    await this.promptQuestions()
 
-    this.log(`hello ${name} from ./src/index.ts`)
-    if (args.file && cliFlags.force) {
-      this.log(`you input --force and --file: ${args.file}`)
-    }
+    executeGitMessage(this.state, cliFlags.passThrough)
+  }
+
+  async catch(error: Error): Promise<void> {
+    await this.log(kleur.red(String(error)))
   }
 }
 
-export = Gitzy
+export = GitzyCli

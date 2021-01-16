@@ -1,0 +1,6 @@
+export { body } from './body'
+export { breaking } from './breaking'
+export { issues } from './issues'
+export { scope } from './scope'
+export { subject } from './subject'
+export { type } from './type'

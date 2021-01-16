@@ -4,7 +4,7 @@ plugins:
   - '@semantic-release/changelog'
   - '@semantic-release/npm'
   - - '@semantic-release/exec'
-    - prepareCmd: 'oclif-dev readme && yarn prettify'
+    - prepareCmd: 'yarn readme'
   - - '@semantic-release/git'
     - assets:
         - 'package.json'
