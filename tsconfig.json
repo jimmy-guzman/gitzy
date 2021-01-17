@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "noEmit": true,
     "strict": true,
     "esModuleInterop": true,
     "declaration": true,
@@ -14,9 +15,10 @@
     "resolveJsonModule": true,
     "strictNullChecks": true,
     "module": "commonjs",
-    "outDir": "lib",
+    "outDir": "dist",
     "rootDir": "src",
     "target": "es2017"
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["dist/"]
 }

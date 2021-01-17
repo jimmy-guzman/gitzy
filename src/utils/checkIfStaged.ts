@@ -1,5 +1,6 @@
 import { exec } from 'child_process'
-import kleur from 'kleur'
+
+import { formatInfo } from './logging'
 
 /**
  * Determines wether or not files are staged.
@@ -12,8 +13,8 @@ export const checkIfStaged = (): Promise<string> => {
       }
       reject(
         new Error(
-          `No files staged! \n\n${kleur.blue(
-            'Tip: You can use "gitzy -p --add" to replicate git -am'
+          `No files staged! \n${formatInfo(
+            'You can use "gitzy -p --add" to replicate git -am'
           )}`
         )
       )

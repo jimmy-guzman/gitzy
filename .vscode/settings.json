@@ -1,5 +1,6 @@
 {
   "cSpell.words": [
+    "Builtins",
     "Codecov",
     "Commitlint",
     "Commitlint's",
@@ -14,7 +15,6 @@
     "kleur",
     "lcov",
     "nvmrc",
-    "oclif",
     "postpublish",
     "tocstop",
     "usagestop"

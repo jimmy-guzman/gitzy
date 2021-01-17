@@ -1,11 +1,10 @@
-import { red } from 'kleur'
-
 import { CustomPromptObject } from './interfaces'
+import { promptMessages } from './lang'
 import { highlightCursor } from './utils'
 
 export const breaking = (): CustomPromptObject => {
   return {
-    message: `List any breaking changes\n  ${red('BREAKING CHANGE')}:`,
+    message: promptMessages.breaking,
     name: 'breaking',
     type: 'text',
     onRender() {

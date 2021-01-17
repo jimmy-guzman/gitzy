@@ -9,6 +9,8 @@ module.exports = {
     },
   },
   preset: 'ts-jest',
+  rootDir: process.cwd(),
+  roots: ['<rootDir>/src'],
   testEnvironment: 'node',
-  testPathIgnorePatterns: ['/node_modules/', 'lib/'],
+  testPathIgnorePatterns: ['/node_modules/', 'dist/'],
 }

@@ -3,8 +3,6 @@ plugins:
   - '@semantic-release/release-notes-generator'
   - '@semantic-release/changelog'
   - '@semantic-release/npm'
-  - - '@semantic-release/exec'
-    - prepareCmd: 'yarn readme'
   - - '@semantic-release/git'
     - assets:
         - 'package.json'

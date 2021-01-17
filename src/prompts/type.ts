@@ -2,6 +2,7 @@ import FuzzySearch from 'fuzzy-search'
 import { Choice, PromptObject } from 'prompts'
 
 import { GitzyConfig } from '../interfaces'
+import { promptMessages } from './lang'
 
 const choice = (
   { details, disableEmoji }: GitzyConfig,
@@ -23,7 +24,7 @@ export const type = (config: GitzyConfig): PromptObject => {
 
   return {
     choices,
-    message: "Select the type of change that you're committing:",
+    message: promptMessages.type,
     name: 'type',
     suggest: (input: string) => Promise.resolve(searcher.search(input)),
     type: 'autocomplete',

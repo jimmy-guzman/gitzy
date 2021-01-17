@@ -1,5 +1,6 @@
 import { Answers, GitzyConfig } from '../interfaces'
 import { CustomPromptObject } from './interfaces'
+import { errorMessage, promptMessages } from './lang'
 import { highlightCursor } from './utils'
 
 export const leadingLabel = (answers: Answers): string => {
@@ -16,9 +17,9 @@ export const subject = (
   { minMessageLength, maxMessageLength, disableEmoji }: GitzyConfig,
   userAnswers: Answers
 ): CustomPromptObject => {
-  const minTitleLengthErrorMessage = `The subject must have at least ${minMessageLength} characters`
-  const maxTitleLengthErrorMessage = `The subject must be less than ${maxMessageLength} characters`
-  const message = 'Write a short, imperative description of the change'
+  const minTitleLengthError = errorMessage.minTitleLength(minMessageLength)
+  const maxTitleLengthError = errorMessage.maxTitleLength(maxMessageLength)
+  const message = promptMessages.subject
   const emojiLength = disableEmoji ? 0 : 3
   const label = leadingLabel(userAnswers)
 
@@ -53,15 +54,15 @@ export const subject = (
       this.rendered = highlightCursor(this._value, this.cursor)
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      this.msg = `${message} (${getCharsLeftText()}: \n${reset().dim(label)}`
+      this.msg = `${message} (${getCharsLeftText()}) \n${reset().dim(label)}`
     },
     type: 'text',
     validate: (input: string): string | true => {
       if (input.length < minMessageLength) {
-        return minTitleLengthErrorMessage
+        return minTitleLengthError
       }
       if (input.length + label.length + emojiLength > maxMessageLength) {
-        return maxTitleLengthErrorMessage
+        return maxTitleLengthError
       }
 
       return true

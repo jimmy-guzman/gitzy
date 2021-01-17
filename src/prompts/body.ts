@@ -1,9 +1,10 @@
 import { CustomPromptObject } from './interfaces'
+import { promptMessages } from './lang'
 import { highlightCursor } from './utils'
 
 export const body = (): CustomPromptObject => {
   return {
-    message: 'Provide a longer description of the change:\n ',
+    message: promptMessages.body,
     name: 'body',
     type: 'text',
     onRender() {

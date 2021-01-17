@@ -1,5 +1,4 @@
 ![actions][actions-badge]
-[![oclif][oclif-badge]][oclif]
 [![version][version-badge]][package] [![downloads][downloads-badge]][npmtrends]
 [![License][license-badge]][license]
 [![semantic-release][semantic-release-badge]][semantic-release]
@@ -62,7 +61,7 @@ BREAKING CHANGE: 🧨 breaks stuff
 breakingChangeEmoji: '🧨'
 ```
 
-### Closed Issue Emoji
+### Closed Issues Emoji
 
 ```
 fix: 🐛 resolved nasty bug
@@ -142,10 +141,10 @@ Allows you to toggle questions.
 
 ```yml
 questions:
-  - type # Select the type of change that you're committing?
-  - scope # Select the scope this component affects?
-  - subject # Write a short, imperative description of the change?
-  - body # Provide a longer description of the change?
+  - type # Select the kind of change
+  - scope # Select the context of the change
+  - subject # Give a short description of the change
+  - body # Give a longer description of the change
   - breaking # List any breaking changes
   - issues # Issues this commit closes, e.g #123
 ```
@@ -176,14 +175,22 @@ types:
   - test
 ```
 
+### issuesPrefix
+
+Allows you to choose the `issuesPrefix` based on [Github supported keywords](https://docs.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword).
+
+```yml
+issuesPrefix: closes # must be one of close, closes, closed, fix, fixes, fixed, resolve, resolves, resolved
+```
+
 ### Commitlint
 
-Will leverage [Commitlint's configuration](https://commitlint.js.org/#/reference-configuration) instead for options:
+Will leverage [Commitlint's configuration](https://commitlint.js.org/#/reference-configuration) instead for these options:
 
-- `types` correlates to `rules[type-enum][2]`
-- `scopes` correlates to `rules[scope-enum][2]`
-- `maxMessageLength` correlates to `rules[header-max-length][2]`
-- `minMessageLength` correlates to `rules[header-min-length][2]`
+- `types` correlates to [`rules[type-enum][2]`](https://commitlint.js.org/#/reference-rules?id=type-enum)
+- `scopes` correlates to [`rules[scope-enum][2]`](https://commitlint.js.org/#/reference-rules?id=scope-enum)
+- `maxMessageLength` correlates to [`rules[header-max-length][2]`](https://commitlint.js.org/#/reference-rules?id=header-max-length)
+- `minMessageLength` correlates to [`rules[header-min-length][2]`](https://commitlint.js.org/#/reference-rules?id=header-min-length)
 
 ```yml
 useCommitlintConfig: false
@@ -196,12 +203,12 @@ useCommitlintConfig: false
 | `--breaking`    | `-b`  | skip "breaking" question and provide your own "breaking" message |
 | `--body`        | `-d`  | skip "body" question and provide your own "body" message         |
 | `--help`        | `-h`  | show CLI help                                                    |
-| `--issue`       | `-i`  | skip "issue" question and provide your own "issue" message       |
+| `--issues`      | `-i`  | skip "issues" question and provide your own "issue" message      |
 | `--subject`     | `-m`  | skip "subject" question and provide your own "subject" message   |
 | `--passThrough` | `-p`  | subsequent command line args passed through to "git"             |
 | `--scope`       | `-s`  | skip "scope" question and provide your own "scope" message       |
 | `--type`        | `-t`  | skip "type" question and provide your own "type" message         |
-| `--dry-run`     |       | displays git message but does not commit                         |
+| `--dry-run`     | `-D`  | displays git message but does not commit                         |
 
 <!-- references -->
 
@@ -217,7 +224,5 @@ useCommitlintConfig: false
 [gitmoji]: https://gitmoji.carloscuesta.me/
 [license]: https://github.com/jimmy-guzman/gitzy/blob/master/package.json
 [license-badge]: https://img.shields.io/npm/l/gitzy.svg?style=flat-square
-[oclif]: https://oclif.io
-[oclif-badge]: https://img.shields.io/badge/cli-oclif-brightgreen.svg?style=flat-square
 [conventional-commits]: https://www.conventionalcommits.org/
 [git-cz]: https://github.com/streamich/git-cz

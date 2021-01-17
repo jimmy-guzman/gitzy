@@ -5,12 +5,12 @@ interface Flags {
   body: string
   breaking: string
   dryRun: string
-  issue: string
+  issues: string
   type: string
 }
 
 interface Messages {
-  examples: string[]
+  examples: string
   description: string
   flags: Flags
 }
@@ -19,11 +19,11 @@ const skipQuestionMessage = (question: string) =>
   `skip "${question}" question and provide your own "${question}" message`
 
 export const messages: Messages = {
-  examples: [
-    'gitzy',
-    'gitzy -p --amend',
-    'gitzy -m "added cool new feature" -t "feat" -s "amazing"',
-  ],
+  examples: `
+  $ gitzy
+  $ gitzy -p --amend
+  $ gitzy -m "added cool new feature" -t "feat" -s "amazing"
+  `,
   description: 'interactive conventional commits cli',
   flags: {
     get body(): string {
@@ -35,8 +35,8 @@ export const messages: Messages = {
     get dryRun(): string {
       return 'displays git message but does not commit'
     },
-    get issue(): string {
-      return skipQuestionMessage('issue')
+    get issues(): string {
+      return skipQuestionMessage('issues')
     },
     passThrough: 'subsequent command line args passed through to "git"',
     get scope(): string {

@@ -2,4 +2,4 @@ CHANGELOG.md
 !.github/
 .cache
 dist/
-lib/
+!.config/

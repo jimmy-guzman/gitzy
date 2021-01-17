@@ -15,6 +15,7 @@ export const defaultConfig: GitzyConfig = {
   closedIssueEmoji: '🏁',
   details,
   disableEmoji: false,
+  issuesPrefix: 'closes',
   maxMessageLength: 64,
   minMessageLength: 3,
   questions,
