@@ -1,19 +1,18 @@
-import FuzzySearch from 'fuzzy-search'
-import { PromptObject } from 'prompts'
+import { Choice, PromptObject } from 'prompts'
 
 import { GitzyConfig } from '../interfaces'
+import { fuzzySearch } from '../utils'
 import { promptMessages } from './lang'
 
 export const scope = ({ scopes }: GitzyConfig): PromptObject => {
   const hasScopes = scopes && scopes.length > 0
   const choices = scopes.map((s: string) => ({ title: s, value: s }))
-  const searcher = new FuzzySearch(choices, ['title'], { caseSensitive: false })
 
   return {
     choices,
     message: promptMessages.scope,
     name: 'scope',
-    suggest: (input: string) => Promise.resolve(searcher.search(input)),
+    suggest: (input: string) => fuzzySearch<Choice>(choices, input, 'title'),
     type: hasScopes ? 'autocomplete' : false,
   }
 }

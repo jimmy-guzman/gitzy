@@ -54,7 +54,6 @@
   "dependencies": {
     "commander": "^7.0.0",
     "cosmiconfig": "^7.0.0",
-    "fuzzy-search": "^3.2.1",
     "kleur": "^3.0.3",
     "prompts": "^2.4.0"
   },

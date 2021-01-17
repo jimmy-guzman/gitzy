@@ -1,7 +1,12 @@
 import { PromptObject } from 'prompts'
 
 import { Answers, GitzyConfig, GitzyPrompts } from '../interfaces'
-import { body, breaking, issues, scope, subject, type } from '../prompts'
+import { body } from './body'
+import { breaking } from './breaking'
+import { issues } from './issues'
+import { scope } from './scope'
+import { subject } from './subject'
+import { type } from './type'
 
 type CreatedPrompt = (
   config: GitzyConfig,

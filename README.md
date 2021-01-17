@@ -29,14 +29,7 @@ $ npx gitzy
 
 ```sh-session
 $ npm install -g gitzy
-$ gitzy COMMAND
-running command...
-$ gitzy (-v|--version|version)
-gitzy/0.0.0 darwin-x64 node-v14.15.4
-$ gitzy --help [COMMAND]
-USAGE
-  $ gitzy COMMAND
-...
+$ gitzy
 ```
 
 <!-- usagestop -->
@@ -202,13 +195,14 @@ useCommitlintConfig: false
 | --------------- | ----- | ---------------------------------------------------------------- |
 | `--breaking`    | `-b`  | skip "breaking" question and provide your own "breaking" message |
 | `--body`        | `-d`  | skip "body" question and provide your own "body" message         |
-| `--help`        | `-h`  | show CLI help                                                    |
+| `--help`        | `-h`  | display help for command                                         |
 | `--issues`      | `-i`  | skip "issues" question and provide your own "issue" message      |
 | `--subject`     | `-m`  | skip "subject" question and provide your own "subject" message   |
-| `--passThrough` | `-p`  | subsequent command line args passed through to "git"             |
+| `--passThrough` | `-p`  | subsequent command line args passed through to `git`             |
 | `--scope`       | `-s`  | skip "scope" question and provide your own "scope" message       |
 | `--type`        | `-t`  | skip "type" question and provide your own "type" message         |
-| `--dry-run`     | `-D`  | displays git message but does not commit                         |
+| `--dry-run`     | `-D`  | output the git message but do not commit                         |
+| `--version`     | `-v`  | output the version number                                        |
 
 <!-- references -->
 

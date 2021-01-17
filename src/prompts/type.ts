@@ -1,7 +1,7 @@
-import FuzzySearch from 'fuzzy-search'
 import { Choice, PromptObject } from 'prompts'
 
 import { GitzyConfig } from '../interfaces'
+import { fuzzySearch } from '../utils'
 import { promptMessages } from './lang'
 
 const choice = (
@@ -20,13 +20,12 @@ const choice = (
 
 export const type = (config: GitzyConfig): PromptObject => {
   const choices = config.types.map((t: string) => choice(config, t))
-  const searcher = new FuzzySearch(choices, ['title'], { caseSensitive: false })
 
   return {
     choices,
     message: promptMessages.type,
     name: 'type',
-    suggest: (input: string) => Promise.resolve(searcher.search(input)),
+    suggest: (input: string) => fuzzySearch<Choice>(choices, input, 'title'),
     type: 'autocomplete',
   }
 }

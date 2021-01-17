@@ -5,31 +5,33 @@ import prompts from 'prompts'
 import { getUserConfig } from '../config'
 import { defaultConfig, defaultAnswers } from '../defaults'
 import { GitzyPrompts, Answers } from '../interfaces'
-import { messages } from '../messages'
+import { lang } from '../lang'
+import { createPrompts } from '../prompts'
 import {
   shouldCheckIfStaged,
   abortCli,
   checkIfStaged,
-  createPrompts,
   executeGitMessage,
 } from '../utils'
 
 export const cli = async (): Promise<void> => {
   program
-    .description(messages.description)
-    .option('-d, --body <body>', messages.flags.body)
-    .option('-b, --breaking <breaking>', messages.flags.breaking)
-    .option('-D, --dry-run', messages.flags.dryRun)
-    .option('-i, --issues <body>', messages.flags.issues)
-    .option('-p, --passThrough <...flags>', messages.flags.passThrough)
-    .option('-s, --scope <scope>', messages.flags.scope)
-    .option('-m, --message <message>', messages.flags.subject)
-    .option('-t, --type <type>', messages.flags.type)
+    // eslint-disable-next-line import/no-unresolved, @typescript-eslint/no-var-requires
+    .version(require('../package.json').version, '-v, --version')
+    .description(lang.description)
+    .option('-d, --body <body>', lang.flags.body)
+    .option('-b, --breaking <breaking>', lang.flags.breaking)
+    .option('-D, --dry-run', lang.flags.dryRun)
+    .option('-i, --issues <body>', lang.flags.issues)
+    .option('-p, --passThrough <...flags>', lang.flags.passThrough)
+    .option('-s, --scope <scope>', lang.flags.scope)
+    .option('-m, --message <message>', lang.flags.subject)
+    .option('-t, --type <type>', lang.flags.type)
     .addHelpText(
       'after',
       `
 ${'Examples'}:
-      ${messages.examples}
+      ${lang.examples}
     `
     )
     .name('gitzy')

@@ -9,7 +9,7 @@ interface Flags {
   type: string
 }
 
-interface Messages {
+interface Lang {
   examples: string
   description: string
   flags: Flags
@@ -18,7 +18,7 @@ interface Messages {
 const skipQuestionMessage = (question: string) =>
   `skip "${question}" question and provide your own "${question}" message`
 
-export const messages: Messages = {
+export const lang: Lang = {
   examples: `
   $ gitzy
   $ gitzy -p --amend
