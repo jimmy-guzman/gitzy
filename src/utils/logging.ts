@@ -1,10 +1,10 @@
-import { blue, red } from 'kleur'
+import { bgBlue, bgRed, blue, red } from 'kleur'
 
 export const formatInfo = (message: string): string =>
-  `${blue('info')} ${message}`
+  `${bgBlue().black(' info ')} ${blue(message)}`
 
 export const formatError = (message: string): string =>
-  `${red('error')} ${message}`
+  `${bgRed().black(' error ')} ${red(message)}`
 
 export const abortCli = (error: Error): void => {
   // eslint-disable-next-line no-console

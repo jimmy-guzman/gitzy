@@ -27,12 +27,19 @@
     "build": "rm -rf dist/ && rollup -c .config/rollup.config.js",
     "build:watch": "yarn build --watch --exclude dist/",
     "build:debug": "yarn build --environment DEBUG_MODE",
+    "postbuild": "bundlesize",
     "ts-check": "tsc -b tsconfig.json",
     "ts-check:watch": "yarn ts-check --watch",
     "dev": "run-p **:watch",
     "release": "cross-env HUSKY_BYPASS=true npx semantic-release",
     "cz": "./bin/run"
   },
+  "bundlesize": [
+    {
+      "path": "./dist/*",
+      "maxSize": "5 KB"
+    }
+  ],
   "prettier": "@comparto/prettier-config",
   "gitzy": {
     "useCommitlintConfig": true
@@ -59,6 +66,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
     "@babel/preset-typescript": "^7.12.7",
     "@comparto/eslint-config": "^5.0.2",
     "@comparto/prettier-config": "^1.0.0",
@@ -72,6 +80,7 @@
     "@types/jest": "^26.0.14",
     "@types/node": "^10",
     "@types/prompts": "^2.0.9",
+    "bundlesize": "^0.18.1",
     "commitlint": "^11.0.0",
     "cross-env": "^7.0.2",
     "eslint": "^7.14.0",
@@ -96,6 +105,9 @@
     "/dist"
   ],
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.0.0"
+  },
+  "volta": {
+    "node": "14.15.4"
   }
 }

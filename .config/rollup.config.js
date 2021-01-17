@@ -17,7 +17,7 @@ export default {
     plugins: [terser()],
   },
   plugins: [
-    externals({ builtins: true, devDeps: true, deps: true }),
+    externals({ builtins: true, devDeps: false, deps: true }),
     commonjs(),
     resolve({ extensions, preferBuiltins: true }),
     babel({ babelHelpers: 'bundled', extensions, include: 'src/**/*' }),

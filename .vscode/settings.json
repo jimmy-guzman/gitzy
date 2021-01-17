@@ -5,8 +5,10 @@
     "Commitlint",
     "Commitlint's",
     "Gitzy",
+    "bundlesize",
     "commandsstop",
     "comparto",
+    "corejs",
     "cosmiconfig",
     "deps",
     "gitmoji",
@@ -15,6 +17,7 @@
     "kleur",
     "lcov",
     "nvmrc",
+    "postbuild",
     "postpublish",
     "tocstop",
     "usagestop"

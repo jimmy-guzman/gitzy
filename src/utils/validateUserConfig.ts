@@ -79,7 +79,7 @@ const isValidIssuesPrefix = (
 const errorObject = (message: string) => {
   return Promise.resolve({
     isValid: false,
-    error: `${message}!`,
+    error: `${message}`,
   })
 }
 
