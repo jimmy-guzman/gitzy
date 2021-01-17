@@ -3,13 +3,11 @@
   "description": "interactive conventional commits cli",
   "version": "0.0.0",
   "author": "jimmy-guzman @jimmy-guzman",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "dist/index.js",
   "repository": "jimmy-guzman/gitzy",
   "bugs": "https://github.com/jimmy-guzman/gitzy/issues",
   "homepage": "https://github.com/jimmy-guzman/gitzy",
   "keywords": [
-    "oclif",
     "conventional commits",
     "cli",
     "git"
@@ -25,14 +23,15 @@
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint/ . --ext .ts,.js",
     "lint:fix": "yarn lint --fix",
     "prettify": "prettier '**/**/*.{ts,md,json,js,yml}' --write",
-    "test": "jest",
-    "build": "rm -rf lib && rm -rf lib && tsc -b tsconfig.prod.json",
-    "readme": "oclif-dev readme && yarn prettify",
+    "test": "jest -c .config/jest.config.js",
+    "build": "rm -rf dist/ && rollup -c .config/rollup.config.js",
+    "build:watch": "yarn build --watch --exclude dist/",
+    "build:debug": "yarn build --environment DEBUG_MODE",
+    "ts-check": "tsc -b tsconfig.json",
+    "ts-check:watch": "yarn ts-check --watch",
+    "dev": "run-p **:watch",
     "release": "cross-env HUSKY_BYPASS=true npx semantic-release",
     "cz": "./bin/run"
-  },
-  "oclif": {
-    "bin": "gitzy"
   },
   "prettier": "@comparto/prettier-config",
   "gitzy": {
@@ -53,20 +52,20 @@
     ]
   },
   "dependencies": {
-    "@oclif/command": "^1.8.0",
-    "@oclif/config": "^1.17.0",
-    "@oclif/errors": "^1.3.4",
-    "@oclif/plugin-help": "^3.2.1",
+    "commander": "^7.0.0",
     "cosmiconfig": "^7.0.0",
     "fuzzy-search": "^3.2.1",
     "kleur": "^3.0.3",
-    "prompts": "^2.4.0",
-    "tslib": "^1"
+    "prompts": "^2.4.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/preset-typescript": "^7.12.7",
     "@comparto/eslint-config": "^5.0.2",
     "@comparto/prettier-config": "^1.0.0",
-    "@oclif/dev-cli": "^1.26.0",
+    "@rollup/plugin-babel": "^5.2.2",
+    "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-node-resolve": "^11.1.0",
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/exec": "^5.0.0",
     "@semantic-release/git": "^9.0.0",
@@ -82,7 +81,12 @@
     "husky": "^4.2.5",
     "jest": "^26.5.3",
     "lint-staged": "^10.2.10",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.0.5",
+    "rollup": "^2.36.2",
+    "rollup-plugin-node-externals": "^2.2.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-visualizer": "^4.2.0",
     "semantic-release": "^17.0.8",
     "ts-jest": "^26.4.1",
     "ts-node": "^8",
@@ -90,7 +94,7 @@
   },
   "files": [
     "/bin",
-    "/lib"
+    "/dist"
   ],
   "engines": {
     "node": ">=8.0.0"

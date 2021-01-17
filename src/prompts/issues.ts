@@ -1,7 +1,10 @@
 import { PromptObject } from 'prompts'
 
-export const issues = (): PromptObject => ({
-  message: 'Issues this commit closes, e.g #123:',
+import { GitzyConfig } from '../interfaces'
+import { issuesMessage } from './lang'
+
+export const issues = ({ issuesPrefix }: GitzyConfig): PromptObject => ({
+  message: issuesMessage(issuesPrefix),
   name: 'issues',
   type: 'text',
 })

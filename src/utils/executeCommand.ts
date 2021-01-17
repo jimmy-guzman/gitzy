@@ -1,5 +1,5 @@
 import { spawn } from 'child_process'
-import kleur from 'kleur'
+import { bold } from 'kleur'
 
 import { Answers, GitzyConfig } from '../interfaces'
 
@@ -66,7 +66,7 @@ const executeCommand = (
 
 const executeDryRun = (message: string): void => {
   // eslint-disable-next-line no-console
-  console.log(kleur.bold(`Message:`))
+  console.log(bold(`Message:`))
   // eslint-disable-next-line no-console
   console.log(message)
 }

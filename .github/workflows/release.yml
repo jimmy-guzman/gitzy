@@ -33,6 +33,7 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn lint
       - run: yarn test --ci
+      - run: yarn ts-check
       - run: yarn build
 
   publish-npm:

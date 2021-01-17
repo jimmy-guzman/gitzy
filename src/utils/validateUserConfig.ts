@@ -1,8 +1,9 @@
+import { bold } from 'kleur'
+
 import { defaultConfig } from '../defaults'
-import { GitzyConfig } from '../interfaces'
+import { GitzyConfig, IssuesPrefixes } from '../interfaces'
 
 const allowedKeys = Object.keys(defaultConfig)
-const ERROR_TYPE = '[config]'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 const hasProperty = (property: string, userConfig?: object | null) => {
@@ -53,10 +54,32 @@ const isValidDetails = (
   })
 }
 
+const validIssuesPrefixes: IssuesPrefixes[] = [
+  'close',
+  'closes',
+  'closed',
+  'fix',
+  'fixes',
+  'fixed',
+  'resolve',
+  'resolves',
+  'resolved',
+]
+
+const isValidIssuesPrefix = (
+  property: keyof GitzyConfig,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  userConfig?: object | null
+) => {
+  if (!hasProperty(property, userConfig)) return true
+
+  return (validIssuesPrefixes as string[]).includes(property)
+}
+
 const errorObject = (message: string) => {
   return Promise.resolve({
     isValid: false,
-    error: `${ERROR_TYPE} ${message}!`,
+    error: `${message}!`,
   })
 }
 
@@ -90,7 +113,17 @@ const validateConfig = (
     }
 
     if (!isValidType('breakingChangeEmoji', 'string', userConfig)) {
-      return errorObject('breakingChangeEmoji must a number')
+      return errorObject('breakingChangeEmoji must a string')
+    }
+
+    if (!isValidType('issuesPrefix', 'string', userConfig)) {
+      return errorObject('issuesPrefix must a string')
+    }
+
+    if (!isValidIssuesPrefix('issuesPrefix', userConfig)) {
+      return errorObject(
+        `issuesPrefix must be one of ${bold(validIssuesPrefixes.join(', '))}`
+      )
     }
 
     if (!isArrayOfString('questions', userConfig)) {

@@ -1,5 +1,6 @@
 import { formatSubject, leadingLabel, subject } from './subject'
 import { defaultConfig } from '../defaults'
+import { promptMessages } from './lang'
 
 const setupSubject = (config = {}, userAnswers = {}) => {
   return subject(
@@ -38,7 +39,7 @@ describe('maxInputPrompt', () => {
       expect(subjectQuestion).toStrictEqual(
         expect.objectContaining({
           format: expect.any(Function),
-          message: 'Write a short, imperative description of the change',
+          message: promptMessages.subject,
           name: 'subject',
           type: 'text',
           validate: expect.any(Function),

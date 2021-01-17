@@ -2,6 +2,7 @@ import FuzzySearch from 'fuzzy-search'
 import { PromptObject } from 'prompts'
 
 import { GitzyConfig } from '../interfaces'
+import { promptMessages } from './lang'
 
 export const scope = ({ scopes }: GitzyConfig): PromptObject => {
   const hasScopes = scopes && scopes.length > 0
@@ -10,7 +11,7 @@ export const scope = ({ scopes }: GitzyConfig): PromptObject => {
 
   return {
     choices,
-    message: 'Select the scope this component affects:',
+    message: promptMessages.scope,
     name: 'scope',
     suggest: (input: string) => Promise.resolve(searcher.search(input)),
     type: hasScopes ? 'autocomplete' : false,
