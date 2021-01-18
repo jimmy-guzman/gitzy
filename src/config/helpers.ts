@@ -36,7 +36,7 @@ export const loadConfig = async <T>(
   const searchPath = explicitPath ? explicitPath : cwd
   const local = await explore(searchPath)
 
-  return local ? local : null
+  return local ?? null
 }
 
 const getCommitLintOverrides = (
@@ -57,7 +57,6 @@ export const getCommitlintConfig = async (): Promise<
 
   if (commitlint) {
     const commitlintOverrides = getCommitLintOverrides(commitlint.config)
-
     const isValid = await validateUserConfig(commitlintOverrides)
 
     return isValid ? commitlintOverrides : undefined

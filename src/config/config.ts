@@ -2,9 +2,7 @@ import { GitzyConfig } from '../interfaces'
 import { validateUserConfig } from '../utils'
 import { getCommitlintConfig, loadConfig } from './helpers'
 
-export const getUserConfig = async (
-  config: GitzyConfig
-): Promise<GitzyConfig | undefined> => {
+export const getUserConfig = async (): Promise<GitzyConfig | null> => {
   const loaded = await loadConfig<GitzyConfig>('gitzy')
 
   if (loaded) {
@@ -14,11 +12,12 @@ export const getUserConfig = async (
       if (loaded.config.useCommitlintConfig) {
         const commitlintConfig = await getCommitlintConfig()
 
-        return { ...config, ...loaded.config, ...commitlintConfig }
+        return { ...loaded.config, ...commitlintConfig }
       }
 
-      return { ...config, ...loaded.config }
+      return { ...loaded.config }
     }
   }
-  return undefined
+
+  return null
 }

@@ -1,6 +1,6 @@
 import { exec } from 'child_process'
 
-import { formatInfo } from './logging'
+import { info } from './logging'
 
 /**
  * Determines wether or not files are staged.
@@ -13,7 +13,7 @@ export const checkIfStaged = (): Promise<string> => {
       }
       reject(
         new Error(
-          `No files staged! \n${formatInfo(
+          `No files staged! \n${info(
             'You can use "gitzy -p --add" to replicate git -am'
           )}`
         )

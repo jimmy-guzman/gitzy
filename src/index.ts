@@ -1,15 +1,12 @@
 import { cli } from './cli'
-import { abortCli } from './utils'
+import { gitzyPkg, log, danger, info } from './utils'
 
-if (parseInt(process.versions.node, 10) < 10) {
-  abortCli(
-    new Error(
-      `node version ${process.versions.node} is not supported, please use ${
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        require('../package.json').engines.node
-      }`
-    )
-  )
+const version = parseInt(process.versions.node, 10)
+
+if (version < 10) {
+  log(`\n${danger(`node version ${version} is not supported`)}`)
+  log(`${info(`please use ${gitzyPkg.engines.node}`)}\n`)
+  process.exit(1)
 }
 
 cli()
