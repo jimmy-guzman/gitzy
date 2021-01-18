@@ -9,11 +9,11 @@ import { lang } from '../lang'
 import { createPrompts } from '../prompts'
 import {
   shouldCheckIfStaged,
-  abortCli,
+  log,
   checkIfStaged,
   executeGitMessage,
-  formatError,
-  logInfo,
+  danger,
+  info,
 } from '../utils'
 
 const enquirerOptions = {
@@ -26,10 +26,10 @@ export const cli = async (): Promise<void> => {
   const state = { config: defaultConfig, answers: defaultAnswers }
 
   const init = async (passthrough: string[]) => {
-    const loadedUserConfig = await getUserConfig(state.config)
+    const loadedUserConfig = await getUserConfig()
 
     if (loadedUserConfig) {
-      state.config = loadedUserConfig
+      state.config = { ...state.config, ...loadedUserConfig }
     }
 
     if (shouldCheckIfStaged(passthrough)) {
@@ -46,8 +46,8 @@ export const cli = async (): Promise<void> => {
 
   program
     .configureOutput({
-      writeErr: str => process.stdout.write(`${str.replace(' error:', '')}\n`),
-      outputError: (str, write) => write(formatError(str)),
+      writeErr: str => process.stdout.write(str.replace('error: ', '')),
+      outputError: (error, write) => write(`\n${danger(error)}\n`),
     })
     // eslint-disable-next-line import/no-unresolved, @typescript-eslint/no-var-requires
     .version(require('../package.json').version, '-v, --version')
@@ -72,7 +72,7 @@ ${'Examples'}:
       const { dryRun, passthrough: args, ...rest } = program.opts()
 
       if (dryRun) {
-        logInfo('running in dry mode...')
+        log(info('running in dry mode...'))
       }
 
       try {
@@ -81,7 +81,8 @@ ${'Examples'}:
 
         state.answers = { ...state.answers, ...answers }
       } catch (error) {
-        abortCli(error)
+        log(`\n${danger(error.message)}\n`)
+        process.exit(1)
       }
 
       executeGitMessage(state, { args, dryRun })
