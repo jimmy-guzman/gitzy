@@ -1,6 +1,7 @@
 import {
   Answers,
   EnquirerPrompt,
+  Flags,
   GitzyConfig,
   GitzyPrompts,
 } from '../interfaces'
@@ -13,7 +14,8 @@ import { type } from './type'
 
 type CreatedPrompt = (
   config: GitzyConfig,
-  answers: Answers
+  answers: Answers,
+  flags: Flags
 ) => EnquirerPrompt | null
 
 const prompts: Record<string, CreatedPrompt> = {
@@ -31,10 +33,11 @@ const notEmpty = <T>(value: T | null | undefined): value is T => {
 
 export const createPrompts = (
   { config, answers }: { config: GitzyConfig; answers: Answers },
-  questionSet: GitzyPrompts[]
+  questionSet: GitzyPrompts[],
+  flags: Flags
 ): EnquirerPrompt[] => {
   return config.questions
     .filter(question => questionSet.includes(question))
-    .map(name => prompts[name](config, answers))
+    .map(name => prompts[name](config, answers, flags))
     .filter(notEmpty)
 }

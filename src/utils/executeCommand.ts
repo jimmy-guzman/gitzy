@@ -1,7 +1,7 @@
 import { spawn } from 'child_process'
 import { bold } from 'ansi-colors'
 
-import { Answers, GitzyConfig } from '../interfaces'
+import { Answers, Flags, GitzyConfig } from '../interfaces'
 
 const wrap = (string: string, width = 72) =>
   string.replace(
@@ -35,9 +35,11 @@ const createScope = (scope: string) =>
 
 export const formatCommitMessage = (
   config: GitzyConfig,
-  answers: Answers
+  answers: Answers,
+  emoji: boolean
 ): string => {
-  const hasEmoji = !config.disableEmoji && config.details[answers.type].emoji
+  const hasEmoji =
+    !config.disableEmoji && config.details[answers.type].emoji && emoji
   const emojiPrefix = hasEmoji ? `${config.details[answers.type].emoji} ` : ''
   const scope = createScope(answers.scope)
   const head = `${answers.type + scope}: ${emojiPrefix}${answers.subject}`
@@ -73,12 +75,12 @@ const executeDryRun = (message: string): void => {
 
 export const executeGitMessage = (
   { config, answers }: { config: GitzyConfig; answers: Answers },
-  { args = [], dryRun = false }: { args: string[]; dryRun: boolean }
+  { passthrough = [], dryRun = false, emoji = true }: Flags
 ): void => {
-  const message = formatCommitMessage(config, answers)
+  const message = formatCommitMessage(config, answers, emoji)
 
   if (dryRun) {
     return executeDryRun(message)
   }
-  return executeCommand('git', ['commit', '-m', `"${message}"`, ...args])
+  return executeCommand('git', ['commit', '-m', `"${message}"`, ...passthrough])
 }

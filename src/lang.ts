@@ -3,7 +3,7 @@ import { Flags } from './interfaces'
 interface Lang {
   examples: string
   description: string
-  flags: Record<keyof Omit<Flags, 'help' | 'version'>, string>
+  flags: Record<keyof Omit<Flags, 'help' | 'version' | 'emoji'>, string>
 }
 
 const skipQuestionMessage = (question: string) =>
@@ -12,8 +12,9 @@ const skipQuestionMessage = (question: string) =>
 export const lang: Lang = {
   examples: `
   $ gitzy
-  $ gitzy -p --amend
+  $ gitzy -p -a
   $ gitzy -m "added cool new feature" -t "feat" -s "amazing"
+  $ gitzy -lD --no-emoji
   `,
   description: 'interactive conventional commits cli',
   flags: {
@@ -30,6 +31,7 @@ export const lang: Lang = {
     get issues(): string {
       return skipQuestionMessage('issues')
     },
+    noEmoji: 'disable all emojis',
     passthrough: 'subsequent command line args passed through to "git"',
     get scope(): string {
       return skipQuestionMessage('scope')

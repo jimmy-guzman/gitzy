@@ -79,7 +79,9 @@ export interface Flags {
   body?: string
   breaking?: string
   dryRun?: boolean
+  emoji?: boolean
   issues?: string
+  noEmoji?: boolean
   passthrough?: string[]
   scope?: string
   subject?: string
