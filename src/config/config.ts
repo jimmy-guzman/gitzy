@@ -7,11 +7,15 @@ export const getUserConfig = async (
 ): Promise<GitzyConfig | null> => {
   const loaded = await loadConfig<GitzyConfig>('gitzy')
 
+  if (commitlint && !loaded) {
+    return getCommitlintConfig() as Promise<GitzyConfig>
+  }
+
   if (loaded) {
     const isValid = await validateUserConfig(loaded.config)
 
     if (isValid) {
-      if (commitlint || loaded.config.useCommitlintConfig) {
+      if (loaded.config.useCommitlintConfig) {
         const commitlintConfig = await getCommitlintConfig()
 
         return { ...loaded.config, ...commitlintConfig }
