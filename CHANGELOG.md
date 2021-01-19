@@ -1,3 +1,11 @@
+## [1.1.1](https://github.com/jimmy-guzman/gitzy/compare/v1.1.0...v1.1.1) (2021-01-19)
+
+
+### Bug Fixes
+
+* **cli:** 🐛 `--commitlint` should still work if no gitzy config ([5e16015](https://github.com/jimmy-guzman/gitzy/commit/5e16015cb259f7e67eaea4bf9565bc48cacc3073))
+* **cli:** 🐛 if no "scopes" in any config, skip scopes prompt ([dee68e5](https://github.com/jimmy-guzman/gitzy/commit/dee68e5783fa8de65d60f233b3cb53190a047c49))
+
 # [1.1.0](https://github.com/jimmy-guzman/gitzy/compare/v1.0.0...v1.1.0) (2021-01-19)
 
 
