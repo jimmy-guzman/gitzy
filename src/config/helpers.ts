@@ -34,9 +34,8 @@ export const loadConfig = async <T>(
   const explicitPath = configPath ? path.resolve(cwd, configPath) : undefined
   const explore = explicitPath ? explorer.load : explorer.search
   const searchPath = explicitPath ? explicitPath : cwd
-  const local = await explore(searchPath)
 
-  return local ?? null
+  return explore(searchPath)
 }
 
 const getCommitLintOverrides = (

@@ -31,12 +31,9 @@
     "ts-check:watch": "yarn ts-check --watch",
     "dev": "run-p **:watch",
     "release": "cross-env HUSKY_BYPASS=true npx semantic-release",
-    "cz": "./bin/run"
+    "cz": "./bin/run --commitlint"
   },
   "prettier": "@comparto/prettier-config",
-  "gitzy": {
-    "useCommitlintConfig": false
-  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
