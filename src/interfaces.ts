@@ -74,3 +74,17 @@ export interface EnquirerPrompt {
   skip?: boolean
   multiline?: boolean
 }
+
+export interface Flags {
+  body?: string
+  breaking?: string
+  dryRun?: boolean
+  issues?: string
+  passthrough?: string[]
+  scope?: string
+  subject?: string
+  type?: string
+  commitlint?: boolean
+  help?: boolean
+  version?: boolean
+}

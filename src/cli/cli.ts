@@ -4,7 +4,7 @@ import Enquirer from 'enquirer'
 
 import { getUserConfig } from '../config'
 import { defaultConfig, defaultAnswers } from '../defaults'
-import { Answers } from '../interfaces'
+import { Answers, Flags } from '../interfaces'
 import { lang } from '../lang'
 import { createPrompts } from '../prompts'
 import {
@@ -25,8 +25,8 @@ const enquirerOptions = {
 export const cli = async (): Promise<void> => {
   const state = { config: defaultConfig, answers: defaultAnswers }
 
-  const init = async (passthrough: string[]) => {
-    const loadedUserConfig = await getUserConfig()
+  const init = async ({ passthrough, commitlint }: Flags) => {
+    const loadedUserConfig = await getUserConfig(commitlint)
 
     if (loadedUserConfig) {
       state.config = { ...state.config, ...loadedUserConfig }
@@ -60,6 +60,7 @@ export const cli = async (): Promise<void> => {
     .option('-s, --scope <scope>', lang.flags.scope)
     .option('-m, --message <message>', lang.flags.subject)
     .option('-t, --type <type>', lang.flags.type)
+    .option('-l, --commitlint', lang.flags.commitlint)
     .addHelpText(
       'after',
       `
@@ -69,7 +70,7 @@ ${'Examples'}:
     )
     .name('gitzy')
     .action(async () => {
-      const { dryRun, passthrough: args, ...rest } = program.opts()
+      const { dryRun, ...args } = program.opts()
 
       if (dryRun) {
         log(info('running in dry mode...'))
@@ -77,7 +78,7 @@ ${'Examples'}:
 
       try {
         await init(args)
-        const answers = await promptQuestions(rest as Answers)
+        const answers = await promptQuestions(args as Answers)
 
         state.answers = { ...state.answers, ...answers }
       } catch (error) {
@@ -85,7 +86,7 @@ ${'Examples'}:
         process.exit(1)
       }
 
-      executeGitMessage(state, { args, dryRun })
+      executeGitMessage(state, { args: args.passThrough, dryRun })
     })
 
   await program.parseAsync(process.argv)

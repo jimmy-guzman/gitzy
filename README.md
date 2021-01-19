@@ -219,6 +219,7 @@ useCommitlintConfig: false
 | `--type`        | `-t`  | skip "type" question and provide your own "type" message         |
 | `--dry-run`     | `-D`  | output the git message but do not commit                         |
 | `--version`     | `-v`  | output the version number                                        |
+| `--commitlint`  | `-l`  | leverage commitlint's configuration                              |
 
 <!-- references -->
 

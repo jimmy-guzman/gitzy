@@ -1,18 +1,9 @@
-interface Flags {
-  passthrough: string
-  subject: string
-  scope: string
-  body: string
-  breaking: string
-  dryRun: string
-  issues: string
-  type: string
-}
+import { Flags } from './interfaces'
 
 interface Lang {
   examples: string
   description: string
-  flags: Flags
+  flags: Record<keyof Omit<Flags, 'help' | 'version'>, string>
 }
 
 const skipQuestionMessage = (question: string) =>
@@ -32,6 +23,7 @@ export const lang: Lang = {
     get breaking(): string {
       return skipQuestionMessage('breaking')
     },
+    commitlint: "leverage commitlint's configuration",
     get dryRun(): string {
       return 'displays git message but does not commit'
     },

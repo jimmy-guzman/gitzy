@@ -35,7 +35,7 @@
   },
   "prettier": "@comparto/prettier-config",
   "gitzy": {
-    "useCommitlintConfig": true
+    "useCommitlintConfig": false
   },
   "husky": {
     "hooks": {
