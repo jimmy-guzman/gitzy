@@ -37,9 +37,9 @@ export const cli = async (): Promise<void> => {
     }
   }
 
-  const promptQuestions = async (rest: Answers): Promise<Answers> => {
-    const enquirer = new Enquirer(enquirerOptions, rest)
-    const prompts = createPrompts(state, defaultConfig.questions)
+  const promptQuestions = async (flags: Answers): Promise<Answers> => {
+    const enquirer = new Enquirer(enquirerOptions, flags)
+    const prompts = createPrompts(state, defaultConfig.questions, flags)
 
     return enquirer.prompt(prompts)
   }
@@ -56,11 +56,12 @@ export const cli = async (): Promise<void> => {
     .option('-b, --breaking <breaking>', lang.flags.breaking)
     .option('-D, --dry-run', lang.flags.dryRun)
     .option('-i, --issues <body>', lang.flags.issues)
-    .option('-p, --passthrough <...flags>', lang.flags.passthrough)
+    .option('-p, --passthrough <flags...>', lang.flags.passthrough)
     .option('-s, --scope <scope>', lang.flags.scope)
     .option('-m, --message <message>', lang.flags.subject)
     .option('-t, --type <type>', lang.flags.type)
     .option('-l, --commitlint', lang.flags.commitlint)
+    .option('--no-emoji', lang.flags.noEmoji)
     .addHelpText(
       'after',
       `
@@ -70,15 +71,16 @@ ${'Examples'}:
     )
     .name('gitzy')
     .action(async () => {
-      const { dryRun, ...args } = program.opts()
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const flags: Flags = program.opts()
 
-      if (dryRun) {
+      if (flags.dryRun) {
         log(info('running in dry mode...'))
       }
 
       try {
-        await init(args)
-        const answers = await promptQuestions(args as Answers)
+        await init(flags)
+        const answers = await promptQuestions(flags as Answers)
 
         state.answers = { ...state.answers, ...answers }
       } catch (error) {
@@ -86,7 +88,7 @@ ${'Examples'}:
         process.exit(1)
       }
 
-      executeGitMessage(state, { args: args.passThrough, dryRun })
+      executeGitMessage(state, flags)
     })
 
   await program.parseAsync(process.argv)

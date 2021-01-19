@@ -14,7 +14,7 @@ export const checkIfStaged = (): Promise<string> => {
       reject(
         new Error(
           `No files staged! \n${info(
-            'You can use "gitzy -p --add" to replicate git -am'
+            'You can use "gitzy -p -a" to replicate git -am'
           )}`
         )
       )

@@ -34,6 +34,9 @@ $ npx gitzy
 ```sh-session
 $ npm install -g gitzy
 $ gitzy
+$ gitzy -p -a
+$ gitzy -m "added cool new feature" -t "feat" -s "amazing"
+$ gitzy -lD --no-emoji
 ```
 
 <!-- usagestop -->
@@ -220,6 +223,7 @@ useCommitlintConfig: false
 | `--dry-run`     | `-D`  | output the git message but do not commit                         |
 | `--version`     | `-v`  | output the version number                                        |
 | `--commitlint`  | `-l`  | leverage commitlint's configuration                              |
+| `--no-emoji`    |       | disable all emojis                                               |
 
 <!-- references -->
 

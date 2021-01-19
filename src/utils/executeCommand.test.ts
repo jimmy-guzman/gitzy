@@ -14,7 +14,8 @@ const setupFormatCommitMessage = (config = {}, answers = {}) => {
       subject: 'a cool new feature',
       type: 'feat',
       ...answers,
-    }
+    },
+    true
   )
 }
 

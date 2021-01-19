@@ -1,26 +1,38 @@
 import { dim } from 'ansi-colors'
 
-import { EnquirerChoice, EnquirerPrompt, GitzyConfig } from '../interfaces'
+import {
+  Answers,
+  EnquirerChoice,
+  EnquirerPrompt,
+  Flags,
+  GitzyConfig,
+} from '../interfaces'
 import { fuzzySearch } from '../utils'
 import { promptMessages } from './lang'
 
 const choice = (
   { details, disableEmoji }: GitzyConfig,
-  type: string
+  type: string,
+  { emoji: emojiFlag }: Flags
 ): EnquirerChoice => {
   const { description, emoji } = details[type]
-  const prefix = emoji && !disableEmoji ? `${emoji} ` : ''
+  const hasEmoji = emoji && !disableEmoji && emojiFlag
+  const prefix = hasEmoji ? `${emoji} ` : ''
 
   return {
-    title: `${type === 'refactor' ? `${prefix} ` : prefix}${type}:`,
+    title: `${type === 'refactor' && hasEmoji ? `${prefix} ` : prefix}${type}:`,
     hint: description.toLowerCase(),
     indent: ' ',
     value: type,
   }
 }
 
-export const type = (config: GitzyConfig): EnquirerPrompt => {
-  const choices = config.types.map((t: string) => choice(config, t))
+export const type = (
+  config: GitzyConfig,
+  _answers: Answers,
+  flags: Flags
+): EnquirerPrompt => {
+  const choices = config.types.map((t: string) => choice(config, t, flags))
 
   return {
     choices,
