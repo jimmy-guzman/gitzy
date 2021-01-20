@@ -1,7 +1,7 @@
 import { spawn } from 'child_process'
-import { bold } from 'ansi-colors'
 
 import { Answers, Flags, GitzyConfig } from '../interfaces'
+import { info, log } from './logging'
 
 const wrap = (string: string, width = 72) =>
   string.replace(
@@ -43,7 +43,7 @@ export const formatCommitMessage = (
   const emojiPrefix = hasEmoji ? `${config.details[answers.type].emoji} ` : ''
   const scope = createScope(answers.scope)
   const head = `${answers.type + scope}: ${emojiPrefix}${answers.subject}`
-  const body = answers.body ? `\n\n${answers.body}` : ''
+  const body = answers.body.trim() ? `\n\n${answers.body}` : ''
   const breaking = createBreaking(answers.breaking, config)
   const issues = createIssues(answers.issues, config)
 
@@ -66,11 +66,9 @@ const executeCommand = (
   })
 }
 
-const executeDryRun = (message: string): void => {
-  // eslint-disable-next-line no-console
-  console.log(bold(`Message:`))
-  // eslint-disable-next-line no-console
-  console.log(message)
+export const executeDryRun = (message: string): void => {
+  log(info(`Message...`))
+  log(`\n${JSON.stringify(message)}\n`)
 }
 
 export const executeGitMessage = (

@@ -1,8 +1,9 @@
 import { leadingLabel, subject } from './subject'
 import { defaultConfig } from '../defaults'
+import { Answers } from '../interfaces'
 
 const setupSubject = (config = {}) => {
-  return subject({ ...defaultConfig, ...config })
+  return subject({ ...defaultConfig, ...config }, {} as Answers, {})
 }
 
 const answers = {
