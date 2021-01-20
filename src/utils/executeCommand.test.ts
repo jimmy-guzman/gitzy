@@ -1,6 +1,6 @@
 /* eslint-disable jest/no-large-snapshots */
 
-import { formatCommitMessage } from './executeCommand'
+import { executeDryRun, formatCommitMessage } from './executeCommand'
 import { defaultConfig } from '../defaults'
 
 const setupFormatCommitMessage = (config = {}, answers = {}) => {
@@ -51,6 +51,20 @@ describe('formatCommitMessage', () => {
   it('should format commit message with no body', () => {
     const formattedMessage = setupFormatCommitMessage(defaultConfig, {
       body: '',
+    })
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*): 🎸 a cool new feature
+
+      BREAKING CHANGE: 🧨 breaks everything
+
+      🏁 Closes: #123"
+    `)
+  })
+
+  it('should format commit message with multiline body', () => {
+    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+      body: '\n',
     })
 
     expect(formattedMessage).toMatchInlineSnapshot(`
@@ -149,5 +163,37 @@ describe('formatCommitMessage', () => {
     expect(formattedMessage).toMatchInlineSnapshot(
       `"feat(*): 🎸 this has \\\\\`quotes\\\\\`"`
     )
+  })
+})
+
+describe('executeDryRun', () => {
+  it('should console log git message', () => {
+    const spy = jest.spyOn(console, 'log').mockImplementation(jest.fn())
+
+    executeDryRun('feat(cli): 🎸 initial release')
+    expect(spy).toMatchInlineSnapshot(`
+      [MockFunction] {
+        "calls": Array [
+          Array [
+            "[34m❯ Message...[39m",
+          ],
+          Array [
+            "
+      \\"feat(cli): 🎸 initial release\\"
+      ",
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      }
+    `)
   })
 })

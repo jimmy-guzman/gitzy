@@ -3,6 +3,7 @@ import { promptMessages } from './lang'
 
 export const body: CreatedPrompt = () => {
   return {
+    format: value => value.trim(),
     hint: '...supports multi line, press enter to go to next line',
     message: promptMessages.body,
     multiline: true,
