@@ -1,7 +1,7 @@
-import { EnquirerPrompt } from '../interfaces'
+import { CreatedPrompt } from '../interfaces'
 import { promptMessages } from './lang'
 
-export const body = (): EnquirerPrompt => {
+export const body: CreatedPrompt = () => {
   return {
     hint: '...supports multi line, press enter to go to next line',
     message: promptMessages.body,

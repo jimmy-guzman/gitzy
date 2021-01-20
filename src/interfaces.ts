@@ -90,3 +90,9 @@ export interface Flags {
   help?: boolean
   version?: boolean
 }
+
+export type CreatedPrompt = (
+  config: GitzyConfig,
+  answers: Answers,
+  flags: Flags
+) => EnquirerPrompt | null

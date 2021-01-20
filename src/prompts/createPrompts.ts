@@ -1,5 +1,6 @@
 import {
   Answers,
+  CreatedPrompt,
   EnquirerPrompt,
   Flags,
   GitzyConfig,
@@ -11,12 +12,6 @@ import { issues } from './issues'
 import { scope } from './scope'
 import { subject } from './subject'
 import { type } from './type'
-
-type CreatedPrompt = (
-  config: GitzyConfig,
-  answers: Answers,
-  flags: Flags
-) => EnquirerPrompt | null
 
 const prompts: Record<string, CreatedPrompt> = {
   body,

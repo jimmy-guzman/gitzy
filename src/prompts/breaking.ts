@@ -1,7 +1,7 @@
-import { EnquirerPrompt } from '../interfaces'
+import { CreatedPrompt } from '../interfaces'
 import { promptMessages } from './lang'
 
-export const breaking = (): EnquirerPrompt => {
+export const breaking: CreatedPrompt = () => {
   return {
     message: promptMessages.breaking,
     name: 'breaking',

@@ -1,10 +1,10 @@
 import { dim } from 'ansi-colors'
 
-import { EnquirerChoice, EnquirerPrompt, GitzyConfig } from '../interfaces'
+import { CreatedPrompt, EnquirerChoice } from '../interfaces'
 import { fuzzySearch } from '../utils'
 import { promptMessages } from './lang'
 
-export const scope = ({ scopes }: GitzyConfig): EnquirerPrompt | null => {
+export const scope: CreatedPrompt = ({ scopes }) => {
   const choices = scopes.map(s => ({ indent: ' ', title: s, value: s }))
 
   // TODO: use skip once https://github.com/enquirer/enquirer/issues/128 is resolved
