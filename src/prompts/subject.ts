@@ -1,11 +1,6 @@
 import { green, red, yellow, bold } from 'ansi-colors'
 
-import {
-  Answers,
-  EnquirerPrompt,
-  GitzyConfig,
-  EnquirerState,
-} from '../interfaces'
+import { CreatedPrompt, EnquirerState, Answers } from '../interfaces'
 import { errorMessage, promptMessages } from './lang'
 
 export const leadingLabel = (answers?: Answers): string => {
@@ -15,11 +10,11 @@ export const leadingLabel = (answers?: Answers): string => {
   return `${answers?.type}${scope}:`
 }
 
-export const subject = ({
+export const subject: CreatedPrompt = ({
   headerMinLength,
   headerMaxLength,
   disableEmoji,
-}: GitzyConfig): EnquirerPrompt => {
+}) => {
   const minTitleLengthError = errorMessage.minTitleLength(headerMinLength)
   const maxTitleLengthError = errorMessage.maxTitleLength(headerMaxLength)
   const message = promptMessages.subject

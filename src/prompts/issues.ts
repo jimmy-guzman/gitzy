@@ -1,7 +1,7 @@
-import { EnquirerPrompt, GitzyConfig } from '../interfaces'
+import { CreatedPrompt } from '../interfaces'
 import { issuesMessage } from './lang'
 
-export const issues = ({ issuesPrefix }: GitzyConfig): EnquirerPrompt => ({
+export const issues: CreatedPrompt = ({ issuesPrefix }) => ({
   message: issuesMessage(issuesPrefix),
   name: 'issues',
   type: 'text',

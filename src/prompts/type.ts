@@ -1,9 +1,8 @@
 import { dim } from 'ansi-colors'
 
 import {
-  Answers,
+  CreatedPrompt,
   EnquirerChoice,
-  EnquirerPrompt,
   Flags,
   GitzyConfig,
 } from '../interfaces'
@@ -27,11 +26,7 @@ const choice = (
   }
 }
 
-export const type = (
-  config: GitzyConfig,
-  _answers: Answers,
-  flags: Flags
-): EnquirerPrompt => {
+export const type: CreatedPrompt = (config, _answers, flags) => {
   const choices = config.types.map((t: string) => choice(config, t, flags))
 
   return {
