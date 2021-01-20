@@ -1,5 +1,5 @@
 export * from './executeCommand'
-export * from './validateUserConfig'
+export * from './validate-config'
 export * from './checkIfStaged'
 export * from './cleanObject'
 export * from './git-utils'
