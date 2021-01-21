@@ -3,10 +3,10 @@ module.exports = {
   coveragePathIgnorePatterns: ['node_modules', 'index.ts'],
   coverageThreshold: {
     global: {
-      branches: 38.38,
-      functions: 45.36,
-      lines: 40.64,
-      statements: 41.81,
+      branches: 40.4,
+      functions: 47.42,
+      lines: 42.05,
+      statements: 43.14,
     },
   },
   preset: 'ts-jest',

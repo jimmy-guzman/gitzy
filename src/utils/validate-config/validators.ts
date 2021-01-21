@@ -1,6 +1,6 @@
 import { defaultConfig } from '../../defaults'
+import { UnknownObject } from '../../interfaces'
 import { validIssuesPrefixes } from './constants'
-import { UnknownObject } from './interfaces'
 
 type Validator<T = unknown> = (value: T) => boolean
 
