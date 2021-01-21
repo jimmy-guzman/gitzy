@@ -8,12 +8,13 @@ import { Answers, Flags } from '../interfaces'
 import { lang } from '../lang'
 import { createPrompts } from '../prompts'
 import {
-  shouldCheckIfStaged,
+  shouldDoGitChecks,
   log,
   checkIfStaged,
   executeGitMessage,
   danger,
   info,
+  checkIfGitRepo,
 } from '../utils'
 
 const enquirerOptions = {
@@ -25,14 +26,15 @@ const enquirerOptions = {
 export const cli = async (): Promise<void> => {
   const state = { config: defaultConfig, answers: defaultAnswers }
 
-  const init = async ({ passthrough, commitlint }: Flags) => {
+  const init = async ({ passthrough, commitlint, dryRun }: Flags) => {
     const loadedUserConfig = await getUserConfig(commitlint)
 
     if (loadedUserConfig) {
       state.config = { ...state.config, ...loadedUserConfig }
     }
 
-    if (shouldCheckIfStaged(passthrough)) {
+    if (shouldDoGitChecks(passthrough) && !dryRun) {
+      await checkIfGitRepo()
       await checkIfStaged()
     }
   }

@@ -1,1 +1,1 @@
-export { info, danger, log } from './logging'
+export { info, danger, log, hint } from './logging'

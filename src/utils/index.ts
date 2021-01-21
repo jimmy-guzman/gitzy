@@ -1,6 +1,5 @@
 export * from './executeCommand'
 export * from './validate-config'
-export * from './checkIfStaged'
 export * from './cleanObject'
 export * from './git-utils'
 export * from './logging'
