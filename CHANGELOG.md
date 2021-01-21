@@ -1,3 +1,16 @@
+# [1.2.0](https://github.com/jimmy-guzman/gitzy/compare/v1.1.1...v1.2.0) (2021-01-21)
+
+
+### Bug Fixes
+
+* **cli:** 🐛 `--subject` is now respected ([004eaf3](https://github.com/jimmy-guzman/gitzy/commit/004eaf320e3f93c3b72ae12b94c7c5c3ae554fbf))
+* **cli:** 🐛 remove extra padding during dry run ([9e24c88](https://github.com/jimmy-guzman/gitzy/commit/9e24c8840f32aa680da8fd443b6187c02dffa9c3))
+
+
+### Features
+
+* **cli:** 🎸 checks if current directory is a git repo ([d8aa0b1](https://github.com/jimmy-guzman/gitzy/commit/d8aa0b18b6f6d121afe0e3efd08b7da9a8cd777f))
+
 ## [1.1.1](https://github.com/jimmy-guzman/gitzy/compare/v1.1.0...v1.1.1) (2021-01-19)
 
 
