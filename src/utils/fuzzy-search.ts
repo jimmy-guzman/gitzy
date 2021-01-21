@@ -17,7 +17,7 @@ const fuzzyMatch = <T>(str: T, query: string) => {
  * @param a haystack
  * @param q query
  * @param k key
- * @example fuzzySearch([{name: 'joe'},{name: 'jane'}, 'ne', 'name']) // {name: 'jane'}
+ * @example fuzzySearch([{name: 'joe'},{name: 'jane'}], 'ne', 'name') // {name: 'jane'}
  */
 export const fuzzySearch = <T>(a: T[], q: string, k: keyof T): Promise<T[]> => {
   return Promise.resolve(q ? a.filter(v => fuzzyMatch(v[k], q)) : a)
