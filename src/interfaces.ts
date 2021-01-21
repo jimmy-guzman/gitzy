@@ -96,3 +96,5 @@ export type CreatedPrompt = (
   answers: Answers,
   flags: Flags
 ) => EnquirerPrompt | null
+
+export type UnknownObject = Record<string, unknown>

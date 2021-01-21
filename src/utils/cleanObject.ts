@@ -1,7 +1,11 @@
-export const cleanObject = (
-  object: Record<string, unknown>
-): Record<string, unknown> => {
-  return Object.entries(object).reduce<Record<string, unknown>>(
+import { UnknownObject } from '../interfaces'
+
+/**
+ * Removes `null` or `undefined` values from object
+ * @param object any object
+ */
+export const cleanObject = (object: UnknownObject): UnknownObject => {
+  return Object.entries(object).reduce<UnknownObject>(
     (currentObject, [key, value]) => {
       const isEmpty = value === null || value === undefined
 
