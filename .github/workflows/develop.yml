@@ -40,7 +40,7 @@ jobs:
 
       - run: yarn lint
 
-      - run: yarn test --ci
+      - run: yarn test --ci --coverage --colors
 
       - run: yarn ts-check
 
