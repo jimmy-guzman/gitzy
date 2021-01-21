@@ -58,7 +58,7 @@ export const cli = async (): Promise<void> => {
     .option('-i, --issues <body>', lang.flags.issues)
     .option('-p, --passthrough <flags...>', lang.flags.passthrough)
     .option('-s, --scope <scope>', lang.flags.scope)
-    .option('-m, --message <message>', lang.flags.subject)
+    .option('-m, --subject <message>', lang.flags.subject)
     .option('-t, --type <type>', lang.flags.type)
     .option('-l, --commitlint', lang.flags.commitlint)
     .option('--no-emoji', lang.flags.noEmoji)
