@@ -22,6 +22,9 @@ export const checkIfStaged = (): Promise<string> => {
   })
 }
 
+/**
+ * Determines wether or not it's git repository.
+ */
 export const checkIfGitRepo = (): Promise<string> => {
   return new Promise((resolve, reject) => {
     exec('git rev-parse --is-inside-work-tree', error => {
@@ -38,6 +41,10 @@ export const checkIfGitRepo = (): Promise<string> => {
   })
 }
 
+/**
+ * Determines wether or not to perform git checks based on flags
+ * @param array flags
+ */
 export const shouldDoGitChecks = (array: string[] = []): boolean => {
   return !['--add', '-a', '--amend'].some(flag => array.includes(flag))
 }
