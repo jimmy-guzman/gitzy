@@ -68,7 +68,7 @@ const executeCommand = (
 
 export const executeDryRun = (message: string): void => {
   log(info(`Message...`))
-  log(`\n${JSON.stringify(message)}\n`)
+  log(`\n${message}\n`)
 }
 
 export const executeGitMessage = (

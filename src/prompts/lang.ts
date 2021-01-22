@@ -6,11 +6,11 @@ const breaking = red('BREAKING CHANGE:')
 const closes = (issuesPrefix: IssuesPrefixes) => reset(`${issuesPrefix}:`)
 
 export const promptMessages: Record<string, string> = {
-  body: 'Add a longer description of the change\n',
+  body: 'Add a longer description\n',
   breaking: `${bold('Add any breaking changes')}\n  ${breaking}`,
-  scope: 'Choose the context of the change',
-  subject: 'Add a short description of the change',
-  type: 'Choose the kind of change',
+  scope: 'Choose the scope',
+  subject: 'Add a short description',
+  type: 'Choose the type',
 }
 
 export const issuesMessage = (issuesPrefix: IssuesPrefixes): string => {
