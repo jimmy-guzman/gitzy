@@ -45,3 +45,15 @@ jobs:
       - run: yarn ts-check
 
       - run: yarn build
+
+  commitlint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: wagoid/commitlint-github-action@v2
+        with:
+          configFile: .commitlintrc.yml
