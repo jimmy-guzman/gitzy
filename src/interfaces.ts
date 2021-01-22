@@ -98,3 +98,8 @@ export type CreatedPrompt = (
 ) => EnquirerPrompt | null
 
 export type UnknownObject = Record<string, unknown>
+
+export interface GitzyState {
+  config: GitzyConfig
+  answers: Answers
+}
