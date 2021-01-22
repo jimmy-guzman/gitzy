@@ -43,6 +43,7 @@ jobs:
       - name: Checkout
         with:
           fetch-depth: 0
+          token: ${{ secrets.SEMANTIC_RELEASE }}
         uses: actions/checkout@v2
 
       - name: Get yarn cache directory path
@@ -70,7 +71,7 @@ jobs:
       - run: yarn build
 
       - name: Publish to NPM
-        run: yarn release
         env:
-          GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: yarn release
