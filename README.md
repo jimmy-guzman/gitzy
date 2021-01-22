@@ -161,12 +161,12 @@ Allows you to toggle questions.
 
 ```yml
 questions:
-  - type # Select the kind of change
-  - scope # Select the context of the change
-  - subject # Give a short description of the change
-  - body # Give a longer description of the change
-  - breaking # List any breaking changes
-  - issues # Issues this commit closes, e.g #123
+  - type # Choose the type
+  - scope # Choose the scope
+  - subject # Add a short description
+  - body # Add a longer description
+  - breaking # Add a short description
+  - issues # Add issues this commit closes, e.g #123
 ```
 
 _`scope` question will not be turned if there's no scopes_
@@ -193,6 +193,7 @@ types:
   - fix
   - refactor
   - test
+  - style
 ```
 
 ### useCommitlintConfig
