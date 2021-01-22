@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/jimmy-guzman/gitzy/compare/v1.2.0...v1.2.1) (2021-01-22)
+
+
+### Bug Fixes
+
+* **cli:** 🐛 remove extra characters during dry run ([0e671ec](https://github.com/jimmy-guzman/gitzy/commit/0e671ec41eb3e4b5f0f0dbada4718bef8e99a6a0))
+
 # [1.2.0](https://github.com/jimmy-guzman/gitzy/compare/v1.1.1...v1.2.0) (2021-01-21)
 
 

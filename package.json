@@ -1,7 +1,7 @@
 {
   "name": "gitzy",
   "description": "interactive conventional commits cli",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": "jimmy-guzman @jimmy-guzman",
   "main": "dist/index.js",
   "repository": "jimmy-guzman/gitzy",
