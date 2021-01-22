@@ -1,13 +1,5 @@
-import { cosmiconfig } from 'cosmiconfig'
-import path from 'path'
-
 import { cleanObject, validateUserConfig } from '../utils'
-
-interface LoadConfigResult<T> {
-  config: T
-  filepath: string
-  isEmpty?: boolean
-}
+import { loadConfig } from './loadConfig'
 
 interface CommitlintOverrides {
   scopes?: string[]
@@ -23,19 +15,6 @@ interface CommitlintConfig {
     'header-max-length'?: string[]
     'header-min-length'?: string[]
   }
-}
-
-export const loadConfig = async <T>(
-  configName: string,
-  configPath?: string,
-  cwd = process.cwd()
-): Promise<LoadConfigResult<T> | null> => {
-  const explorer = cosmiconfig(configName)
-  const explicitPath = configPath ? path.resolve(cwd, configPath) : undefined
-  const explore = explicitPath ? explorer.load : explorer.search
-  const searchPath = explicitPath ? explicitPath : cwd
-
-  return explore(searchPath)
 }
 
 const getCommitLintOverrides = (

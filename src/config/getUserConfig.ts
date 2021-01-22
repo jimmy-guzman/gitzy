@@ -1,6 +1,7 @@
 import { GitzyConfig } from '../interfaces'
 import { validateUserConfig } from '../utils'
-import { getCommitlintConfig, loadConfig } from './helpers'
+import { getCommitlintConfig } from './getCommitlintConfig'
+import { loadConfig } from './loadConfig'
 
 export const getUserConfig = async (
   commitlint?: boolean
