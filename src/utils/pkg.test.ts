@@ -13,7 +13,7 @@ jest.mock(
 
 describe('logging', () => {
   it('info', () => {
-    expect(gitzyPkg).toStrictEqual({
+    expect(gitzyPkg()).toStrictEqual({
       version: '1.0.0',
       engines: {
         node: '>=10.0.0',

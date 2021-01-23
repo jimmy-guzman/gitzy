@@ -228,6 +228,7 @@ useCommitlintConfig: false
 | `--dry-run`     | `-D`  | output the git message but do not commit                         |
 | `--version`     | `-v`  | output the version number                                        |
 | `--commitlint`  | `-l`  | leverage commitlint's configuration                              |
+| `--skip`        | `-S`  | skip questions                                                   |
 | `--no-emoji`    |       | disable all emojis                                               |
 
 <!-- references -->

@@ -15,7 +15,9 @@ import {
   danger,
   info,
   checkIfGitRepo,
+  gitzyPkg,
 } from '../utils'
+import { options } from './options'
 
 const enquirerOptions = {
   autofill: true,
@@ -41,7 +43,7 @@ export const cli = async (): Promise<void> => {
 
   const promptQuestions = async (flags: Answers): Promise<Answers> => {
     const enquirer = new Enquirer(enquirerOptions, flags)
-    const prompts = createPrompts(state, defaultConfig.questions, flags)
+    const prompts = createPrompts(state, flags)
 
     return enquirer.prompt(prompts)
   }
@@ -51,8 +53,7 @@ export const cli = async (): Promise<void> => {
       writeErr: str => process.stdout.write(str.replace('error: ', '')),
       outputError: (error, write) => write(`\n${danger(error)}\n`),
     })
-    // eslint-disable-next-line import/no-unresolved, @typescript-eslint/no-var-requires
-    .version(require('../package.json').version, '-v, --version')
+    .version(gitzyPkg().version, '-v, --version')
     .description(lang.description)
     .option('-d, --body <body>', lang.flags.body)
     .option('-b, --breaking <breaking>', lang.flags.breaking)
@@ -64,6 +65,7 @@ export const cli = async (): Promise<void> => {
     .option('-t, --type <type>', lang.flags.type)
     .option('-l, --commitlint', lang.flags.commitlint)
     .option('--no-emoji', lang.flags.noEmoji)
+    .addOption(options.skip)
     .addHelpText(
       'after',
       `
