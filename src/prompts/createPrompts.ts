@@ -1,11 +1,5 @@
-import {
-  Answers,
-  CreatedPrompt,
-  EnquirerPrompt,
-  Flags,
-  GitzyConfig,
-  GitzyPrompts,
-} from '../interfaces'
+import { defaultConfig } from '../defaults'
+import { CreatedPrompt, EnquirerPrompt, Flags, GitzyState } from '../interfaces'
 import { body } from './body'
 import { breaking } from './breaking'
 import { issues } from './issues'
@@ -27,12 +21,13 @@ const notEmpty = <T>(value: T | null | undefined): value is T => {
 }
 
 export const createPrompts = (
-  { config, answers }: { config: GitzyConfig; answers: Answers },
-  questionSet: GitzyPrompts[],
+  { config, answers }: GitzyState,
   flags: Flags
 ): EnquirerPrompt[] => {
   return config.questions
-    .filter(question => questionSet.includes(question))
+    .filter(
+      q => defaultConfig.questions.includes(q) && !flags.skip?.includes(q)
+    )
     .map(name => prompts[name](config, answers, flags))
     .filter(notEmpty)
 }

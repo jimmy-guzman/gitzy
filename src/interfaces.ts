@@ -84,6 +84,7 @@ export interface Flags {
   noEmoji?: boolean
   passthrough?: string[]
   scope?: string
+  skip?: string[]
   subject?: string
   type?: string
   commitlint?: boolean

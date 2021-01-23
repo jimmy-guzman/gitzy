@@ -36,6 +36,7 @@ export const lang: Lang = {
     get scope(): string {
       return skipQuestionMessage('scope')
     },
+    skip: 'skip questions',
     get subject(): string {
       return skipQuestionMessage('subject')
     },
