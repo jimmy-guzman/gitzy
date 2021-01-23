@@ -1,3 +1,11 @@
+# [1.3.0](https://github.com/jimmy-guzman/gitzy/compare/v1.2.1...v1.3.0) (2021-01-23)
+
+
+### Features
+
+* 🎸 add `--skip` flag to support skipping questions ([6974275](https://github.com/jimmy-guzman/gitzy/commit/69742753d44b680d1d4c91b2b6ceb116de13cce6)), closes [#10](https://github.com/jimmy-guzman/gitzy/issues/10)
+* 🎸 support `.config/*` as a configuration path ([d00dfb3](https://github.com/jimmy-guzman/gitzy/commit/d00dfb31d878cf381b47a817e28903b8b1ced3dc))
+
 ## [1.2.1](https://github.com/jimmy-guzman/gitzy/compare/v1.2.0...v1.2.1) (2021-01-22)
 
 
