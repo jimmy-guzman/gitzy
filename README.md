@@ -45,7 +45,7 @@ $ gitzy -lD --no-emoji
 
 By default `gitzy` comes ready to run out of the box.
 
-> This supports cosmiconfig, so you can customize with either a `gitzy` key in your package.json, or just create a `.gitzyrc.json`, `.gitzyrc.yml`, `gitzy.config.js`, etc. in your project directory.
+> This supports cosmiconfig, so you can customize with either a `gitzy` key in your package.json, or just create a `.gitzyrc.json`, `.gitzyrc.yml`, `gitzy.config.js`, etc. in your project or `.config/` directory.
 
 ## Options
 
@@ -194,6 +194,10 @@ types:
   - refactor
   - test
   - style
+  - ci
+  - perf
+  - revert
+  - release
 ```
 
 ### useCommitlintConfig
