@@ -113,3 +113,6 @@ yalc.lock
 
 # python
 .venv/
+
+# gitzy
+.gitzyrc*

@@ -10,7 +10,7 @@ export const details: Details = {
     emoji: '👷',
   },
   docs: {
-    description: 'Add or update documentation.',
+    description: 'Add or update documentation',
     emoji: '📝',
   },
   feat: {
@@ -18,31 +18,31 @@ export const details: Details = {
     emoji: '🎸',
   },
   fix: {
-    description: 'Fix a bug.',
+    description: 'Fix a bug',
     emoji: '🐛',
   },
   perf: {
-    description: 'Improve performance.',
+    description: 'Improve performance',
     emoji: '⚡️',
   },
   refactor: {
-    description: 'Refactor code.',
+    description: 'Refactor code',
     emoji: '♻️',
   },
   release: {
-    description: 'Deploy stuff.',
+    description: 'Deploy stuff',
     emoji: '🚀',
   },
   revert: {
-    description: 'Revert changes.',
+    description: 'Revert changes',
     emoji: '⏪',
   },
   style: {
-    description: 'Improve structure / format of the code.',
+    description: 'Improve structure / format of the code',
     emoji: '🎨',
   },
   test: {
-    description: 'Add or update tests.',
+    description: 'Add or update tests',
     emoji: '✅',
   },
 }

@@ -32,6 +32,7 @@ export const type: CreatedPrompt = (config, _answers, flags) => {
   return {
     choices,
     hint: dim('...type or use arrow keys'),
+    limit: 10,
     message: promptMessages.type,
     name: 'type',
     suggest: (input: string) =>
