@@ -1,4 +1,4 @@
-import { defaultConfig } from '../../defaults'
+import { defaultConfig } from '../../../defaults'
 import { validateConfig, validateUserConfig } from './validateUserConfig'
 
 describe('validateConfig', () => {
