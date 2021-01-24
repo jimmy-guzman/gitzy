@@ -1,5 +1,4 @@
 export * from './executeCommand'
-export * from './validate-config'
 export * from './cleanObject'
 export * from './git-utils'
 export * from './logging'
