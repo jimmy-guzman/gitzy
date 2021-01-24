@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/jimmy-guzman/gitzy/compare/v1.3.0...v1.3.1) (2021-01-24)
+
+
+### Bug Fixes
+
+* **cli:** 🐛 merge user & commitlint configs when `--commitlint` ([0a3685c](https://github.com/jimmy-guzman/gitzy/commit/0a3685c7c32eb03079124a4760f4152977067ded))
+
 # [1.3.0](https://github.com/jimmy-guzman/gitzy/compare/v1.2.1...v1.3.0) (2021-01-23)
 
 
