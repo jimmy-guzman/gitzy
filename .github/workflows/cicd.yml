@@ -1,7 +1,10 @@
-name: release
+name: cicd
 
 on:
   push:
+    branches:
+      - master
+  pull_request:
     branches:
       - master
 
@@ -30,13 +33,14 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ steps.nvm.outputs.NVMRC }}
+
       - run: yarn install --frozen-lockfile
       - run: yarn lint
       - run: yarn test --ci --coverage --colors
       - run: yarn ts-check
       - run: yarn build
 
-  publish-npm:
+  release:
     needs: test
     runs-on: ubuntu-latest
     steps:
