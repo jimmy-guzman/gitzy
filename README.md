@@ -3,6 +3,7 @@
 [![License][license-badge]][license]
 [![semantic-release][semantic-release-badge]][semantic-release]
 [![code style: prettier][prettier-badge]][prettier]
+[![Code Coverage][coverage-badge]][coverage]
 
 # gitzy🪄
 
@@ -247,3 +248,5 @@ useCommitlintConfig: false
 [license-badge]: https://img.shields.io/npm/l/gitzy.svg?style=flat-square
 [conventional-commits]: https://www.conventionalcommits.org/
 [git-cz]: https://github.com/streamich/git-cz
+[coverage-badge]: https://img.shields.io/codecov/c/github/jimmy-guzman/gitzy.svg?style=flat-square
+[coverage]: https://codecov.io/github/jimmy-guzman/gitzy
