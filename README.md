@@ -233,7 +233,7 @@ useCommitlintConfig: false
 
 <!-- references -->
 
-[actions-badge]: https://img.shields.io/github/workflow/status/jimmy-guzman/gitzy/release?label=actions&logo=github-actions&style=flat-square
+[actions-badge]: https://img.shields.io/github/workflow/status/jimmy-guzman/gitzy/cicd?label=actions&logo=github-actions&style=flat-square
 [version-badge]: https://img.shields.io/npm/v/gitzy.svg?logo=npm&style=flat-square
 [package]: https://www.npmjs.com/package/gitzy
 [downloads-badge]: https://img.shields.io/npm/dm/gitzy.svg?logo=npm&style=flat-square
