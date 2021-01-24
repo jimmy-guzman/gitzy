@@ -1,5 +1,4 @@
 import { cosmiconfig } from 'cosmiconfig'
-import path from 'path'
 
 interface LoadConfigResult<T> {
   config: T
@@ -7,7 +6,7 @@ interface LoadConfigResult<T> {
   isEmpty?: boolean
 }
 
-const searchPlaces = (name: string) => [
+const defaultSearchPlaces = (name: string) => [
   `.${name}rc`,
   `.${name}rc.json`,
   `.${name}rc.yaml`,
@@ -18,21 +17,18 @@ const searchPlaces = (name: string) => [
   `${name}.config.cjs`,
 ]
 
+export const getSearchPlaces = (configName: string): string[] => [
+  'package.json',
+  ...defaultSearchPlaces(configName),
+  ...defaultSearchPlaces(configName).map(p => `.config/${p}`),
+]
+
 export const loadConfig = async <T>(
-  configName: string,
-  configPath?: string,
-  cwd = process.cwd()
+  configName: string
 ): Promise<LoadConfigResult<T> | null> => {
   const explorer = cosmiconfig(configName, {
-    searchPlaces: [
-      'package.json',
-      ...searchPlaces(configName),
-      ...searchPlaces(configName).map(p => `.config/${p}`),
-    ],
+    searchPlaces: getSearchPlaces(configName),
   })
-  const explicitPath = configPath ? path.resolve(cwd, configPath) : undefined
-  const explore = explicitPath ? explorer.load : explorer.search
-  const searchPath = explicitPath ? explicitPath : cwd
 
-  return explore(searchPath)
+  return explorer.search(process.cwd())
 }
