@@ -4,10 +4,10 @@ import { CreatedPrompt, EnquirerState, Answers } from '../interfaces'
 import { errorMessage, promptMessages } from './lang'
 
 export const leadingLabel = (answers?: Answers): string => {
-  const hasScope = answers?.scope && answers.scope !== 'none'
-  const scope = hasScope ? `(${answers?.scope})` : ''
+  const scope =
+    answers?.scope && answers.scope !== 'none' ? `(${answers.scope})` : ''
 
-  return `${answers?.type}${scope}:`
+  return answers?.type ? `${answers.type}${scope}:` : ''
 }
 
 export const subject: CreatedPrompt = ({
@@ -52,6 +52,7 @@ export const subject: CreatedPrompt = ({
       if (input.length < headerMinLength) {
         return minTitleLengthError
       }
+
       if (input.length + label.length + emojiLength > headerMaxLength) {
         return maxTitleLengthError
       }
