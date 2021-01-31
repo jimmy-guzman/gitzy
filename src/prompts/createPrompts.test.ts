@@ -18,7 +18,7 @@ const setupCreatePrompts = (
       config: { ...defaultConfig, ...{ questions } },
     },
     flags
-  ).map(p => p.name)
+  ).map((p) => p.name)
 }
 
 describe('createPrompts', () => {
