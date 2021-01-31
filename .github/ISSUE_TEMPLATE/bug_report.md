@@ -14,13 +14,14 @@ about: Bugs, missing documentation, or unexpected behavior 🤔.
 ---
 
 - `gitzy` version:
-- `typescript` version:
 - `node` version:
+- `commitlint` version:
 
-### Relevant code or config:
+### Relevant config:
 
-```js
-const your => code => here
+```yml
+# .gitzyrc.yml
+headerMinLength: 3
 ```
 
 ### What you did:

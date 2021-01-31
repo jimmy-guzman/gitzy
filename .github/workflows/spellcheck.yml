@@ -1,0 +1,17 @@
+name: spellcheck
+
+on: [pull_request]
+
+jobs:
+  spellcheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: streetsidesoftware/cspell-action@v1.0.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN}}
+          inline: error

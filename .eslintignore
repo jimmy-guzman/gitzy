@@ -1,5 +1,10 @@
 CHANGELOG.md
-!.github/
 .cache
-dist/
+.reports
+.yalc
+dist
+coverage
+
 !.config/
+!.github/
+!.vscode
