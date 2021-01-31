@@ -2,14 +2,21 @@ import { bold, green, red, yellow } from 'ansi-colors'
 
 import { leadingLabel, subject } from './subject'
 import { defaultConfig } from '../defaults'
-import { Answers, EnquirerPrompt, EnquirerState } from '../interfaces'
+import {
+  Answers,
+  CreatedPromptOptions,
+  EnquirerPrompt,
+  EnquirerState,
+} from '../interfaces'
 
 interface Custom extends Omit<Required<EnquirerPrompt>, 'message'> {
   message: (state?: EnquirerState | undefined) => string
 }
 
-const setupSubject = (config = {}) => {
-  return subject({ ...defaultConfig, ...config }, {} as Answers, {}) as Custom
+const setupSubject = (config = {}): Custom => {
+  return subject({
+    config: { ...defaultConfig, ...config },
+  } as CreatedPromptOptions) as Custom
 }
 
 const answers = {

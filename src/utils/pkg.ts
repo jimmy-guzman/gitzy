@@ -1,10 +1,10 @@
 import path from 'path'
 
 interface Pkg {
-  version: string
   engines: {
     node: string
   }
+  version: string
 }
 
 // eslint-disable-next-line import/no-unresolved, @typescript-eslint/no-var-requires

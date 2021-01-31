@@ -4,10 +4,9 @@ import { checkIfGitRepo, checkIfStaged, shouldDoGitChecks } from './git-utils'
 
 jest.mock('child_process')
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const childProcessMock = (child_process.exec as unknown) as jest.Mock<any, any>
+const childProcessMock = (child_process.exec as unknown) as jest.Mock
 
-const mockExec = (value: string | null = null) => {
+const mockExec = (value: string | null = null): void => {
   childProcessMock.mockImplementation(
     (
       _command: unknown,

@@ -28,6 +28,6 @@ export const createPrompts = (
     .filter(
       q => defaultConfig.questions.includes(q) && !flags.skip?.includes(q)
     )
-    .map(name => prompts[name](config, answers, flags))
+    .map(name => prompts[name]({ config, answers, flags }))
     .filter(notEmpty)
 }

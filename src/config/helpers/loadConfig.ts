@@ -6,7 +6,7 @@ interface LoadConfigResult<T> {
   isEmpty?: boolean
 }
 
-const defaultSearchPlaces = (name: string) => [
+const defaultSearchPlaces = (name: string): string[] => [
   `.${name}rc`,
   `.${name}rc.json`,
   `.${name}rc.yaml`,

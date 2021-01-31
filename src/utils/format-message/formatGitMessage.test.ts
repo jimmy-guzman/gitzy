@@ -2,7 +2,7 @@
 import { formatCommitMessage } from './formatGitMessage'
 import { defaultConfig } from '../../defaults'
 
-const setupFormatCommitMessage = (config = {}, answers = {}) => {
+const setupFormatCommitMessage = (config = {}, answers = {}): string => {
   return formatCommitMessage(
     { ...defaultConfig, ...config },
     {
