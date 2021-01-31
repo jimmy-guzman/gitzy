@@ -32,7 +32,8 @@ export const executeGitMessage = (
   const message = formatCommitMessage(config, answers, emoji)
 
   if (dryRun) {
-    return executeDryRun(message)
+    executeDryRun(message)
   }
-  return executeCommand('git', ['commit', '-m', `"${message}"`, ...passthrough])
+
+  executeCommand('git', ['commit', '-m', `"${message}"`, ...passthrough])
 }

@@ -3,19 +3,19 @@ import { cleanObject } from '../../utils'
 import { loadConfig } from './loadConfig'
 
 interface CommitlintOverrides {
-  scopes?: string[]
-  types?: string[]
   headerMaxLength?: number
   headerMinLength?: number
+  scopes?: string[]
+  types?: string[]
 }
 
 interface CommitlintConfig {
   rules?: {
+    'header-max-length'?: [number, string, number]
+    'header-min-length'?: [number, string, number]
     'scope-case'?: [number, string, string]
     'scope-enum'?: [number, string, string[]]
     'type-enum'?: [number, string, string[]]
-    'header-max-length'?: [number, string, number]
-    'header-min-length'?: [number, string, number]
   }
 }
 
@@ -23,10 +23,10 @@ export const getCommitlintOverrides = (
   config: CommitlintConfig
 ): CommitlintOverrides => {
   return cleanObject({
-    scopes: config.rules?.['scope-enum']?.[2],
-    types: config.rules?.['type-enum']?.[2],
     headerMaxLength: config.rules?.['header-max-length']?.[2],
     headerMinLength: config.rules?.['header-min-length']?.[2],
+    scopes: config.rules?.['scope-enum']?.[2],
+    types: config.rules?.['type-enum']?.[2],
   })
 }
 

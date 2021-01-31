@@ -1,22 +1,23 @@
 import { Flags } from './interfaces'
 
 interface Lang {
-  examples: string
   description: string
+  examples: string
   flags: Record<keyof Omit<Flags, 'help' | 'version' | 'emoji'>, string>
 }
 
-const skipQuestionMessage = (question: string) =>
-  `skip "${question}" question and provide your own "${question}" message`
+const skipQuestionMessage = (question: string): string => {
+  return `skip "${question}" question and provide your own "${question}" message`
+}
 
 export const lang: Lang = {
+  description: 'interactive conventional commits cli',
   examples: `
   $ gitzy
   $ gitzy -p -a
   $ gitzy -m "added cool new feature" -t "feat" -s "amazing"
   $ gitzy -lD --no-emoji
   `,
-  description: 'interactive conventional commits cli',
   flags: {
     get body(): string {
       return skipQuestionMessage('body')

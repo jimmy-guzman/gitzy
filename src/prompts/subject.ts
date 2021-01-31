@@ -11,9 +11,7 @@ export const leadingLabel = (answers?: Answers): string => {
 }
 
 export const subject: CreatedPrompt = ({
-  headerMinLength,
-  headerMaxLength,
-  disableEmoji,
+  config: { headerMinLength, headerMaxLength, disableEmoji },
 }) => {
   const minTitleLengthError = errorMessage.minTitleLength(headerMinLength)
   const maxTitleLengthError = errorMessage.maxTitleLength(headerMaxLength)
@@ -21,7 +19,7 @@ export const subject: CreatedPrompt = ({
   const emojiLength = disableEmoji ? 0 : 3
 
   return {
-    message: (state?: EnquirerState) => {
+    message: (state?: EnquirerState): string => {
       const getCharsLeftText = (): string => {
         const label = leadingLabel(state?.answers)
         const inputLength = state ? state.input.length : 0

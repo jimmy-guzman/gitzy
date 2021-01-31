@@ -37,49 +37,51 @@ export type IssuesPrefixes =
   | 'resolved'
 
 export interface GitzyConfig {
-  details: Details
   breakingChangeEmoji: string
   closedIssueEmoji: string
-  issuesPrefix: IssuesPrefixes
-  scopes: string[]
+  details: Details
+  disableEmoji: boolean
   headerMaxLength: number
   headerMinLength: number
+  issuesPrefix: IssuesPrefixes
   questions: GitzyPrompts[]
-  disableEmoji: boolean
-  useCommitlintConfig: boolean
+  scopes: string[]
   types: string[]
+  useCommitlintConfig: boolean
 }
 
 export interface EnquirerChoice {
-  title: string
   hint?: string
   indent?: string
+  title: string
   value: string
 }
 
 export interface EnquirerState {
-  input: string
   answers: Answers
+  input: string
 }
 export interface EnquirerPrompt {
   choices?: EnquirerChoice[]
-  hint?: string
-  message: string | ((state?: EnquirerState) => string)
-  name: string
-  suggest?: (input: string) => Promise<EnquirerChoice[]>
-  type: 'text' | 'autocomplete' | 'input'
   footer?: (state: EnquirerState) => string
   format?: (value: string) => string
-  validate?: (input: string, state?: EnquirerState) => string | true
-  skip?: boolean
+  hint?: string
+  message: string | ((state?: EnquirerState) => string)
   multiline?: boolean
+  name: string
+  skip?: boolean
+  suggest?: (input: string) => Promise<EnquirerChoice[]>
+  type: 'text' | 'autocomplete' | 'input'
+  validate?: (input: string, state?: EnquirerState) => string | true
 }
 
 export interface Flags {
   body?: string
   breaking?: string
+  commitlint?: boolean
   dryRun?: boolean
   emoji?: boolean
+  help?: boolean
   issues?: string
   noEmoji?: boolean
   passthrough?: string[]
@@ -87,20 +89,24 @@ export interface Flags {
   skip?: string[]
   subject?: string
   type?: string
-  commitlint?: boolean
-  help?: boolean
   version?: boolean
 }
 
-export type CreatedPrompt = (
-  config: GitzyConfig,
-  answers: Answers,
+export interface CreatedPromptOptions {
+  answers: Answers
+  config: GitzyConfig
   flags: Flags
-) => EnquirerPrompt | null
+}
+
+export type CreatedPrompt = ({
+  answers,
+  config,
+  flags,
+}: CreatedPromptOptions) => EnquirerPrompt | null
 
 export type UnknownObject = Record<string, unknown>
 
 export interface GitzyState {
-  config: GitzyConfig
   answers: Answers
+  config: GitzyConfig
 }

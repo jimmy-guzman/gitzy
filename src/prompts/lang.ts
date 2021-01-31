@@ -3,7 +3,10 @@ import { bold, red, reset } from 'ansi-colors'
 import { IssuesPrefixes } from '../interfaces'
 
 const breaking = red('BREAKING CHANGE:')
-const closes = (issuesPrefix: IssuesPrefixes) => reset(`${issuesPrefix}:`)
+
+const closes = (issuesPrefix: IssuesPrefixes): string => {
+  return reset(`${issuesPrefix}:`)
+}
 
 export const promptMessages: Record<string, string> = {
   body: 'Add a longer description\n',

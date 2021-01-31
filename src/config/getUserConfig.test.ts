@@ -5,22 +5,29 @@ import * as helpers from './helpers'
 const mockUserConfig = { disableEmoji: true }
 const mockCommitlintConfig = { headerMinLength: 5 }
 
-const mockLoadConfig = (config: Partial<GitzyConfig> | null = mockUserConfig) =>
-  jest
+const mockLoadConfig = (
+  config: Partial<GitzyConfig> | null = mockUserConfig
+): jest.SpyInstance => {
+  return jest
     .spyOn(helpers, 'loadConfig')
     .mockImplementationOnce(() =>
       Promise.resolve(config ? { config, filepath: '' } : null)
     )
+}
 
-const mockGetCommitlintConfig = (config = mockCommitlintConfig) =>
-  jest
+const mockGetCommitlintConfig = (
+  config = mockCommitlintConfig
+): jest.SpyInstance => {
+  return jest
     .spyOn(helpers, 'getCommitlintConfig')
     .mockImplementationOnce(() => Promise.resolve(config))
+}
 
-const mockValidateUserConfig = (isValid = true) =>
-  jest
+const mockValidateUserConfig = (isValid = true): jest.SpyInstance => {
+  return jest
     .spyOn(helpers, 'validateUserConfig')
     .mockImplementationOnce(() => Promise.resolve(isValid))
+}
 
 describe('getUserConfig', () => {
   beforeEach(() => {

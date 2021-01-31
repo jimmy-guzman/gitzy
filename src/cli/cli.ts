@@ -1,4 +1,4 @@
-import { program } from 'commander'
+import { CommanderError, program } from 'commander'
 import { cyan, red } from 'ansi-colors'
 import Enquirer from 'enquirer'
 
@@ -21,14 +21,18 @@ import { options } from './options'
 
 const enquirerOptions = {
   autofill: true,
-  cancel: () => null,
+  cancel: (): null => null,
   styles: { submitted: cyan, danger: red },
 }
 
 export const cli = async (): Promise<void> => {
   const state = { config: defaultConfig, answers: defaultAnswers }
 
-  const init = async ({ passthrough, commitlint, dryRun }: Flags) => {
+  const init = async ({
+    passthrough,
+    commitlint,
+    dryRun,
+  }: Flags): Promise<void> => {
     const loadedUserConfig = await getUserConfig(commitlint)
 
     if (loadedUserConfig) {
@@ -51,7 +55,9 @@ export const cli = async (): Promise<void> => {
   program
     .configureOutput({
       writeErr: str => process.stdout.write(str.replace('error: ', '')),
-      outputError: (error, write) => write(`\n${danger(error)}\n`),
+      outputError: (error, write) => {
+        write(`\n${danger(error)}\n`)
+      },
     })
     .version(gitzyPkg().version, '-v, --version')
     .description(lang.description)
@@ -87,8 +93,9 @@ ${'Examples'}:
         const answers = await promptQuestions(flags as Answers)
 
         state.answers = { ...state.answers, ...answers }
-      } catch (error) {
-        log(`\n${danger(error.message)}\n`)
+      } catch (error: unknown) {
+        log(`\n${danger((error as CommanderError).message)}\n`)
+
         process.exit(1)
       }
 

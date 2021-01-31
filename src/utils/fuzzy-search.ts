@@ -1,9 +1,11 @@
 /**
  * escapes `\ ^ $ * + ? . ( ) | { } [ ]`
  */
-const escapeRegExp = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+const escapeRegExp = (str: string): string => {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
 
-const fuzzyMatch = <T>(str: T, query: string) => {
+const fuzzyMatch = <T>(str: T, query: string): boolean => {
   const pattern = query
     .split('')
     .map(escapeRegExp)

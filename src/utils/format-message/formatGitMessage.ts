@@ -1,34 +1,41 @@
 import { GitzyConfig, Answers } from '../../interfaces'
 
-const wrap = (string: string, width = 72) =>
-  string.replace(
-    new RegExp(`(?![^\\n]{1,${width}}$)([^\\n]{1,${width}})\\s`, 'g'),
-    '$1\n'
+const wrap = (string: string, width = 72): string => {
+  const regex = new RegExp(
+    `(?![^\\n]{1,${width}}$)([^\\n]{1,${width}})\\s`,
+    'g'
   )
 
-const normalizeMessage = (message: string) =>
-  message.replace(/"/g, '\\"').replace(/`/g, '\\`')
+  return string.replace(regex, '$1\n')
+}
+
+const normalizeMessage = (message: string): string => {
+  return message.replace(/"/g, '\\"').replace(/`/g, '\\`')
+}
 
 const createBreaking = (
   breaking: string,
   { disableEmoji, breakingChangeEmoji }: GitzyConfig
-) =>
-  breaking
+): string => {
+  return breaking
     ? `\n\nBREAKING CHANGE: ${
         disableEmoji ? '' : `${breakingChangeEmoji} `
       }${breaking}`
     : ''
+}
 
 const createIssues = (
   issues: string,
   { disableEmoji, closedIssueEmoji }: GitzyConfig
-) =>
-  issues
+): string => {
+  return issues
     ? `\n\n${disableEmoji ? '' : `${closedIssueEmoji} `}Closes: ${issues}`
     : ''
+}
 
-const createScope = (scope: string) =>
-  scope && scope !== 'none' ? `(${scope})` : ''
+const createScope = (scope: string): string => {
+  return scope && scope !== 'none' ? `(${scope})` : ''
+}
 
 export const formatCommitMessage = (
   config: GitzyConfig,
