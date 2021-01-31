@@ -35,16 +35,13 @@ jobs:
           node-version: ${{ steps.nvm.outputs.NVMRC }}
 
       - run: yarn install --frozen-lockfile
-      - run: yarn lint
-      - run: yarn test --ci --coverage --colors
+      - run: yarn validate
+      - run: yarn build
 
       - name: Codecov
         uses: codecov/codecov-action@v1
         with:
           file: ./coverage/lcov.info
-
-      - run: yarn ts-check
-      - run: yarn build
 
   release:
     needs: test
