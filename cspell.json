@@ -25,7 +25,9 @@
     "tocstop",
     "usagestop",
     "wagoid",
-    "yalc"
+    "yalc",
+    "venv",
+    "asciinema"
   ],
   "ignorePaths": [
     "node_modules", // this will ignore anything the node_modules directory
@@ -36,6 +38,7 @@
     ".git", // Ignore the .git directory
     "*.dll", // Ignore all .dll files.
     "**/*.dll", // Ignore all .dll files,
-    "yarn.lock"
+    "yarn.lock",
+    "assets/cli.svg"
   ]
 }

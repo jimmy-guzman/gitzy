@@ -1,3 +1,11 @@
+# gitzy🪄
+
+> Interactive [conventional commits][conventional-commits] cli, inspired by [git-cz][git-cz] with the ability to leverage [commitlint](https://commitlint.js.org/#/) configuration, configuration validation, versatile configuration through [cosmiconfig](https://www.npmjs.com/package/cosmiconfig) and more.
+
+<p align="center">
+  <img width="750" src="./assets/cli.svg">
+</p>
+
 ![actions][actions-badge]
 [![version][version-badge]][package] [![downloads][downloads-badge]][npmtrends]
 [![License][license-badge]][license]
@@ -5,15 +13,9 @@
 [![code style: prettier][prettier-badge]][prettier]
 [![Code Coverage][coverage-badge]][coverage]
 
-# gitzy🪄
-
-interactive [conventional commits][conventional-commits] cli, inspired by [git-cz][git-cz] with the ability to leverage [commitlint](https://commitlint.js.org/#/) configuration, configuration validation, versatile configuration through [cosmiconfig](https://www.npmjs.com/package/cosmiconfig) and more.
-
-<p align="center">
-  <img width="750" src="https://jimmy-guzman.github.io/gitzy/assets/cli.svg">
-</p>
-
 <!-- toc -->
+
+# Table of Contents
 
 - [Usage](#usage)
 - [Configuration](#configuration)
@@ -241,12 +243,12 @@ useCommitlintConfig: false
 [npmtrends]: http://www.npmtrends.com/gitzy
 [semantic-release]: https://github.com/semantic-release/semantic-release
 [semantic-release-badge]: https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg?style=flat-square
-[prettier-badge]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
+[prettier-badge]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square&logo=prettier
 [prettier]: https://github.com/prettier/prettier
 [gitmoji]: https://gitmoji.carloscuesta.me/
 [license]: https://github.com/jimmy-guzman/gitzy/blob/master/package.json
 [license-badge]: https://img.shields.io/npm/l/gitzy.svg?style=flat-square
 [conventional-commits]: https://www.conventionalcommits.org/
 [git-cz]: https://github.com/streamich/git-cz
-[coverage-badge]: https://img.shields.io/codecov/c/github/jimmy-guzman/gitzy.svg?style=flat-square
+[coverage-badge]: https://img.shields.io/codecov/c/github/jimmy-guzman/gitzy.svg?style=flat-square&logo=codecov
 [coverage]: https://codecov.io/github/jimmy-guzman/gitzy
