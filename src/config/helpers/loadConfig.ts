@@ -20,7 +20,7 @@ const defaultSearchPlaces = (name: string): string[] => [
 export const getSearchPlaces = (configName: string): string[] => [
   'package.json',
   ...defaultSearchPlaces(configName),
-  ...defaultSearchPlaces(configName).map(p => `.config/${p}`),
+  ...defaultSearchPlaces(configName).map((p) => `.config/${p}`),
 ]
 
 export const loadConfig = async <T>(

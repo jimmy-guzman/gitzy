@@ -21,10 +21,10 @@
   },
   "scripts": {
     "dev": "run-p build:watch ts-check:watch",
-    "format": "prettier '**/**/*.{md,yml,json}'",
+    "format": "prettier '**/**/*.{md,yml,json,ts}'",
     "format:check": "yarn format -c",
     "format:write": "yarn format -w",
-    "lint": "eslint --cache --color --cache-location ./node_modules/.cache/eslint/ . --ext .js,.ts",
+    "lint": "eslint --cache --color --cache-location ./node_modules/.cache/eslint/ '**/**/*.{js,ts,*.test}'",
     "lint:fix": "yarn lint --fix",
     "test": "jest -c .config/jest.config.js --coverage",
     "test:watch": "jest -c .config/jest.config.js --watch",
@@ -45,10 +45,10 @@
     }
   },
   "lint-staged": {
-    "*.{md,json,yml}": [
+    "*.{md,json,yml,ts}": [
       "prettier -w"
     ],
-    "*.{js,ts}": [
+    "*.{js,ts,test}": [
       "eslint --fix"
     ]
   },
@@ -63,7 +63,7 @@
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-typescript": "^7.12.7",
     "@comparto/eslint-config": "^6.0.0",
-    "@comparto/prettier-config": "^1.0.0",
+    "@comparto/prettier-config": "^1.2.0",
     "@rollup/plugin-babel": "^5.2.2",
     "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-eslint": "^8.0.1",

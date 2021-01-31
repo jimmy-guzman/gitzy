@@ -18,7 +18,7 @@ const mockExec = (value: string | null = null): void => {
 describe('shouldDoGitChecks', () => {
   const flags = ['--add', '-a', '--amend']
 
-  flags.forEach(flag => {
+  flags.forEach((flag) => {
     it(`should skip git check if '${flag}'`, () => {
       expect(shouldDoGitChecks([flag])).toBeFalsy()
     })

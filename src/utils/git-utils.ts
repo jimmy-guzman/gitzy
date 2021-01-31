@@ -7,7 +7,7 @@ import { hint } from './logging'
  */
 export const checkIfStaged = (): Promise<string> => {
   return new Promise((resolve, reject) => {
-    exec('git --no-pager diff --cached --quiet --exit-code', error => {
+    exec('git --no-pager diff --cached --quiet --exit-code', (error) => {
       if (error) {
         resolve('')
       }
@@ -27,7 +27,7 @@ export const checkIfStaged = (): Promise<string> => {
  */
 export const checkIfGitRepo = (): Promise<string> => {
   return new Promise((resolve, reject) => {
-    exec('git rev-parse --is-inside-work-tree', error => {
+    exec('git rev-parse --is-inside-work-tree', (error) => {
       if (error) {
         reject(
           new Error(
@@ -46,5 +46,5 @@ export const checkIfGitRepo = (): Promise<string> => {
  * @param array flags
  */
 export const shouldDoGitChecks = (array: string[] = []): boolean => {
-  return !['--add', '-a', '--amend'].some(flag => array.includes(flag))
+  return !['--add', '-a', '--amend'].some((flag) => array.includes(flag))
 }

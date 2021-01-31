@@ -54,7 +54,7 @@ export const cli = async (): Promise<void> => {
 
   program
     .configureOutput({
-      writeErr: str => process.stdout.write(str.replace('error: ', '')),
+      writeErr: (str) => process.stdout.write(str.replace('error: ', '')),
       outputError: (error, write) => {
         write(`\n${danger(error)}\n`)
       },

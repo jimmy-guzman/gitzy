@@ -1024,10 +1024,10 @@
     eslint-plugin-testing-library "^3.10.1"
     read-pkg-up "^7.0.1"
 
-"@comparto/prettier-config@^1.0.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@comparto/prettier-config/-/prettier-config-1.1.0.tgz#0b203fcb6a1ad55385a57b136763481475d54b22"
-  integrity sha512-G0Bp2nvYffEvaMzKR84NP3IMmW0zP08QeLiXzGkG478ldj6WoVE9SGXP+W8Z7NuwRHnOCDT2FJFPz2mb7/nVcg==
+"@comparto/prettier-config@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@comparto/prettier-config/-/prettier-config-1.2.0.tgz#888ec7a181301c36e444109116906a856f5fbb98"
+  integrity sha512-zepOINy2KrVX/6HmlFVGRyWszh78nUROYUuuFzWh00F05N/7Jq4qEwsljFDBug/UQGRvRfobCCH+Ep4C6Z2z9Q==
 
 "@eslint/eslintrc@^0.3.0":
   version "0.3.0"
