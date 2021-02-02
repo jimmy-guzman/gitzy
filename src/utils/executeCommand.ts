@@ -16,7 +16,9 @@ export const executeCommand = (
   })
 
   proc.on('close', (code) => {
-    process.exit(code)
+    if (code) {
+      process.exit(code)
+    }
   })
 }
 

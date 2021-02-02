@@ -9,13 +9,13 @@ import {
 import { fuzzySearch } from '../utils'
 import { promptMessages } from './lang'
 
-const choice = (
+export const choice = (
   { details, disableEmoji }: GitzyConfig,
   type: string,
-  { emoji: emojiFlag }: Flags
+  flags?: Flags
 ): EnquirerChoice => {
   const { description, emoji } = details[type]
-  const hasEmoji = emoji && !disableEmoji && emojiFlag
+  const hasEmoji = emoji && !disableEmoji && flags?.emoji
   const prefix = hasEmoji ? `${emoji} ` : ''
 
   return {
