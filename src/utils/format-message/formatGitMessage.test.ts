@@ -23,7 +23,7 @@ describe('formatCommitMessage', () => {
     const formattedMessage = setupFormatCommitMessage()
 
     expect(formattedMessage).toMatchInlineSnapshot(`
-      "feat(*): 🎸 a cool new feature
+      "feat(*): ✨ a cool new feature
 
       this an amazing feature, lots of details
 
@@ -53,7 +53,7 @@ describe('formatCommitMessage', () => {
     })
 
     expect(formattedMessage).toMatchInlineSnapshot(`
-      "feat(*): 🎸 a cool new feature
+      "feat(*): ✨ a cool new feature
 
       BREAKING CHANGE: 🧨 breaks everything
 
@@ -67,7 +67,7 @@ describe('formatCommitMessage', () => {
     })
 
     expect(formattedMessage).toMatchInlineSnapshot(`
-      "feat(*): 🎸 a cool new feature
+      "feat(*): ✨ a cool new feature
 
       BREAKING CHANGE: 🧨 breaks everything
 
@@ -81,7 +81,7 @@ describe('formatCommitMessage', () => {
     })
 
     expect(formattedMessage).toMatchInlineSnapshot(`
-      "feat: 🎸 a cool new feature
+      "feat: ✨ a cool new feature
 
       this an amazing feature, lots of details
 
@@ -97,7 +97,7 @@ describe('formatCommitMessage', () => {
     })
 
     expect(formattedMessage).toMatchInlineSnapshot(`
-      "feat(*): 🎸 a cool new feature
+      "feat(*): ✨ a cool new feature
 
       this an amazing feature, lots of details
 
@@ -111,7 +111,7 @@ describe('formatCommitMessage', () => {
     })
 
     expect(formattedMessage).toMatchInlineSnapshot(`
-      "feat(*): 🎸 a cool new feature
+      "feat(*): ✨ a cool new feature
 
       this an amazing feature, lots of details
 
@@ -128,7 +128,7 @@ describe('formatCommitMessage', () => {
     })
 
     expect(formattedMessage).toMatchInlineSnapshot(`
-      "feat(*): 🎸 a cool new feature
+      "feat(*): ✨ a cool new feature
 
       volutpat commodo sed egestas egestas fringilla phasellus faucibus
       scelerisque eleifend donec
@@ -148,7 +148,7 @@ describe('formatCommitMessage', () => {
     })
 
     expect(formattedMessage).toMatchInlineSnapshot(
-      `"feat(*): 🎸 this has \\\\\\"quotes\\\\\\""`
+      `"feat(*): ✨ this has \\\\\\"quotes\\\\\\""`
     )
   })
   it('should allow backticks quotes in message', () => {
@@ -160,7 +160,7 @@ describe('formatCommitMessage', () => {
     })
 
     expect(formattedMessage).toMatchInlineSnapshot(
-      `"feat(*): 🎸 this has \\\\\`quotes\\\\\`"`
+      `"feat(*): ✨ this has \\\\\`quotes\\\\\`"`
     )
   })
 })

@@ -6,7 +6,7 @@ describe('executeDryRun', () => {
   it('should console log git message', () => {
     const spy = jest.spyOn(console, 'log').mockImplementation(jest.fn())
 
-    fns.executeDryRun('feat(cli): 🎸 initial release')
+    fns.executeDryRun('feat(cli): ✨ initial release')
 
     expect(spy).toMatchInlineSnapshot(`
       [MockFunction] {
@@ -16,7 +16,7 @@ describe('executeDryRun', () => {
           ],
           Array [
             "
-      feat(cli): 🎸 initial release
+      feat(cli): ✨ initial release
       ",
           ],
         ],
