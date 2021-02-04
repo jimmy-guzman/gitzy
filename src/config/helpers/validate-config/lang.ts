@@ -4,7 +4,7 @@ export const lang = {
   breakingChangeEmoji: 'breakingChangeEmoji must be a string',
   closedIssueEmoji: 'closedIssueEmoji must be a string',
   details:
-    'details must look like "{ description: "A new feature", emoji: "🎸" }"',
+    'details must look like "{ description: "A new feature", emoji: "✨" }"',
   disableEmoji: 'disableEmoji must be a boolean',
   headerMaxLength: 'headerMaxLength must be a number',
   headerMinLength: 'headerMinLength must be a number',

@@ -67,7 +67,7 @@ By default `gitzy` comes ready to run out of the box.
 ### breakingChangeEmoji
 
 ```
-feat: 🎸 dope new feature
+feat: ✨ dope new feature
 
 BREAKING CHANGE: 🧨 breaks stuff
 ```
@@ -122,7 +122,7 @@ details:
     emoji: '📝'
   feat:
     description: A new feature
-    emoji: '🎸'
+    emoji: '✨'
   fix:
     description: Fix a bug.
     emoji: '🐛'

@@ -1,5 +1,6 @@
 import { Details } from '../interfaces'
 
+// emoji's are based of https://gitmoji.dev/
 export const details: Details = {
   chore: {
     description: "Other changes that don't modify src or test files",
@@ -15,7 +16,7 @@ export const details: Details = {
   },
   feat: {
     description: 'A new feature',
-    emoji: '🎸',
+    emoji: '✨',
   },
   fix: {
     description: 'Fix a bug',

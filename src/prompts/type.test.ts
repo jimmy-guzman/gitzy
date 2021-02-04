@@ -27,7 +27,7 @@ describe('choice', () => {
     expect(setupChoice()).toStrictEqual({
       hint: 'a new feature',
       indent: ' ',
-      title: '🎸 feat:',
+      title: '✨ feat:',
       value: 'feat',
     })
   })

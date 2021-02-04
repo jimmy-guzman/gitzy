@@ -11,7 +11,7 @@ describe('scheme', () => {
   })
   it(`should return message if details is invalid`, () => {
     expect(schema.details(1)).toBe(
-      'details must look like "{ description: "A new feature", emoji: "🎸" }"'
+      'details must look like "{ description: "A new feature", emoji: "✨" }"'
     )
   })
   it(`should return message if disableEmoji is invalid`, () => {
