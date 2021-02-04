@@ -1,3 +1,12 @@
+## [1.3.2](https://github.com/jimmy-guzman/gitzy/compare/v1.3.1...v1.3.2) (2021-02-04)
+
+
+### Bug Fixes
+
+* **cli:** 🐛 limit scope's choices view to 10 ([aae8763](https://github.com/jimmy-guzman/gitzy/commit/aae8763014a7cdcb3b40ff382c2dca4dbb73aa05))
+* **cli:** 🐛 use correct emoji(✨) for `feat` type ([190b04c](https://github.com/jimmy-guzman/gitzy/commit/190b04c4dab7fbf0af1b8002b3a356e57622223e))
+* **cli:** 🐛 use correct emoji(💥) for breaking change ([dbfb7a5](https://github.com/jimmy-guzman/gitzy/commit/dbfb7a561dc7ab3901b48c6a5da00583a640e26a))
+
 ## [1.3.1](https://github.com/jimmy-guzman/gitzy/compare/v1.3.0...v1.3.1) (2021-01-24)
 
 
