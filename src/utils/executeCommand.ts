@@ -4,6 +4,7 @@ import { Flags, GitzyState } from '../interfaces'
 import { formatCommitMessage } from './format-message'
 import { info, log } from './logging'
 
+/* istanbul ignore next */
 export const executeCommand = (
   command: string,
   args: string[] = [],
