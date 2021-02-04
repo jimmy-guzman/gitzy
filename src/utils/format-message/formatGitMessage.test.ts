@@ -122,19 +122,20 @@ describe('formatCommitMessage', () => {
   it('should wrap commit message', () => {
     const formattedMessage = setupFormatCommitMessage(defaultConfig, {
       body:
-        'volutpat commodo sed egestas egestas fringilla phasellus faucibus scelerisque eleifend donec',
+        'this is a very very very very very very very very very very very very very very very very very very very long description',
       breaking:
-        'volutpat commodo sed egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium',
+        'this is a very very very very very very very very very very very very very very very very very very very long breaking change',
     })
 
     expect(formattedMessage).toMatchInlineSnapshot(`
       "feat(*): ✨ a cool new feature
 
-      volutpat commodo sed egestas egestas fringilla phasellus faucibus
-      scelerisque eleifend donec
+      this is a very very very very very very very very very very very very
+      very very very very very very very long description
 
-      BREAKING CHANGE: 💥 volutpat commodo sed egestas egestas fringilla
-      phasellus faucibus scelerisque eleifend donec pretium
+      BREAKING CHANGE: 💥 this is a very very very very very very very very
+      very very very very very very very very very very very long breaking
+      change
 
       🏁 Closes: #123"
     `)
@@ -151,7 +152,7 @@ describe('formatCommitMessage', () => {
       `"feat(*): ✨ this has \\\\\\"quotes\\\\\\""`
     )
   })
-  it('should allow backticks quotes in message', () => {
+  it('should allow backtick quotes in message', () => {
     const formattedMessage = setupFormatCommitMessage(defaultConfig, {
       subject: 'this has `quotes`',
       body: '',
