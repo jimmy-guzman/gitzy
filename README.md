@@ -69,11 +69,11 @@ By default `gitzy` comes ready to run out of the box.
 ```
 feat: ✨ dope new feature
 
-BREAKING CHANGE: 🧨 breaks stuff
+BREAKING CHANGE: 💥 breaks stuff
 ```
 
 ```yml
-breakingChangeEmoji: '🧨'
+breakingChangeEmoji: '💥'
 ```
 
 ### closedIssueEmoji

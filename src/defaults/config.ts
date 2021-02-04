@@ -11,7 +11,7 @@ export const questions: GitzyPrompts[] = [
 ]
 
 export const defaultConfig: GitzyConfig = {
-  breakingChangeEmoji: '🧨',
+  breakingChangeEmoji: '💥',
   closedIssueEmoji: '🏁',
   details,
   disableEmoji: false,

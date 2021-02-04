@@ -27,7 +27,7 @@ describe('formatCommitMessage', () => {
 
       this an amazing feature, lots of details
 
-      BREAKING CHANGE: 🧨 breaks everything
+      BREAKING CHANGE: 💥 breaks everything
 
       🏁 Closes: #123"
     `)
@@ -55,7 +55,7 @@ describe('formatCommitMessage', () => {
     expect(formattedMessage).toMatchInlineSnapshot(`
       "feat(*): ✨ a cool new feature
 
-      BREAKING CHANGE: 🧨 breaks everything
+      BREAKING CHANGE: 💥 breaks everything
 
       🏁 Closes: #123"
     `)
@@ -69,7 +69,7 @@ describe('formatCommitMessage', () => {
     expect(formattedMessage).toMatchInlineSnapshot(`
       "feat(*): ✨ a cool new feature
 
-      BREAKING CHANGE: 🧨 breaks everything
+      BREAKING CHANGE: 💥 breaks everything
 
       🏁 Closes: #123"
     `)
@@ -85,7 +85,7 @@ describe('formatCommitMessage', () => {
 
       this an amazing feature, lots of details
 
-      BREAKING CHANGE: 🧨 breaks everything
+      BREAKING CHANGE: 💥 breaks everything
 
       🏁 Closes: #123"
     `)
@@ -101,7 +101,7 @@ describe('formatCommitMessage', () => {
 
       this an amazing feature, lots of details
 
-      BREAKING CHANGE: 🧨 breaks everything"
+      BREAKING CHANGE: 💥 breaks everything"
     `)
   })
 
@@ -133,7 +133,7 @@ describe('formatCommitMessage', () => {
       volutpat commodo sed egestas egestas fringilla phasellus faucibus
       scelerisque eleifend donec
 
-      BREAKING CHANGE: 🧨 volutpat commodo sed egestas egestas fringilla
+      BREAKING CHANGE: 💥 volutpat commodo sed egestas egestas fringilla
       phasellus faucibus scelerisque eleifend donec pretium
 
       🏁 Closes: #123"
