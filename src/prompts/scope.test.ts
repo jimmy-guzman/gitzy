@@ -33,6 +33,7 @@ describe('scope', () => {
         },
       ],
       hint: '[2m...type or use arrow keys[22m',
+      limit: 10,
       message: 'Choose the scope',
       name: 'scope',
       suggest: expect.any(Function),
