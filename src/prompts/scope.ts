@@ -12,6 +12,7 @@ export const scope: CreatedPrompt = ({ config: { scopes } }) => {
     ? {
         choices,
         hint: dim('...type or use arrow keys'),
+        limit: 10,
         message: promptMessages.scope,
         name: 'scope',
         suggest: (input: string): Promise<EnquirerChoice[]> =>
