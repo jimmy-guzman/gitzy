@@ -19,7 +19,7 @@ export default {
     plugins: [terser()],
   },
   plugins: [
-    eslint({ throwOnError: !process.env.DEV, include }),
+    process.env.WATCH ? eslint({ throwOnError: false, include }) : null,
     externals({ builtins: true, devDeps: false, deps: true }),
     commonjs(),
     resolve({ extensions, preferBuiltins: true }),
