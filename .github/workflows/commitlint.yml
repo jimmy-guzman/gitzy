@@ -11,6 +11,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: wagoid/commitlint-github-action@v2
+      # see https://github.com/dependabot/dependabot-core/issues/2445 & https://github.com/dependabot/dependabot-core/issues/2056
+      - if: (github.actor!= 'dependabot[bot]') && (contains(github.head_ref, 'dependabot/') == false)
+        name: commitlint
+        uses: wagoid/commitlint-github-action@v2
         with:
           configFile: .commitlintrc.yml

@@ -1,19 +1,22 @@
 {
+  "version": "0.1",
   "words": [
+    "asciinema",
     "Builtins",
-    "Codecov",
-    "Commitlint",
-    "Commitlint's",
-    "Gitzy",
     "bundlesize",
     "cicd",
+    "Codecov",
     "commandsstop",
+    "Commitlint",
+    "Commitlint's",
     "commitlintrc",
     "comparto",
     "corejs",
     "cosmiconfig",
+    "dependabot",
     "deps",
     "gitmoji",
+    "Gitzy",
     "gitzyrc",
     "globby",
     "kleur",
@@ -24,10 +27,9 @@
     "streetsidesoftware",
     "tocstop",
     "usagestop",
-    "wagoid",
-    "yalc",
     "venv",
-    "asciinema"
+    "wagoid",
+    "yalc"
   ],
   "ignorePaths": [
     "node_modules", // this will ignore anything the node_modules directory
