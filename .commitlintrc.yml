@@ -30,6 +30,7 @@ rules:
     - always
     - - deps
       - dev-deps
+      - deps-dev
       - build
       - '*'
       - cli
