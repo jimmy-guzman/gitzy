@@ -30,13 +30,13 @@ const answers = {
 
 describe('leadingLabel', () => {
   it("should create subject's leading label with scope", () => {
-    expect(leadingLabel(answers)).toBe('feat(*):')
+    expect(leadingLabel(answers)).toBe('feat(*): ')
   })
   it("should create subject's leading label with scope & no answers", () => {
     expect(leadingLabel({} as Answers)).toBe('')
   })
   it('should create subject leading label with no scope', () => {
-    expect(leadingLabel({ ...answers, scope: '' })).toBe('feat:')
+    expect(leadingLabel({ ...answers, scope: '' })).toBe('feat: ')
   })
 })
 
@@ -65,24 +65,29 @@ describe('subject', () => {
     it('should return max error message when the length is not valid', () => {
       const { validate } = setupSubject()
 
-      expect(validate('#'.repeat(65))).toBe(
-        'The subject must be less than 64 characters'
-      )
+      const input = 'testing the short description character counter!!!!!!!'
+
+      expect(
+        validate(input, {
+          answers: { ...answers, type: 'fix', scope: '*' },
+          input,
+        })
+      ).toBe('The subject must be less than 64 characters')
     })
     it('should return true when the length is valid', () => {
       const { validate } = setupSubject()
 
       expect(validate('#'.repeat(5))).toBe(true)
     })
-    it('should return return true adjust per user scope', () => {
+    it('should return return true adjusted per user scope', () => {
       const { validate } = setupSubject()
 
-      expect(validate('#'.repeat(53), { answers, input: '' })).toBe(true)
+      expect(validate('#'.repeat(52), { answers, input: '' })).toBe(true)
     })
-    it('should return return true if emojis disabled', () => {
+    it('should return return true if emojis are disabled', () => {
       const { validate } = setupSubject({ disableEmoji: true })
 
-      expect(validate('#'.repeat(56), { answers, input: '' })).toBe(true)
+      expect(validate('#'.repeat(55), { answers, input: '' })).toBe(true)
     })
   })
   describe('message', () => {
@@ -90,27 +95,27 @@ describe('subject', () => {
       const { message } = setupSubject()
 
       expect(message({ answers, input: '' })).toBe(
-        bold(`Add a short description(${red('53/64')})`)
+        bold(`Add a short description(${red('52/64')})`)
       )
     })
     it('should return indicator when percentRemaining > 25', () => {
       const { message } = setupSubject()
 
       expect(message({ answers, input: '#'.repeat(5) })).toBe(
-        bold(`Add a short description(${green('48/64')})`)
+        bold(`Add a short description(${green('47/64')})`)
       )
     })
     it('should return indicator when percentRemaining < 0', () => {
       const { message } = setupSubject()
 
       expect(message({ answers, input: '#'.repeat(65) })).toBe(
-        bold(`Add a short description(${red('-12/64')})`)
+        bold(`Add a short description(${red('-13/64')})`)
       )
     })
     it('should return indicator', () => {
       const { message } = setupSubject()
 
-      expect(message({ answers, input: '#'.repeat(53) })).toBe(
+      expect(message({ answers, input: '#'.repeat(52) })).toBe(
         bold(`Add a short description(${yellow('0/64')})`)
       )
     })

@@ -7,7 +7,7 @@ export const leadingLabel = (answers?: Answers): string => {
   const scope =
     answers?.scope && answers.scope !== 'none' ? `(${answers.scope})` : ''
 
-  return answers?.type ? `${answers.type}${scope}:` : ''
+  return answers?.type ? `${answers.type}${scope}: ` : ''
 }
 
 export const subject: CreatedPrompt = ({
@@ -46,12 +46,14 @@ export const subject: CreatedPrompt = ({
     type: 'input',
     validate: (input: string, state?: EnquirerState): string | true => {
       const label = leadingLabel(state?.answers)
+      const isOverMaxLength =
+        input.length + label.length + emojiLength > headerMaxLength
 
       if (input.length < headerMinLength) {
         return minTitleLengthError
       }
 
-      if (input.length + label.length + emojiLength > headerMaxLength) {
+      if (isOverMaxLength) {
         return maxTitleLengthError
       }
 
