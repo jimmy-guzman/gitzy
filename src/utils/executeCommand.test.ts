@@ -34,27 +34,41 @@ describe('executeDryRun', () => {
     `)
   })
 })
-const answers = {
-  body: 'this an amazing feature, lots of details',
-  breaking: 'breaks everything',
-  issues: '#123',
-  scope: '*',
-  subject: 'a cool new feature',
-  type: 'feat',
-}
 
 describe('executeGitMessage', () => {
-  it('should call executeCommand', () => {
-    const spy = jest.spyOn(fns, 'executeCommand').mockImplementation(jest.fn())
+  const answers = {
+    body: 'this an amazing feature, lots of details',
+    breaking: 'breaks everything',
+    issues: '#123',
+    scope: '*',
+    subject: 'a cool new feature',
+    type: 'feat',
+  }
 
-    fns.executeGitMessage({ config: defaultConfig, answers }, {})
-    expect(spy).toHaveBeenCalledTimes(1)
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
-  it('should call executeDryRun', () => {
-    const spy = jest.spyOn(fns, 'executeDryRun').mockImplementation(jest.fn())
+  it('should call executeCommand by default', () => {
+    const executeCommandSpy = jest
+      .spyOn(fns, 'executeCommand')
+      .mockImplementation(jest.fn())
+
+    fns.executeGitMessage({ config: defaultConfig, answers }, {})
+
+    expect(executeCommandSpy).toHaveBeenCalledTimes(1)
+  })
+
+  it('should call executeDryRun and not executeCommand when in dry ryn mode', () => {
+    const executeCommandSpy = jest
+      .spyOn(fns, 'executeCommand')
+      .mockImplementation(jest.fn())
+    const executeDryRunSpy = jest
+      .spyOn(fns, 'executeDryRun')
+      .mockImplementation(jest.fn())
 
     fns.executeGitMessage({ config: defaultConfig, answers }, { dryRun: true })
-    expect(spy).toHaveBeenCalledTimes(1)
+    expect(executeDryRunSpy).toHaveBeenCalledTimes(1)
+    expect(executeCommandSpy).not.toHaveBeenCalled()
   })
 })
