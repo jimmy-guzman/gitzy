@@ -1,3 +1,11 @@
+## [1.3.3](https://github.com/jimmy-guzman/gitzy/compare/v1.3.2...v1.3.3) (2021-02-20)
+
+
+### Bug Fixes
+
+* **cli:** 🐛 account for space in final message for max length ([5df05ac](https://github.com/jimmy-guzman/gitzy/commit/5df05ac0d2d88409c1de946d254c6ff4a9b86b26)), closes [#53](https://github.com/jimmy-guzman/gitzy/issues/53)
+* **cli:** 🐛 do not execute git commit during dry run ([25dd6b0](https://github.com/jimmy-guzman/gitzy/commit/25dd6b05e6510362e2770631150cd964f8348c1b))
+
 ## [1.3.2](https://github.com/jimmy-guzman/gitzy/compare/v1.3.1...v1.3.2) (2021-02-04)
 
 
