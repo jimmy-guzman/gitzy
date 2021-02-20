@@ -36,7 +36,7 @@ export const executeGitMessage = (
 
   if (dryRun) {
     executeDryRun(message)
+  } else {
+    executeCommand('git', ['commit', '-m', `"${message}"`, ...passthrough])
   }
-
-  executeCommand('git', ['commit', '-m', `"${message}"`, ...passthrough])
 }
