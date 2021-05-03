@@ -72,7 +72,7 @@
     "@semantic-release/git": "9.0.0",
     "@types/fuzzy-search": "2.1.0",
     "@types/jest": "26.0.20",
-    "@types/node": "14.14.31",
+    "@types/node": "14.14.43",
     "@types/prompts": "2.0.9",
     "commitlint": "11.0.0",
     "cross-env": "7.0.3",
@@ -106,6 +106,6 @@
     "node": ">=10.0.0"
   },
   "volta": {
-    "node": "14.15.4"
+    "node": "14.16.1"
   }
 }
