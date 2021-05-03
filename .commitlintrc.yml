@@ -29,8 +29,6 @@ rules:
     - 2
     - always
     - - deps
-      - dev-deps
-      - deps-dev
       - build
       - '*'
       - cli

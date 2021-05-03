@@ -1,0 +1,9 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base"],
+  "semanticCommits": "enabled",
+  "reviewers": ["@jimmy-guzman"],
+  "commitMessagePrefix": "chore(deps): 🤖 ",
+  "commitMessageTopic": "`{{depName}}`",
+  "labels": ["dependencies"]
+}
