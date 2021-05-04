@@ -17,6 +17,7 @@ Object {
     "issues": "skip \\"issues\\" question and provide your own \\"issues\\" message",
     "noEmoji": "disable all emojis",
     "passthrough": "subsequent command line args passed through to \\"git\\"",
+    "retry": "retries previous commit, skips all prompts",
     "scope": "skip \\"scope\\" question and provide your own \\"scope\\" message",
     "skip": "skip questions",
     "subject": "skip \\"subject\\" question and provide your own \\"subject\\" message",

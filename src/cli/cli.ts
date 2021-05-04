@@ -16,6 +16,8 @@ import {
   info,
   checkIfGitRepo,
   gitzyPkg,
+  GitzyStore,
+  hint,
 } from '../utils'
 import { options } from './options'
 
@@ -27,6 +29,7 @@ const enquirerOptions = {
 
 export const cli = async (): Promise<void> => {
   const state = { config: defaultConfig, answers: defaultAnswers }
+  const store = new GitzyStore<Answers>()
 
   const init = async ({
     passthrough,
@@ -70,6 +73,7 @@ export const cli = async (): Promise<void> => {
     .option('-m, --subject <message>', lang.flags.subject)
     .option('-t, --type <type>', lang.flags.type)
     .option('-l, --commitlint', lang.flags.commitlint)
+    .option('-r, --retry', lang.flags.retry)
     .option('--no-emoji', lang.flags.noEmoji)
     .addOption(options.skip)
     .addHelpText(
@@ -90,7 +94,18 @@ ${'Examples'}:
 
       try {
         await init(flags)
-        const answers = await promptQuestions(flags as Answers)
+        const previousAnswers = flags.retry ? store.load() : {}
+
+        if (flags.retry && !Object.keys(previousAnswers).length) {
+          log(hint(`there is no previous gitzy commit to retry...`))
+        }
+
+        const answers = await promptQuestions({
+          ...(flags as Answers),
+          ...previousAnswers,
+        })
+
+        store.save(answers)
 
         state.answers = { ...state.answers, ...answers }
       } catch (error: unknown) {
