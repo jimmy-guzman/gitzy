@@ -34,6 +34,7 @@ export const lang: Lang = {
     },
     noEmoji: 'disable all emojis',
     passthrough: 'subsequent command line args passed through to "git"',
+    retry: 'retries previous commit, skips all prompts',
     get scope(): string {
       return skipQuestionMessage('scope')
     },

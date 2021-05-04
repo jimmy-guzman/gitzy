@@ -233,6 +233,7 @@ useCommitlintConfig: false
 | `--commitlint`  | `-l`  | leverage commitlint's configuration                              |
 | `--skip`        | `-S`  | skip questions                                                   |
 | `--no-emoji`    |       | disable all emojis                                               |
+| `--retry`       | `-r`  | retries previous commit, skips all prompts                       |
 
 <!-- references -->
 
