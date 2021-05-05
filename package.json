@@ -59,8 +59,8 @@
     "enquirer": "^2.3.6"
   },
   "devDependencies": {
-    "@babel/core": "7.13.8",
-    "@babel/preset-env": "7.13.9",
+    "@babel/core": "7.14.0",
+    "@babel/preset-env": "7.14.1",
     "@babel/preset-typescript": "7.13.0",
     "@comparto/eslint-config": "6.1.0",
     "@comparto/prettier-config": "1.2.0",
