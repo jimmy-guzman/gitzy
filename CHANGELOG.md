@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/jimmy-guzman/gitzy/compare/v1.3.3...v1.4.0) (2021-05-06)
+
+
+### Features
+
+* **cli:** ✨ add ability to `--retry` previous commit ([4d902a0](https://github.com/jimmy-guzman/gitzy/commit/4d902a03424e705c0e038ab51ce1eb17a059d84d)), closes [#7](https://github.com/jimmy-guzman/gitzy/issues/7)
+
 ## [1.3.3](https://github.com/jimmy-guzman/gitzy/compare/v1.3.2...v1.3.3) (2021-02-20)
 
 
