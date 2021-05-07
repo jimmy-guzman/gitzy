@@ -16,7 +16,7 @@ rules:
   header-max-length:
     - 2
     - always
-    - 64
+    - 75
   header-min-length:
     - 2
     - always
