@@ -11,9 +11,9 @@ jest.mock('enquirer')
 describe('cli', () => {
   beforeAll(() => {
     mocked(Enquirer).mockImplementation(() => {
-      return ({
+      return {
         prompt: jest.fn(),
-      } as unknown) as Enquirer
+      } as unknown as Enquirer
     })
   })
   it('should run with defaults', async () => {

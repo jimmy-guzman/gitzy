@@ -121,8 +121,7 @@ describe('formatCommitMessage', () => {
 
   it('should wrap commit message', () => {
     const formattedMessage = setupFormatCommitMessage(defaultConfig, {
-      body:
-        'this is a very very very very very very very very very very very very very very very very very very very long description',
+      body: 'this is a very very very very very very very very very very very very very very very very very very very long description',
       breaking:
         'this is a very very very very very very very very very very very very very very very very very very very long breaking change',
     })

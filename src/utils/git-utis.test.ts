@@ -4,7 +4,7 @@ import { checkIfGitRepo, checkIfStaged, shouldDoGitChecks } from './git-utils'
 
 jest.mock('child_process')
 
-const childProcessMock = (child_process.exec as unknown) as jest.Mock
+const childProcessMock = child_process.exec as unknown as jest.Mock
 
 const mockExec = (value: string | null = null): void => {
   childProcessMock.mockImplementation(
