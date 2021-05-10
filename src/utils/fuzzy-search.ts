@@ -11,7 +11,7 @@ const fuzzyMatch = <T>(str: T, query: string): boolean => {
     .map(escapeRegExp)
     .reduce((a, b) => `${a}[^${b}]*${escapeRegExp(b)}`)
 
-  return new RegExp(pattern).test((str as unknown) as string)
+  return new RegExp(pattern).test(str as unknown as string)
 }
 
 /**

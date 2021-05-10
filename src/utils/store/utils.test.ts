@@ -38,7 +38,7 @@ describe('utils', () => {
     it('should return false when there is a stat', () => {
       jest
         .spyOn(utils, 'tryStat')
-        .mockReturnValueOnce(({ isDirectory: jest.fn() } as unknown) as Stats)
+        .mockReturnValueOnce({ isDirectory: jest.fn() } as unknown as Stats)
       expect(() => utils.directoryExists('path')).toThrow(
         'Path exists and is not a directory: "path"'
       )

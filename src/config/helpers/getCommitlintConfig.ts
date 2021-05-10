@@ -30,15 +30,16 @@ export const getCommitlintOverrides = (
   })
 }
 
-export const getCommitlintConfig = async (): Promise<CommitlintOverrides | null> => {
-  const commitlint = await loadConfig<CommitlintConfig>('commitlint')
+export const getCommitlintConfig =
+  async (): Promise<CommitlintOverrides | null> => {
+    const commitlint = await loadConfig<CommitlintConfig>('commitlint')
 
-  if (commitlint) {
-    const commitlintOverrides = getCommitlintOverrides(commitlint.config)
-    const isValid = await validateUserConfig(commitlintOverrides)
+    if (commitlint) {
+      const commitlintOverrides = getCommitlintOverrides(commitlint.config)
+      const isValid = await validateUserConfig(commitlintOverrides)
 
-    return isValid ? commitlintOverrides : null
+      return isValid ? commitlintOverrides : null
+    }
+
+    return null
   }
-
-  return null
-}
