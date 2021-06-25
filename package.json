@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "ansi-colors": "^4.1.1",
-    "commander": "^7.0.0",
+    "commander": "^8.0.0",
     "cosmiconfig": "^7.0.0",
     "enquirer": "^2.3.6"
   },
