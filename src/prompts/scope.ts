@@ -15,8 +15,9 @@ export const scope: CreatedPrompt = ({ config: { scopes } }) => {
         limit: 10,
         message: promptMessages.scope,
         name: 'scope',
-        suggest: (input: string): Promise<EnquirerChoice[]> =>
-          fuzzySearch<EnquirerChoice>(choices, input, 'title'),
+        suggest: (input: string): Promise<EnquirerChoice[]> => {
+          return fuzzySearch<EnquirerChoice>(choices, input, 'title')
+        },
 
         type: 'autocomplete',
       }
