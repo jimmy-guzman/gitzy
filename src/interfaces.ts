@@ -50,7 +50,8 @@ export interface GitzyConfig {
   useCommitlintConfig: boolean
 }
 
-export interface EnquirerChoice {
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type EnquirerChoice = {
   hint?: string
   indent?: string
   title: string

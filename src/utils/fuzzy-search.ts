@@ -1,3 +1,5 @@
+type Boundary = Record<string, string | number>
+
 /**
  * escapes `\ ^ $ * + ? . ( ) | { } [ ]`
  */
@@ -5,22 +7,51 @@ const escapeRegExp = (str: string): string => {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
-const fuzzyMatch = <T>(str: T, query: string): boolean => {
-  const pattern = query
+/**
+ * Creates regex to use to fuzzy match
+ * @param needle
+ * @returns regex
+ */
+const fuzzyRegex = (needle: string): RegExp => {
+  const pattern = needle
     .split('')
     .map(escapeRegExp)
-    .reduce((a, b) => `${a}[^${b}]*${escapeRegExp(b)}`)
+    .reduce((acc, curr) => `${acc}[^${curr}]*${escapeRegExp(curr)}`)
 
-  return new RegExp(pattern).test(str as unknown as string)
+  return new RegExp(pattern)
+}
+
+const fuzzyMatch = <T extends Boundary>(
+  value: T[keyof T],
+  needle: string
+): boolean => {
+  return fuzzyRegex(needle).test(String(value))
+}
+
+const filterByFuzzySearch = <T extends Boundary>(
+  haystack: T[],
+  needle: string,
+  key: keyof T
+): T[] => {
+  return haystack
+    .filter((v) => fuzzyMatch(v[key], needle))
+    .sort((a) => (a[key] === needle ? -1 : 1))
 }
 
 /**
- * regex based fuzzy search
- * @param a haystack
- * @param q query
- * @param k key
- * @example fuzzySearch([{name: 'joe'},{name: 'jane'}], 'ne', 'name') // {name: 'jane'}
+ * Filters an array of objects by applying a fuzzy search on an object's value by the given key
+ * @param haystack haystack
+ * @param needle needle
+ * @param key key
+ * @example
+ * fuzzySearch([{name: 'joe'},{name: 'jane'}], 'ne', 'name') // {name: 'jane'}
  */
-export const fuzzySearch = <T>(a: T[], q: string, k: keyof T): Promise<T[]> => {
-  return Promise.resolve(q ? a.filter((v) => fuzzyMatch(v[k], q)) : a)
+export const fuzzySearch = <T extends Boundary>(
+  haystack: T[],
+  needle: string,
+  key: keyof T
+): Promise<T[]> => {
+  return Promise.resolve(
+    needle ? filterByFuzzySearch(haystack, needle, key) : haystack
+  )
 }
