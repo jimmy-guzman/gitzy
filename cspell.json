@@ -27,6 +27,7 @@
     "outfile",
     "postbuild",
     "postpublish",
+    "shellcheck",
     "streetsidesoftware",
     "tocstop",
     "usagestop",
