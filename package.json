@@ -76,7 +76,7 @@
     "commitlint": "12.1.4",
     "cross-env": "7.0.3",
     "eslint": "7.27.0",
-    "eslint-import-resolver-typescript": "2.4.0",
+    "eslint-import-resolver-typescript": "2.5.0",
     "husky": "4.3.8",
     "jest": "27.2.0",
     "lint-staged": "11.1.2",
