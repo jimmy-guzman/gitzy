@@ -5,5 +5,5 @@
   "reviewers": ["@jimmy-guzman"],
   "commitMessagePrefix": "chore(deps): 🤖 ",
   "commitMessageTopic": "`{{depName}}`",
-  "labels": ["dependencies"]
+  "labels": ["scope:deps", "type:chore"]
 }
