@@ -28,6 +28,7 @@
     "lint:fix": "yarn lint --fix",
     "test": "jest -c .config/jest.config.js --coverage",
     "test:watch": "jest -c .config/jest.config.js --watch",
+    "e2e": "jest -c e2e/jest.config.js",
     "ts-check": "tsc -b tsconfig.json",
     "ts-check:watch": "yarn ts-check --watch",
     "validate": "run-p lint format:check test ts-check",
