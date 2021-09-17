@@ -24,6 +24,9 @@
 
 # Usage
 
+> The current version of `gitzy` is fully supported on [LTS versions of node][node-lts-versions], and requires at least node v12.
+> (If you need node v10 support, use `gitzy` version 1.x )
+
 ## Quick start
 
 ```sh-session
@@ -253,3 +256,4 @@ useCommitlintConfig: false
 [git-cz]: https://github.com/streamich/git-cz
 [coverage-badge]: https://img.shields.io/codecov/c/github/jimmy-guzman/gitzy.svg?style=flat-square&logo=codecov
 [coverage]: https://codecov.io/github/jimmy-guzman/gitzy
+[node-lts-versions]: https://nodejs.org/en/about/releases/#releases
