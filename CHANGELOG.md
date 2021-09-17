@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/jimmy-guzman/gitzy/compare/v2.0.0...v2.0.1) (2021-09-17)
+
+
+### Bug Fixes
+
+* **cli:** 🐛 strict matches should appear first ([7327ed8](https://github.com/jimmy-guzman/gitzy/commit/7327ed857f090d96de79c1f2dc821eba9a340284))
+
 # [2.0.0](https://github.com/jimmy-guzman/gitzy/compare/v1.4.0...v2.0.0) (2021-09-17)
 
 
