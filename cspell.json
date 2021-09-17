@@ -28,6 +28,7 @@
     "postbuild",
     "postpublish",
     "shellcheck",
+    "socio",
     "streetsidesoftware",
     "tocstop",
     "usagestop",
