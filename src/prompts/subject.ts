@@ -1,7 +1,7 @@
 import { green, red, yellow, bold } from 'ansi-colors'
 
 import { CreatedPrompt, EnquirerState, Answers } from '../interfaces'
-import { errorMessage, promptMessages } from './lang'
+import { errorMessage, promptsLang } from './lang'
 
 export const leadingLabel = (answers?: Answers): string => {
   const scope =
@@ -15,7 +15,7 @@ export const subject: CreatedPrompt = ({
 }) => {
   const minTitleLengthError = errorMessage.minTitleLength(headerMinLength)
   const maxTitleLengthError = errorMessage.maxTitleLength(headerMaxLength)
-  const message = promptMessages.subject
+  const message = promptsLang.subject.message
   const emojiLength = disableEmoji ? 0 : 3
 
   return {

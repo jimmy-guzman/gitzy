@@ -112,3 +112,16 @@ export interface GitzyState {
   answers: Answers
   config: GitzyConfig
 }
+
+interface PromptLang {
+  hint?: string
+  message: string
+}
+
+export interface PromptsLang {
+  body: PromptLang
+  breaking: PromptLang
+  scope: PromptLang
+  subject: PromptLang
+  type: PromptLang
+}

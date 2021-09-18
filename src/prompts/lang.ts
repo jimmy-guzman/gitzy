@@ -1,19 +1,31 @@
-import { bold, red, reset } from 'ansi-colors'
+import { bold, dim, red, reset } from 'ansi-colors'
 
-import { IssuesPrefixes } from '../interfaces'
+import { IssuesPrefixes, PromptsLang } from '../interfaces'
 
 const breaking = red('BREAKING CHANGE:')
 
-const closes = (issuesPrefix: IssuesPrefixes): string => {
-  return reset(`${issuesPrefix}:`)
+export const promptsLang: PromptsLang = {
+  body: {
+    hint: '...supports multi line, press enter to go to next line',
+    message: 'Add a longer description\n',
+  },
+  breaking: {
+    hint: dim('...skip when none'),
+    message: `${bold('Add any breaking changes')}\n  ${breaking}`,
+  },
+  scope: {
+    hint: dim('...type or use arrow keys'),
+    message: 'Choose the scope',
+  },
+  subject: { message: 'Add a short description' },
+  type: {
+    hint: dim('...type or use arrow keys'),
+    message: 'Choose the type',
+  },
 }
 
-export const promptMessages: Record<string, string> = {
-  body: 'Add a longer description\n',
-  breaking: `${bold('Add any breaking changes')}\n  ${breaking}`,
-  scope: 'Choose the scope',
-  subject: 'Add a short description',
-  type: 'Choose the type',
+const closes = (issuesPrefix: IssuesPrefixes): string => {
+  return reset(`${issuesPrefix}:`)
 }
 
 export const issuesMessage = (issuesPrefix: IssuesPrefixes): string => {

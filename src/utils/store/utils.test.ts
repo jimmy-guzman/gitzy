@@ -86,6 +86,8 @@ describe('utils', () => {
   })
 
   describe('mkdir', () => {
+    const DIR_NAME = 'dirname'
+
     it('should do nothing when directory exists', () => {
       const mkdirSyncSpy = jest
         .spyOn(fs, 'mkdirSync')
@@ -94,9 +96,28 @@ describe('utils', () => {
 
       jest.spyOn(utils, 'directoryExists').mockReturnValueOnce(true)
 
-      utils.mkdir('dirname')
+      utils.mkdir(DIR_NAME)
       expect(mkdirSyncSpy).not.toHaveBeenCalled()
       expect(handleErrorSpy).not.toHaveBeenCalled()
+    })
+    it('should do throw when mkdirSync fails', () => {
+      const mkdirSyncSpy = jest
+        .spyOn(fs, 'mkdirSync')
+        .mockImplementationOnce(() => {
+          throw new Error('')
+        })
+      const handleErrorSpy = jest
+        .spyOn(utils, 'handleError')
+        .mockImplementationOnce(jest.fn())
+
+      jest.spyOn(utils, 'directoryExists').mockReturnValueOnce(false)
+
+      utils.mkdir(DIR_NAME)
+
+      expect(mkdirSyncSpy).toHaveBeenNthCalledWith(1, DIR_NAME, {
+        recursive: true,
+      })
+      expect(handleErrorSpy).toHaveBeenNthCalledWith(1, DIR_NAME, new Error(''))
     })
     it('should call mkdirSync when directory does not exist', () => {
       const mkdirSyncSpy = jest
@@ -106,9 +127,9 @@ describe('utils', () => {
 
       jest.spyOn(utils, 'directoryExists').mockReturnValueOnce(false)
 
-      utils.mkdir('dirname')
+      utils.mkdir(DIR_NAME)
 
-      expect(mkdirSyncSpy).toHaveBeenNthCalledWith(1, 'dirname', {
+      expect(mkdirSyncSpy).toHaveBeenNthCalledWith(1, DIR_NAME, {
         recursive: true,
       })
       expect(handleErrorSpy).not.toHaveBeenCalled()

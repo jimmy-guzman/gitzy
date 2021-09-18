@@ -1,5 +1,3 @@
-import { dim } from 'ansi-colors'
-
 import {
   CreatedPrompt,
   EnquirerChoice,
@@ -7,7 +5,7 @@ import {
   GitzyConfig,
 } from '../interfaces'
 import { fuzzySearch } from '../utils'
-import { promptMessages } from './lang'
+import { promptsLang } from './lang'
 
 export const choice = (
   { details, disableEmoji }: GitzyConfig,
@@ -31,9 +29,9 @@ export const type: CreatedPrompt = ({ config, flags }) => {
 
   return {
     choices,
-    hint: dim('...type or use arrow keys'),
+    hint: promptsLang.type.hint,
     limit: 10,
-    message: promptMessages.type,
+    message: promptsLang.type.message,
     name: 'type',
     suggest: (input: string): Promise<EnquirerChoice[]> => {
       return fuzzySearch<EnquirerChoice>(choices, input, 'title')
