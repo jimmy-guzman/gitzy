@@ -1,8 +1,10 @@
 import { GitzyConfig, Answers } from '../../interfaces'
 
-const wrap = (string: string, width = 72): string => {
+const MAX_WIDTH = 72
+
+export const wrap = (string: string, maxWidth = MAX_WIDTH): string => {
   const regex = new RegExp(
-    `(?![^\\n]{1,${width}}$)([^\\n]{1,${width}})\\s`,
+    `(?![^\\n]{1,${maxWidth}}$)([^\\n]{1,${maxWidth}})\\s`,
     'g'
   )
 
@@ -50,6 +52,8 @@ export const formatCommitMessage = (
   const body = answers.body.trim() ? `\n\n${answers.body}` : ''
   const breaking = createBreaking(answers.breaking, config)
   const issues = createIssues(answers.issues, config)
+  const maxWidth =
+    config.headerMaxLength > MAX_WIDTH ? config.headerMaxLength : MAX_WIDTH
 
-  return wrap(normalizeMessage(`${head}${body}${breaking}${issues}`))
+  return wrap(normalizeMessage(`${head}${body}${breaking}${issues}`), maxWidth)
 }

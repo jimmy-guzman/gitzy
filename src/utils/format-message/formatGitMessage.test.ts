@@ -1,5 +1,5 @@
 /* eslint-disable jest/no-large-snapshots */
-import { formatCommitMessage } from './formatGitMessage'
+import { formatCommitMessage, wrap } from './formatGitMessage'
 import { defaultConfig } from '../../defaults'
 
 const setupFormatCommitMessage = (config = {}, answers = {}): string => {
@@ -162,5 +162,53 @@ describe('formatCommitMessage', () => {
     expect(formattedMessage).toMatchInlineSnapshot(
       `"feat(*): ✨ this has \\\\\`quotes\\\\\`"`
     )
+  })
+  it('should not wrap message when headerMaxLength is longer than the default width (72)', () => {
+    const formattedMessage = setupFormatCommitMessage(
+      { ...defaultConfig, headerMaxLength: 75 },
+      {
+        body: '',
+        breaking: '',
+        issues: '',
+        subject:
+          'this is a very very very very very very very very very subject',
+      }
+    )
+
+    expect(formattedMessage).toMatchInlineSnapshot(
+      `"feat(*): ✨ this is a very very very very very very very very very subject"`
+    )
+    expect(formattedMessage).toHaveLength(73)
+  })
+  it('should leverage default width (72) when headerMaxLength is less', () => {
+    const formattedMessage = setupFormatCommitMessage(
+      { ...defaultConfig, headerMaxLength: 71 },
+      {
+        body: '',
+        breaking: '',
+        issues: '',
+        subject:
+          'this is a very very very very very very very very very subject', // This is intentionally longer than headerMaxLength
+      }
+    )
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+"feat(*): ✨ this is a very very very very very very very very very
+subject"
+`)
+    expect(formattedMessage.split('\n')[0]).toHaveLength(65)
+  })
+  describe('wrap', () => {
+    it('should wrap', () => {
+      const wrappedString = wrap(
+        `feat(*): ✨ this is a very very very very very very very very very subject`
+      )
+
+      expect(wrappedString).toMatchInlineSnapshot(`
+"feat(*): ✨ this is a very very very very very very very very very
+subject"
+`)
+      expect(wrappedString.split('\n')[0]).toHaveLength(65)
+    })
   })
 })
