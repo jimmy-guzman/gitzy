@@ -1,9 +1,10 @@
 import { CreatedPrompt } from '../interfaces'
-import { promptMessages } from './lang'
+import { promptsLang } from './lang'
 
 export const breaking: CreatedPrompt = () => {
   return {
-    message: promptMessages.breaking,
+    hint: promptsLang.breaking.hint,
+    message: promptsLang.breaking.message,
     name: 'breaking',
     type: 'text',
   }

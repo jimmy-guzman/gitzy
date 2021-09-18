@@ -1,8 +1,6 @@
-import { dim } from 'ansi-colors'
-
 import { CreatedPrompt, EnquirerChoice } from '../interfaces'
 import { fuzzySearch } from '../utils'
-import { promptMessages } from './lang'
+import { promptsLang } from './lang'
 
 export const scope: CreatedPrompt = ({ config: { scopes } }) => {
   const choices = scopes.map((s) => ({ indent: ' ', title: s, value: s }))
@@ -11,14 +9,13 @@ export const scope: CreatedPrompt = ({ config: { scopes } }) => {
   return scopes.length > 0
     ? {
         choices,
-        hint: dim('...type or use arrow keys'),
+        hint: promptsLang.scope.hint,
         limit: 10,
-        message: promptMessages.scope,
+        message: promptsLang.scope.message,
         name: 'scope',
         suggest: (input: string): Promise<EnquirerChoice[]> => {
           return fuzzySearch<EnquirerChoice>(choices, input, 'title')
         },
-
         type: 'autocomplete',
       }
     : null
