@@ -1,43 +1,19 @@
-<!--
-Thanks for your interest in the project. Bugs filed and PRs submitted are appreciated!
+## Pull Request Checklist
 
-Please make sure that you are familiar with and follow the Code of Conduct for
-this project (found in the CODE_OF_CONDUCT.md file).
+🚨 Please review the [guidelines for contributing](../CONTRIBUTING.md) to this repository.
 
-Also, please make sure you're familiar with and follow the instructions in the
-contributing guidelines (found in the CONTRIBUTING.md file).
+- [ ] Appropriate label or labels have been added
+- [ ] ✅ Tests for the changes have been added (for `type:fix` / `type:feat`)
+- [ ] 📝 Docs have been reviewed, added or updated if needed (for `type:fix` / `type:feat`)
+- [ ] 🏁 Issue number has been linked if this PR closes one
 
-If you're new to contributing to open source projects, you might find this free
-video course helpful: http://kcd.im/pull-request
+## Description
 
-Please fill out the information below to expedite the review and (hopefully)
-merge of your pull request!
--->
+Please describe your pull request.
 
-<!-- What changes are being made? (What feature/bug is being fixed here?) -->
+## Breaking Change?
 
-**What**:
+- [ ] 💥 Yes
+- [ ] No
 
-<!-- Why are these changes necessary? -->
-
-**Why**:
-
-<!-- How were these changes implemented? -->
-
-**How**:
-
-<!-- Have you done all of these things?  -->
-
-**Checklist**:
-
-<!-- add "N/A" to the end of each line that's irrelevant to your changes -->
-
-<!-- to check an item, place an "x" in the box like so: "- [x] Documentation" -->
-
-- [ ] Documentation
-- [ ] Tests
-- [ ] TypeScript Definitions Updated
-- [ ] Ready to be merged
-      <!-- In your opinion, is this ready to be merged as soon as it's reviewed? -->
-
-<!-- feel free to add additional comments -->
+❤️ Thank you for contributing!
