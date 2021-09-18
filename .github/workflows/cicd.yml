@@ -45,7 +45,7 @@ jobs:
 
       - name: Codecov
         if: ${{ matrix.node == steps.nvm.outputs.NVMRC }}
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v2
         with:
           file: ./coverage/lcov.info
 
