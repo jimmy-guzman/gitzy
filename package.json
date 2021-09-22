@@ -65,7 +65,7 @@
     "@types/jest": "27.0.2",
     "@types/node": "14.17.18",
     "commitlint": "13.1.0",
-    "esbuild": "0.12.28",
+    "esbuild": "0.12.29",
     "eslint": "7.32.0",
     "eslint-import-resolver-typescript": "2.5.0",
     "husky": "7.0.2",
