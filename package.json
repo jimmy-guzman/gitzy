@@ -59,7 +59,7 @@
     "@comparto/prettier-config": "1.2.0",
     "@rollup/plugin-commonjs": "21.0.0",
     "@rollup/plugin-eslint": "8.0.1",
-    "@rollup/plugin-node-resolve": "13.0.5",
+    "@rollup/plugin-node-resolve": "13.0.6",
     "@semantic-release/changelog": "5.0.1",
     "@semantic-release/git": "9.0.1",
     "@types/jest": "27.0.2",
