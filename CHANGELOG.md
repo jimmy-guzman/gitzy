@@ -1,3 +1,15 @@
+# [2.1.0](https://github.com/jimmy-guzman/gitzy/compare/v2.0.1...v2.1.0) (2021-11-09)
+
+
+### Bug Fixes
+
+* **cli:** 🐛 prevent wraping if `headerMaxLength` is over `72` ([9b1ed6b](https://github.com/jimmy-guzman/gitzy/commit/9b1ed6b384cb67ffcb0de0b779ded868a83f1c3a))
+
+
+### Features
+
+* **cli:** ✨ add `skip when none` hint to breaking change prompt ([614f502](https://github.com/jimmy-guzman/gitzy/commit/614f502210c4ae49c203ce12599737d4a3090422))
+
 ## [2.0.1](https://github.com/jimmy-guzman/gitzy/compare/v2.0.0...v2.0.1) (2021-09-17)
 
 
