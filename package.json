@@ -66,7 +66,7 @@
     "@types/node": "16.11.7",
     "commitlint": "13.2.1",
     "esbuild": "0.13.13",
-    "eslint": "7.32.0",
+    "eslint": "8.2.0",
     "eslint-import-resolver-typescript": "2.5.0",
     "husky": "7.0.4",
     "is-ci": "3.0.1",
