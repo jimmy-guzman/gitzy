@@ -25,7 +25,7 @@ describe('getCommitlintConfig', () => {
     })
     it('should return null when there is no commitlint config', async () => {
       jest.spyOn(utils, 'loadConfig').mockReturnValueOnce(Promise.resolve(null))
-      expect(await getCommitlintConfig()).toBeNull()
+      await expect(getCommitlintConfig()).resolves.toBeNull()
     })
     it('should return null when the commitlint config is not valid', async () => {
       jest
@@ -33,7 +33,7 @@ describe('getCommitlintConfig', () => {
         .mockReturnValueOnce(
           Promise.resolve({ config: 'not valid', filepath: '' })
         )
-      expect(await getCommitlintConfig()).toBeNull()
+      await expect(getCommitlintConfig()).resolves.toBeNull()
     })
     it('should return commitlint config', async () => {
       jest.spyOn(utils, 'loadConfig').mockReturnValueOnce(
@@ -46,7 +46,9 @@ describe('getCommitlintConfig', () => {
           filepath: '',
         })
       )
-      expect(await getCommitlintConfig()).toStrictEqual({ scopes: ['feat'] })
+      await expect(getCommitlintConfig()).resolves.toStrictEqual({
+        scopes: ['feat'],
+      })
     })
   })
 })

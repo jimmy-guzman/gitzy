@@ -4,8 +4,8 @@ import { validIssuesPrefixes } from './constants'
 
 type Validator<T = unknown> = (value: T) => boolean
 
-export const hasProperty = (o: UnknownObject, key: string): boolean => {
-  return Object.prototype.hasOwnProperty.call(o, key)
+export const hasProperty = (object: UnknownObject, key: string): boolean => {
+  return Object.prototype.hasOwnProperty.call(object, key)
 }
 
 export const isString: Validator = (value) => typeof value === 'string'
@@ -16,8 +16,8 @@ export const isNumber: Validator = (value) => typeof value === 'number'
 
 export const isObject: Validator = (value) => typeof value === 'object'
 
-export const isArrayOfStrings: Validator = (v) => {
-  return Array.isArray(v) && v.every(isString)
+export const isArrayOfStrings: Validator = (value) => {
+  return Array.isArray(value) && value.every(isString)
 }
 
 export const isValidDetails: Validator = (value) => {

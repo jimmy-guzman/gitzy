@@ -2,15 +2,6 @@ import { GitzyConfig, Answers } from '../../interfaces'
 
 const MAX_WIDTH = 72
 
-export const wrap = (string: string, maxWidth = MAX_WIDTH): string => {
-  const regex = new RegExp(
-    `(?![^\\n]{1,${maxWidth}}$)([^\\n]{1,${maxWidth}})\\s`,
-    'g'
-  )
-
-  return string.replace(regex, '$1\n')
-}
-
 const normalizeMessage = (message: string): string => {
   return message.replace(/"/g, '\\"').replace(/`/g, '\\`')
 }
@@ -37,6 +28,15 @@ const createIssues = (
 
 const createScope = (scope: string): string => {
   return scope && scope !== 'none' ? `(${scope})` : ''
+}
+
+export const wrap = (string: string, maxWidth = MAX_WIDTH): string => {
+  const regex = new RegExp(
+    `(?![^\\n]{1,${maxWidth}}$)([^\\n]{1,${maxWidth}})\\s`,
+    'g'
+  )
+
+  return string.replace(regex, '$1\n')
 }
 
 export const formatCommitMessage = (

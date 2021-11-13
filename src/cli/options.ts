@@ -1,7 +1,7 @@
 import commander, { Option } from 'commander'
 
-import { lang } from '../lang'
 import { questions } from '../defaults'
+import { lang } from '../lang'
 
 export const options = {
   get skip(): commander.Option {

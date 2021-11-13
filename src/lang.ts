@@ -3,7 +3,7 @@ import { Flags } from './interfaces'
 interface Lang {
   description: string
   examples: string
-  flags: Record<keyof Omit<Flags, 'help' | 'version' | 'emoji'>, string>
+  flags: Record<keyof Omit<Flags, 'emoji' | 'help' | 'version'>, string>
 }
 
 const skipQuestionMessage = (question: string): string => {

@@ -1,5 +1,4 @@
-extends:
-  - '@comparto/eslint-config'
+extends: ['jimmy-guzman', 'jimmy-guzman/typescript', 'jimmy-guzman/jest']
 settings:
   import/resolver:
     typescript:

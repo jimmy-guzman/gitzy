@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/member-ordering */
-import path from 'path'
 import fs from 'fs'
+import path from 'path'
 
-import { gitzyStorePath, mkdir, tryUnlink } from './utils'
 import { GitzyStoreError } from './types'
+import { gitzyStorePath, mkdir, tryUnlink } from './utils'
 
 const idx = Symbol('gitzy')
 
@@ -13,6 +13,7 @@ const idx = Symbol('gitzy')
  */
 export class GitzyStore<T = Record<string, unknown>> {
   path: string;
+
   [idx]: T
 
   constructor() {

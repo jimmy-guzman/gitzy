@@ -1,10 +1,15 @@
+interface PromptLang {
+  hint?: string
+  message: string
+}
+
 export type GitzyPrompts =
-  | 'type'
-  | 'scope'
-  | 'subject'
   | 'body'
   | 'breaking'
   | 'issues'
+  | 'scope'
+  | 'subject'
+  | 'type'
 
 export interface Detail {
   description: string
@@ -27,14 +32,14 @@ export interface Answers {
  */
 export type IssuesPrefixes =
   | 'close'
-  | 'closes'
   | 'closed'
+  | 'closes'
   | 'fix'
-  | 'fixes'
   | 'fixed'
+  | 'fixes'
   | 'resolve'
-  | 'resolves'
   | 'resolved'
+  | 'resolves'
 
 export interface GitzyConfig {
   breakingChangeEmoji: string
@@ -72,7 +77,7 @@ export interface EnquirerPrompt {
   name: string
   skip?: boolean
   suggest?: (input: string) => Promise<EnquirerChoice[]>
-  type: 'text' | 'autocomplete' | 'input'
+  type: 'autocomplete' | 'input' | 'text'
   validate?: (input: string, state?: EnquirerState) => string | true
 }
 
@@ -111,11 +116,6 @@ export type UnknownObject = Record<string, unknown>
 export interface GitzyState {
   answers: Answers
   config: GitzyConfig
-}
-
-interface PromptLang {
-  hint?: string
-  message: string
 }
 
 export interface PromptsLang {

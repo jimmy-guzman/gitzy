@@ -2,7 +2,7 @@ import { UnknownObject } from '../../../interfaces'
 import { schema } from './schema'
 import { hasAdditionalProperties, isObject, isString } from './validators'
 
-export const validateConfig = (userConfig: unknown): string | boolean => {
+export const validateConfig = (userConfig: unknown): boolean | string => {
   if (!isObject(userConfig)) {
     return 'invalid configuration'
   }

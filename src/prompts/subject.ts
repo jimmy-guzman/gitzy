@@ -15,7 +15,9 @@ export const subject: CreatedPrompt = ({
 }) => {
   const minTitleLengthError = errorMessage.minTitleLength(headerMinLength)
   const maxTitleLengthError = errorMessage.maxTitleLength(headerMaxLength)
-  const message = promptsLang.subject.message
+  const {
+    subject: { message },
+  } = promptsLang
   const emojiLength = disableEmoji ? 0 : 3
 
   return {

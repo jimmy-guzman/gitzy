@@ -26,7 +26,9 @@ export const createPrompts = (
 ): EnquirerPrompt[] => {
   return config.questions
     .filter(
-      (q) => defaultConfig.questions.includes(q) && !flags.skip?.includes(q)
+      (question) =>
+        defaultConfig.questions.includes(question) &&
+        !flags.skip?.includes(question)
     )
     .map((name) => prompts[name]({ config, answers, flags }))
     .filter(notEmpty)

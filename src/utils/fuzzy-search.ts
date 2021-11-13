@@ -1,4 +1,4 @@
-type Boundary = Record<string, string | number>
+type Boundary = Record<string, number | string>
 
 /**
  * escapes `\ ^ $ * + ? . ( ) | { } [ ]`
@@ -34,8 +34,8 @@ const filterByFuzzySearch = <T extends Boundary>(
   key: keyof T
 ): T[] => {
   return haystack
-    .filter((v) => fuzzyMatch(v[key], needle))
-    .sort((a) => (a[key] === needle ? -1 : 1))
+    .filter((hay) => fuzzyMatch(hay[key], needle))
+    .sort((hay) => (hay[key] === needle ? -1 : 1))
 }
 
 /**

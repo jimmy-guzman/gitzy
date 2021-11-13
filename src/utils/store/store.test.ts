@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import fs from 'fs'
 
 import { GitzyStore } from './store'
