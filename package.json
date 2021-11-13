@@ -65,8 +65,8 @@
     "@types/node": "16.11.19",
     "commitlint": "13.2.1",
     "esbuild": "0.13.15",
-    "eslint": "8.2.0",
-    "eslint-config-jimmy-guzman": "1.2.1",
+    "eslint": "8.6.0",
+    "eslint-config-jimmy-guzman": "2.0.2",
     "eslint-import-resolver-typescript": "2.5.0",
     "husky": "7.0.4",
     "is-ci": "3.0.1",
@@ -79,7 +79,7 @@
     "rollup-plugin-node-externals": "2.2.0",
     "rollup-plugin-visualizer": "5.5.2",
     "ts-jest": "27.0.7",
-    "typescript": "4.4.4"
+    "typescript": "4.5.4"
   },
   "yarn-upgrade-all": {
     "ignore": [
