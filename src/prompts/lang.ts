@@ -4,6 +4,10 @@ import { IssuesPrefixes, PromptsLang } from '../interfaces'
 
 const breaking = red('BREAKING CHANGE:')
 
+const closes = (issuesPrefix: IssuesPrefixes): string => {
+  return reset(`${issuesPrefix}:`)
+}
+
 export const promptsLang: PromptsLang = {
   body: {
     hint: '...supports multi line, press enter to go to next line',
@@ -22,10 +26,6 @@ export const promptsLang: PromptsLang = {
     hint: dim('...type or use arrow keys'),
     message: 'Choose the type',
   },
-}
-
-const closes = (issuesPrefix: IssuesPrefixes): string => {
-  return reset(`${issuesPrefix}:`)
 }
 
 export const issuesMessage = (issuesPrefix: IssuesPrefixes): string => {

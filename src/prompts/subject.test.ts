@@ -1,6 +1,5 @@
 import { bold, green, red, yellow } from 'ansi-colors'
 
-import { leadingLabel, subject } from './subject'
 import { defaultConfig } from '../defaults'
 import {
   Answers,
@@ -8,6 +7,7 @@ import {
   EnquirerPrompt,
   EnquirerState,
 } from '../interfaces'
+import { leadingLabel, subject } from './subject'
 
 interface Custom extends Omit<Required<EnquirerPrompt>, 'message'> {
   message: (state?: EnquirerState | undefined) => string

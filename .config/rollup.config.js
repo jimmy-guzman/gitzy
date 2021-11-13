@@ -1,13 +1,13 @@
-import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import eslint from '@rollup/plugin-eslint'
-import visualizer from 'rollup-plugin-visualizer'
-import externals from 'rollup-plugin-node-externals'
+import resolve from '@rollup/plugin-node-resolve'
 import esbuild from 'rollup-plugin-esbuild'
+import externals from 'rollup-plugin-node-externals'
+import visualizer from 'rollup-plugin-visualizer'
 
 import pkg from '../package.json'
 
-export default {
+const rollupConfig = {
   input: 'src/index.ts',
   output: { file: pkg.main, format: 'cjs' },
   plugins: [
@@ -30,3 +30,5 @@ export default {
       : null,
   ],
 }
+
+export default rollupConfig

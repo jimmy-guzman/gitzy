@@ -16,12 +16,8 @@ const mockExec = (value: string | null = null): void => {
 }
 
 describe('shouldDoGitChecks', () => {
-  const flags = ['--add', '-a', '--amend']
-
-  flags.forEach((flag) => {
-    it(`should skip git check if '${flag}'`, () => {
-      expect(shouldDoGitChecks([flag])).toBeFalsy()
-    })
+  it.each(['--add', '-a', '--amend'])(`should skip git check if %i`, (flag) => {
+    expect(shouldDoGitChecks([flag])).toBeFalsy()
   })
 
   it('should perform check if no flags', () => {
@@ -38,7 +34,7 @@ describe('checkIfStaged', () => {
   it('should rethrow', async () => {
     mockExec('error')
 
-    await expect(checkIfStaged()).resolves.toStrictEqual('')
+    await expect(checkIfStaged()).resolves.toBe('')
   })
 })
 
@@ -51,6 +47,6 @@ describe('checkIfGitRepo', () => {
   it('should resolve', async () => {
     mockExec()
 
-    await expect(checkIfGitRepo()).resolves.toStrictEqual('')
+    await expect(checkIfGitRepo()).resolves.toBe('')
   })
 })

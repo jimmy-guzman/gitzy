@@ -1,5 +1,5 @@
-import { CommanderError, program } from 'commander'
 import { cyan, red } from 'ansi-colors'
+import { CommanderError, program } from 'commander'
 import Enquirer from 'enquirer'
 
 import { getUserConfig } from '../config'
@@ -27,6 +27,7 @@ const enquirerOptions = {
   styles: { submitted: cyan, danger: red },
 }
 
+// eslint-disable-next-line max-lines-per-function
 export const cli = async (): Promise<void> => {
   const state = { config: defaultConfig, answers: defaultAnswers }
   const store = new GitzyStore<Answers>()
@@ -84,8 +85,8 @@ ${'Examples'}:
     `
     )
     .name('gitzy')
+    // eslint-disable-next-line max-statements
     .action(async () => {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       const flags: Flags = program.opts()
 
       if (flags.dryRun) {

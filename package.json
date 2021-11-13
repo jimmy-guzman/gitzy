@@ -55,7 +55,6 @@
     "enquirer": "^2.3.6"
   },
   "devDependencies": {
-    "@comparto/eslint-config": "6.1.0",
     "@comparto/prettier-config": "1.2.0",
     "@rollup/plugin-commonjs": "21.0.1",
     "@rollup/plugin-eslint": "8.0.1",
@@ -66,7 +65,8 @@
     "@types/node": "16.11.7",
     "commitlint": "13.2.1",
     "esbuild": "0.13.13",
-    "eslint": "7.32.0",
+    "eslint": "8.2.0",
+    "eslint-config-jimmy-guzman": "1.0.0",
     "eslint-import-resolver-typescript": "2.5.0",
     "husky": "7.0.4",
     "is-ci": "3.0.1",

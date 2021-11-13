@@ -8,7 +8,7 @@ import {
   isNumber,
 } from './validators'
 
-type Scheme = (value: unknown) => string | boolean
+type Scheme = (value: unknown) => boolean | string
 
 export const schema: Record<string, Scheme> = {
   breakingChangeEmoji: (value) => isString(value) || lang.breakingChangeEmoji,

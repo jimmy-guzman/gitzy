@@ -12,7 +12,9 @@ export const choice = (
   type: string,
   flags?: Flags
 ): EnquirerChoice => {
-  const { description, emoji } = details[type]
+  const {
+    [type]: { description, emoji },
+  } = details
   const hasEmoji = emoji && !disableEmoji && flags?.emoji
   const prefix = hasEmoji ? `${emoji} ` : ''
 
@@ -25,7 +27,9 @@ export const choice = (
 }
 
 export const type: CreatedPrompt = ({ config, flags }) => {
-  const choices = config.types.map((t: string) => choice(config, t, flags))
+  const choices = config.types.map((configType) =>
+    choice(config, configType, flags)
+  )
 
   return {
     choices,

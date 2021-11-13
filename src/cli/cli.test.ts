@@ -1,10 +1,10 @@
 import Enquirer from 'enquirer'
 import { mocked } from 'ts-jest/utils'
 
-import { cli } from './cli'
-import * as utils from '../utils'
 import * as config from '../config'
 import { defaultConfig, defaultAnswers } from '../defaults'
+import * as utils from '../utils'
+import { cli } from './cli'
 
 jest.mock('enquirer')
 
