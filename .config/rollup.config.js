@@ -20,7 +20,7 @@ const rollupConfig = {
     esbuild({
       minify: true,
       minifyWhitespace: true,
-      target: 'node12',
+      target: 'node14',
     }),
     process.env.DEBUG_MODE
       ? visualizer({

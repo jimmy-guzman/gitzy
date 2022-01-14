@@ -24,8 +24,9 @@
 
 # Usage
 
-> The current version of `gitzy` is fully supported on [LTS versions of node][node-lts-versions], and requires at least node v12.
-> (If you need node v10 support, use `gitzy` version 1.x )
+> The current version of `gitzy` is fully supported on [active LTS versions of node][node-lts-versions], and requires at least node v14.
+
+_If you need node v12 support, use `gitzy` version 2.x or if you need node v10 support, use `gitzy` version 1.x_
 
 ## Quick start
 
