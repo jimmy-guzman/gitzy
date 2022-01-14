@@ -1,3 +1,15 @@
+# [3.0.0](https://github.com/jimmy-guzman/gitzy/compare/v2.1.0...v3.0.0) (2022-01-14)
+
+
+### chore
+
+* **deps:** 🤖 remove node 12 support ([9550bce](https://github.com/jimmy-guzman/gitzy/commit/9550bcee7294433b5b528f6c2d5682e7c1f5edcc))
+
+
+### BREAKING CHANGES
+
+* **deps:** 💥 minimum node version is 14
+
 # [2.1.0](https://github.com/jimmy-guzman/gitzy/compare/v2.0.1...v2.1.0) (2021-11-09)
 
 
