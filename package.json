@@ -35,7 +35,6 @@
     "build": "rm -rf dist/ && rollup -c .config/rollup.config.js --validate",
     "build:watch": "yarn build --watch --exclude dist/ --environment DEV",
     "build:debug": "yarn build --environment DEBUG_MODE",
-    "release": "npx semantic-release",
     "cz": "./bin/run --commitlint",
     "prepare": "is-ci || husky install"
   },
@@ -60,7 +59,11 @@
     "@rollup/plugin-eslint": "8.0.1",
     "@rollup/plugin-node-resolve": "13.1.3",
     "@semantic-release/changelog": "5.0.1",
+    "@semantic-release/commit-analyzer": "8.0.1",
     "@semantic-release/git": "9.0.1",
+    "@semantic-release/github": "7.2.3",
+    "@semantic-release/npm": "7.1.3",
+    "@semantic-release/release-notes-generator": "9.0.3",
     "@types/jest": "27.4.0",
     "@types/node": "16.11.19",
     "commitlint": "13.2.1",
@@ -78,6 +81,7 @@
     "rollup-plugin-esbuild": "4.8.2",
     "rollup-plugin-node-externals": "2.2.0",
     "rollup-plugin-visualizer": "5.5.2",
+    "semantic-release": "17.4.7",
     "ts-jest": "27.1.2",
     "typescript": "4.5.4"
   },

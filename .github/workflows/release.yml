@@ -1,0 +1,46 @@
+name: release
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Read .nvmrc
+        run: echo "##[set-output name=NVMRC;]$(cat .nvmrc)"
+        id: nvm
+
+      - name: Configure NPM Registry
+        uses: actions/setup-node@v2
+        with:
+          node-version: '${{ steps.nvm.outputs.NVMRC }}'
+          cache: 'yarn'
+
+      - name: install
+        run: yarn install --frozen-lockfile
+
+      - name: validate
+        run: yarn validate
+
+      - name: build
+        run: yarn build
+
+      - name: e2e
+        run: yarn e2e
+
+      - name: codecov
+        uses: codecov/codecov-action@v2
+        with:
+          file: ./coverage/lcov.info
+
+      - name: Publish to NPM
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
