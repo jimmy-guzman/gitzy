@@ -79,7 +79,7 @@
     "prettier": "2.5.1",
     "rollup": "2.63.0",
     "rollup-plugin-esbuild": "4.8.2",
-    "rollup-plugin-node-externals": "2.2.0",
+    "rollup-plugin-node-externals": "3.1.2",
     "rollup-plugin-visualizer": "5.5.2",
     "semantic-release": "17.4.7",
     "ts-jest": "27.1.2",
