@@ -139,6 +139,25 @@ describe('formatCommitMessage', () => {
       🏁 Closes: #123"
     `)
   })
+  it('should wrap commit message correctly when there are quotes and back ticks', () => {
+    const formattedMessage = setupFormatCommitMessage(
+      { ...defaultConfig, headerMaxLength: 75 },
+      {
+        subject:
+          'reduce deps by replacing `cosmiconfig` w/ `lilconfig` & `yaml`',
+      }
+    )
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*): ✨ reduce deps by replacing \\\\\`cosmiconfig\\\\\` w/ \\\\\`lilconfig\\\\\` & \\\\\`yaml\\\\\`
+
+      this an amazing feature, lots of details
+
+      BREAKING CHANGE: 💥 breaks everything
+      
+      🏁 Closes: #123"
+    `)
+  })
   it('should allow double quotes in message', () => {
     const formattedMessage = setupFormatCommitMessage(defaultConfig, {
       subject: 'this has "quotes"',

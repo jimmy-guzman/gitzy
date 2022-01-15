@@ -55,5 +55,5 @@ export const formatCommitMessage = (
   const maxWidth =
     config.headerMaxLength > MAX_WIDTH ? config.headerMaxLength : MAX_WIDTH
 
-  return wrap(normalizeMessage(`${head}${body}${breaking}${issues}`), maxWidth)
+  return normalizeMessage(wrap(`${head}${body}${breaking}${issues}`, maxWidth))
 }
