@@ -1,6 +1,6 @@
 # gitzy🪄
 
-> Interactive [conventional commits][conventional-commits] cli, inspired by [git-cz][git-cz] with the ability to leverage [commitlint](https://commitlint.js.org/#/) configuration, configuration validation, versatile configuration through [cosmiconfig](https://www.npmjs.com/package/cosmiconfig) and more.
+> Interactive [conventional commits][conventional-commits] cli, inspired by [git-cz][git-cz] with the ability to leverage [commitlint](https://commitlint.js.org/#/) configuration, configuration validation, versatile configuration and more.
 
 <p align="center">
   <img width="750" src="./assets/cli.svg">
@@ -50,9 +50,11 @@ $ gitzy -lD --no-emoji
 
 # Configuration
 
-By default `gitzy` comes ready to run out of the box.
+By default `gitzy` comes ready to run out of the box but provides various configuration methods and options
 
-> This supports cosmiconfig, so you can customize with either a `gitzy` key in your package.json, or just create a `.gitzyrc.json`, `.gitzyrc.yml`, `gitzy.config.js`, etc. in your project or `.config/` directory.
+You can use a `gitzy` object in your `package.json`, or the following files: `.gitzyrc`, `.gitzyrc.json`, `.gitzyrc.yaml`, `.gitzyrc.yml`, `.gitzyrc.js`, `.gitzyrc.cjs`, `gitzy.config.js`, or `gitzy.config.cjs`,
+
+- _all the files can also live under a `.config/` directory_
 
 ## Options
 

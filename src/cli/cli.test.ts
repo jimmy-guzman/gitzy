@@ -1,5 +1,4 @@
 import Enquirer from 'enquirer'
-import { mocked } from 'ts-jest/utils'
 
 import * as config from '../config'
 import { defaultConfig, defaultAnswers } from '../defaults'
@@ -10,7 +9,7 @@ jest.mock('enquirer')
 
 describe('cli', () => {
   beforeAll(() => {
-    mocked(Enquirer).mockImplementation(() => {
+    jest.mocked(Enquirer).mockImplementation(() => {
       return {
         prompt: jest.fn(),
       } as unknown as Enquirer

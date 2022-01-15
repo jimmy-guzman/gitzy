@@ -1,4 +1,11 @@
-import { cosmiconfig } from 'cosmiconfig'
+import { lilconfig } from 'lilconfig'
+import yaml from 'yaml'
+
+import type { Loader } from 'lilconfig'
+
+const loadYaml: Loader = (_filepath, content) => {
+  return yaml.parse(content)
+}
 
 interface LoadConfigResult<T> {
   config: T
@@ -28,8 +35,13 @@ export const getSearchPlaces = (configName: string): string[] => [
 export const loadConfig = async <T>(
   configName: string
 ): Promise<LoadConfigResult<T> | null> => {
-  const explorer = cosmiconfig(configName, {
+  const explorer = lilconfig(configName, {
     searchPlaces: getSearchPlaces(configName),
+    loaders: {
+      '.yaml': loadYaml,
+      '.yml': loadYaml,
+      'noExt': loadYaml,
+    },
   })
 
   return explorer.search(process.cwd())

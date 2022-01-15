@@ -50,8 +50,9 @@
   "dependencies": {
     "ansi-colors": "^4.1.1",
     "commander": "^8.0.0",
-    "cosmiconfig": "^7.0.0",
-    "enquirer": "^2.3.6"
+    "enquirer": "^2.3.6",
+    "lilconfig": "^2.0.4",
+    "yaml": "^1.10.2"
   },
   "devDependencies": {
     "@comparto/prettier-config": "1.2.0",
