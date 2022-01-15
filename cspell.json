@@ -24,6 +24,7 @@
     "globby",
     "kleur",
     "lcov",
+    "lilconfig",
     "nvmrc",
     "outfile",
     "postbuild",
