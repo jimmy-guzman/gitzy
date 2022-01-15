@@ -1,3 +1,15 @@
+# [3.1.0](https://github.com/jimmy-guzman/gitzy/compare/v3.0.0...v3.1.0) (2022-01-15)
+
+
+### Bug Fixes
+
+* 🐛 wrap correctly when there are quotes in the message ([92c0121](https://github.com/jimmy-guzman/gitzy/commit/92c0121625f00d04938141582f18897b8a4ad3ca))
+
+
+### Features
+
+* ✨ replace `cosmiconfig` w/ `lilconfig` & `yaml` to reduce deps ([391425a](https://github.com/jimmy-guzman/gitzy/commit/391425a24cdf633481f3662063c182e3301d916d)), closes [#249](https://github.com/jimmy-guzman/gitzy/issues/249)
+
 # [3.0.0](https://github.com/jimmy-guzman/gitzy/compare/v2.1.0...v3.0.0) (2022-01-14)
 
 
