@@ -65,7 +65,7 @@
     "@types/node": "16.11.19",
     "commitlint": "13.2.1",
     "esbuild": "0.14.11",
-    "eslint": "8.6.0",
+    "eslint": "8.7.0",
     "eslint-config-jimmy-guzman": "2.0.2",
     "eslint-import-resolver-typescript": "2.5.0",
     "husky": "7.0.4",
