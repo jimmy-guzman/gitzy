@@ -24,7 +24,7 @@
     "format": "prettier '**/**/*.{md,yml,json,ts}'",
     "format:check": "yarn format -c",
     "format:write": "yarn format -w",
-    "lint": "eslint --cache --color --cache-location ./node_modules/.cache/eslint/ '**/**/*.{js,ts,*.test}'",
+    "lint": "eslint --cache '**/**/*.{js,ts,*.test}'",
     "lint:fix": "yarn lint --fix",
     "test": "jest -c .config/jest.config.js --coverage",
     "test:watch": "jest -c .config/jest.config.js --watch",
@@ -35,7 +35,7 @@
     "build": "rm -rf dist/ && rollup -c .config/rollup.config.js --validate",
     "build:watch": "yarn build --watch --exclude dist/ --environment DEV",
     "build:debug": "yarn build --environment DEBUG_MODE",
-    "cz": "./bin/run --commitlint",
+    "cz": "yarn build && ./bin/run --commitlint",
     "prepare": "is-ci || husky install"
   },
   "prettier": "@comparto/prettier-config",
