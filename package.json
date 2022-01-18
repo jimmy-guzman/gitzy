@@ -62,7 +62,7 @@
     "@semantic-release/changelog": "6.0.1",
     "@semantic-release/git": "10.0.1",
     "@types/jest": "27.4.0",
-    "@types/node": "16.11.20",
+    "@types/node": "16.11.21",
     "commitlint": "13.2.1",
     "esbuild": "0.14.11",
     "eslint": "8.6.0",
