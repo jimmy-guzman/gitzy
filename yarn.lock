@@ -1418,10 +1418,10 @@
   dependencies:
     "@octokit/openapi-types" "^11.2.0"
 
-"@rollup/plugin-commonjs@21.0.1":
-  version "21.0.1"
-  resolved "https://registry.yarnpkg.com/@rollup/plugin-commonjs/-/plugin-commonjs-21.0.1.tgz#1e57c81ae1518e4df0954d681c642e7d94588fee"
-  integrity sha512-EA+g22lbNJ8p5kuZJUYyhhDK7WgJckW5g4pNN7n4mAFUM96VuwUnNT3xr2Db2iCZPI1pJPbGyfT5mS9T1dHfMg==
+"@rollup/plugin-commonjs@21.0.2":
+  version "21.0.2"
+  resolved "https://registry.yarnpkg.com/@rollup/plugin-commonjs/-/plugin-commonjs-21.0.2.tgz#0b9c539aa1837c94abfaf87945838b0fc8564891"
+  integrity sha512-d/OmjaLVO4j/aQX69bwpWPpbvI3TJkQuxoAk7BH8ew1PyoMBLTOuvJTjzG8oEoW7drIIqB0KCJtfFLu/2GClWg==
   dependencies:
     "@rollup/pluginutils" "^3.1.0"
     commondir "^1.0.1"
@@ -6942,20 +6942,20 @@ rollup-plugin-node-externals@4.0.0:
   dependencies:
     find-up "^5.0.0"
 
-rollup-plugin-visualizer@5.5.4:
-  version "5.5.4"
-  resolved "https://registry.yarnpkg.com/rollup-plugin-visualizer/-/rollup-plugin-visualizer-5.5.4.tgz#ce3461fdcbfdf784f52aa5205e1d166e2152bab0"
-  integrity sha512-CJQFUuZ75S1daGEkk62UH7lL6UFCoP86Sn/iz4gXBdamdwFeD5nPGCHHXfXCrly/wNgQOYTH7cdcxk4+OG3Xjw==
+rollup-plugin-visualizer@5.6.0:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-visualizer/-/rollup-plugin-visualizer-5.6.0.tgz#06aa7cf3fd504a29d404335700f2a3f28ebb33f3"
+  integrity sha512-CKcc8GTUZjC+LsMytU8ocRr/cGZIfMR7+mdy4YnlyetlmIl/dM8BMnOEpD4JPIGt+ZVW7Db9ZtSsbgyeBH3uTA==
   dependencies:
     nanoid "^3.1.32"
     open "^8.4.0"
     source-map "^0.7.3"
     yargs "^17.3.1"
 
-rollup@2.67.0:
-  version "2.67.0"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.67.0.tgz#496de7e641dbe39f681c5a82419cb5013917d406"
-  integrity sha512-W83AaERwvDiHwHEF/dfAfS3z1Be5wf7n+pO3ZAO5IQadCT2lBTr7WQ2MwZZe+nodbD+n3HtC4OCOAdsOPPcKZQ==
+rollup@2.70.0:
+  version "2.70.0"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.70.0.tgz#17a92e5938e92a251b962352e904c9f558230ec7"
+  integrity sha512-iEzYw+syFxQ0X9RefVwhr8BA2TNJsTaX8L8dhyeyMECDbmiba+8UQzcu+xZdji0+JQ+s7kouQnw+9Oz5M19XKA==
   optionalDependencies:
     fsevents "~2.3.2"
 
