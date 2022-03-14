@@ -46,6 +46,7 @@ describe('searchPlaces', () => {
 
   it('should return config for json files', async () => {
     writeFile('.arc.json', JSON.stringify({ disableEmoji: true }), (error) => {
+      // eslint-disable-next-line jest/no-conditional-in-test
       if (error) throw error
     })
 
@@ -58,6 +59,7 @@ describe('searchPlaces', () => {
   })
   it('should return config for yaml files', async () => {
     writeFile('.arc.yml', 'disableEmoji: true', (error) => {
+      // eslint-disable-next-line jest/no-conditional-in-test
       if (error) throw error
     })
 
