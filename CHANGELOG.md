@@ -1,3 +1,10 @@
+# [3.2.0](https://github.com/jimmy-guzman/gitzy/compare/v3.1.0...v3.2.0) (2022-03-14)
+
+
+### Features
+
+* **deps:** ✨ bump `commander` to `^9.0.0` ([d87a057](https://github.com/jimmy-guzman/gitzy/commit/d87a0576abb641b1a9bad932f29229aa281f4e85))
+
 # [3.1.0](https://github.com/jimmy-guzman/gitzy/compare/v3.0.0...v3.1.0) (2022-01-15)
 
 
