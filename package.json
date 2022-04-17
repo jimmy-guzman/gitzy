@@ -62,7 +62,7 @@
     "@semantic-release/changelog": "6.0.1",
     "@semantic-release/git": "10.0.1",
     "@types/jest": "27.4.1",
-    "@types/node": "16.11.26",
+    "@types/node": "16.11.27",
     "commitlint": "13.2.1",
     "esbuild": "0.14.25",
     "eslint": "8.11.0",
@@ -98,7 +98,7 @@
     "node": ">= 14"
   },
   "volta": {
-    "node": "16.14.0",
+    "node": "16.14.2",
     "yarn": "1.22.17"
   }
 }
