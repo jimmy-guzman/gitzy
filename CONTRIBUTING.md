@@ -21,7 +21,7 @@ curl https://get.volta.sh | bash
 ```
 
 ```bash
-yarn install
+pnpm install
 ```
 
 - with [nvm](https://github.com/nvm-sh/nvm)
@@ -31,7 +31,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
 ```
 
 ```bash
-nvm use && yarn
+nvm use && pnpm
 ```
 
 ## Scripts
@@ -39,17 +39,17 @@ nvm use && yarn
 Run build and typechecking in watch mode
 
 ```bash
-yarn dev
+pnpm dev
 ```
 
 Run tests in watch mode
 
 ```bash
-yarn test:watch
+pnpm test:watch
 ```
 
 Run commit cli
 
 ```bash
-yarn cz
+pnpm cz
 ```

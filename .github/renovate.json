@@ -7,6 +7,7 @@
   "commitMessagePrefix": "chore(deps): 🤖 ",
   "commitMessageTopic": "`{{depName}}`",
   "labels": ["scope:deps", "type:chore"],
+  "schedule": ["every weekend"],
   "packageRules": [
     {
       "matchPackagePatterns": ["eslint"],
