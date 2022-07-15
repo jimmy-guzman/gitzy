@@ -27,6 +27,7 @@
     "lilconfig",
     "nvmrc",
     "outfile",
+    "pnpm",
     "postbuild",
     "postpublish",
     "shellcheck",
@@ -48,6 +49,8 @@
     "*.dll", // Ignore all .dll files.
     "**/*.dll", // Ignore all .dll files,
     "yarn.lock",
-    "assets/cli.svg"
+    "assets/cli.svg",
+    "pnpm-lock.yaml",
+    ".gitignore"
   ]
 }

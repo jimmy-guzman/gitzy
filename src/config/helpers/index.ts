@@ -1,3 +1,3 @@
-export * from './getCommitlintConfig'
-export * from './validate-config'
-export * from './loadConfig'
+export { getCommitlintConfig } from './getCommitlintConfig'
+export { validateUserConfig } from './validate-config'
+export { loadConfig } from './loadConfig'

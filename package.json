@@ -22,20 +22,20 @@
   "scripts": {
     "dev": "run-p build:watch ts-check:watch",
     "format": "prettier '**/**/*.{md,yml,json,ts}'",
-    "format:check": "yarn format -c",
-    "format:write": "yarn format -w",
+    "format:check": "pnpm format -c",
+    "format:write": "pnpm format -w",
     "lint": "eslint --cache '**/**/*.{js,ts,*.test}'",
-    "lint:fix": "yarn lint --fix",
+    "lint:fix": "pnpm lint --fix",
     "test": "jest -c .config/jest.config.js --coverage",
     "test:watch": "jest -c .config/jest.config.js --watch",
     "e2e": "jest -c e2e/jest.config.js",
     "ts-check": "tsc -b tsconfig.json",
-    "ts-check:watch": "yarn ts-check --watch",
+    "ts-check:watch": "pnpm ts-check --watch",
     "validate": "run-p lint format:check test ts-check",
     "build": "rm -rf dist/ && rollup -c .config/rollup.config.js --validate",
-    "build:watch": "yarn build --watch --exclude dist/ --environment DEV",
-    "build:debug": "yarn build --environment DEBUG_MODE",
-    "cz": "yarn build && ./bin/run --commitlint",
+    "build:watch": "pnpm build --watch --exclude dist/ --environment DEV",
+    "build:debug": "pnpm build --environment DEBUG_MODE",
+    "cz": "pnpm build && ./bin/run --commitlint",
     "prepare": "is-ci || husky install"
   },
   "prettier": "@comparto/prettier-config",
@@ -68,6 +68,7 @@
     "eslint": "8.14.0",
     "eslint-config-jimmy-guzman": "5.0.0",
     "eslint-import-resolver-typescript": "2.7.1",
+    "eslint-plugin-import": "2.26.0",
     "husky": "7.0.4",
     "is-ci": "3.0.1",
     "jest": "27.5.1",
@@ -82,14 +83,6 @@
     "ts-jest": "27.1.4",
     "typescript": "4.6.3"
   },
-  "yarn-upgrade-all": {
-    "ignore": [
-      "ansi-colors",
-      "commander",
-      "cosmiconfig",
-      "enquirer"
-    ]
-  },
   "files": [
     "/bin",
     "/dist"
@@ -98,7 +91,6 @@
     "node": ">= 14"
   },
   "volta": {
-    "node": "16.14.2",
-    "yarn": "1.22.18"
+    "node": "16.16.0"
   }
 }

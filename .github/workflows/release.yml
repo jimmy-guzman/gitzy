@@ -12,27 +12,28 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Read .nvmrc
-        run: echo "##[set-output name=NVMRC;]$(cat .nvmrc)"
-        id: nvm
+      - name: setup pnpm
+        uses: pnpm/action-setup@v2.2.2
+        with:
+          version: 7.1.8
 
-      - name: Configure NPM Registry
+      - name: setup cache ${{ matrix.node }}
         uses: actions/setup-node@v3
         with:
-          node-version: '${{ steps.nvm.outputs.NVMRC }}'
-          cache: 'yarn'
+          node-version: ${{ matrix.node }}
+          cache: pnpm
 
       - name: install
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: validate
-        run: yarn validate
+        run: pnpm validate
 
       - name: build
-        run: yarn build
+        run: pnpm build
 
       - name: e2e
-        run: yarn e2e
+        run: pnpm e2e
 
       - name: codecov
         uses: codecov/codecov-action@v3

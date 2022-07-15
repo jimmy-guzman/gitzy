@@ -4,6 +4,7 @@ CHANGELOG.md
 .yalc
 dist
 coverage
+pnpm-lock.yaml
 
 !.config/
 !.github/
