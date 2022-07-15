@@ -63,7 +63,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: streetsidesoftware/cspell-action@v1.6.1
+      - uses: streetsidesoftware/cspell-action@v1.6.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN}}
           inline: error
