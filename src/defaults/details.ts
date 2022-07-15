@@ -1,4 +1,4 @@
-import { Details } from '../interfaces'
+import type { Details } from '../interfaces'
 
 // emoji's are based of https://gitmoji.dev/
 export const details: Details = {

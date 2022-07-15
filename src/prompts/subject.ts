@@ -1,6 +1,7 @@
 import { green, red, yellow, bold } from 'ansi-colors'
 
-import { CreatedPrompt, EnquirerState, Answers } from '../interfaces'
+import type { CreatedPrompt, EnquirerState, Answers } from '../interfaces'
+
 import { errorMessage, promptsLang } from './lang'
 
 export const leadingLabel = (answers?: Answers): string => {

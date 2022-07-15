@@ -1,5 +1,11 @@
+import type {
+  CreatedPrompt,
+  EnquirerPrompt,
+  Flags,
+  GitzyState,
+} from '../interfaces'
+
 import { defaultConfig } from '../defaults'
-import { CreatedPrompt, EnquirerPrompt, Flags, GitzyState } from '../interfaces'
 import { body } from './body'
 import { breaking } from './breaking'
 import { issues } from './issues'

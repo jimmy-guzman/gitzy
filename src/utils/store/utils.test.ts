@@ -1,5 +1,7 @@
-import fs, { Stats } from 'fs'
+import fs from 'fs'
 import path from 'path'
+
+import type { Stats } from 'fs'
 
 import * as utils from './utils'
 

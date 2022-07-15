@@ -2,7 +2,7 @@ import fs from 'fs'
 import os from 'os'
 import path from 'path'
 
-import { GitzyStoreError } from './types'
+import type { GitzyStoreError } from './types'
 
 export const tryStat = (filepath: string): fs.Stats | null => {
   try {
@@ -64,7 +64,7 @@ export const tryUnlink = (filepath: string): void => {
  * Constructs gitzy's store path based on the OS's temp directory and current directory
  * @example
  * const path = gitzyStorePath()
- * console.log(path) // /var/folders/17/72cc4vhx3vd3jbrd4zz0vzr80000gn/T/gitzy/gitzy-store.json
+ * console.log(path) // /var/folders/17/{tmpdir}/T/gitzy/gitzy-store.json
  */
 export const gitzyStorePath = (): string => {
   return `${os.tmpdir}/gitzy/${path.basename(process.cwd())}-store.json`

@@ -1,4 +1,4 @@
-import { Flags } from './interfaces'
+import type { Flags } from './interfaces'
 
 interface Lang {
   description: string

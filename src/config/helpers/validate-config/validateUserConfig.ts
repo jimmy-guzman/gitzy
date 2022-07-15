@@ -1,4 +1,5 @@
-import { UnknownObject } from '../../../interfaces'
+import type { UnknownObject } from '../../../interfaces'
+
 import { schema } from './schema'
 import { hasAdditionalProperties, isObject, isString } from './validators'
 

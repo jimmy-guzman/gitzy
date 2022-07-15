@@ -1,4 +1,4 @@
-import { IssuesPrefixes } from '../../../interfaces'
+import type { IssuesPrefixes } from '../../../interfaces'
 
 export const validIssuesPrefixes: IssuesPrefixes[] = [
   'close',
