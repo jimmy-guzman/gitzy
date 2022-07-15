@@ -1,12 +1,13 @@
 import { bold, green, red, yellow } from 'ansi-colors'
 
-import { defaultConfig } from '../defaults'
-import {
+import type {
   Answers,
   CreatedPromptOptions,
   EnquirerPrompt,
   EnquirerState,
 } from '../interfaces'
+
+import { defaultConfig } from '../defaults'
 import { leadingLabel, subject } from './subject'
 
 interface Custom extends Omit<Required<EnquirerPrompt>, 'message'> {

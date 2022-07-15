@@ -1,4 +1,4 @@
-import { Answers } from '../interfaces'
+import type { Answers } from '../interfaces'
 
 export const defaultAnswers: Answers = {
   body: '',

@@ -1,4 +1,5 @@
-import { CreatedPrompt, EnquirerChoice } from '../interfaces'
+import type { CreatedPrompt, EnquirerChoice } from '../interfaces'
+
 import { fuzzySearch } from '../utils'
 import { promptsLang } from './lang'
 

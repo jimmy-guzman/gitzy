@@ -1,4 +1,6 @@
-import commander, { Option } from 'commander'
+import { Option } from 'commander'
+
+import type commander from 'commander'
 
 import { questions } from '../defaults'
 import { lang } from '../lang'

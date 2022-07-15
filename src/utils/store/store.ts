@@ -2,7 +2,8 @@
 import fs from 'fs'
 import path from 'path'
 
-import { GitzyStoreError } from './types'
+import type { GitzyStoreError } from './types'
+
 import { gitzyStorePath, mkdir, tryUnlink } from './utils'
 
 const idx = Symbol('gitzy')
@@ -14,7 +15,7 @@ const idx = Symbol('gitzy')
 export class GitzyStore<T = Record<string, unknown>> {
   path: string;
 
-  [idx]: T
+  [idx]?: T
 
   constructor() {
     this.path = gitzyStorePath()
@@ -65,7 +66,7 @@ export class GitzyStore<T = Record<string, unknown>> {
   }
 
   get data(): T {
-    return this[idx] || this.tryLoad()
+    return this[idx] ?? this.tryLoad()
   }
 
   public load = (): T => {

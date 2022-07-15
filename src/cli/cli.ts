@@ -1,10 +1,12 @@
 import { cyan, red } from 'ansi-colors'
-import { CommanderError, program } from 'commander'
+import { program } from 'commander'
 import Enquirer from 'enquirer'
+
+import type { Answers, Flags } from '../interfaces'
+import type { CommanderError } from 'commander'
 
 import { getUserConfig } from '../config'
 import { defaultConfig, defaultAnswers } from '../defaults'
-import { Answers, Flags } from '../interfaces'
 import { lang } from '../lang'
 import { createPrompts } from '../prompts'
 import {

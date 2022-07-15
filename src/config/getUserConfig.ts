@@ -1,4 +1,5 @@
-import { GitzyConfig } from '../interfaces'
+import type { GitzyConfig } from '../interfaces'
+
 import { loadConfig, validateUserConfig, getCommitlintConfig } from './helpers'
 
 export const getUserConfig = async (

@@ -1,5 +1,6 @@
+import type { EnquirerPrompt } from '../interfaces'
+
 import { defaultConfig } from '../defaults'
-import { EnquirerPrompt } from '../interfaces'
 import { breaking } from './breaking'
 
 describe('breaking', () => {

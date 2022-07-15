@@ -1,6 +1,6 @@
 import { bold, dim, red, reset } from 'ansi-colors'
 
-import { IssuesPrefixes, PromptsLang } from '../interfaces'
+import type { IssuesPrefixes, PromptsLang } from '../interfaces'
 
 const breaking = red('BREAKING CHANGE:')
 

@@ -1,4 +1,4 @@
-import { UnknownObject } from '../interfaces'
+import type { UnknownObject } from '../interfaces'
 
 /**
  * Removes `null` or `undefined` values from object

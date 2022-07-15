@@ -1,9 +1,10 @@
-import {
+import type {
   CreatedPrompt,
   EnquirerChoice,
   Flags,
   GitzyConfig,
 } from '../interfaces'
+
 import { fuzzySearch } from '../utils'
 import { promptsLang } from './lang'
 

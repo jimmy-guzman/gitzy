@@ -1,6 +1,7 @@
 import { spawn } from 'child_process'
 
-import { Flags, GitzyState } from '../interfaces'
+import type { Flags, GitzyState } from '../interfaces'
+
 import { formatCommitMessage } from './format-message'
 import { info, log } from './logging'
 
