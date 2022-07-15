@@ -68,7 +68,7 @@
     "esbuild": "0.14.49",
     "eslint": "8.19.0",
     "eslint-config-jimmy-guzman": "6.0.0",
-    "eslint-import-resolver-typescript": "3.2.5",
+    "eslint-import-resolver-typescript": "3.2.6",
     "eslint-plugin-import": "2.26.0",
     "husky": "8.0.1",
     "is-ci": "3.0.1",
