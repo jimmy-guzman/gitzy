@@ -52,7 +52,7 @@
     "commander": "^9.0.0",
     "enquirer": "^2.3.6",
     "lilconfig": "^2.0.4",
-    "yaml": "^1.10.2"
+    "yaml": "^2.1.1"
   },
   "devDependencies": {
     "@comparto/prettier-config": "1.2.0",
