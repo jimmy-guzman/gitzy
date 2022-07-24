@@ -16,7 +16,7 @@ specifiers:
   enquirer: ^2.3.6
   esbuild: 0.14.49
   eslint: 8.20.0
-  eslint-config-jimmy-guzman: 6.0.0
+  eslint-config-jimmy-guzman: 7.0.0
   eslint-import-resolver-typescript: 3.3.0
   eslint-plugin-import: 2.26.0
   husky: 8.0.1
@@ -55,7 +55,7 @@ devDependencies:
   commitlint: 17.0.3
   esbuild: 0.14.49
   eslint: 8.20.0
-  eslint-config-jimmy-guzman: 6.0.0_sppr74tka47m3v3vp2htdrgpsu
+  eslint-config-jimmy-guzman: 7.0.0_sppr74tka47m3v3vp2htdrgpsu
   eslint-import-resolver-typescript: 3.3.0_afl3vkhn63baibzal45igheroq
   eslint-plugin-import: 2.26.0_umizelck55jebdr2t26mt62xx4
   husky: 8.0.1
@@ -2732,9 +2732,9 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /eslint-config-jimmy-guzman/6.0.0_sppr74tka47m3v3vp2htdrgpsu:
-    resolution: {integrity: sha512-CJaaNWjrAFro4urKWvSf4tHtAVRTWzS8Amla4Oy5ysb0ZfchUEngx97eXf4mm+vXtDUPNJIerHKZSpnc0FCS1Q==}
-    engines: {node: '>= 12'}
+  /eslint-config-jimmy-guzman/7.0.0_sppr74tka47m3v3vp2htdrgpsu:
+    resolution: {integrity: sha512-A8y0Ulmnr34ekYgr+oajMu1UHa5ZcE7HLCMQ/xoVvKBBm4iAMe/fvQN64ezcybEkCXxQsjOdOu+tjOZwQ65fDw==}
+    engines: {node: '>= 14'}
     peerDependencies:
       eslint: ^8.14.0
       prettier: ^2.4.0
