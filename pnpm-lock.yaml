@@ -3,7 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@comparto/prettier-config': 1.2.0
   '@jest/types': 28.1.3
-  '@rollup/plugin-commonjs': 22.0.1
+  '@rollup/plugin-commonjs': 22.0.2
   '@rollup/plugin-eslint': 8.0.2
   '@rollup/plugin-node-resolve': 13.3.0
   '@semantic-release/changelog': 6.0.1
@@ -45,7 +45,7 @@ dependencies:
 devDependencies:
   '@comparto/prettier-config': 1.2.0
   '@jest/types': 28.1.3
-  '@rollup/plugin-commonjs': 22.0.1_rollup@2.77.2
+  '@rollup/plugin-commonjs': 22.0.2_rollup@2.77.2
   '@rollup/plugin-eslint': 8.0.2_rollup@2.77.2
   '@rollup/plugin-node-resolve': 13.3.0_rollup@2.77.2
   '@semantic-release/changelog': 6.0.1_semantic-release@19.0.3
@@ -1082,8 +1082,8 @@ packages:
       tslib: 2.4.0
     dev: true
 
-  /@rollup/plugin-commonjs/22.0.1_rollup@2.77.2:
-    resolution: {integrity: sha512-dGfEZvdjDHObBiP5IvwTKMVeq/tBZGMBHZFMdIV1ClMM/YoWS34xrHFGfag9SN2ZtMgNZRFruqvxZQEa70O6nQ==}
+  /@rollup/plugin-commonjs/22.0.2_rollup@2.77.2:
+    resolution: {integrity: sha512-//NdP6iIwPbMTcazYsiBMbJW7gfmpHom33u1beiIoHDEM0Q9clvtQB1T0efvMqHeKsGohiHo97BCPCkBXdscwg==}
     engines: {node: '>= 12.0.0'}
     peerDependencies:
       rollup: ^2.68.0
