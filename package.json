@@ -57,7 +57,7 @@
   "devDependencies": {
     "@comparto/prettier-config": "1.2.0",
     "@jest/types": "28.1.3",
-    "@rollup/plugin-commonjs": "22.0.1",
+    "@rollup/plugin-commonjs": "22.0.2",
     "@rollup/plugin-eslint": "8.0.2",
     "@rollup/plugin-node-resolve": "13.3.0",
     "@semantic-release/changelog": "6.0.1",
