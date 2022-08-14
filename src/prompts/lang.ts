@@ -29,9 +29,7 @@ export const promptsLang: PromptsLang = {
 }
 
 export const issuesMessage = (issuesPrefix: IssuesPrefixes): string => {
-  return `${bold('Add issues this commit closes, e.g #123')}\n  ${closes(
-    issuesPrefix
-  )}`
+  return `${bold(`Add issues this commit closes`)}\n  ${closes(issuesPrefix)}`
 }
 
 export const errorMessage = {
