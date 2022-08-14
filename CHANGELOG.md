@@ -1,3 +1,10 @@
+# [3.4.0](https://github.com/jimmy-guzman/gitzy/compare/v3.3.0...v3.4.0) (2022-08-14)
+
+
+### Features
+
+* **cli:** ✨ allow issues hint to be customized w/ `issuesHint` option ([989d839](https://github.com/jimmy-guzman/gitzy/commit/989d839d32ddec0915e7c9c6d5aca7a2ba22f170)), closes [#337](https://github.com/jimmy-guzman/gitzy/issues/337)
+
 # [3.3.0](https://github.com/jimmy-guzman/gitzy/compare/v3.2.0...v3.3.0) (2022-07-24)
 
 
