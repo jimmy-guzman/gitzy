@@ -58,18 +58,18 @@ You can use a `gitzy` object in your `package.json`, or the following files: `.g
 
 ## Options
 
-- [breakingChangeEmoji](###breakingChangeEmoji)
-- [closedIssueEmoji](###closedIssueEmoji)
-- [issuesHint](###issuesHint)
-- [issuesPrefix](###issuesPrefix)
-- [disableEmoji](###disableEmoji)
-- [details](###details)
-- [headerMaxLength](###headerMaxLength)
-- [headerMinLength](###headerMinLength)
-- [questions](###questions)
-- [scopes](###scopes)
-- [types](###types)
-- [useCommitlintConfig](###useCommitlintConfig)
+- [breakingChangeEmoji](#breakingChangeEmoji)
+- [closedIssueEmoji](#closedIssueEmoji)
+- [issuesHint](#issuesHint)
+- [issuesPrefix](#issuesPrefix)
+- [disableEmoji](#disableEmoji)
+- [details](#details)
+- [headerMaxLength](#headerMaxLength)
+- [headerMinLength](#headerMinLength)
+- [questions](#questions)
+- [scopes](#scopes)
+- [types](#types)
+- [useCommitlintConfig](#useCommitlintConfig)
 
 ### breakingChangeEmoji
 
