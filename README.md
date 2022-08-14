@@ -60,6 +60,7 @@ You can use a `gitzy` object in your `package.json`, or the following files: `.g
 
 - [breakingChangeEmoji](###breakingChangeEmoji)
 - [closedIssueEmoji](###closedIssueEmoji)
+- [issuesHint](###issuesHint)
 - [issuesPrefix](###issuesPrefix)
 - [disableEmoji](###disableEmoji)
 - [details](###details)
@@ -92,6 +93,14 @@ fix: 🐛 resolved nasty bug
 
 ```yml
 closedIssueEmoji: '🏁'
+```
+
+### issuesHint
+
+Allows you to customize the `issues` prompt hint
+
+```yml
+issuesHint: #123
 ```
 
 ### issuesPrefix

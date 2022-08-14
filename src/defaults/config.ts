@@ -18,6 +18,7 @@ export const defaultConfig: GitzyConfig = {
   disableEmoji: false,
   headerMaxLength: 64,
   headerMinLength: 3,
+  issuesHint: '#123',
   issuesPrefix: 'closes',
   questions,
   scopes: [],

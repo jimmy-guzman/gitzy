@@ -8,6 +8,7 @@ export const lang = {
   disableEmoji: 'disableEmoji must be a boolean',
   headerMaxLength: 'headerMaxLength must be a number',
   headerMinLength: 'headerMinLength must be a number',
+  issuesHint: `issuesHint must be a string`,
   issuesPrefix: `issuesPrefix must be one of ${validIssuesPrefixes.join(', ')}`,
   questions: 'questions must be an array of strings',
   scopes: 'scopes must be an array of strings',

@@ -27,6 +27,9 @@ describe('scheme', () => {
       'headerMinLength must be a number'
     )
   })
+  it(`should return message if issuesHint is invalid`, () => {
+    expect(schema.issuesHint(1)).toBe('issuesHint must be a string')
+  })
   it(`should return message if issuesPrefix is invalid`, () => {
     expect(schema.issuesPrefix(1)).toBe(
       'issuesPrefix must be one of close, closes, closed, fix, fixes, fixed, resolve, resolves, resolved'
