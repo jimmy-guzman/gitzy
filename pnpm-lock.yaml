@@ -31,7 +31,7 @@ specifiers:
   rollup-plugin-node-externals: 4.1.1
   rollup-plugin-visualizer: 5.7.1
   semantic-release: 19.0.3
-  ts-jest: 28.0.7
+  ts-jest: 28.0.8
   typescript: 4.7.4
   yaml: ^2.1.1
 
@@ -69,7 +69,7 @@ devDependencies:
   rollup-plugin-node-externals: 4.1.1_rollup@2.78.0
   rollup-plugin-visualizer: 5.7.1_rollup@2.78.0
   semantic-release: 19.0.3
-  ts-jest: 28.0.7_jbzmmxzawus56znfjufxsachqy
+  ts-jest: 28.0.8_jbzmmxzawus56znfjufxsachqy
   typescript: 4.7.4
 
 packages:
@@ -6288,8 +6288,8 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /ts-jest/28.0.7_jbzmmxzawus56znfjufxsachqy:
-    resolution: {integrity: sha512-wWXCSmTwBVmdvWrOpYhal79bDpioDy4rTT+0vyUnE3ZzM7LOAAGG9NXwzkEL/a516rQEgnMmS/WKP9jBPCVJyA==}
+  /ts-jest/28.0.8_jbzmmxzawus56znfjufxsachqy:
+    resolution: {integrity: sha512-5FaG0lXmRPzApix8oFG8RKjAz4ehtm8yMKOTy5HX3fY6W8kmvOrmcY0hKDElW52FJov+clhUbrKAqofnj4mXTg==}
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
     hasBin: true
     peerDependencies:
