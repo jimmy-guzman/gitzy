@@ -8,7 +8,7 @@ specifiers:
   '@rollup/plugin-node-resolve': 13.3.0
   '@semantic-release/changelog': 6.0.1
   '@semantic-release/git': 10.0.1
-  '@types/jest': 28.1.7
+  '@types/jest': 28.1.8
   '@types/node': 16.11.52
   ansi-colors: ^4.1.1
   commander: ^9.0.0
@@ -50,7 +50,7 @@ devDependencies:
   '@rollup/plugin-node-resolve': 13.3.0_rollup@2.78.1
   '@semantic-release/changelog': 6.0.1_semantic-release@19.0.3
   '@semantic-release/git': 10.0.1_semantic-release@19.0.3
-  '@types/jest': 28.1.7
+  '@types/jest': 28.1.8
   '@types/node': 16.11.52
   commitlint: 17.0.3
   esbuild: 0.15.5
@@ -1399,8 +1399,8 @@ packages:
       '@types/istanbul-lib-report': 3.0.0
     dev: true
 
-  /@types/jest/28.1.7:
-    resolution: {integrity: sha512-acDN4VHD40V24tgu0iC44jchXavRNVFXQ/E6Z5XNsswgoSO/4NgsXoEYmPUGookKldlZQyIpmrEXsHI9cA3ZTA==}
+  /@types/jest/28.1.8:
+    resolution: {integrity: sha512-8TJkV++s7B6XqnDrzR1m/TT0A0h948Pnl/097veySPN67VRAgQ4gZ7n2KfJo2rVq6njQjdxU3GCCyDvAeuHoiw==}
     dependencies:
       expect: 28.1.3
       pretty-format: 28.1.3
