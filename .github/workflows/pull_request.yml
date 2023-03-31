@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: ['14', '16']
+        node: ['14', '16', '18']
 
     steps:
       - uses: actions/checkout@v3
@@ -15,9 +15,9 @@ jobs:
           fetch-depth: 0
 
       - name: setup pnpm
-        uses: pnpm/action-setup@v2.2.2
+        uses: pnpm/action-setup@v2
         with:
-          version: 7.1.8
+          version: 7
 
       - name: setup cache ${{ matrix.node }}
         uses: actions/setup-node@v3
@@ -63,7 +63,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: streetsidesoftware/cspell-action@v2.8.1
+      - uses: streetsidesoftware/cspell-action@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN}}
           inline: error
