@@ -65,7 +65,7 @@
     "@types/jest": "28.1.8",
     "@types/node": "18.15.11",
     "commitlint": "17.1.2",
-    "esbuild": "0.15.5",
+    "esbuild": "0.19.2",
     "eslint": "8.23.0",
     "eslint-config-jimmy-guzman": "7.0.0",
     "eslint-import-resolver-typescript": "3.5.0",
