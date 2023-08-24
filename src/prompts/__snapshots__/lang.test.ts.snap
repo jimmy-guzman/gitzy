@@ -1,25 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`lang promptsLang should create prompts lang 1`] = `
-Object {
-  "body": Object {
+{
+  "body": {
     "hint": "...supports multi line, press enter to go to next line",
     "message": "Add a longer description
 ",
   },
-  "breaking": Object {
+  "breaking": {
     "hint": "[2m...skip when none[22m",
     "message": "[1mAdd any breaking changes[22m
   [31mBREAKING CHANGE:[39m",
   },
-  "scope": Object {
+  "scope": {
     "hint": "[2m...type or use arrow keys[22m",
     "message": "Choose the scope",
   },
-  "subject": Object {
+  "subject": {
     "message": "Add a short description",
   },
-  "type": Object {
+  "type": {
     "hint": "[2m...type or use arrow keys[22m",
     "message": "Choose the type",
   },

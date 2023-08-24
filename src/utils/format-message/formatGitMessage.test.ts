@@ -149,12 +149,12 @@ describe('formatCommitMessage', () => {
     )
 
     expect(formattedMessage).toMatchInlineSnapshot(`
-      "feat(*): ✨ reduce deps by replacing \\\\\`cosmiconfig\\\\\` w/ \\\\\`lilconfig\\\\\` & \\\\\`yaml\\\\\`
+      "feat(*): ✨ reduce deps by replacing \\\`cosmiconfig\\\` w/ \\\`lilconfig\\\` & \\\`yaml\\\`
 
       this an amazing feature, lots of details
 
       BREAKING CHANGE: 💥 breaks everything
-      
+
       🏁 Closes: #123"
     `)
   })
@@ -167,7 +167,7 @@ describe('formatCommitMessage', () => {
     })
 
     expect(formattedMessage).toMatchInlineSnapshot(
-      `"feat(*): ✨ this has \\\\\\"quotes\\\\\\""`
+      `"feat(*): ✨ this has \\"quotes\\""`
     )
   })
   it('should allow backtick quotes in message', () => {
@@ -179,7 +179,7 @@ describe('formatCommitMessage', () => {
     })
 
     expect(formattedMessage).toMatchInlineSnapshot(
-      `"feat(*): ✨ this has \\\\\`quotes\\\\\`"`
+      `"feat(*): ✨ this has \\\`quotes\\\`"`
     )
   })
   it('should not wrap message when headerMaxLength is longer than the default width (72)', () => {
@@ -212,9 +212,9 @@ describe('formatCommitMessage', () => {
     )
 
     expect(formattedMessage).toMatchInlineSnapshot(`
-"feat(*): ✨ this is a very very very very very very very very very
-subject"
-`)
+      "feat(*): ✨ this is a very very very very very very very very very
+      subject"
+    `)
     expect(formattedMessage.split('\n')[0]).toHaveLength(65)
   })
   describe('wrap', () => {
@@ -224,9 +224,9 @@ subject"
       )
 
       expect(wrappedString).toMatchInlineSnapshot(`
-"feat(*): ✨ this is a very very very very very very very very very
-subject"
-`)
+        "feat(*): ✨ this is a very very very very very very very very very
+        subject"
+      `)
       expect(wrappedString.split('\n')[0]).toHaveLength(65)
     })
   })
