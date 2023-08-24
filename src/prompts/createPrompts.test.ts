@@ -1,5 +1,5 @@
-import { defaultConfig } from '../defaults'
 import { createPrompts } from './createPrompts'
+import { defaultConfig } from '../defaults'
 
 const setupCreatePrompts = (
   flags = {},

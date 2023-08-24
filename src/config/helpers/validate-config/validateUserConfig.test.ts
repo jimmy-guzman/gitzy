@@ -1,5 +1,5 @@
-import { defaultConfig } from '../../../defaults'
 import { validateConfig, validateUserConfig } from './validateUserConfig'
+import { defaultConfig } from '../../../defaults'
 
 describe('validateConfig', () => {
   it('should return unknown or additional properties detected', () => {
