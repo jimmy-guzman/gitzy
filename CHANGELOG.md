@@ -1,3 +1,10 @@
+## [3.5.1](https://github.com/jimmy-guzman/gitzy/compare/v3.5.0...v3.5.1) (2023-08-24)
+
+
+### Bug Fixes
+
+* **deps:** 🐛 bump `yaml` to v2.2.2 to fix security vulnerability ([a91ea7d](https://github.com/jimmy-guzman/gitzy/commit/a91ea7d148f06fe7ac2f2c213e6aff8dad49e9f8))
+
 # [3.5.0](https://github.com/jimmy-guzman/gitzy/compare/v3.4.0...v3.5.0) (2023-08-24)
 
 
