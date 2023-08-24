@@ -17,7 +17,7 @@
   },
   "bin": "./dist/index.js",
   "scripts": {
-    "build": "pkgroll --minify --target=node14",
+    "build": "pkgroll --minify --target=node16",
     "format": "prettier '**/**/*.{md,yml,json,ts}'",
     "format:check": "pnpm format -c",
     "format:fix": "pnpm format -w",
@@ -72,9 +72,6 @@
     "dist"
   ],
   "engines": {
-    "node": ">= 14"
-  },
-  "volta": {
-    "node": "16.17.0"
+    "node": ">= 16"
   }
 }
