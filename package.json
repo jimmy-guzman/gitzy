@@ -43,10 +43,7 @@
     ]
   },
   "dependencies": {
-    "commander": "^11.0.0",
-    "enquirer": "^2.3.6",
-    "lilconfig": "^2.0.4",
-    "yaml": "^2.2.2"
+    "lilconfig": "^2.0.4"
   },
   "devDependencies": {
     "@comparto/prettier-config": "1.2.0",
@@ -58,6 +55,8 @@
     "clean-pkg-json": "1.2.0",
     "commitlint": "19.2.0",
     "eslint": "8.57.0",
+    "commander": "11.0.0",
+    "enquirer": "2.3.6",
     "eslint-config-jimmy-guzman": "12.2.0",
     "husky": "9.0.11",
     "is-ci": "3.0.1",
