@@ -10,22 +10,22 @@ describe('executeDryRun', () => {
 
     expect(spy).toMatchInlineSnapshot(`
       [MockFunction] {
-        "calls": Array [
-          Array [
+        "calls": [
+          [
             "[34m❯ Message...[39m",
           ],
-          Array [
+          [
             "
       feat(cli): ✨ initial release
       ",
           ],
         ],
-        "results": Array [
-          Object {
+        "results": [
+          {
             "type": "return",
             "value": undefined,
           },
-          Object {
+          {
             "type": "return",
             "value": undefined,
           },

@@ -43,7 +43,7 @@ describe('createPrompts', () => {
 
     expect(prompts).toStrictEqual(['subject', 'breaking', 'issues'])
   })
-  it('should only creat user defined questions', () => {
+  it('should only create user defined questions', () => {
     const prompts = setupCreatePrompts({}, ['type'])
 
     expect(prompts).toStrictEqual(['type'])
