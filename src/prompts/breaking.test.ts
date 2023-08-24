@@ -1,7 +1,7 @@
 import type { EnquirerPrompt } from '../interfaces'
 
-import { defaultConfig } from '../defaults'
 import { breaking } from './breaking'
+import { defaultConfig } from '../defaults'
 
 describe('breaking', () => {
   it('should create body prompt', () => {

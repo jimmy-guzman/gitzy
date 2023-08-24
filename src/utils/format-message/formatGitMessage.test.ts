@@ -1,6 +1,6 @@
 /* eslint-disable jest/no-large-snapshots */
-import { defaultConfig } from '../../defaults'
 import { formatCommitMessage, wrap } from './formatGitMessage'
+import { defaultConfig } from '../../defaults'
 
 const setupFormatCommitMessage = (config = {}, answers = {}): string => {
   return formatCommitMessage(

@@ -7,8 +7,8 @@ import type {
   EnquirerState,
 } from '../interfaces'
 
-import { defaultConfig } from '../defaults'
 import { leadingLabel, subject } from './subject'
+import { defaultConfig } from '../defaults'
 
 interface Custom extends Omit<Required<EnquirerPrompt>, 'message'> {
   message: (state?: EnquirerState | undefined) => string

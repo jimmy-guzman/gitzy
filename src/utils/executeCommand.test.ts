@@ -1,6 +1,6 @@
 /* eslint-disable jest/no-large-snapshots */
-import { defaultConfig } from '../defaults'
 import * as fns from './executeCommand'
+import { defaultConfig } from '../defaults'
 
 describe('executeDryRun', () => {
   it('should console log git message', () => {

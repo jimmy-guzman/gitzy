@@ -11,9 +11,7 @@ const mockLoadConfig = (
 ): jest.SpyInstance => {
   return jest
     .spyOn(helpers, 'loadConfig')
-    .mockImplementationOnce(() =>
-      Promise.resolve(config ? { config, filepath: '' } : null)
-    )
+    .mockResolvedValueOnce(config ? { config, filepath: '' } : null)
 }
 
 const mockGetCommitlintConfig = (
@@ -21,13 +19,13 @@ const mockGetCommitlintConfig = (
 ): jest.SpyInstance => {
   return jest
     .spyOn(helpers, 'getCommitlintConfig')
-    .mockImplementationOnce(() => Promise.resolve(config))
+    .mockResolvedValueOnce(config)
 }
 
 const mockValidateUserConfig = (isValid = true): jest.SpyInstance => {
   return jest
     .spyOn(helpers, 'validateUserConfig')
-    .mockImplementationOnce(() => Promise.resolve(isValid))
+    .mockResolvedValueOnce(isValid)
 }
 
 describe('getUserConfig', () => {

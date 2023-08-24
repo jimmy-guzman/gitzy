@@ -5,6 +5,7 @@ import Enquirer from 'enquirer'
 import type { Answers, Flags } from '../interfaces'
 import type { CommanderError } from 'commander'
 
+import { options } from './options'
 import { getUserConfig } from '../config'
 import { defaultConfig, defaultAnswers } from '../defaults'
 import { lang } from '../lang'
@@ -21,7 +22,6 @@ import {
   GitzyStore,
   hint,
 } from '../utils'
-import { options } from './options'
 
 const enquirerOptions = {
   autofill: true,

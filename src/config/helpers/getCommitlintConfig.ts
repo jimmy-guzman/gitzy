@@ -1,6 +1,6 @@
-import { cleanObject } from '../../utils'
 import { loadConfig } from './loadConfig'
 import { validateUserConfig } from './validate-config'
+import { cleanObject } from '../../utils'
 
 interface CommitlintOverrides {
   headerMaxLength?: number
