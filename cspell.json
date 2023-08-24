@@ -27,6 +27,7 @@
     "lilconfig",
     "nvmrc",
     "outfile",
+    "pkgroll",
     "pnpm",
     "postbuild",
     "postpublish",

@@ -4,7 +4,7 @@ import { execSync } from 'child_process'
 const setupGitzy = async (args: string): Promise<unknown> => {
   return new Promise((resolve, reject) => {
     try {
-      const result = execSync(`node ./bin/run --dry-run ${args}`)
+      const result = execSync(`node ./dist/index.js --dry-run ${args}`)
         .toString('utf8')
         .split('\n')
 
