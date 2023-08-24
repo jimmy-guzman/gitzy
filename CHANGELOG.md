@@ -1,3 +1,16 @@
+# [4.0.0](https://github.com/jimmy-guzman/gitzy/compare/v3.5.1...v4.0.0) (2023-08-24)
+
+
+### Features
+
+* ✨ support node v20, drop support for v14 ([424a113](https://github.com/jimmy-guzman/gitzy/commit/424a1135ba652355e6a2a17e996e453642d4e468))
+* **deps:** ✨ bump `commander` to v11.0.0 ([c3de75b](https://github.com/jimmy-guzman/gitzy/commit/c3de75bec4533832273f9aac43b114a9e0e4155f))
+
+
+### BREAKING CHANGES
+
+* 💥 node v14 is no longer supported
+
 ## [3.5.1](https://github.com/jimmy-guzman/gitzy/compare/v3.5.0...v3.5.1) (2023-08-24)
 
 
