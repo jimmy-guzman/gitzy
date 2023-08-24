@@ -6,7 +6,7 @@ settings:
 
 dependencies:
   lilconfig:
-    specifier: ^2.0.4
+    specifier: ^2.1.0
     version: 2.1.0
 
 devDependencies:
