@@ -1,3 +1,10 @@
+# [3.5.0](https://github.com/jimmy-guzman/gitzy/compare/v3.4.0...v3.5.0) (2023-08-24)
+
+
+### Features
+
+* **build:** ✨ use `pkgroll` for simpler bundling and less deps ([f331fdb](https://github.com/jimmy-guzman/gitzy/commit/f331fdb7fdfe92d3af61ea8fc1a1ebccf69d8c1c))
+
 # [3.4.0](https://github.com/jimmy-guzman/gitzy/compare/v3.3.0...v3.4.0) (2022-08-14)
 
 
