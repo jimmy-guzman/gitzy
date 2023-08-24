@@ -14,8 +14,8 @@ dependencies:
     specifier: ^2.0.4
     version: 2.0.6
   yaml:
-    specifier: ^2.1.1
-    version: 2.1.1
+    specifier: ^2.2.2
+    version: 2.3.1
 
 devDependencies:
   '@comparto/prettier-config':
@@ -4550,7 +4550,7 @@ packages:
       object-inspect: 1.12.2
       pidtree: 0.6.0
       string-argv: 0.3.1
-      yaml: 2.1.1
+      yaml: 2.3.1
     transitivePeerDependencies:
       - enquirer
       - supports-color
@@ -6475,8 +6475,8 @@ packages:
     engines: {node: '>= 6'}
     dev: true
 
-  /yaml@2.1.1:
-    resolution: {integrity: sha512-o96x3OPo8GjWeSLF+wOAbrPfhFOGY0W00GNaxCDv+9hkcDJEnev1yh8S7pgHF0ik6zc8sQLuL8hjHjJULZp8bw==}
+  /yaml@2.3.1:
+    resolution: {integrity: sha512-2eHWfjaoXgTBC2jNM1LRef62VQa0umtvRiDSk6HSzW7RvS5YtkabJrwYLLEKWBc8a5U2PTSCs+dJjUTJdlHsWQ==}
     engines: {node: '>= 14'}
 
   /yargs-parser@20.2.9:
