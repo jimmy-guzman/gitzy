@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "ansi-colors": "^4.1.1",
-    "commander": "^9.0.0",
+    "commander": "^11.0.0",
     "enquirer": "^2.3.6",
     "lilconfig": "^2.0.4",
     "yaml": "^2.2.2"
