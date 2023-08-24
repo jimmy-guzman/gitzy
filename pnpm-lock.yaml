@@ -5,8 +5,8 @@ dependencies:
     specifier: ^4.1.1
     version: 4.1.3
   commander:
-    specifier: ^9.0.0
-    version: 9.3.0
+    specifier: ^11.0.0
+    version: 11.0.0
   enquirer:
     specifier: ^2.3.6
     version: 2.3.6
@@ -2355,12 +2355,6 @@ packages:
   /commander@11.0.0:
     resolution: {integrity: sha512-9HMlXtt/BNoYr8ooyjjNRdIilOTkVJXB+GhxMTtOKwk0R4j4lS4NpjuqmRxroBfnfTSHQIHQB7wryHhXarNjmQ==}
     engines: {node: '>=16'}
-    dev: true
-
-  /commander@9.3.0:
-    resolution: {integrity: sha512-hv95iU5uXPbK83mjrJKuZyFM/LBAoCV/XhVGkS5Je6tl7sxr6A0ITMw5WoRV46/UaJ46Nllm3Xt7IaJhXTIkzw==}
-    engines: {node: ^12.20.0 || >=14}
-    dev: false
 
   /commitlint@17.7.1:
     resolution: {integrity: sha512-DVsF4pNpcGfQPu8KOVohNJAHE6ZBT7qTo33yG2SYiojrMnUOjh3eUOjQSjn5sP60/w2UndZqpQNsfQJrXU1bFA==}
