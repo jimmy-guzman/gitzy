@@ -17,7 +17,7 @@ jobs:
       - name: setup pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 7
+          version: 7.33.6
 
       - name: setup cache ${{ matrix.node }}
         uses: actions/setup-node@v3
