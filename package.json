@@ -55,7 +55,7 @@
     "@types/jest": "29.5.11",
     "@types/node": "18.17.14",
     "commitlint": "17.8.1",
-    "eslint": "8.47.0",
+    "eslint": "8.56.0",
     "eslint-config-jimmy-guzman": "9.1.0",
     "husky": "8.0.3",
     "is-ci": "3.0.1",
