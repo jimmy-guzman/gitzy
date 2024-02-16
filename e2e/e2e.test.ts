@@ -1,5 +1,5 @@
 /* eslint-disable jest/no-large-snapshots */
-import { execSync } from 'child_process'
+import { execSync } from 'node:child_process'
 
 const setupGitzy = async (args: string): Promise<unknown> => {
   return new Promise((resolve, reject) => {

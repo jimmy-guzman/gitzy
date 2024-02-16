@@ -1,11 +1,11 @@
 import { lang } from './lang'
 import {
-  isValidDetails,
-  isValidIssues,
   isArrayOfStrings,
-  isString,
   isBoolean,
   isNumber,
+  isString,
+  isValidDetails,
+  isValidIssues,
 } from './validators'
 
 type Scheme = (value: unknown) => boolean | string

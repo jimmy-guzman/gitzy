@@ -1,4 +1,4 @@
-import { log, danger, info } from './logging'
+import { danger, info, log } from './logging'
 
 const message = 'logging...'
 

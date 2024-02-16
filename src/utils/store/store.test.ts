@@ -1,4 +1,4 @@
-import fs from 'fs'
+import fs from 'node:fs'
 
 import { GitzyStore } from './store'
 import * as utils from './utils'

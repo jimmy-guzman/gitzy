@@ -1,6 +1,6 @@
 import {
-  getCommitlintOverrides,
   getCommitlintConfig,
+  getCommitlintOverrides,
 } from './getCommitlintConfig'
 import * as utils from './loadConfig'
 

@@ -1,7 +1,6 @@
+import type { Loader } from 'lilconfig'
 import { lilconfig } from 'lilconfig'
 import yaml from 'yaml'
-
-import type { Loader } from 'lilconfig'
 
 const loadYaml: Loader = (_filepath, content) => {
   return yaml.parse(content)

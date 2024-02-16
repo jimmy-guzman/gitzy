@@ -1,5 +1,4 @@
 import type { GitzyConfig } from '../interfaces'
-
 import { getUserConfig } from './getUserConfig'
 import * as helpers from './helpers'
 

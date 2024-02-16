@@ -1,4 +1,4 @@
-import type { GitzyConfig, Answers } from '../../interfaces'
+import type { Answers, GitzyConfig } from '../../interfaces'
 
 const MAX_WIDTH = 72
 

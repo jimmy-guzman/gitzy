@@ -1,5 +1,5 @@
 import { cli } from './cli'
-import { gitzyPkg, log, danger, info } from './utils'
+import { danger, gitzyPkg, info, log } from './utils'
 
 const version = parseInt(process.versions.node, 10)
 
