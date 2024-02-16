@@ -17,10 +17,10 @@ jobs:
         with:
           version: 7
 
-      - name: setup cache ${{ matrix.node }}
+      - name: setup cache
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 20
           cache: pnpm
 
       - name: install
