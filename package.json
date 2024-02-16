@@ -30,6 +30,7 @@
     "ts-check:watch": "pnpm ts-check --watch",
     "validate": "run-p lint format:check test ts-check",
     "cz": "pnpm build && ./dist/index.js --commitlint",
+    "prepack": "pnpm build",
     "prepare": "is-ci || husky install"
   },
   "prettier": "@comparto/prettier-config",
