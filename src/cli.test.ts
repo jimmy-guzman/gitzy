@@ -1,36 +1,39 @@
 import Enquirer from 'enquirer'
 
-import * as config from '../config'
-import { defaultAnswers, defaultConfig } from '../defaults'
-import * as utils from '../utils'
 import { cli } from './cli'
+import * as config from './config'
+import { defaultAnswers, defaultConfig } from './defaults'
+import * as utils from './utils'
 
-jest.mock('enquirer')
+vi.mock('enquirer')
+
+vi.mock('../package.json', () => ({
+  engines: { node: '14' },
+  version: '1.0.0',
+}))
 
 describe('cli', () => {
   beforeAll(() => {
-    jest.mocked(Enquirer).mockImplementation(() => {
+    vi.mocked(Enquirer).mockImplementation(() => {
       return {
-        prompt: jest.fn(),
+        prompt: vi.fn(),
       } as unknown as Enquirer
     })
   })
   it('should run with defaults', async () => {
     process.argv = []
-    jest
-      .spyOn(utils, 'gitzyPkg')
-      .mockReturnValueOnce({ engines: { node: '14' }, version: '1.0.0' })
-    const executeGitMessageSpy = jest
+
+    const executeGitMessageSpy = vi
       .spyOn(utils, 'executeGitMessage')
-      .mockImplementationOnce(jest.fn())
-    const checkIfGitSpy = jest
+      .mockImplementationOnce(vi.fn())
+    const checkIfGitSpy = vi
       .spyOn(utils, 'checkIfGitRepo')
       .mockResolvedValueOnce('yes')
-    const checkIfStagedSpy = jest
+    const checkIfStagedSpy = vi
       .spyOn(utils, 'checkIfStaged')
       .mockResolvedValueOnce('yes')
 
-    const getUserConfigSpy = jest
+    const getUserConfigSpy = vi
       .spyOn(config, 'getUserConfig')
       .mockResolvedValueOnce(defaultConfig)
 

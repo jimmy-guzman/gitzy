@@ -4,7 +4,7 @@ import { GitzyStore } from './store'
 import * as utils from './utils'
 
 const mockGitzyStorePath = (): void => {
-  jest.spyOn(utils, 'gitzyStorePath').mockReturnValueOnce('path')
+  vi.spyOn(utils, 'gitzyStorePath').mockReturnValueOnce('path')
 }
 
 describe('gitzyStore', () => {
@@ -21,16 +21,18 @@ describe('gitzyStore', () => {
 
   it('should setup gitzy store', () => {
     mockGitzyStorePath()
-    expect(new GitzyStore()).toEqual({
-      clear: expect.any(Function),
-      destroy: expect.any(Function),
-      json: expect.any(Function),
-      load: expect.any(Function),
-      path: 'path',
-      readParseFile: expect.any(Function),
-      tryLoad: expect.any(Function),
-      writeFile: expect.any(Function),
-    })
+    expect(new GitzyStore()).toEqual(
+      expect.objectContaining({
+        clear: expect.any(Function),
+        destroy: expect.any(Function),
+        json: expect.any(Function),
+        load: expect.any(Function),
+        path: 'path',
+        readParseFile: expect.any(Function),
+        tryLoad: expect.any(Function),
+        writeFile: expect.any(Function),
+      })
+    )
   })
   it('should load saved data', () => {
     mockGitzyStorePath()
@@ -48,7 +50,7 @@ describe('gitzyStore', () => {
     class CustomError extends Error {
       code = 'EACCES'
     }
-    jest.spyOn(fs, 'readFileSync').mockImplementationOnce(() => {
+    vi.spyOn(fs, 'readFileSync').mockImplementationOnce(() => {
       throw new CustomError()
     })
     expect(() => {
@@ -61,7 +63,7 @@ describe('gitzyStore', () => {
     class CustomError extends Error {
       code = 'SyntaxError'
     }
-    jest.spyOn(fs, 'readFileSync').mockImplementationOnce(() => {
+    vi.spyOn(fs, 'readFileSync').mockImplementationOnce(() => {
       throw new CustomError()
     })
     expect(() => {

@@ -1,15 +1,20 @@
 /* eslint-disable jest/no-large-snapshots */
+import type { ChildProcess } from 'node:child_process'
+import { spawn } from 'node:child_process'
+
 import { defaultConfig } from '../defaults'
 import * as fns from './executeCommand'
 
+vi.mock('child_process')
+
 describe('executeDryRun', () => {
   it('should console log git message', () => {
-    const spy = jest.spyOn(console, 'log').mockImplementation(jest.fn())
+    const spy = vi.spyOn(console, 'log').mockImplementation(vi.fn())
 
     fns.executeDryRun('feat(cli): ✨ initial release')
 
     expect(spy).toMatchInlineSnapshot(`
-      [MockFunction] {
+      [MockFunction log] {
         "calls": [
           [
             "[34m❯ Message...[39m",
@@ -45,30 +50,24 @@ describe('executeGitMessage', () => {
     type: 'feat',
   }
 
-  afterEach(() => {
-    jest.restoreAllMocks()
-  })
-
   it('should call executeCommand by default', () => {
-    const executeCommandSpy = jest
-      .spyOn(fns, 'executeCommand')
-      .mockImplementation(jest.fn())
+    const mockSpawn = vi
+      .mocked(spawn)
+      .mockImplementation(() => ({ on: vi.fn() }) as unknown as ChildProcess)
 
     fns.executeGitMessage({ config: defaultConfig, answers }, {})
 
-    expect(executeCommandSpy).toHaveBeenCalledTimes(1)
+    expect(mockSpawn).toHaveBeenCalledTimes(1)
   })
 
-  it('should call executeDryRun and not executeCommand when in dry ryn mode', () => {
-    const executeCommandSpy = jest
+  it('should call executeDryRun and not executeCommand when in dry run mode', () => {
+    const executeCommandSpy = vi
       .spyOn(fns, 'executeCommand')
-      .mockImplementation(jest.fn())
-    const executeDryRunSpy = jest
-      .spyOn(fns, 'executeDryRun')
-      .mockImplementation(jest.fn())
+      .mockImplementation(vi.fn())
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(vi.fn())
 
     fns.executeGitMessage({ config: defaultConfig, answers }, { dryRun: true })
-    expect(executeDryRunSpy).toHaveBeenCalledTimes(1)
+    expect(logSpy).toHaveBeenCalledTimes(2)
     expect(executeCommandSpy).not.toHaveBeenCalled()
   })
 })

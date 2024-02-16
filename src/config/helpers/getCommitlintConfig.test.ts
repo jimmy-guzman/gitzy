@@ -24,17 +24,18 @@ describe('getCommitlintConfig', () => {
       })
     })
     it('should return null when there is no commitlint config', async () => {
-      jest.spyOn(utils, 'loadConfig').mockResolvedValueOnce(null)
+      vi.spyOn(utils, 'loadConfig').mockResolvedValueOnce(null)
       await expect(getCommitlintConfig()).resolves.toBeNull()
     })
     it('should return null when the commitlint config is not valid', async () => {
-      jest
-        .spyOn(utils, 'loadConfig')
-        .mockResolvedValueOnce({ config: 'not valid', filepath: '' })
+      vi.spyOn(utils, 'loadConfig').mockResolvedValueOnce({
+        config: 'not valid',
+        filepath: '',
+      })
       await expect(getCommitlintConfig()).resolves.toBeNull()
     })
     it('should return commitlint config', async () => {
-      jest.spyOn(utils, 'loadConfig').mockResolvedValueOnce({
+      vi.spyOn(utils, 'loadConfig').mockResolvedValueOnce({
         config: {
           rules: {
             'scope-enum': ['', '', ['feat']],

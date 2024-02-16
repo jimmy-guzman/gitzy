@@ -1,10 +1,12 @@
 import * as child_process from 'node:child_process'
 
+import type { Mock } from 'vitest'
+
 import { checkIfGitRepo, checkIfStaged, shouldDoGitChecks } from './git-utils'
 
-jest.mock('node:child_process')
+vi.mock('node:child_process')
 
-const childProcessMock = child_process.exec as unknown as jest.Mock
+const childProcessMock = child_process.exec as unknown as Mock
 
 const mockExec = (value: string | null = null): void => {
   childProcessMock.mockImplementation(
