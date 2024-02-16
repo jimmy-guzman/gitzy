@@ -1,3 +1,10 @@
+# [5.1.0](https://github.com/jimmy-guzman/gitzy/compare/v5.0.0...v5.1.0) (2024-02-16)
+
+
+### Features
+
+* ✨ optimize by moving from Common JS to ES Modules ([bfa53b9](https://github.com/jimmy-guzman/gitzy/commit/bfa53b9192ea7519b901555bec4eadaf715f9a13))
+
 # [5.0.0](https://github.com/jimmy-guzman/gitzy/compare/v4.0.0...v5.0.0) (2024-02-16)
 
 
