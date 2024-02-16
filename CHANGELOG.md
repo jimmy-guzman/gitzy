@@ -1,3 +1,15 @@
+# [5.2.0](https://github.com/jimmy-guzman/gitzy/compare/v5.1.0...v5.2.0) (2024-02-16)
+
+
+### Bug Fixes
+
+* 🐛 show correct version when running `--version` ([45190cf](https://github.com/jimmy-guzman/gitzy/commit/45190cf84ec1f46d029913d125cff46ef65ee5ed))
+
+
+### Features
+
+* ✨ reduce package.json noise when publishing ([b09e4b9](https://github.com/jimmy-guzman/gitzy/commit/b09e4b98d95ea5b51a619434ac9f67db6604bb1d))
+
 # [5.1.0](https://github.com/jimmy-guzman/gitzy/compare/v5.0.0...v5.1.0) (2024-02-16)
 
 
