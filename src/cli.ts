@@ -3,24 +3,24 @@ import type { CommanderError } from 'commander'
 import { program } from 'commander'
 import Enquirer from 'enquirer'
 
-import { getUserConfig } from '../config'
-import { defaultAnswers, defaultConfig } from '../defaults'
-import type { Answers, Flags } from '../interfaces'
-import { lang } from '../lang'
-import { createPrompts } from '../prompts'
+import { version } from '../package.json' assert { type: 'json' }
+import { options } from './cli/options'
+import { getUserConfig } from './config'
+import { defaultAnswers, defaultConfig } from './defaults'
+import type { Answers, Flags } from './interfaces'
+import { lang } from './lang'
+import { createPrompts } from './prompts'
 import {
   checkIfGitRepo,
   checkIfStaged,
   danger,
   executeGitMessage,
-  gitzyPkg,
   GitzyStore,
   hint,
   info,
   log,
   shouldDoGitChecks,
-} from '../utils'
-import { options } from './options'
+} from './utils'
 
 const enquirerOptions = {
   autofill: true,
@@ -64,7 +64,7 @@ export const cli = async (): Promise<void> => {
         write(`\n${danger(error)}\n`)
       },
     })
-    .version(gitzyPkg().version, '-v, --version')
+    .version(version, '-v, --version')
     .description(lang.description)
     .option('-d, --body <body>', lang.flags.body)
     .option('-b, --breaking <breaking>', lang.flags.breaking)

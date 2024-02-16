@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`lang promptsLang should create prompts lang 1`] = `
+exports[`lang > promptsLang > should create prompts lang 1`] = `
 {
   "body": {
     "hint": "...supports multi line, press enter to go to next line",

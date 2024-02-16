@@ -7,30 +7,24 @@ const mockCommitlintConfig = { headerMinLength: 5 }
 
 const mockLoadConfig = (
   config: Partial<GitzyConfig> | null = mockUserConfig
-): jest.SpyInstance => {
-  return jest
+) => {
+  return vi
     .spyOn(helpers, 'loadConfig')
     .mockResolvedValueOnce(config ? { config, filepath: '' } : null)
 }
 
-const mockGetCommitlintConfig = (
-  config = mockCommitlintConfig
-): jest.SpyInstance => {
-  return jest
-    .spyOn(helpers, 'getCommitlintConfig')
-    .mockResolvedValueOnce(config)
+const mockGetCommitlintConfig = (config = mockCommitlintConfig) => {
+  return vi.spyOn(helpers, 'getCommitlintConfig').mockResolvedValueOnce(config)
 }
 
-const mockValidateUserConfig = (isValid = true): jest.SpyInstance => {
-  return jest
-    .spyOn(helpers, 'validateUserConfig')
-    .mockResolvedValueOnce(isValid)
+const mockValidateUserConfig = (isValid = true) => {
+  return vi.spyOn(helpers, 'validateUserConfig').mockResolvedValueOnce(isValid)
 }
 
 describe('getUserConfig', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
-    jest.resetAllMocks()
+    vi.clearAllMocks()
+    vi.resetAllMocks()
   })
   it('should only return user config when loaded & isValid', async () => {
     const loadConfigSpy = mockLoadConfig()

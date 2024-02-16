@@ -10,7 +10,7 @@ describe('utils', () => {
   })
   describe('tryUnlink', () => {
     it('should throw when there is non ENOENT error', () => {
-      jest.spyOn(fs, 'unlinkSync').mockImplementationOnce(() => {
+      vi.spyOn(fs, 'unlinkSync').mockImplementationOnce(() => {
         throw new Error('some new error')
       })
 
@@ -22,7 +22,7 @@ describe('utils', () => {
       class CustomError extends Error {
         code = 'ENOENT'
       }
-      jest.spyOn(fs, 'unlinkSync').mockImplementationOnce(() => {
+      vi.spyOn(fs, 'unlinkSync').mockImplementationOnce(() => {
         throw new CustomError('ENOENT')
       })
 
@@ -33,13 +33,14 @@ describe('utils', () => {
   })
   describe('directoryExists', () => {
     it('should return false when there is no stat', () => {
-      jest.spyOn(utils, 'tryStat').mockReturnValueOnce(null)
+      vi.spyOn(utils, 'tryStat').mockReturnValueOnce(null)
       expect(utils.directoryExists('path')).toBe(false)
     })
-    it('should return false when there is a stat', () => {
-      jest
-        .spyOn(utils, 'tryStat')
-        .mockReturnValueOnce({ isDirectory: jest.fn() } as unknown as Stats)
+    it('should throw when directory does not exist', () => {
+      vi.spyOn(fs, 'statSync').mockImplementationOnce(() => {
+        return { isDirectory: () => false } as Stats
+      })
+
       expect(() => utils.directoryExists('path')).toThrow(
         'Path exists and is not a directory: "path"'
       )
@@ -65,7 +66,7 @@ describe('utils', () => {
       }).toThrow('')
     })
     it('should not throw when error is ignored', () => {
-      jest.spyOn(path, 'dirname').mockReturnValueOnce('path1')
+      vi.spyOn(path, 'dirname').mockReturnValueOnce('path1')
       expect(() => {
         utils.handleError('path2', {
           message: 'MESSAGE',
@@ -78,7 +79,7 @@ describe('utils', () => {
 
   describe('tryState', () => {
     it('should return null when fs.statSync throws', () => {
-      jest.spyOn(fs, 'statSync').mockImplementationOnce(() => {
+      vi.spyOn(fs, 'statSync').mockImplementationOnce(() => {
         throw new Error('')
       })
 
@@ -90,43 +91,39 @@ describe('utils', () => {
     const DIR_NAME = 'dirname'
 
     it('should do nothing when directory exists', () => {
-      const mkdirSyncSpy = jest
+      vi.spyOn(fs, 'statSync').mockImplementationOnce(() => {
+        return { isDirectory: () => true } as Stats
+      })
+      const mkdirSyncSpy = vi
         .spyOn(fs, 'mkdirSync')
-        .mockImplementationOnce(jest.fn())
-      const handleErrorSpy = jest.spyOn(utils, 'handleError')
+        .mockImplementationOnce(vi.fn())
 
-      jest.spyOn(utils, 'directoryExists').mockReturnValueOnce(true)
+      const handleErrorSpy = vi.spyOn(utils, 'handleError')
+
+      vi.spyOn(utils, 'directoryExists').mockReturnValueOnce(true)
 
       utils.mkdir(DIR_NAME)
       expect(mkdirSyncSpy).not.toHaveBeenCalled()
       expect(handleErrorSpy).not.toHaveBeenCalled()
     })
-    it('should do throw when mkdirSync fails', () => {
-      const mkdirSyncSpy = jest
-        .spyOn(fs, 'mkdirSync')
-        .mockImplementationOnce(() => {
-          throw new Error('')
-        })
-      const handleErrorSpy = jest
-        .spyOn(utils, 'handleError')
-        .mockImplementationOnce(jest.fn())
-
-      jest.spyOn(utils, 'directoryExists').mockReturnValueOnce(false)
-
-      utils.mkdir(DIR_NAME)
-
-      expect(mkdirSyncSpy).toHaveBeenNthCalledWith(1, DIR_NAME, {
-        recursive: true,
+    it('should throw when mkdirSync fails', () => {
+      vi.spyOn(fs, 'mkdirSync').mockImplementationOnce(() => {
+        throw new Error('')
       })
-      expect(handleErrorSpy).toHaveBeenNthCalledWith(1, DIR_NAME, new Error(''))
+
+      vi.spyOn(fs, 'statSync').mockImplementationOnce(() => {
+        return undefined
+      })
+
+      expect(() => utils.mkdir(DIR_NAME)).toThrow('')
     })
     it('should call mkdirSync when directory does not exist', () => {
-      const mkdirSyncSpy = jest
+      const mkdirSyncSpy = vi
         .spyOn(fs, 'mkdirSync')
-        .mockImplementationOnce(jest.fn())
-      const handleErrorSpy = jest.spyOn(utils, 'handleError')
+        .mockImplementationOnce(vi.fn())
+      const handleErrorSpy = vi.spyOn(utils, 'handleError')
 
-      jest.spyOn(utils, 'directoryExists').mockReturnValueOnce(false)
+      vi.spyOn(utils, 'directoryExists').mockReturnValueOnce(false)
 
       utils.mkdir(DIR_NAME)
 

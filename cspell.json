@@ -37,6 +37,7 @@
     "tocstop",
     "usagestop",
     "venv",
+    "vitest",
     "wagoid",
     "yalc"
   ],

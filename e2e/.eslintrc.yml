@@ -1,5 +1,0 @@
-extends:
-  - '../.eslintrc.yml'
-settings:
-  import/resolver:
-    typescript:

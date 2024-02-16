@@ -4,7 +4,7 @@ const message = 'logging...'
 
 describe('logging', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
   it('info', () => {
     expect(info(message)).toMatchInlineSnapshot(`"[34m❯ logging...[39m"`)
@@ -13,7 +13,7 @@ describe('logging', () => {
     expect(danger(message)).toMatchInlineSnapshot(`"[31m❯ logging...[39m"`)
   })
   it('log', () => {
-    const spy = jest.spyOn(console, 'log').mockImplementationOnce(jest.fn())
+    const spy = vi.spyOn(console, 'log').mockImplementationOnce(vi.fn())
 
     log(message)
 
