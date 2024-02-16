@@ -1,27 +1,26 @@
 import { cyan, red } from 'ansi-colors'
+import type { CommanderError } from 'commander'
 import { program } from 'commander'
 import Enquirer from 'enquirer'
 
-import type { Answers, Flags } from '../interfaces'
-import type { CommanderError } from 'commander'
-
-import { options } from './options'
 import { getUserConfig } from '../config'
-import { defaultConfig, defaultAnswers } from '../defaults'
+import { defaultAnswers, defaultConfig } from '../defaults'
+import type { Answers, Flags } from '../interfaces'
 import { lang } from '../lang'
 import { createPrompts } from '../prompts'
 import {
-  shouldDoGitChecks,
-  log,
-  checkIfStaged,
-  executeGitMessage,
-  danger,
-  info,
   checkIfGitRepo,
+  checkIfStaged,
+  danger,
+  executeGitMessage,
   gitzyPkg,
   GitzyStore,
   hint,
+  info,
+  log,
+  shouldDoGitChecks,
 } from '../utils'
+import { options } from './options'
 
 const enquirerOptions = {
   autofill: true,
@@ -82,7 +81,7 @@ export const cli = async (): Promise<void> => {
     .addHelpText(
       'after',
       `
-${'Examples'}:
+Examples:
       ${lang.examples}
     `
     )

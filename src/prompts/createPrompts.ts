@@ -1,17 +1,16 @@
+import { defaultConfig } from '../defaults'
 import type {
   CreatedPrompt,
   EnquirerPrompt,
   Flags,
   GitzyState,
 } from '../interfaces'
-
 import { body } from './body'
 import { breaking } from './breaking'
 import { issues } from './issues'
 import { scope } from './scope'
 import { subject } from './subject'
 import { type } from './type'
-import { defaultConfig } from '../defaults'
 
 const prompts: Record<string, CreatedPrompt> = {
   body,

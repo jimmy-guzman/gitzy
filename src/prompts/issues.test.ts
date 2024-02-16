@@ -1,8 +1,7 @@
+import { defaultConfig } from '../defaults'
 import type { EnquirerPrompt } from '../interfaces'
-
 import { issues } from './issues'
 import { issuesMessage } from './lang'
-import { defaultConfig } from '../defaults'
 
 describe('issues', () => {
   it('should create issues prompt', () => {

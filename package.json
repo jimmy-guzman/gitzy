@@ -17,7 +17,7 @@
   },
   "bin": "./dist/index.js",
   "scripts": {
-    "build": "pkgroll --minify --target=node16",
+    "build": "pkgroll --minify --target=node18",
     "format": "prettier '**/**/*.{md,yml,json,ts}'",
     "format:check": "pnpm format -c",
     "format:fix": "pnpm format -w",
@@ -52,27 +52,27 @@
     "@comparto/prettier-config": "1.2.0",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/git": "10.0.1",
-    "@types/jest": "29.5.11",
+    "@types/jest": "29.5.12",
     "@types/node": "18.19.6",
-    "commitlint": "18.4.4",
+    "commitlint": "18.6.1",
     "eslint": "8.56.0",
-    "eslint-config-jimmy-guzman": "9.1.0",
-    "husky": "8.0.3",
+    "eslint-config-jimmy-guzman": "12.2.0",
+    "husky": "9.0.11",
     "is-ci": "3.0.1",
     "jest": "29.7.0",
-    "lint-staged": "15.2.0",
+    "lint-staged": "15.2.2",
     "npm-run-all": "4.1.5",
     "pkgroll": "2.0.1",
-    "prettier": "3.2.2",
-    "semantic-release": "23.0.0",
-    "ts-jest": "29.1.1",
+    "prettier": "3.2.5",
+    "semantic-release": "23.0.2",
+    "ts-jest": "29.1.2",
     "typescript": "5.3.3"
   },
   "files": [
     "dist"
   ],
   "engines": {
-    "node": ">= 16"
+    "node": ">= 18"
   },
   "packageManager": "pnpm@7.33.6"
 }

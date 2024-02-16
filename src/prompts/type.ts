@@ -4,9 +4,8 @@ import type {
   Flags,
   GitzyConfig,
 } from '../interfaces'
-
-import { promptsLang } from './lang'
 import { fuzzySearch } from '../utils'
+import { promptsLang } from './lang'
 
 export const choice = (
   { details, disableEmoji }: GitzyConfig,

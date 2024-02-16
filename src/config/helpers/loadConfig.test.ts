@@ -1,4 +1,4 @@
-import { access, unlinkSync, writeFile } from 'fs'
+import { access, unlinkSync, writeFile } from 'node:fs'
 
 import { getSearchPlaces, loadConfig } from './loadConfig'
 

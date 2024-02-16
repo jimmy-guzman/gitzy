@@ -1,8 +1,8 @@
-import * as child_process from 'child_process'
+import * as child_process from 'node:child_process'
 
 import { checkIfGitRepo, checkIfStaged, shouldDoGitChecks } from './git-utils'
 
-jest.mock('child_process')
+jest.mock('node:child_process')
 
 const childProcessMock = child_process.exec as unknown as jest.Mock
 

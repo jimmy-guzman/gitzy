@@ -1,11 +1,10 @@
+import { defaultConfig } from '../defaults'
 import type {
   CreatedPromptOptions,
   EnquirerChoice,
   EnquirerPrompt,
 } from '../interfaces'
-
 import { choice, type } from './type'
-import { defaultConfig } from '../defaults'
 
 const setupType = (config = {}): Required<EnquirerPrompt> => {
   return type({

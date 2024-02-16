@@ -1,7 +1,6 @@
-import fs from 'fs'
-import path from 'path'
-
-import type { Stats } from 'fs'
+import type { Stats } from 'node:fs'
+import fs from 'node:fs'
+import path from 'node:path'
 
 import * as utils from './utils'
 

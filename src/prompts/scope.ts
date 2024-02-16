@@ -1,7 +1,6 @@
 import type { CreatedPrompt, EnquirerChoice } from '../interfaces'
-
-import { promptsLang } from './lang'
 import { fuzzySearch } from '../utils'
+import { promptsLang } from './lang'
 
 export const scope: CreatedPrompt = ({ config: { scopes } }) => {
   const choices = scopes.map((choice) => ({

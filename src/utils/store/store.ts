@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/member-ordering */
-import fs from 'fs'
-import path from 'path'
+import fs from 'node:fs'
+import path from 'node:path'
 
 import type { GitzyStoreError } from './types'
-
 import { gitzyStorePath, mkdir, tryUnlink } from './utils'
 
 const idx = Symbol('gitzy')
