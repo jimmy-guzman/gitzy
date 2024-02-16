@@ -1,3 +1,15 @@
+# [5.0.0](https://github.com/jimmy-guzman/gitzy/compare/v4.0.0...v5.0.0) (2024-02-16)
+
+
+### Features
+
+* ✨ drop support for node v16 ([86f5555](https://github.com/jimmy-guzman/gitzy/commit/86f55556624ff5a3387edc63c2c412e4790f1633))
+
+
+### BREAKING CHANGES
+
+* 💥 node v16 is no longer supported
+
 # [4.0.0](https://github.com/jimmy-guzman/gitzy/compare/v3.5.1...v4.0.0) (2023-08-24)
 
 
