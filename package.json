@@ -43,7 +43,8 @@
     ]
   },
   "dependencies": {
-    "lilconfig": "^2.1.0"
+    "lilconfig": "^2.1.0",
+    "yaml": "2.3.4"
   },
   "devDependencies": {
     "@comparto/prettier-config": "1.2.0",

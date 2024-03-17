@@ -48,18 +48,11 @@ $ gitzy -lD --no-emoji
 
 # Configuration
 
-By default `gitzy` comes ready to run out of the box but provides various configuration methods and options:
+By default `gitzy` comes ready to run out of the box but provides various configuration methods and options
 
-- `package.json`
-- `.gitzyrc.json`
-- `.gitzyrc.js`
-- `.gitzyrc.cjs`
-- `.config/gitzyrc`
-- `.config/gitzyrc.json`
-- `.config/gitzyrc.js`
-- `.config/gitzyrc.cjs`
-- `gitzy.config.js`
-- `gitzy.config.cjs`
+You can use a `gitzy` object in your `package.json`, or the following files: `.gitzyrc`, `.gitzyrc.json`, `.gitzyrc.yaml`, `.gitzyrc.yml`, `.gitzyrc.js`, `.gitzyrc.cjs`, `gitzy.config.js`, or `gitzy.config.cjs`,
+
+- _all the files can also live under a `.config/` directory_
 
 ## Options
 
