@@ -10,7 +10,9 @@ const setupGitzy = async (args: string): Promise<unknown> => {
 
       resolve(result.slice(3, result.length - 2).join('\n'))
     } catch (error: unknown) {
-      reject(error)
+      if (error instanceof Error) {
+        reject(error)
+      }
     }
   })
 }
