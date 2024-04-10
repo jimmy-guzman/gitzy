@@ -1,3 +1,10 @@
+# [5.3.0](https://github.com/jimmy-guzman/gitzy/compare/v5.2.0...v5.3.0) (2024-04-10)
+
+
+### Features
+
+* ✨ support load ESM configuration ([da29e84](https://github.com/jimmy-guzman/gitzy/commit/da29e84fbdfccdb72e2aba64b9fe503114e95e1a))
+
 # [5.2.0](https://github.com/jimmy-guzman/gitzy/compare/v5.1.0...v5.2.0) (2024-02-16)
 
 
