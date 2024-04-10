@@ -7,10 +7,12 @@ import * as utils from "./utils";
 
 vi.mock("enquirer");
 
-vi.mock("../package.json", () => ({
-  engines: { node: "14" },
-  version: "1.0.0",
-}));
+vi.mock("../package.json", () => {
+  return {
+    engines: { node: "14" },
+    version: "1.0.0",
+  };
+});
 
 describe("cli", () => {
   beforeAll(() => {
@@ -43,9 +45,12 @@ describe("cli", () => {
       1,
       {
         autofill: true,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         cancel: expect.any(Function),
         styles: {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           submitted: expect.any(Function),
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           danger: expect.any(Function),
         },
       },

@@ -30,11 +30,14 @@ export const createPrompts = (
   flags: Flags,
 ): EnquirerPrompt[] => {
   return config.questions
-    .filter(
-      (question) =>
+    .filter((question) => {
+      return (
         defaultConfig.questions.includes(question) &&
-        !flags.skip?.includes(question),
-    )
-    .map((name) => prompts[name]({ config, answers, flags }))
+        !flags.skip?.includes(question)
+      );
+    })
+    .map((name) => {
+      return prompts[name]({ config, answers, flags });
+    })
     .filter(notEmpty);
 };

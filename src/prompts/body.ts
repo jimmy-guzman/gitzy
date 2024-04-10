@@ -3,7 +3,9 @@ import { promptsLang } from "./lang";
 
 export const body: CreatedPrompt = () => {
   return {
-    format: (value): string => value.trim(),
+    format: (value): string => {
+      return value.trim();
+    },
     hint: promptsLang.body.hint,
     message: promptsLang.body.message,
     multiline: true,

@@ -28,7 +28,7 @@ export const subject: CreatedPrompt = ({
         const remainingChar =
           headerMaxLength - inputLength - label.length - emojiLength;
         const percentRemaining = (remainingChar / headerMaxLength) * 100;
-        const charsLeftIndicator = `${remainingChar}/${headerMaxLength}`;
+        const charsLeftIndicator = `${remainingChar.toString()}/${headerMaxLength.toString()}`;
 
         if (inputLength < headerMinLength) {
           return red(charsLeftIndicator);

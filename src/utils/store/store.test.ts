@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import fs from "node:fs";
 
 import { GitzyStore } from "./store";

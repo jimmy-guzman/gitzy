@@ -3,6 +3,7 @@ import { lilconfig } from "lilconfig";
 import yaml from "yaml";
 
 const loadYaml: Loader = (_filepath, content) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return yaml.parse(content);
 };
 
@@ -12,24 +13,28 @@ interface LoadConfigResult<T> {
   isEmpty?: boolean;
 }
 
-const defaultSearchPlaces = (name: string): string[] => [
-  `.${name}rc`,
-  `.${name}rc.json`,
-  `.${name}rc.yaml`,
-  `.${name}rc.yml`,
-  `.${name}rc.js`,
-  `.${name}rc.cjs`,
-  `${name}.config.js`,
-  `${name}.config.cjs`,
-];
+const defaultSearchPlaces = (name: string): string[] => {
+  return [
+    `.${name}rc`,
+    `.${name}rc.json`,
+    `.${name}rc.yaml`,
+    `.${name}rc.yml`,
+    `.${name}rc.js`,
+    `.${name}rc.cjs`,
+    `${name}.config.js`,
+    `${name}.config.cjs`,
+  ];
+};
 
-export const getSearchPlaces = (configName: string): string[] => [
-  "package.json",
-  ...defaultSearchPlaces(configName),
-  ...defaultSearchPlaces(configName).map(
-    (searchPlace) => `.config/${searchPlace}`,
-  ),
-];
+export const getSearchPlaces = (configName: string): string[] => {
+  return [
+    "package.json",
+    ...defaultSearchPlaces(configName),
+    ...defaultSearchPlaces(configName).map((searchPlace) => {
+      return `.config/${searchPlace}`;
+    }),
+  ];
+};
 
 export const loadConfig = async <T>(
   configName: string,

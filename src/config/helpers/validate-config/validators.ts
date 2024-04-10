@@ -8,13 +8,21 @@ export const hasProperty = (object: UnknownObject, key: string): boolean => {
   return Object.prototype.hasOwnProperty.call(object, key);
 };
 
-export const isString: Validator = (value) => typeof value === "string";
+export const isString: Validator = (value) => {
+  return typeof value === "string";
+};
 
-export const isBoolean: Validator = (value) => typeof value === "boolean";
+export const isBoolean: Validator = (value) => {
+  return typeof value === "boolean";
+};
 
-export const isNumber: Validator = (value) => typeof value === "number";
+export const isNumber: Validator = (value) => {
+  return typeof value === "number";
+};
 
-export const isObject: Validator = (value) => typeof value === "object";
+export const isObject: Validator = (value) => {
+  return typeof value === "object";
+};
 
 export const isArrayOfStrings: Validator = (value) => {
   return Array.isArray(value) && value.every(isString);
@@ -46,5 +54,7 @@ export const isValidIssues: Validator = (value) => {
 export const hasAdditionalProperties = (object: UnknownObject): boolean => {
   const allowedKeys = Object.keys(defaultConfig);
 
-  return Object.keys(object).some((key) => !allowedKeys.includes(key));
+  return Object.keys(object).some((key) => {
+    return !allowedKeys.includes(key);
+  });
 };

@@ -21,6 +21,7 @@ export class GitzyStore<T = Record<string, unknown>> {
   }
 
   private readonly readParseFile = (): T => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return JSON.parse(String(fs.readFileSync(this.path)));
   };
 
@@ -28,7 +29,7 @@ export class GitzyStore<T = Record<string, unknown>> {
     try {
       return (this[idx] = this.readParseFile());
     } catch (err: unknown) {
-      const dataStoreError = <GitzyStoreError>err;
+      const dataStoreError = err as GitzyStoreError;
       const hasPermissionError = dataStoreError.code === "EACCES";
       const hasMissingOrCorruptedFile =
         dataStoreError.code === "ENOENT" ||

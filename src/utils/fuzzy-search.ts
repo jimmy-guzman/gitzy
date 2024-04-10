@@ -16,7 +16,9 @@ const fuzzyRegex = (needle: string): RegExp => {
   const pattern = needle
     .split("")
     .map(escapeRegExp)
-    .reduce((acc, curr) => `${acc}[^${curr}]*${escapeRegExp(curr)}`);
+    .reduce((acc, curr) => {
+      return `${acc}[^${curr}]*${escapeRegExp(curr)}`;
+    });
 
   return new RegExp(pattern);
 };
@@ -34,8 +36,12 @@ const filterByFuzzySearch = <T extends Boundary>(
   key: keyof T,
 ): T[] => {
   return haystack
-    .filter((hay) => fuzzyMatch(hay[key], needle))
-    .sort((hay) => (hay[key] === needle ? -1 : 1));
+    .filter((hay) => {
+      return fuzzyMatch(hay[key], needle);
+    })
+    .sort((hay) => {
+      return hay[key] === needle ? -1 : 1;
+    });
 };
 
 /**
