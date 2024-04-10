@@ -18,6 +18,7 @@ describe("body", () => {
     }) as Required<EnquirerPrompt>;
 
     expect(bodyPrompt).toStrictEqual({
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       format: expect.any(Function),
       hint: "...supports multi line, press enter to go to next line",
       message: "Add a longer description\n",

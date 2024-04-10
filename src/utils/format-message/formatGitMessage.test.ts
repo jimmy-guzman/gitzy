@@ -1,4 +1,3 @@
-/* eslint-disable jest/no-large-snapshots */
 import { defaultConfig } from "../../defaults";
 import { formatCommitMessage, wrap } from "./formatGitMessage";
 

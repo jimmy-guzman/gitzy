@@ -32,7 +32,7 @@ const createScope = (scope: string): string => {
 
 export const wrap = (string: string, maxWidth = MAX_WIDTH): string => {
   const regex = new RegExp(
-    `(?![^\\n]{1,${maxWidth}}$)([^\\n]{1,${maxWidth}})\\s`,
+    `(?![^\\n]{1,${maxWidth.toString()}}$)([^\\n]{1,${maxWidth.toString()}})\\s`,
     "g",
   );
 

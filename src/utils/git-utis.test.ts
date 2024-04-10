@@ -13,7 +13,9 @@ const mockExec = (value: string | null = null): void => {
     (
       _command: unknown,
       callback: (arg0: string | null, arg1: { stdout: string }) => unknown,
-    ) => callback(value, { stdout: "ok" }),
+    ) => {
+      return callback(value, { stdout: "ok" });
+    },
   );
 };
 

@@ -38,12 +38,16 @@ describe("utils", () => {
     });
     it("should throw when directory does not exist", () => {
       vi.spyOn(fs, "statSync").mockImplementationOnce(() => {
-        return { isDirectory: () => false } as Stats;
+        return {
+          isDirectory: () => {
+            return false;
+          },
+        } as Stats;
       });
 
-      expect(() => utils.directoryExists("path")).toThrow(
-        'Path exists and is not a directory: "path"',
-      );
+      expect(() => {
+        return utils.directoryExists("path");
+      }).toThrow('Path exists and is not a directory: "path"');
     });
   });
   describe("handleError", () => {
@@ -92,7 +96,11 @@ describe("utils", () => {
 
     it("should do nothing when directory exists", () => {
       vi.spyOn(fs, "statSync").mockImplementationOnce(() => {
-        return { isDirectory: () => true } as Stats;
+        return {
+          isDirectory: () => {
+            return true;
+          },
+        } as Stats;
       });
       const mkdirSyncSpy = vi
         .spyOn(fs, "mkdirSync")
@@ -115,7 +123,9 @@ describe("utils", () => {
         return undefined;
       });
 
-      expect(() => utils.mkdir(DIR_NAME)).toThrow("");
+      expect(() => {
+        utils.mkdir(DIR_NAME);
+      }).toThrow("");
     });
     it("should call mkdirSync when directory does not exist", () => {
       const mkdirSyncSpy = vi

@@ -54,6 +54,7 @@ describe("type", () => {
       hint: "[2m...type or use arrow keys[22m",
       message: "Choose the type",
       name: "type",
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       suggest: expect.any(Function),
       type: "autocomplete",
     });

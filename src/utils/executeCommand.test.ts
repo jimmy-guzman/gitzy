@@ -1,4 +1,3 @@
-/* eslint-disable jest/no-large-snapshots */
 import type { ChildProcess } from "node:child_process";
 import { spawn } from "node:child_process";
 
@@ -51,9 +50,9 @@ describe("executeGitMessage", () => {
   };
 
   it("should call executeCommand by default", () => {
-    const mockSpawn = vi
-      .mocked(spawn)
-      .mockImplementation(() => ({ on: vi.fn() }) as unknown as ChildProcess);
+    const mockSpawn = vi.mocked(spawn).mockImplementation(() => {
+      return { on: vi.fn() } as unknown as ChildProcess;
+    });
 
     fns.executeGitMessage({ config: defaultConfig, answers }, {});
 

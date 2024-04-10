@@ -27,9 +27,9 @@ export const choice = (
 };
 
 export const type: CreatedPrompt = ({ config, flags }) => {
-  const choices = config.types.map((configType) =>
-    choice(config, configType, flags),
-  );
+  const choices = config.types.map((configType) => {
+    return choice(config, configType, flags);
+  });
 
   return {
     choices,

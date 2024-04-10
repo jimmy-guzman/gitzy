@@ -24,7 +24,9 @@ import {
 
 const enquirerOptions = {
   autofill: true,
-  cancel: (): null => null,
+  cancel: (): null => {
+    return null;
+  },
   styles: { submitted: cyan, danger: red },
 };
 
@@ -59,7 +61,9 @@ export const cli = async (): Promise<void> => {
 
   program
     .configureOutput({
-      writeErr: (str) => process.stdout.write(str.replace("error: ", "")),
+      writeErr: (str) => {
+        return process.stdout.write(str.replace("error: ", ""));
+      },
       outputError: (error, write) => {
         write(`\n${danger(error)}\n`);
       },

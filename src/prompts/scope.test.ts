@@ -36,6 +36,7 @@ describe("scope", () => {
       limit: 10,
       message: "Choose the scope",
       name: "scope",
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       suggest: expect.any(Function),
       type: "autocomplete",
     });

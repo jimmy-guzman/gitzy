@@ -33,8 +33,10 @@ export const issuesMessage = (issuesPrefix: IssuesPrefixes): string => {
 };
 
 export const errorMessage = {
-  minTitleLength: (length: number): string =>
-    `The subject must have at least ${length} characters`,
-  maxTitleLength: (length: number): string =>
-    `The subject must be less than ${length} characters`,
+  minTitleLength: (length: number): string => {
+    return `The subject must have at least ${length.toString()} characters`;
+  },
+  maxTitleLength: (length: number): string => {
+    return `The subject must be less than ${length.toString()} characters`;
+  },
 };

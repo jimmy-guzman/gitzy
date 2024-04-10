@@ -3,11 +3,13 @@ import { fuzzySearch } from "../utils";
 import { promptsLang } from "./lang";
 
 export const scope: CreatedPrompt = ({ config: { scopes } }) => {
-  const choices = scopes.map((choice) => ({
-    indent: " ",
-    title: choice,
-    value: choice,
-  }));
+  const choices = scopes.map((choice) => {
+    return {
+      indent: " ",
+      title: choice,
+      value: choice,
+    };
+  });
 
   // TODO: use skip once https://github.com/enquirer/enquirer/issues/128 is resolved
   return scopes.length > 0

@@ -1,3 +1,3 @@
 import { cli } from "./cli";
 
-cli();
+void cli();

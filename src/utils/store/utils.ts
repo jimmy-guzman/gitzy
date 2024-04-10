@@ -44,7 +44,7 @@ export const mkdir = (dirname: string): void => {
   try {
     fs.mkdirSync(dirname, { recursive: true });
   } catch (err: unknown) {
-    handleError(dirname, <GitzyStoreError>err);
+    handleError(dirname, err as GitzyStoreError);
   }
 };
 
@@ -52,7 +52,7 @@ export const tryUnlink = (filepath: string): void => {
   try {
     fs.unlinkSync(filepath);
   } catch (err: unknown) {
-    const dataStoreError = <GitzyStoreError>err;
+    const dataStoreError = err as GitzyStoreError;
 
     if (dataStoreError.code !== "ENOENT") {
       throw new Error(dataStoreError.message);
@@ -67,5 +67,5 @@ export const tryUnlink = (filepath: string): void => {
  * console.log(path) // /var/folders/17/{tmpdir}/T/gitzy/gitzy-store.json
  */
 export const gitzyStorePath = (): string => {
-  return `${os.tmpdir}/gitzy/${path.basename(process.cwd())}-store.json`;
+  return `${os.tmpdir()}/gitzy/${path.basename(process.cwd())}-store.json`;
 };

@@ -46,5 +46,7 @@ export const checkIfGitRepo = (): Promise<string> => {
  * @param array flags
  */
 export const shouldDoGitChecks = (array: string[] = []): boolean => {
-  return !["--add", "-a", "--amend"].some((flag) => array.includes(flag));
+  return !["--add", "-a", "--amend"].some((flag) => {
+    return array.includes(flag);
+  });
 };
