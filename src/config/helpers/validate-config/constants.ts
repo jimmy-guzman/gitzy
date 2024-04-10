@@ -1,13 +1,13 @@
-import type { IssuesPrefixes } from '../../../interfaces'
+import type { IssuesPrefixes } from "../../../interfaces";
 
 export const validIssuesPrefixes: IssuesPrefixes[] = [
-  'close',
-  'closes',
-  'closed',
-  'fix',
-  'fixes',
-  'fixed',
-  'resolve',
-  'resolves',
-  'resolved',
-]
+  "close",
+  "closes",
+  "closed",
+  "fix",
+  "fixes",
+  "fixed",
+  "resolve",
+  "resolves",
+  "resolved",
+];

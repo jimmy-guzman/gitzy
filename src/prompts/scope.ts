@@ -1,13 +1,13 @@
-import type { CreatedPrompt, EnquirerChoice } from '../interfaces'
-import { fuzzySearch } from '../utils'
-import { promptsLang } from './lang'
+import type { CreatedPrompt, EnquirerChoice } from "../interfaces";
+import { fuzzySearch } from "../utils";
+import { promptsLang } from "./lang";
 
 export const scope: CreatedPrompt = ({ config: { scopes } }) => {
   const choices = scopes.map((choice) => ({
-    indent: ' ',
+    indent: " ",
     title: choice,
     value: choice,
-  }))
+  }));
 
   // TODO: use skip once https://github.com/enquirer/enquirer/issues/128 is resolved
   return scopes.length > 0
@@ -16,11 +16,11 @@ export const scope: CreatedPrompt = ({ config: { scopes } }) => {
         hint: promptsLang.scope.hint,
         limit: 10,
         message: promptsLang.scope.message,
-        name: 'scope',
+        name: "scope",
         suggest: (input: string): Promise<EnquirerChoice[]> => {
-          return fuzzySearch<EnquirerChoice>(choices, input, 'title')
+          return fuzzySearch<EnquirerChoice>(choices, input, "title");
         },
-        type: 'autocomplete',
+        type: "autocomplete",
       }
-    : null
-}
+    : null;
+};

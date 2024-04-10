@@ -1,43 +1,43 @@
-import Enquirer from 'enquirer'
+import Enquirer from "enquirer";
 
-import { cli } from './cli'
-import * as config from './config'
-import { defaultAnswers, defaultConfig } from './defaults'
-import * as utils from './utils'
+import { cli } from "./cli";
+import * as config from "./config";
+import { defaultAnswers, defaultConfig } from "./defaults";
+import * as utils from "./utils";
 
-vi.mock('enquirer')
+vi.mock("enquirer");
 
-vi.mock('../package.json', () => ({
-  engines: { node: '14' },
-  version: '1.0.0',
-}))
+vi.mock("../package.json", () => ({
+  engines: { node: "14" },
+  version: "1.0.0",
+}));
 
-describe('cli', () => {
+describe("cli", () => {
   beforeAll(() => {
     vi.mocked(Enquirer).mockImplementation(() => {
       return {
         prompt: vi.fn(),
-      } as unknown as Enquirer
-    })
-  })
-  it('should run with defaults', async () => {
-    process.argv = []
+      } as unknown as Enquirer;
+    });
+  });
+  it("should run with defaults", async () => {
+    process.argv = [];
 
     const executeGitMessageSpy = vi
-      .spyOn(utils, 'executeGitMessage')
-      .mockImplementationOnce(vi.fn())
+      .spyOn(utils, "executeGitMessage")
+      .mockImplementationOnce(vi.fn());
     const checkIfGitSpy = vi
-      .spyOn(utils, 'checkIfGitRepo')
-      .mockResolvedValueOnce('yes')
+      .spyOn(utils, "checkIfGitRepo")
+      .mockResolvedValueOnce("yes");
     const checkIfStagedSpy = vi
-      .spyOn(utils, 'checkIfStaged')
-      .mockResolvedValueOnce('yes')
+      .spyOn(utils, "checkIfStaged")
+      .mockResolvedValueOnce("yes");
 
     const getUserConfigSpy = vi
-      .spyOn(config, 'getUserConfig')
-      .mockResolvedValueOnce(defaultConfig)
+      .spyOn(config, "getUserConfig")
+      .mockResolvedValueOnce(defaultConfig);
 
-    await cli()
+    await cli();
 
     expect(Enquirer).toHaveBeenNthCalledWith(
       1,
@@ -49,18 +49,18 @@ describe('cli', () => {
           danger: expect.any(Function),
         },
       },
-      { emoji: true }
-    )
-    expect(checkIfGitSpy).toHaveBeenCalledTimes(1)
-    expect(checkIfStagedSpy).toHaveBeenCalledTimes(1)
-    expect(getUserConfigSpy).toHaveBeenNthCalledWith(1, undefined)
+      { emoji: true },
+    );
+    expect(checkIfGitSpy).toHaveBeenCalledTimes(1);
+    expect(checkIfStagedSpy).toHaveBeenCalledTimes(1);
+    expect(getUserConfigSpy).toHaveBeenNthCalledWith(1, undefined);
     expect(executeGitMessageSpy).toHaveBeenNthCalledWith(
       1,
       {
         config: defaultConfig,
         answers: defaultAnswers,
       },
-      { emoji: true }
-    )
-  })
-})
+      { emoji: true },
+    );
+  });
+});

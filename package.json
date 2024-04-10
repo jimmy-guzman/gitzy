@@ -33,7 +33,7 @@
     "prepack": "pnpm build && clean-pkg-json",
     "prepare": "is-ci || husky install"
   },
-  "prettier": "@comparto/prettier-config",
+  "prettier": "@jimmy.codes/prettier-config",
   "lint-staged": {
     "*.{md,json,yml,ts}": [
       "prettier -w"
@@ -49,7 +49,7 @@
     "yaml": "^2.2.2"
   },
   "devDependencies": {
-    "@comparto/prettier-config": "1.2.0",
+    "@jimmy.codes/prettier-config": "1.0.1",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/git": "10.0.1",
     "@types/node": "20.11.28",

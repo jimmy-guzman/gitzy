@@ -1,11 +1,11 @@
-import { configDefaults, defineConfig } from 'vitest/config'
+import { configDefaults, defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
     globals: true,
     exclude: [...configDefaults.exclude],
     coverage: {
-      reporter: ['text', 'html', 'clover', 'json', 'lcovonly'],
+      reporter: ["text", "html", "clover", "json", "lcovonly"],
       thresholds: {
         branches: 97.98,
         functions: 97.11,
@@ -14,8 +14,8 @@ export default defineConfig({
       },
       exclude: [
         ...(configDefaults.coverage.exclude ?? []),
-        '**/{interfaces,types,index}.ts',
+        "**/{interfaces,types,index}.ts",
       ],
     },
   },
-})
+});

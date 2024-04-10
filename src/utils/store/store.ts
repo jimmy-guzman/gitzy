@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/member-ordering */
-import fs from 'node:fs'
-import path from 'node:path'
+import fs from "node:fs";
+import path from "node:path";
 
-import type { GitzyStoreError } from './types'
-import { gitzyStorePath, mkdir, tryUnlink } from './utils'
+import type { GitzyStoreError } from "./types";
+import { gitzyStorePath, mkdir, tryUnlink } from "./utils";
 
-const idx = Symbol('gitzy')
+const idx = Symbol("gitzy");
 
 /**
  * Minimal typed version of [data-store](https://github.com/jonschlinkert/data-store/tree/4.1.0)
@@ -14,66 +14,66 @@ const idx = Symbol('gitzy')
 export class GitzyStore<T = Record<string, unknown>> {
   path: string;
 
-  [idx]?: T
+  [idx]?: T;
 
   constructor() {
-    this.path = gitzyStorePath()
+    this.path = gitzyStorePath();
   }
 
   private readonly readParseFile = (): T => {
-    return JSON.parse(String(fs.readFileSync(this.path)))
-  }
+    return JSON.parse(String(fs.readFileSync(this.path)));
+  };
 
   private readonly tryLoad = (): T => {
     try {
-      return (this[idx] = this.readParseFile())
+      return (this[idx] = this.readParseFile());
     } catch (err: unknown) {
-      const dataStoreError = <GitzyStoreError>err
-      const hasPermissionError = dataStoreError.code === 'EACCES'
+      const dataStoreError = <GitzyStoreError>err;
+      const hasPermissionError = dataStoreError.code === "EACCES";
       const hasMissingOrCorruptedFile =
-        dataStoreError.code === 'ENOENT' ||
-        dataStoreError.name === 'SyntaxError'
+        dataStoreError.code === "ENOENT" ||
+        dataStoreError.name === "SyntaxError";
 
       if (hasPermissionError) {
-        throw new Error('gitzy does not have permission to load this file')
+        throw new Error("gitzy does not have permission to load this file");
       }
 
       if (hasMissingOrCorruptedFile) {
-        this[idx] = {} as T
-        return {} as T
+        this[idx] = {} as T;
+        return {} as T;
       }
 
-      return {} as T
+      return {} as T;
     }
-  }
+  };
 
   private readonly json = (): string => {
-    return JSON.stringify(this.data, null, 2)
-  }
+    return JSON.stringify(this.data, null, 2);
+  };
 
   private readonly writeFile = (): void => {
-    mkdir(path.dirname(String(this.path)))
-    fs.writeFileSync(this.path, this.json(), { mode: 0o0600 })
-  }
+    mkdir(path.dirname(String(this.path)));
+    fs.writeFileSync(this.path, this.json(), { mode: 0o0600 });
+  };
 
   public destroy = (): void => {
-    tryUnlink(this.path)
-  }
+    tryUnlink(this.path);
+  };
 
   public clear = (): void => {
-    this.save({} as T)
-  }
+    this.save({} as T);
+  };
 
   get data(): T {
-    return this[idx] ?? this.tryLoad()
+    return this[idx] ?? this.tryLoad();
   }
 
   public load = (): T => {
-    return this.data
-  }
+    return this.data;
+  };
 
   public save(data: T): void {
-    this[idx] = data
-    this.writeFile()
+    this[idx] = data;
+    this.writeFile();
   }
 }

@@ -1,10 +1,10 @@
-import type { Answers } from '../interfaces'
+import type { Answers } from "../interfaces";
 
 export const defaultAnswers: Answers = {
-  body: '',
-  breaking: '',
-  issues: '',
-  scope: '',
-  subject: '',
-  type: '',
-}
+  body: "",
+  breaking: "",
+  issues: "",
+  scope: "",
+  subject: "",
+  type: "",
+};

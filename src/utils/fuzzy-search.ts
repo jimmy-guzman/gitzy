@@ -1,11 +1,11 @@
-type Boundary = Record<string, number | string>
+type Boundary = Record<string, number | string>;
 
 /**
  * escapes `\ ^ $ * + ? . ( ) | { } [ ]`
  */
 const escapeRegExp = (str: string): string => {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-}
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+};
 
 /**
  * Creates regex to use to fuzzy match
@@ -14,29 +14,29 @@ const escapeRegExp = (str: string): string => {
  */
 const fuzzyRegex = (needle: string): RegExp => {
   const pattern = needle
-    .split('')
+    .split("")
     .map(escapeRegExp)
-    .reduce((acc, curr) => `${acc}[^${curr}]*${escapeRegExp(curr)}`)
+    .reduce((acc, curr) => `${acc}[^${curr}]*${escapeRegExp(curr)}`);
 
-  return new RegExp(pattern)
-}
+  return new RegExp(pattern);
+};
 
 const fuzzyMatch = <T extends Boundary>(
   value: T[keyof T],
-  needle: string
+  needle: string,
 ): boolean => {
-  return fuzzyRegex(needle).test(String(value))
-}
+  return fuzzyRegex(needle).test(String(value));
+};
 
 const filterByFuzzySearch = <T extends Boundary>(
   haystack: T[],
   needle: string,
-  key: keyof T
+  key: keyof T,
 ): T[] => {
   return haystack
     .filter((hay) => fuzzyMatch(hay[key], needle))
-    .sort((hay) => (hay[key] === needle ? -1 : 1))
-}
+    .sort((hay) => (hay[key] === needle ? -1 : 1));
+};
 
 /**
  * Filters an array of objects by applying a fuzzy search on an object's value by the given key
@@ -49,9 +49,9 @@ const filterByFuzzySearch = <T extends Boundary>(
 export const fuzzySearch = <T extends Boundary>(
   haystack: T[],
   needle: string,
-  key: keyof T
+  key: keyof T,
 ): Promise<T[]> => {
   return Promise.resolve(
-    needle ? filterByFuzzySearch(haystack, needle, key) : haystack
-  )
-}
+    needle ? filterByFuzzySearch(haystack, needle, key) : haystack,
+  );
+};

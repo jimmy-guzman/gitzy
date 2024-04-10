@@ -1,3 +1,3 @@
-extends: ['jimmy-guzman', 'jimmy-guzman/typescript', 'jimmy-guzman/vitest']
+extends: ["jimmy-guzman", "jimmy-guzman/typescript", "jimmy-guzman/vitest"]
 parserOptions:
-  project: ['./tsconfig.json', './e2e/tsconfig.json']
+  project: ["./tsconfig.json", "./e2e/tsconfig.json"]

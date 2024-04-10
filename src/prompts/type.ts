@@ -3,43 +3,43 @@ import type {
   EnquirerChoice,
   Flags,
   GitzyConfig,
-} from '../interfaces'
-import { fuzzySearch } from '../utils'
-import { promptsLang } from './lang'
+} from "../interfaces";
+import { fuzzySearch } from "../utils";
+import { promptsLang } from "./lang";
 
 export const choice = (
   { details, disableEmoji }: GitzyConfig,
   type: string,
-  flags?: Flags
+  flags?: Flags,
 ): EnquirerChoice => {
   const {
     [type]: { description, emoji },
-  } = details
-  const hasEmoji = emoji && !disableEmoji && flags?.emoji
-  const prefix = hasEmoji ? `${emoji} ` : ''
+  } = details;
+  const hasEmoji = emoji && !disableEmoji && flags?.emoji;
+  const prefix = hasEmoji ? `${emoji} ` : "";
 
   return {
-    title: `${type === 'refactor' && hasEmoji ? `${prefix} ` : prefix}${type}:`,
+    title: `${type === "refactor" && hasEmoji ? `${prefix} ` : prefix}${type}:`,
     hint: description.toLowerCase(),
-    indent: ' ',
+    indent: " ",
     value: type,
-  }
-}
+  };
+};
 
 export const type: CreatedPrompt = ({ config, flags }) => {
   const choices = config.types.map((configType) =>
-    choice(config, configType, flags)
-  )
+    choice(config, configType, flags),
+  );
 
   return {
     choices,
     hint: promptsLang.type.hint,
     limit: 10,
     message: promptsLang.type.message,
-    name: 'type',
+    name: "type",
     suggest: (input: string): Promise<EnquirerChoice[]> => {
-      return fuzzySearch<EnquirerChoice>(choices, input, 'title')
+      return fuzzySearch<EnquirerChoice>(choices, input, "title");
     },
-    type: 'autocomplete',
-  }
-}
+    type: "autocomplete",
+  };
+};

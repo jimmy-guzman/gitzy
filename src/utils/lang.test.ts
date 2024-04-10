@@ -1,7 +1,7 @@
-import { lang } from '../lang'
+import { lang } from "../lang";
 
-describe('lang', () => {
-  it('should create lang', () => {
-    expect(lang).toMatchSnapshot()
-  })
-})
+describe("lang", () => {
+  it("should create lang", () => {
+    expect(lang).toMatchSnapshot();
+  });
+});

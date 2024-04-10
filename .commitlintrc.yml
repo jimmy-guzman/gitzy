@@ -30,7 +30,7 @@ rules:
     - always
     - - deps
       - build
-      - '*'
+      - "*"
       - cli
       - release
   subject-case:
@@ -46,7 +46,7 @@ rules:
   subject-full-stop:
     - 2
     - never
-    - '.'
+    - "."
   type-case:
     - 2
     - always

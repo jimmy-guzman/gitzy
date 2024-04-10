@@ -1,1 +1,1 @@
-export { GitzyStore } from './store'
+export { GitzyStore } from "./store";

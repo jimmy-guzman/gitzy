@@ -1,5 +1,5 @@
-import type { CreatedPrompt } from '../interfaces'
-import { promptsLang } from './lang'
+import type { CreatedPrompt } from "../interfaces";
+import { promptsLang } from "./lang";
 
 export const body: CreatedPrompt = () => {
   return {
@@ -7,7 +7,7 @@ export const body: CreatedPrompt = () => {
     hint: promptsLang.body.hint,
     message: promptsLang.body.message,
     multiline: true,
-    name: 'body',
-    type: 'text',
-  }
-}
+    name: "body",
+    type: "text",
+  };
+};
