@@ -1,1 +1,1 @@
-export * from './createPrompts'
+export * from "./createPrompts";

@@ -1,4 +1,4 @@
-import { lang } from './lang'
+import { lang } from "./lang";
 import {
   isArrayOfStrings,
   isBoolean,
@@ -6,9 +6,9 @@ import {
   isString,
   isValidDetails,
   isValidIssues,
-} from './validators'
+} from "./validators";
 
-type Scheme = (value: unknown) => boolean | string
+type Scheme = (value: unknown) => boolean | string;
 
 export const schema: Record<string, Scheme> = {
   breakingChangeEmoji: (value) => isString(value) || lang.breakingChangeEmoji,
@@ -23,4 +23,4 @@ export const schema: Record<string, Scheme> = {
   scopes: (value) => isArrayOfStrings(value) || lang.scopes,
   types: (value) => isArrayOfStrings(value) || lang.types,
   useCommitlintConfig: (value) => isBoolean(value) || lang.useCommitlintConfig,
-}
+};

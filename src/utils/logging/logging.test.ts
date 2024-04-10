@@ -1,22 +1,22 @@
-import { danger, info, log } from './logging'
+import { danger, info, log } from "./logging";
 
-const message = 'logging...'
+const message = "logging...";
 
-describe('logging', () => {
+describe("logging", () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-  })
-  it('info', () => {
-    expect(info(message)).toMatchInlineSnapshot(`"[34m❯ logging...[39m"`)
-  })
-  it('danger', () => {
-    expect(danger(message)).toMatchInlineSnapshot(`"[31m❯ logging...[39m"`)
-  })
-  it('log', () => {
-    const spy = vi.spyOn(console, 'log').mockImplementationOnce(vi.fn())
+    vi.clearAllMocks();
+  });
+  it("info", () => {
+    expect(info(message)).toMatchInlineSnapshot(`"[34m❯ logging...[39m"`);
+  });
+  it("danger", () => {
+    expect(danger(message)).toMatchInlineSnapshot(`"[31m❯ logging...[39m"`);
+  });
+  it("log", () => {
+    const spy = vi.spyOn(console, "log").mockImplementationOnce(vi.fn());
 
-    log(message)
+    log(message);
 
-    expect(spy).toHaveBeenNthCalledWith(1, message)
-  })
-})
+    expect(spy).toHaveBeenNthCalledWith(1, message);
+  });
+});

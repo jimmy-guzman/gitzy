@@ -1,1 +1,1 @@
-export * from './validateUserConfig'
+export * from "./validateUserConfig";

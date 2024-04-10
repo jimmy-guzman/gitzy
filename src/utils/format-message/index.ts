@@ -1,1 +1,1 @@
-export * from './formatGitMessage'
+export * from "./formatGitMessage";

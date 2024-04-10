@@ -1,17 +1,17 @@
-import type { Flags } from './interfaces'
+import type { Flags } from "./interfaces";
 
 interface Lang {
-  description: string
-  examples: string
-  flags: Record<keyof Omit<Flags, 'emoji' | 'help' | 'version'>, string>
+  description: string;
+  examples: string;
+  flags: Record<keyof Omit<Flags, "emoji" | "help" | "version">, string>;
 }
 
 const skipQuestionMessage = (question: string): string => {
-  return `skip "${question}" question and provide your own "${question}" message`
-}
+  return `skip "${question}" question and provide your own "${question}" message`;
+};
 
 export const lang: Lang = {
-  description: 'interactive conventional commits cli',
+  description: "interactive conventional commits cli",
   examples: `
   $ gitzy
   $ gitzy -p -a
@@ -20,30 +20,30 @@ export const lang: Lang = {
   `,
   flags: {
     get body(): string {
-      return skipQuestionMessage('body')
+      return skipQuestionMessage("body");
     },
     get breaking(): string {
-      return skipQuestionMessage('breaking')
+      return skipQuestionMessage("breaking");
     },
     commitlint: "leverage commitlint's configuration",
     get dryRun(): string {
-      return 'displays git message but does not commit'
+      return "displays git message but does not commit";
     },
     get issues(): string {
-      return skipQuestionMessage('issues')
+      return skipQuestionMessage("issues");
     },
-    noEmoji: 'disable all emojis',
+    noEmoji: "disable all emojis",
     passthrough: 'subsequent command line args passed through to "git"',
-    retry: 'retries previous commit, skips all prompts',
+    retry: "retries previous commit, skips all prompts",
     get scope(): string {
-      return skipQuestionMessage('scope')
+      return skipQuestionMessage("scope");
     },
-    skip: 'skip questions',
+    skip: "skip questions",
     get subject(): string {
-      return skipQuestionMessage('subject')
+      return skipQuestionMessage("subject");
     },
     get type(): string {
-      return skipQuestionMessage('type')
+      return skipQuestionMessage("type");
     },
   },
-}
+};

@@ -1,3 +1,3 @@
-export * from './answers'
-export * from './config'
-export * from './details'
+export * from "./answers";
+export * from "./config";
+export * from "./details";

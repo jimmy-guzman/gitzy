@@ -1,28 +1,28 @@
-import { defaultConfig } from '../defaults'
-import type { EnquirerPrompt } from '../interfaces'
-import { issues } from './issues'
-import { issuesMessage } from './lang'
+import { defaultConfig } from "../defaults";
+import type { EnquirerPrompt } from "../interfaces";
+import { issues } from "./issues";
+import { issuesMessage } from "./lang";
 
-describe('issues', () => {
-  it('should create issues prompt', () => {
+describe("issues", () => {
+  it("should create issues prompt", () => {
     const issuesPrompt = issues({
       config: defaultConfig,
       answers: {
-        body: '',
-        breaking: '',
-        issues: '',
-        scope: '',
-        subject: '',
-        type: '',
+        body: "",
+        breaking: "",
+        issues: "",
+        scope: "",
+        subject: "",
+        type: "",
       },
       flags: {},
-    }) as Required<EnquirerPrompt>
+    }) as Required<EnquirerPrompt>;
 
     expect(issuesPrompt).toStrictEqual({
-      hint: '#123',
+      hint: "#123",
       message: issuesMessage(defaultConfig.issuesPrefix),
-      name: 'issues',
-      type: 'text',
-    })
-  })
-})
+      name: "issues",
+      type: "text",
+    });
+  });
+});

@@ -78,7 +78,7 @@ BREAKING CHANGE: 💥 breaks stuff
 ```
 
 ```yml
-breakingChangeEmoji: '💥'
+breakingChangeEmoji: "💥"
 ```
 
 ### closedIssueEmoji
@@ -90,7 +90,7 @@ fix: 🐛 resolved nasty bug
 ```
 
 ```yml
-closedIssueEmoji: '🏁'
+closedIssueEmoji: "🏁"
 ```
 
 ### issuesHint
@@ -126,37 +126,37 @@ _Default emojis follow standards set by [gitmoji][gitmoji]_
 details:
   chore:
     description: Other changes that don't modify src or test files
-    emoji: '🤖'
+    emoji: "🤖"
   ci:
     description: Changes to CI configuration files and scripts
-    emoji: '👷'
+    emoji: "👷"
   docs:
     description: Add or update documentation.
-    emoji: '📝'
+    emoji: "📝"
   feat:
     description: A new feature
-    emoji: '✨'
+    emoji: "✨"
   fix:
     description: Fix a bug.
-    emoji: '🐛'
+    emoji: "🐛"
   perf:
     description: Improve performance.
-    emoji: '⚡️'
+    emoji: "⚡️"
   refactor:
     description: Refactor code.
-    emoji: '♻️'
+    emoji: "♻️"
   release:
     description: Deploy stuff.
-    emoji: '🚀'
+    emoji: "🚀"
   revert:
     description: Revert changes.
-    emoji: '⏪'
+    emoji: "⏪"
   style:
     description: Improve structure / format of the code.
-    emoji: '🎨'
+    emoji: "🎨"
   test:
     description: Add or update tests.
-    emoji: '✅'
+    emoji: "✅"
 ```
 
 ### headerMaxLength
