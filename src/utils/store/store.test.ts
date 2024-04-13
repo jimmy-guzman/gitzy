@@ -22,7 +22,7 @@ describe("gitzyStore", () => {
 
   it("should setup gitzy store", () => {
     mockGitzyStorePath();
-    expect(new GitzyStore()).toEqual(
+    expect(new GitzyStore()).toStrictEqual(
       expect.objectContaining({
         clear: expect.any(Function),
         destroy: expect.any(Function),
@@ -38,12 +38,12 @@ describe("gitzyStore", () => {
   it("should load saved data", () => {
     mockGitzyStorePath();
     store.save({ some: "data" });
-    expect(store.load()).toEqual({ some: "data" });
+    expect(store.load()).toStrictEqual({ some: "data" });
   });
 
   it("should load data", () => {
     mockGitzyStorePath();
-    expect(store.load()).toEqual({});
+    expect(store.load()).toStrictEqual({});
   });
 
   it("should throw permission error", () => {
