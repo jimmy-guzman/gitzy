@@ -16,8 +16,6 @@ jobs:
 
       - name: setup pnpm
         uses: pnpm/action-setup@v2
-        with:
-          version: 7.33.6
 
       - name: setup cache ${{ matrix.node }}
         uses: actions/setup-node@v4
@@ -62,5 +60,4 @@ jobs:
 
       - uses: streetsidesoftware/cspell-action@v6
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN}}
           inline: error
