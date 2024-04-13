@@ -17,7 +17,9 @@ describe("validateConfig", () => {
 
 describe("validateUserConfig", () => {
   it("should throw if config is invalid", async () => {
-    await expect(validateUserConfig({ yellow: "banana" })).rejects.toThrow();
+    await expect(validateUserConfig({ yellow: "banana" })).rejects.toThrow(
+      "unknown or additional properties detected",
+    );
   });
   it("should return true if config is valid", async () => {
     await expect(validateUserConfig({ disableEmoji: true })).resolves.toBe(

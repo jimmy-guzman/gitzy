@@ -1,4 +1,5 @@
-import { access, unlinkSync, writeFile } from "node:fs";
+import { access, unlinkSync } from "node:fs";
+import { writeFile } from "node:fs/promises";
 
 import { getSearchPlaces, loadConfig } from "./loadConfig";
 
@@ -45,9 +46,7 @@ describe("searchPlaces", () => {
   });
 
   it("should return config for json files", async () => {
-    writeFile(".arc.json", JSON.stringify({ disableEmoji: true }), (error) => {
-      if (error) throw error;
-    });
+    await writeFile(".arc.json", JSON.stringify({ disableEmoji: true }));
 
     const config = await loadConfig("a");
 
@@ -57,9 +56,7 @@ describe("searchPlaces", () => {
     });
   });
   it("should return config for yaml files", async () => {
-    writeFile(".arc.yml", "disableEmoji: true", (error) => {
-      if (error) throw error;
-    });
+    await writeFile(".arc.yml", "disableEmoji: true");
 
     const config = await loadConfig("a");
 

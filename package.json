@@ -19,16 +19,14 @@
   "bin": "./dist/index.mjs",
   "scripts": {
     "build": "pkgroll --minify --target=node18",
-    "format": "prettier '**/**/*.{md,yml,json,ts}'",
-    "format:check": "pnpm format -c",
-    "format:fix": "pnpm format -w",
+    "format": "prettier -c .",
+    "format:fix": "prettier -w .",
     "lint": "eslint --cache '**/**/*.{js,ts,*.test}'",
     "lint:fix": "pnpm lint --fix",
-    "test": "vitest --coverage",
-    "test:watch": "vitest",
-    "ts-check": "tsc -b tsconfig.json",
-    "ts-check:watch": "pnpm ts-check --watch",
-    "validate": "run-p lint format:check test ts-check",
+    "test": "vitest",
+    "coverage": "vitest --coverage",
+    "typecheck": "tsc -b tsconfig.json",
+    "validate": "run-p lint format coverage typecheck",
     "cz": "pnpm build && ./dist/index.mjs --commitlint",
     "prepack": "pnpm build && clean-pkg-json",
     "prepare": "is-ci || husky install"
@@ -49,12 +47,12 @@
     "yaml": "^2.2.2"
   },
   "devDependencies": {
-    "@jimmy.codes/eslint-config": "1.3.0",
-    "@jimmy.codes/prettier-config": "1.0.1",
+    "@jimmy.codes/eslint-config": "1.6.0",
+    "@jimmy.codes/prettier-config": "1.0.2",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/git": "10.0.1",
     "@types/node": "20.12.7",
-    "@vitest/coverage-v8": "1.4.0",
+    "@vitest/coverage-v8": "1.5.0",
     "ansi-colors": "4.1.3",
     "clean-pkg-json": "1.2.0",
     "commitlint": "19.2.1",
@@ -66,8 +64,8 @@
     "pkgroll": "2.0.2",
     "prettier": "3.2.5",
     "semantic-release": "23.0.8",
-    "typescript": "5.4.4",
-    "vitest": "1.4.0"
+    "typescript": "5.4.5",
+    "vitest": "1.5.0"
   },
   "files": [
     "dist"
