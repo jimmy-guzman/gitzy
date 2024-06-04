@@ -85,7 +85,7 @@ export interface EnquirerPrompt {
   multiline?: boolean;
   name: string;
   skip?: boolean;
-  suggest?: (input: string) => Promise<EnquirerChoice[]>;
+  suggest?: (input: string) => EnquirerChoice[];
   type: "autocomplete" | "input" | "text";
   validate?: (input: string, state?: EnquirerState) => string | true;
 }

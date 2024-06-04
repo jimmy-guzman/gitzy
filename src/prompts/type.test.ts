@@ -60,10 +60,10 @@ describe("type", () => {
     });
   });
 
-  it("should suggest needle in the haystack", async () => {
+  it("should suggest needle in the haystack", () => {
     const { suggest } = setupType();
 
-    const needle = await suggest("actor");
+    const needle = suggest("actor");
 
     expect(needle).toStrictEqual([
       {
