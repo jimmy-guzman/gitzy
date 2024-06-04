@@ -1,4 +1,4 @@
-import type { CreatedPrompt, EnquirerChoice } from "../interfaces";
+import type { CreatedPrompt } from "../interfaces";
 import { fuzzySearch } from "../utils";
 import { promptsLang } from "./lang";
 
@@ -19,8 +19,8 @@ export const scope: CreatedPrompt = ({ config: { scopes } }) => {
         limit: 10,
         message: promptsLang.scope.message,
         name: "scope",
-        suggest: (input: string): Promise<EnquirerChoice[]> => {
-          return fuzzySearch<EnquirerChoice>(choices, input, "title");
+        suggest: (input: string) => {
+          return fuzzySearch(choices, ["title"], input);
         },
         type: "autocomplete",
       }

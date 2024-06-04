@@ -37,8 +37,8 @@ export const type: CreatedPrompt = ({ config, flags }) => {
     limit: 10,
     message: promptsLang.type.message,
     name: "type",
-    suggest: (input: string): Promise<EnquirerChoice[]> => {
-      return fuzzySearch<EnquirerChoice>(choices, input, "title");
+    suggest: (input: string) => {
+      return fuzzySearch(choices, ["title", "hint"], input);
     },
     type: "autocomplete",
   };

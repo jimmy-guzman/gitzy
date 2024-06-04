@@ -13,10 +13,10 @@ describe("scope", () => {
     expect(setupScope()).toBeNull();
   });
 
-  it("should suggest needle in the haystack", async () => {
+  it("should suggest needle in the haystack", () => {
     const { suggest } = setupScope({ scopes: ["build"] });
 
-    const needle = await suggest("ui");
+    const needle = suggest("ui");
 
     expect(needle).toStrictEqual([
       { indent: " ", title: "build", value: "build" },
