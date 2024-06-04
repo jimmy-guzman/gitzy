@@ -1,3 +1,10 @@
+# [5.4.0](https://github.com/jimmy-guzman/gitzy/compare/v5.3.0...v5.4.0) (2024-06-04)
+
+
+### Features
+
+* ✨ improve fuzzy search by including hints ([394ebf3](https://github.com/jimmy-guzman/gitzy/commit/394ebf3c858480af70567d5e491075fc23b43179))
+
 # [5.3.0](https://github.com/jimmy-guzman/gitzy/compare/v5.2.0...v5.3.0) (2024-04-10)
 
 
