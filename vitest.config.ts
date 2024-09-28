@@ -10,7 +10,7 @@ export default defineConfig({
         branches: 97.92,
         functions: 97,
         lines: 98.15,
-        statements: 98.4,
+        statements: 98.28,
       },
       exclude: [
         ...(configDefaults.coverage.exclude ?? []),
