@@ -67,8 +67,8 @@ importers:
         specifier: 6.2.4
         version: 6.2.4
       pkgroll:
-        specifier: 2.5.0
-        version: 2.5.0(typescript@5.4.5)
+        specifier: 2.5.1
+        version: 2.5.1(typescript@5.4.5)
       prettier:
         specifier: 3.3.3
         version: 3.3.3
@@ -2907,8 +2907,8 @@ packages:
   pkg-types@1.2.0:
     resolution: {integrity: sha512-+ifYuSSqOQ8CqP4MbZA5hDpb97n3E8SVWdJe+Wms9kj745lmd3b7EZJiqvmLwAlmRfjrI7Hi5z3kdBJ93lFNPA==}
 
-  pkgroll@2.5.0:
-    resolution: {integrity: sha512-nIbxukMp9i63is1Aq8wIHZcNcJyZJRZ340HF7yP3y+TBZ5P34ARI67dBChvCz4DKPaEZu8hRHM+mnDw3G471uA==}
+  pkgroll@2.5.1:
+    resolution: {integrity: sha512-rehzSpQ1T/gh+tlVSxlUeqUPR9W1ZtJXDG00cuussNeCPdS9w1Wv0MWxwL116HbugsTZTrd+lVem+ipinT2JUg==}
     engines: {node: '>=18'}
     hasBin: true
     peerDependencies:
@@ -6707,7 +6707,7 @@ snapshots:
       mlly: 1.7.1
       pathe: 1.1.2
 
-  pkgroll@2.5.0(typescript@5.4.5):
+  pkgroll@2.5.1(typescript@5.4.5):
     dependencies:
       '@rollup/plugin-alias': 5.1.1(rollup@4.22.5)
       '@rollup/plugin-commonjs': 26.0.3(rollup@4.22.5)
