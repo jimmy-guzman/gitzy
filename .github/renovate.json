@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base"],
+  "extends": ["config:recommended"],
   "semanticCommits": "enabled",
   "reviewers": ["@jimmy-guzman"],
   "commitMessageAction": "bump",
@@ -10,12 +10,12 @@
   "schedule": ["every weekend"],
   "packageRules": [
     {
-      "matchPackagePatterns": ["eslint"],
-      "groupName": "eslint"
+      "groupName": "eslint",
+      "matchPackageNames": ["/eslint/"]
     },
     {
-      "matchPackagePatterns": ["rollup"],
-      "groupName": "rollup"
+      "groupName": "rollup",
+      "matchPackageNames": ["/rollup/"]
     }
   ]
 }
