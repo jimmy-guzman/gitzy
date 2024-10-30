@@ -9,7 +9,7 @@ vi.mock("enquirer");
 
 vi.mock("../package.json", () => {
   return {
-    engines: { node: "14" },
+    engines: { node: "18" },
     version: "1.0.0",
   };
 });
