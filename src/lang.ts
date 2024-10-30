@@ -10,7 +10,7 @@ const skipQuestionMessage = (question: string): string => {
   return `skip "${question}" question and provide your own "${question}" message`;
 };
 
-export const lang: Lang = {
+export const lang = {
   description: "interactive conventional commits cli",
   examples: `
   $ gitzy
@@ -46,4 +46,4 @@ export const lang: Lang = {
       return skipQuestionMessage("type");
     },
   },
-};
+} satisfies Lang;
