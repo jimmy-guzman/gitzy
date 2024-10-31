@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/member-ordering */
 import fs from "node:fs";
 import path from "node:path";
 

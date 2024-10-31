@@ -7,7 +7,7 @@ import type { GitzyStoreError } from "./types";
 export const tryStat = (filepath: string): fs.Stats | null => {
   try {
     return fs.statSync(filepath);
-  } catch (err: unknown) {
+  } catch {
     return null;
   }
 };

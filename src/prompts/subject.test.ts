@@ -10,7 +10,7 @@ import type {
 import { leadingLabel, subject } from "./subject";
 
 interface Custom extends Omit<Required<EnquirerPrompt>, "message"> {
-  message: (state?: EnquirerState | undefined) => string;
+  message: (state?: EnquirerState) => string;
 }
 
 const setupSubject = (config = {}): Custom => {
