@@ -1,3 +1,10 @@
+# [5.5.0](https://github.com/jimmy-guzman/gitzy/compare/v5.4.0...v5.5.0) (2024-11-01)
+
+
+### Features
+
+* ✨ improve performance and add messages to errors ([08aecf4](https://github.com/jimmy-guzman/gitzy/commit/08aecf470e259e10e0cb29b3d96981908da3606b))
+
 # [5.4.0](https://github.com/jimmy-guzman/gitzy/compare/v5.3.0...v5.4.0) (2024-06-04)
 
 
