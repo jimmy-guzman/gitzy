@@ -159,10 +159,10 @@ describe("formatCommitMessage", () => {
   });
   it("should allow double quotes in message", () => {
     const formattedMessage = setupFormatCommitMessage(defaultConfig, {
-      subject: 'this has "quotes"',
       body: "",
       breaking: "",
       issues: "",
+      subject: 'this has "quotes"',
     });
 
     expect(formattedMessage).toMatchInlineSnapshot(
@@ -171,10 +171,10 @@ describe("formatCommitMessage", () => {
   });
   it("should allow backtick quotes in message", () => {
     const formattedMessage = setupFormatCommitMessage(defaultConfig, {
-      subject: "this has `quotes`",
       body: "",
       breaking: "",
       issues: "",
+      subject: "this has `quotes`",
     });
 
     expect(formattedMessage).toMatchInlineSnapshot(

@@ -1,4 +1,5 @@
 import type { GitzyConfig } from "../interfaces";
+
 import { getCommitlintConfig, loadConfig, validateUserConfig } from "./helpers";
 
 export const getUserConfig = async (

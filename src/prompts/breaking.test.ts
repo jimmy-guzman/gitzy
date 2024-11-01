@@ -1,11 +1,11 @@
-import { defaultConfig } from "../defaults";
 import type { EnquirerPrompt } from "../interfaces";
+
+import { defaultConfig } from "../defaults";
 import { breaking } from "./breaking";
 
 describe("breaking", () => {
   it("should create body prompt", () => {
     const breakingPrompt = breaking({
-      config: defaultConfig,
       answers: {
         body: "",
         breaking: "",
@@ -14,6 +14,7 @@ describe("breaking", () => {
         subject: "",
         type: "",
       },
+      config: defaultConfig,
       flags: {},
     }) as Required<EnquirerPrompt>;
 

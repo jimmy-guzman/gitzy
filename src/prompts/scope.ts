@@ -1,4 +1,5 @@
 import type { CreatedPrompt } from "../interfaces";
+
 import { fuzzySearch } from "../utils";
 import { promptsLang } from "./lang";
 

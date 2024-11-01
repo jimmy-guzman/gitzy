@@ -1,4 +1,5 @@
 import type { GitzyConfig } from "../interfaces";
+
 import { getUserConfig } from "./getUserConfig";
 import * as helpers from "./helpers";
 
@@ -6,7 +7,7 @@ const mockUserConfig = { disableEmoji: true };
 const mockCommitlintConfig = { headerMinLength: 5 };
 
 const mockLoadConfig = (
-  config: Partial<GitzyConfig> | null = mockUserConfig,
+  config: null | Partial<GitzyConfig> = mockUserConfig,
 ) => {
   return vi
     .spyOn(helpers, "loadConfig")

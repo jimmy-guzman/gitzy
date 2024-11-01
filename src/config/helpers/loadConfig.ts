@@ -1,4 +1,5 @@
 import type { Loader } from "lilconfig";
+
 import { lilconfig } from "lilconfig";
 import yaml from "yaml";
 
@@ -40,12 +41,12 @@ export const loadConfig = async <T>(
   configName: string,
 ): Promise<LoadConfigResult<T> | null> => {
   const explorer = lilconfig(configName, {
-    searchPlaces: getSearchPlaces(configName),
     loaders: {
       ".yaml": loadYaml,
       ".yml": loadYaml,
       "noExt": loadYaml,
     },
+    searchPlaces: getSearchPlaces(configName),
   });
 
   return explorer.search(process.cwd());

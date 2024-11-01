@@ -1,10 +1,11 @@
-import { defaultConfig } from "../defaults";
 import type {
   CreatedPrompt,
   EnquirerPrompt,
   Flags,
   GitzyState,
 } from "../interfaces";
+
+import { defaultConfig } from "../defaults";
 import { body } from "./body";
 import { breaking } from "./breaking";
 import { issues } from "./issues";
@@ -21,12 +22,12 @@ const prompts: Record<string, CreatedPrompt> = {
   type,
 };
 
-const notEmpty = <T>(value: T | null | undefined): value is T => {
+const notEmpty = <T>(value: null | T | undefined): value is T => {
   return value !== null && value !== undefined;
 };
 
 export const createPrompts = (
-  { config, answers }: GitzyState,
+  { answers, config }: GitzyState,
   flags: Flags,
 ): EnquirerPrompt[] => {
   return config.questions
@@ -37,7 +38,7 @@ export const createPrompts = (
       );
     })
     .map((name) => {
-      return prompts[name]({ config, answers, flags });
+      return prompts[name]({ answers, config, flags });
     })
     .filter(notEmpty);
 };

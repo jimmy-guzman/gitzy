@@ -66,7 +66,7 @@ describe("isValidDetails", () => {
   it('should return false if it does not contain "emoji"', () => {
     expect(
       isValidDetails({
-        chore: { description: "yellow", banana: "orange" },
+        chore: { banana: "orange", description: "yellow" },
       }),
     ).toBe(false);
   });

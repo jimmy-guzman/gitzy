@@ -8,7 +8,7 @@ const normalizeMessage = (message: string): string => {
 
 const createBreaking = (
   breaking: string,
-  { disableEmoji, breakingChangeEmoji }: GitzyConfig,
+  { breakingChangeEmoji, disableEmoji }: GitzyConfig,
 ): string => {
   return breaking
     ? `\n\nBREAKING CHANGE: ${
@@ -19,7 +19,7 @@ const createBreaking = (
 
 const createIssues = (
   issues: string,
-  { disableEmoji, closedIssueEmoji }: GitzyConfig,
+  { closedIssueEmoji, disableEmoji }: GitzyConfig,
 ): string => {
   return issues
     ? `\n\n${disableEmoji ? "" : `${closedIssueEmoji} `}Closes: ${issues}`

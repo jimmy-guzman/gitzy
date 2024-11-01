@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process";
 
 import type { Flags, GitzyState } from "../interfaces";
+
 import { formatCommitMessage } from "./format-message";
 import { info, log } from "./logging";
 
@@ -29,8 +30,8 @@ export const executeDryRun = (message: string): void => {
 };
 
 export const executeGitMessage = (
-  { config, answers }: GitzyState,
-  { passthrough = [], dryRun = false, emoji = true }: Flags,
+  { answers, config }: GitzyState,
+  { dryRun = false, emoji = true, passthrough = [] }: Flags,
 ): void => {
   const message = formatCommitMessage(config, answers, emoji);
 

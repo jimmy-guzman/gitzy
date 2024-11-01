@@ -1,6 +1,7 @@
-import type { Stats } from "node:fs";
 import fs from "node:fs";
 import path from "node:path";
+
+import type { Stats } from "node:fs";
 
 import * as utils from "./utils";
 
@@ -54,8 +55,8 @@ describe("utils", () => {
     it("should return error when there is null byes", () => {
       expect(() => {
         utils.handleError("path", {
-          message: "null bytes",
           code: "CODE",
+          message: "null bytes",
           name: "name",
         });
       }).toThrow("");
@@ -63,8 +64,8 @@ describe("utils", () => {
     it("should return error when there when error is not ignored", () => {
       expect(() => {
         utils.handleError("path", {
-          message: "message",
           code: "CODE",
+          message: "message",
           name: "name",
         });
       }).toThrow("");
@@ -73,8 +74,8 @@ describe("utils", () => {
       vi.spyOn(path, "dirname").mockReturnValueOnce("path1");
       expect(() => {
         utils.handleError("path2", {
-          message: "MESSAGE",
           code: "EEXIST",
+          message: "MESSAGE",
           name: "name",
         });
       }).not.toThrow();

@@ -1,5 +1,6 @@
-import { defaultConfig } from "../defaults";
 import type { CreatedPromptOptions, EnquirerPrompt } from "../interfaces";
+
+import { defaultConfig } from "../defaults";
 import { scope } from "./scope";
 
 const setupScope = (config = {}): Required<EnquirerPrompt> => {

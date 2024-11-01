@@ -1,4 +1,5 @@
 import type { CreatedPrompt } from "../interfaces";
+
 import { promptsLang } from "./lang";
 
 export const breaking: CreatedPrompt = () => {

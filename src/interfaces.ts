@@ -81,7 +81,7 @@ export interface EnquirerPrompt {
   footer?: (state: EnquirerState) => string;
   format?: (value: string) => string;
   hint?: string;
-  message: string | ((state?: EnquirerState) => string);
+  message: ((state?: EnquirerState) => string) | string;
   multiline?: boolean;
   name: string;
   skip?: boolean;
