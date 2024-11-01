@@ -10,17 +10,17 @@ describe("getCommitlintConfig", () => {
       expect(
         getCommitlintOverrides({
           rules: {
-            "scope-enum": [2, "always", ["1", "2"]],
-            "type-enum": [2, "always", ["1", "2"]],
             "header-max-length": [2, "always", 10],
             "header-min-length": [2, "always", 1],
+            "scope-enum": [2, "always", ["1", "2"]],
+            "type-enum": [2, "always", ["1", "2"]],
           },
         }),
       ).toMatchObject({
-        scopes: ["1", "2"],
-        types: ["1", "2"],
         headerMaxLength: 10,
         headerMinLength: 1,
+        scopes: ["1", "2"],
+        types: ["1", "2"],
       });
     });
     it("should return null when there is no commitlint config", async () => {

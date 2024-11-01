@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 import type { GitzyStoreError } from "./types";
+
 import { gitzyStorePath, mkdir, tryUnlink } from "./utils";
 
 const idx = Symbol("gitzy");
@@ -11,13 +12,9 @@ const idx = Symbol("gitzy");
  * @todo add unit tests
  */
 export class GitzyStore<T = Record<string, unknown>> {
-  path: string;
-
-  [idx]?: T;
-
-  constructor() {
-    this.path = gitzyStorePath();
-  }
+  private readonly json = (): string => {
+    return JSON.stringify(this.data, null, 2);
+  };
 
   private readonly readParseFile = (): T => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
@@ -47,33 +44,37 @@ export class GitzyStore<T = Record<string, unknown>> {
     }
   };
 
-  private readonly json = (): string => {
-    return JSON.stringify(this.data, null, 2);
-  };
-
   private readonly writeFile = (): void => {
     mkdir(path.dirname(String(this.path)));
     fs.writeFileSync(this.path, this.json(), { mode: 0o0600 });
-  };
-
-  public destroy = (): void => {
-    tryUnlink(this.path);
   };
 
   public clear = (): void => {
     this.save({} as T);
   };
 
-  get data(): T {
-    return this[idx] ?? this.tryLoad();
-  }
+  public destroy = (): void => {
+    tryUnlink(this.path);
+  };
+
+  [idx]?: T;
 
   public load = (): T => {
     return this.data;
   };
 
+  path: string;
+
+  constructor() {
+    this.path = gitzyStorePath();
+  }
+
   public save(data: T): void {
     this[idx] = data;
     this.writeFile();
+  }
+
+  get data(): T {
+    return this[idx] ?? this.tryLoad();
   }
 }

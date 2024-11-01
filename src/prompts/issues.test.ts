@@ -1,12 +1,12 @@
-import { defaultConfig } from "../defaults";
 import type { EnquirerPrompt } from "../interfaces";
+
+import { defaultConfig } from "../defaults";
 import { issues } from "./issues";
 import { issuesMessage } from "./lang";
 
 describe("issues", () => {
   it("should create issues prompt", () => {
     const issuesPrompt = issues({
-      config: defaultConfig,
       answers: {
         body: "",
         breaking: "",
@@ -15,6 +15,7 @@ describe("issues", () => {
         subject: "",
         type: "",
       },
+      config: defaultConfig,
       flags: {},
     }) as Required<EnquirerPrompt>;
 

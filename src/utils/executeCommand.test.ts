@@ -1,5 +1,6 @@
-import type { ChildProcess } from "node:child_process";
 import { spawn } from "node:child_process";
+
+import type { ChildProcess } from "node:child_process";
 
 import { defaultConfig } from "../defaults";
 import * as fns from "./executeCommand";
@@ -54,7 +55,7 @@ describe("executeGitMessage", () => {
       return { on: vi.fn() } as unknown as ChildProcess;
     });
 
-    fns.executeGitMessage({ config: defaultConfig, answers }, {});
+    fns.executeGitMessage({ answers, config: defaultConfig }, {});
 
     expect(mockSpawn).toHaveBeenCalledTimes(1);
   });
@@ -65,7 +66,7 @@ describe("executeGitMessage", () => {
       .mockImplementation(vi.fn());
     const logSpy = vi.spyOn(console, "log").mockImplementation(vi.fn());
 
-    fns.executeGitMessage({ config: defaultConfig, answers }, { dryRun: true });
+    fns.executeGitMessage({ answers, config: defaultConfig }, { dryRun: true });
     expect(logSpy).toHaveBeenCalledTimes(2);
     expect(executeCommandSpy).not.toHaveBeenCalled();
   });

@@ -8,11 +8,11 @@ vi.mock("node:child_process");
 
 const childProcessMock = child_process.exec as unknown as Mock;
 
-const mockExec = (value: string | null = null): void => {
+const mockExec = (value: null | string = null): void => {
   childProcessMock.mockImplementation(
     (
       _command: unknown,
-      callback: (arg0: string | null, arg1: { stdout: string }) => unknown,
+      callback: (arg0: null | string, arg1: { stdout: string }) => unknown,
     ) => {
       return callback(value, { stdout: "ok" });
     },

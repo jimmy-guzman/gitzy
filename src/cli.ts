@@ -1,13 +1,15 @@
-import { cyan, red } from "ansi-colors";
 import type { CommanderError } from "commander";
+
+import { cyan, red } from "ansi-colors";
 import { program } from "commander";
 import Enquirer from "enquirer";
+
+import type { Answers, Flags } from "./interfaces";
 
 import { version } from "../package.json" assert { type: "json" };
 import { options } from "./cli/options";
 import { getUserConfig } from "./config";
 import { defaultAnswers, defaultConfig } from "./defaults";
-import type { Answers, Flags } from "./interfaces";
 import { lang } from "./lang";
 import { createPrompts } from "./prompts";
 import {
@@ -27,17 +29,17 @@ const enquirerOptions = {
   cancel: (): null => {
     return null;
   },
-  styles: { submitted: cyan, danger: red },
+  styles: { danger: red, submitted: cyan },
 };
 
 export const cli = async (): Promise<void> => {
-  const state = { config: defaultConfig, answers: defaultAnswers };
+  const state = { answers: defaultAnswers, config: defaultConfig };
   const store = new GitzyStore<Answers>();
 
   const init = async ({
-    passthrough,
     commitlint,
     dryRun,
+    passthrough,
   }: Flags): Promise<void> => {
     const loadedUserConfig = await getUserConfig(commitlint);
 
@@ -60,11 +62,11 @@ export const cli = async (): Promise<void> => {
 
   program
     .configureOutput({
-      writeErr: (str) => {
-        return process.stdout.write(str.replace("error: ", ""));
-      },
       outputError: (error, write) => {
         write(`\n${danger(error)}\n`);
+      },
+      writeErr: (str) => {
+        return process.stdout.write(str.replace("error: ", ""));
       },
     })
     .version(version, "-v, --version")

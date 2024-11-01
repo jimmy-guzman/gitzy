@@ -1,12 +1,13 @@
 import { bold, green, red, yellow } from "ansi-colors";
 
-import { defaultConfig } from "../defaults";
 import type {
   Answers,
   CreatedPromptOptions,
   EnquirerPrompt,
   EnquirerState,
 } from "../interfaces";
+
+import { defaultConfig } from "../defaults";
 import { leadingLabel, subject } from "./subject";
 
 interface Custom extends Omit<Required<EnquirerPrompt>, "message"> {
@@ -71,7 +72,7 @@ describe("subject", () => {
 
       expect(
         validate(input, {
-          answers: { ...answers, type: "fix", scope: "*" },
+          answers: { ...answers, scope: "*", type: "fix" },
           input,
         }),
       ).toBe("The subject must be less than 64 characters");

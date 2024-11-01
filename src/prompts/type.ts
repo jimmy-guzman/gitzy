@@ -4,6 +4,7 @@ import type {
   Flags,
   GitzyConfig,
 } from "../interfaces";
+
 import { fuzzySearch } from "../utils";
 import { promptsLang } from "./lang";
 
@@ -19,9 +20,9 @@ export const choice = (
   const prefix = hasEmoji ? `${emoji} ` : "";
 
   return {
-    title: `${type === "refactor" && hasEmoji ? `${prefix} ` : prefix}${type}:`,
     hint: description.toLowerCase(),
     indent: " ",
+    title: `${type === "refactor" && hasEmoji ? `${prefix} ` : prefix}${type}:`,
     value: type,
   };
 };

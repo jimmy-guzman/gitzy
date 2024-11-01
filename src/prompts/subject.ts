@@ -1,6 +1,7 @@
 import { bold, green, red, yellow } from "ansi-colors";
 
 import type { Answers, CreatedPrompt, EnquirerState } from "../interfaces";
+
 import { errorMessage, promptsLang } from "./lang";
 
 export const leadingLabel = (answers?: Answers): string => {
@@ -11,7 +12,7 @@ export const leadingLabel = (answers?: Answers): string => {
 };
 
 export const subject: CreatedPrompt = ({
-  config: { headerMinLength, headerMaxLength, disableEmoji },
+  config: { disableEmoji, headerMaxLength, headerMinLength },
 }) => {
   const minTitleLengthError = errorMessage.minTitleLength(headerMinLength);
   const maxTitleLengthError = errorMessage.maxTitleLength(headerMaxLength);

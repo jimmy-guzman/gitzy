@@ -1,4 +1,5 @@
 import type { GitzyConfig, GitzyPrompts } from "../interfaces";
+
 import { details } from "./details";
 
 export const questions: GitzyPrompts[] = [

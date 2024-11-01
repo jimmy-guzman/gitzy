@@ -49,9 +49,9 @@ describe("cli", () => {
         cancel: expect.any(Function),
         styles: {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          submitted: expect.any(Function),
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           danger: expect.any(Function),
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          submitted: expect.any(Function),
         },
       },
       { emoji: true },
@@ -62,8 +62,8 @@ describe("cli", () => {
     expect(executeGitMessageSpy).toHaveBeenNthCalledWith(
       1,
       {
-        config: defaultConfig,
         answers: defaultAnswers,
+        config: defaultConfig,
       },
       { emoji: true },
     );
