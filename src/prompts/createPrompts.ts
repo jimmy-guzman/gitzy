@@ -40,5 +40,7 @@ export const createPrompts = (
     .map((name) => {
       return prompts[name]({ answers, config, flags });
     })
-    .filter(notEmpty);
+    .filter((value) => {
+      return notEmpty(value);
+    });
 };

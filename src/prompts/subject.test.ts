@@ -125,9 +125,7 @@ describe("subject", () => {
     it("should return indicator when no state", () => {
       const { message } = setupSubject();
 
-      expect(message(undefined)).toBe(
-        bold(`Add a short description(${red("61/64")})`),
-      );
+      expect(message()).toBe(bold(`Add a short description(${red("61/64")})`));
     });
   });
 });
