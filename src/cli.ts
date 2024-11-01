@@ -103,7 +103,7 @@ Examples:
         await init(flags);
         const previousAnswers = flags.retry ? store.load() : {};
 
-        if (flags.retry && !Object.keys(previousAnswers).length) {
+        if (flags.retry && Object.keys(previousAnswers).length === 0) {
           log(hint(`there is no previous gitzy commit to retry...`));
         }
 

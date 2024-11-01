@@ -14,7 +14,7 @@ export const tryStat = (filepath: string): fs.Stats | null => {
 
 export const handleError = (dirname: string, err: GitzyStoreError): void => {
   if (err.message.includes("null bytes")) {
-    throw new Error();
+    throw new Error(err.message);
   }
 
   const isIgnored =
@@ -22,7 +22,7 @@ export const handleError = (dirname: string, err: GitzyStoreError): void => {
     path.dirname(dirname) !== dirname;
 
   if (!isIgnored) {
-    throw new Error();
+    throw new Error(err.message);
   }
 };
 
@@ -43,16 +43,16 @@ export const mkdir = (dirname: string): void => {
 
   try {
     fs.mkdirSync(dirname, { recursive: true });
-  } catch (err: unknown) {
-    handleError(dirname, err as GitzyStoreError);
+  } catch (error: unknown) {
+    handleError(dirname, error as GitzyStoreError);
   }
 };
 
 export const tryUnlink = (filepath: string): void => {
   try {
     fs.unlinkSync(filepath);
-  } catch (err: unknown) {
-    const dataStoreError = err as GitzyStoreError;
+  } catch (error: unknown) {
+    const dataStoreError = error as GitzyStoreError;
 
     if (dataStoreError.code !== "ENOENT") {
       throw new Error(dataStoreError.message);

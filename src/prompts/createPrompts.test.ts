@@ -15,7 +15,7 @@ const setupCreatePrompts = (
         subject: "",
         type: "",
       },
-      config: { ...defaultConfig, ...{ questions } },
+      config: { ...defaultConfig, questions },
     },
     flags,
   ).map((prompt) => {

@@ -3,7 +3,7 @@ import type { Answers, GitzyConfig } from "../../interfaces";
 const MAX_WIDTH = 72;
 
 const normalizeMessage = (message: string): string => {
-  return message.replace(/"/g, '\\"').replace(/`/g, "\\`");
+  return message.replaceAll('"', String.raw`\"`).replaceAll("`", "\\`");
 };
 
 const createBreaking = (
@@ -52,8 +52,7 @@ export const formatCommitMessage = (
   const body = answers.body.trim() ? `\n\n${answers.body}` : "";
   const breaking = createBreaking(answers.breaking, config);
   const issues = createIssues(answers.issues, config);
-  const maxWidth =
-    config.headerMaxLength > MAX_WIDTH ? config.headerMaxLength : MAX_WIDTH;
+  const maxWidth = Math.max(config.headerMaxLength, MAX_WIDTH);
 
   return normalizeMessage(wrap(`${head}${body}${breaking}${issues}`, maxWidth));
 };

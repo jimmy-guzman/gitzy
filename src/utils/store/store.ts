@@ -24,8 +24,8 @@ export class GitzyStore<T = Record<string, unknown>> {
   private readonly tryLoad = (): T => {
     try {
       return (this[idx] = this.readParseFile());
-    } catch (err: unknown) {
-      const dataStoreError = err as GitzyStoreError;
+    } catch (error: unknown) {
+      const dataStoreError = error as GitzyStoreError;
       const hasPermissionError = dataStoreError.code === "EACCES";
       const hasMissingOrCorruptedFile =
         dataStoreError.code === "ENOENT" ||

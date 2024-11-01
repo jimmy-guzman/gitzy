@@ -7,7 +7,7 @@ const setupGitzy = async (args: string): Promise<unknown> => {
         .toString("utf8")
         .split("\n");
 
-      resolve(result.slice(3, result.length - 2).join("\n"));
+      resolve(result.slice(3, -2).join("\n"));
     } catch (error: unknown) {
       if (error instanceof Error) {
         reject(error);

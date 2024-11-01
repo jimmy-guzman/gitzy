@@ -59,16 +59,16 @@ describe("utils", () => {
           message: "null bytes",
           name: "name",
         });
-      }).toThrow("");
+      }).toThrow("null bytes");
     });
-    it("should return error when there when error is not ignored", () => {
+    it("should return error when an error is not ignored", () => {
       expect(() => {
         utils.handleError("path", {
           code: "CODE",
           message: "message",
           name: "name",
         });
-      }).toThrow("");
+      }).toThrow("message");
     });
     it("should not throw when error is ignored", () => {
       vi.spyOn(path, "dirname").mockReturnValueOnce("path1");
@@ -85,7 +85,7 @@ describe("utils", () => {
   describe("tryState", () => {
     it("should return null when fs.statSync throws", () => {
       vi.spyOn(fs, "statSync").mockImplementationOnce(() => {
-        throw new Error("");
+        throw new Error("Something went wrong");
       });
 
       expect(utils.tryStat("filePath")).toBeNull();
@@ -117,16 +117,17 @@ describe("utils", () => {
     });
     it("should throw when mkdirSync fails", () => {
       vi.spyOn(fs, "mkdirSync").mockImplementationOnce(() => {
-        throw new Error("");
+        throw new Error("Something went wrong");
       });
 
       vi.spyOn(fs, "statSync").mockImplementationOnce(() => {
+        // eslint-disable-next-line unicorn/no-useless-undefined
         return undefined;
       });
 
       expect(() => {
         utils.mkdir(DIR_NAME);
-      }).toThrow("");
+      }).toThrow("Something went wrong");
     });
     it("should call mkdirSync when directory does not exist", () => {
       const mkdirSyncSpy = vi
