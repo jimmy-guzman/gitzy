@@ -11,6 +11,5 @@ export const danger = (message: string): string => {
 };
 
 export const log = (message: string): void => {
-  // eslint-disable-next-line no-console
   console.log(message);
 };

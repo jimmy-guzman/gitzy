@@ -17,7 +17,7 @@ export class GitzyStore<T = Record<string, unknown>> {
   };
 
   private readonly readParseFile = (): T => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- JSON.parse returns any
     return JSON.parse(String(fs.readFileSync(this.path)));
   };
 

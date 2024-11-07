@@ -121,7 +121,7 @@ describe("utils", () => {
       });
 
       vi.spyOn(fs, "statSync").mockImplementationOnce(() => {
-        // eslint-disable-next-line unicorn/no-useless-undefined
+        // eslint-disable-next-line unicorn/no-useless-undefined -- mockImplementationOnce expects undefined
         return undefined;
       });
 
