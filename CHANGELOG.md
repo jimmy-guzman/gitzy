@@ -1,3 +1,10 @@
+# [5.6.0](https://github.com/jimmy-guzman/gitzy/compare/v5.5.0...v5.6.0) (2024-11-07)
+
+
+### Features
+
+* ✨ add support for node v22 ([#481](https://github.com/jimmy-guzman/gitzy/issues/481)) ([3223221](https://github.com/jimmy-guzman/gitzy/commit/3223221f3c06ab3871f24a44c93490f773b17df3))
+
 # [5.5.0](https://github.com/jimmy-guzman/gitzy/compare/v5.4.0...v5.5.0) (2024-11-01)
 
 
