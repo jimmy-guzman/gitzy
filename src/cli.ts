@@ -6,6 +6,7 @@ import Enquirer from "enquirer";
 
 import type { Answers, Flags } from "./interfaces";
 
+// eslint-disable-next-line import-x/extensions -- TODO: refactor
 import { version } from "../package.json" assert { type: "json" };
 import { options } from "./cli/options";
 import { getUserConfig } from "./config";

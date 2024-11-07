@@ -64,7 +64,7 @@ export interface GitzyConfig {
   useCommitlintConfig: boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions -- Argument of type 'EnquirerChoice[]' is not assignable to parameter of type 'Boundary[]'
 export type EnquirerChoice = {
   hint?: string;
   indent?: string;

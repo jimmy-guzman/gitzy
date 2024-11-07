@@ -4,7 +4,7 @@ import { lilconfig } from "lilconfig";
 import yaml from "yaml";
 
 const loadYaml: Loader = (_filepath, content) => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- parse returns any
   return yaml.parse(content);
 };
 

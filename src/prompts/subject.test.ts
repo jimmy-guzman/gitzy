@@ -47,11 +47,10 @@ describe("subject", () => {
 
     expect(subjectQuestion).toStrictEqual(
       expect.objectContaining({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         message: expect.any(Function),
         name: "subject",
         type: "input",
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
         validate: expect.any(Function),
       }),
     );

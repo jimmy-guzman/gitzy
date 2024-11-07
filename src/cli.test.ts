@@ -45,12 +45,11 @@ describe("cli", () => {
       1,
       {
         autofill: true,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
         cancel: expect.any(Function),
         styles: {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           danger: expect.any(Function),
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
           submitted: expect.any(Function),
         },
       },
