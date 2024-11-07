@@ -24,8 +24,6 @@
 
 # Usage
 
-> The current version of `gitzy` is fully supported on [active LTS versions of node][node-lts-versions], and requires at least node v18.
-
 ## Quick start
 
 ```sh-session
@@ -250,7 +248,7 @@ useCommitlintConfig: false
 
 <!-- references -->
 
-[actions-badge]: https://img.shields.io/github/workflow/status/jimmy-guzman/gitzy/release?label=actions&logo=github-actions&style=flat-square
+[actions-badge]: https://img.shields.io/github/actions/workflow/status/jimmy-guzman/gitzy/release.yml?style=flat-square&logo=github-actions
 [version-badge]: https://img.shields.io/npm/v/gitzy.svg?logo=npm&style=flat-square
 [package]: https://www.npmjs.com/package/gitzy
 [downloads-badge]: https://img.shields.io/npm/dm/gitzy.svg?logo=npm&style=flat-square
