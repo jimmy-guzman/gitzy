@@ -27,7 +27,7 @@
     "coverage": "vitest run --coverage",
     "typecheck": "tsc -b tsconfig.json",
     "validate": "run-p lint format coverage typecheck",
-    "cz": "pnpm build && ./dist/index.mjs --commitlint",
+    "gitzy": "pnpm build && ./dist/index.mjs --commitlint",
     "prepack": "pnpm build && clean-pkg-json",
     "prepare": "is-ci || husky"
   },
@@ -41,7 +41,7 @@
     ]
   },
   "dependencies": {
-    "commander": "^11.0.0",
+    "commander": "^12.1.0",
     "enquirer": "^2.3.6",
     "lilconfig": "^3.1.1",
     "yaml": "^2.2.2"
