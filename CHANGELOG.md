@@ -1,3 +1,17 @@
+# [5.7.0](https://github.com/jimmy-guzman/gitzy/compare/v5.6.0...v5.7.0) (2024-11-10)
+
+
+### Bug Fixes
+
+* 🐛 bump `lilconfig` to v3.1.2 ([e15942b](https://github.com/jimmy-guzman/gitzy/commit/e15942b9d6617733860050a0d6cacf18e20da804))
+
+
+### Features
+
+* ✨ bump `commander` to v12.1.0 ([1944583](https://github.com/jimmy-guzman/gitzy/commit/19445839f0ab29414f4bec389a127fe46c7c7023))
+* ✨ bump `enquirer` to v2.4.1 ([975ffc9](https://github.com/jimmy-guzman/gitzy/commit/975ffc918f73ccf3cec700a94897b241b0a02302))
+* ✨ bump `yaml` to v2.6.0 ([34533a3](https://github.com/jimmy-guzman/gitzy/commit/34533a3f465b0e5274d7f0b9a994c4130d491be0))
+
 # [5.6.0](https://github.com/jimmy-guzman/gitzy/compare/v5.5.0...v5.6.0) (2024-11-07)
 
 
