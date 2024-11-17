@@ -1,3 +1,10 @@
+## [5.7.1](https://github.com/jimmy-guzman/gitzy/compare/v5.7.0...v5.7.1) (2024-11-17)
+
+
+### Bug Fixes
+
+* 🐛 pin `enquirer` v2.3.6 to support "*" ([#488](https://github.com/jimmy-guzman/gitzy/issues/488)) ([7bc2b0d](https://github.com/jimmy-guzman/gitzy/commit/7bc2b0dd625224374c0a66648b385fc82d5436c3))
+
 # [5.7.0](https://github.com/jimmy-guzman/gitzy/compare/v5.6.0...v5.7.0) (2024-11-10)
 
 
