@@ -7,7 +7,7 @@ import * as utils from "./utils";
 
 describe("utils", () => {
   it("should return gitzy store path", () => {
-    expect(utils.gitzyStorePath()).toMatch(/\/gitzy\/+[\w]+-store\.json/);
+    expect(utils.gitzyStorePath()).toMatch(/\/gitzy\/+\w+-store\.json/);
   });
   describe("tryUnlink", () => {
     it("should throw when there is non ENOENT error", () => {
