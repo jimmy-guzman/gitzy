@@ -12,6 +12,35 @@ const idx = Symbol("gitzy");
  * @todo add unit tests
  */
 export class GitzyStore<T = Record<string, unknown>> {
+  [idx]?: T;
+
+  path: string;
+
+  get data(): T {
+    return this[idx] ?? this.tryLoad();
+  }
+
+  constructor() {
+    this.path = gitzyStorePath();
+  }
+
+  public clear = (): void => {
+    this.save({} as T);
+  };
+
+  public destroy = (): void => {
+    tryUnlink(this.path);
+  };
+
+  public load = (): T => {
+    return this.data;
+  };
+
+  public save(data: T): void {
+    this[idx] = data;
+    this.writeFile();
+  }
+
   private readonly json = (): string => {
     return JSON.stringify(this.data, null, 2);
   };
@@ -48,33 +77,4 @@ export class GitzyStore<T = Record<string, unknown>> {
     mkdir(path.dirname(String(this.path)));
     fs.writeFileSync(this.path, this.json(), { mode: 0o0600 });
   };
-
-  public clear = (): void => {
-    this.save({} as T);
-  };
-
-  public destroy = (): void => {
-    tryUnlink(this.path);
-  };
-
-  [idx]?: T;
-
-  public load = (): T => {
-    return this.data;
-  };
-
-  path: string;
-
-  constructor() {
-    this.path = gitzyStorePath();
-  }
-
-  public save(data: T): void {
-    this[idx] = data;
-    this.writeFile();
-  }
-
-  get data(): T {
-    return this[idx] ?? this.tryLoad();
-  }
 }
