@@ -63,7 +63,7 @@
     "lint-staged": "15.2.10",
     "npm-run-all2": "7.0.1",
     "pkgroll": "2.5.1",
-    "prettier": "3.3.3",
+    "prettier": "3.4.1",
     "semantic-release": "24.2.0",
     "typescript": "5.7.2",
     "vitest": "2.1.5"
