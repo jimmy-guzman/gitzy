@@ -21,11 +21,11 @@ const mockExec = (value: null | string = null): void => {
 
 describe("shouldDoGitChecks", () => {
   it.each(["--add", "-a", "--amend"])(`should skip git check if %i`, (flag) => {
-    expect(shouldDoGitChecks([flag])).toBeFalsy();
+    expect(shouldDoGitChecks([flag])).toBe(false);
   });
 
   it("should perform check if no flags", () => {
-    expect(shouldDoGitChecks()).toBeTruthy();
+    expect(shouldDoGitChecks()).toBe(true);
   });
 });
 
