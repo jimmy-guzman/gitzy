@@ -1,3 +1,10 @@
+# [5.8.0](https://github.com/jimmy-guzman/gitzy/compare/v5.7.1...v5.8.0) (2025-03-02)
+
+
+### Features
+
+* ✨ add option `--hook` to help w/ `prepare-commit-msg` ([#516](https://github.com/jimmy-guzman/gitzy/issues/516)) ([2515af5](https://github.com/jimmy-guzman/gitzy/commit/2515af5c24f03fb27c2a7ec214dbeafc09ebdc03)), closes [#511](https://github.com/jimmy-guzman/gitzy/issues/511)
+
 ## [5.7.1](https://github.com/jimmy-guzman/gitzy/compare/v5.7.0...v5.7.1) (2024-11-17)
 
 

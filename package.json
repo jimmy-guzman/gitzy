@@ -1,7 +1,7 @@
 {
   "name": "gitzy",
   "description": "interactive conventional commits cli",
-  "version": "5.7.1",
+  "version": "5.8.0",
   "author": "jimmy-guzman @jimmy-guzman",
   "repository": "jimmy-guzman/gitzy",
   "bugs": "https://github.com/jimmy-guzman/gitzy/issues",
