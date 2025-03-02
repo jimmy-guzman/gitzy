@@ -53,7 +53,7 @@ describe("cli", () => {
           submitted: expect.any(Function),
         },
       },
-      { emoji: true },
+      { emoji: true, hook: undefined },
     );
     expect(checkIfGitSpy).toHaveBeenCalledTimes(1);
     expect(checkIfStagedSpy).toHaveBeenCalledTimes(1);
@@ -64,7 +64,7 @@ describe("cli", () => {
         answers: defaultAnswers,
         config: defaultConfig,
       },
-      { emoji: true },
+      { emoji: true, hook: undefined },
     );
   });
 });

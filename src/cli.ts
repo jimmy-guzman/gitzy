@@ -83,6 +83,8 @@ export const cli = async (): Promise<void> => {
     .option("-l, --commitlint", lang.flags.commitlint)
     .option("-r, --retry", lang.flags.retry)
     .option("--no-emoji", lang.flags.noEmoji)
+    .option("-H, --hook", lang.flags.hook)
+
     .addOption(options.skip)
     .addHelpText(
       "after",
@@ -94,7 +96,11 @@ Examples:
     .name("gitzy")
 
     .action(async () => {
-      const flags: Flags = program.opts();
+      const opts = program.opts<Flags>();
+      const flags = {
+        ...opts,
+        hook: process.env.GIT_DIR !== undefined || opts.hook,
+      };
 
       if (flags.dryRun) {
         log(info("running in dry mode..."));

@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { writeFileSync } from "node:fs";
 
 import type { ChildProcess } from "node:child_process";
 
@@ -6,6 +7,7 @@ import { defaultConfig } from "../defaults";
 import * as fns from "./executeCommand";
 
 vi.mock("child_process");
+vi.mock("fs");
 
 describe("executeDryRun", () => {
   it("should console log git message", () => {
@@ -50,6 +52,10 @@ describe("executeGitMessage", () => {
     type: "feat",
   };
 
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
+
   it("should call executeCommand by default", () => {
     const mockSpawn = vi.mocked(spawn).mockImplementation(() => {
       return { on: vi.fn() } as unknown as ChildProcess;
@@ -67,7 +73,29 @@ describe("executeGitMessage", () => {
     const logSpy = vi.spyOn(console, "log").mockImplementation(vi.fn());
 
     fns.executeGitMessage({ answers, config: defaultConfig }, { dryRun: true });
+
     expect(logSpy).toHaveBeenCalledTimes(2);
+    expect(executeCommandSpy).not.toHaveBeenCalled();
+  });
+
+  it("should write to .git/COMMIT_EDITMSG when hook is true", () => {
+    const writeFileSyncSpy = vi.mocked(writeFileSync);
+
+    fns.executeGitMessage({ answers, config: defaultConfig }, { hook: true });
+
+    expect(writeFileSyncSpy).toHaveBeenCalledWith(
+      ".git/COMMIT_EDITMSG",
+      expect.stringContaining("feat(*): ✨ a cool new feature"),
+    );
+  });
+
+  it("should not call executeCommand when running in hook mode", () => {
+    const executeCommandSpy = vi
+      .spyOn(fns, "executeCommand")
+      .mockImplementation(vi.fn());
+
+    fns.executeGitMessage({ answers, config: defaultConfig }, { hook: true });
+
     expect(executeCommandSpy).not.toHaveBeenCalled();
   });
 });

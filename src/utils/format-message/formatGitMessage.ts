@@ -43,6 +43,7 @@ export const formatCommitMessage = (
   config: GitzyConfig,
   answers: Answers,
   emoji: boolean,
+  isHook = false,
 ): string => {
   const hasEmoji =
     !config.disableEmoji && config.details[answers.type].emoji && emoji;
@@ -54,5 +55,7 @@ export const formatCommitMessage = (
   const issues = createIssues(answers.issues, config);
   const maxWidth = Math.max(config.headerMaxLength, MAX_WIDTH);
 
-  return normalizeMessage(wrap(`${head}${body}${breaking}${issues}`, maxWidth));
+  const message = wrap(`${head}${body}${breaking}${issues}`, maxWidth);
+
+  return isHook ? message : normalizeMessage(message);
 };

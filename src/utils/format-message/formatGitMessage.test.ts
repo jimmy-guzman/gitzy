@@ -216,6 +216,7 @@ describe("formatCommitMessage", () => {
     `);
     expect(formattedMessage.split("\n")[0]).toHaveLength(65);
   });
+
   describe("wrap", () => {
     it("should wrap", () => {
       const wrappedString = wrap(
@@ -228,5 +229,31 @@ describe("formatCommitMessage", () => {
       `);
       expect(wrappedString.split("\n")[0]).toHaveLength(65);
     });
+  });
+
+  it("should format correctly when in hook mode", () => {
+    const formattedMessage = formatCommitMessage(
+      defaultConfig,
+      {
+        body: "this an amazing feature, lots of details",
+        breaking: "breaks everything",
+        issues: "#123",
+        scope: "*",
+        subject: "a cool new `feature`",
+        type: "feat",
+      },
+      true,
+      true,
+    );
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*): ✨ a cool new \`feature\`
+
+      this an amazing feature, lots of details
+
+      BREAKING CHANGE: 💥 breaks everything
+
+      🏁 Closes: #123"
+    `);
   });
 });

@@ -29,6 +29,7 @@ export const lang = {
     get dryRun(): string {
       return "displays git message but does not commit";
     },
+    hook: "run gitzy inside a Git hook",
     get issues(): string {
       return skipQuestionMessage("issues");
     },
