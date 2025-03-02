@@ -245,6 +245,7 @@ useCommitlintConfig: false
 | `--skip`        | `-S`  | skip questions                                                   |
 | `--no-emoji`    |       | disable all emojis                                               |
 | `--retry`       | `-r`  | retries previous commit, skips all prompts                       |
+| `--hook`        | `-H`  | run `gitzy` inside a Git hook                                    |
 
 <!-- references -->
 

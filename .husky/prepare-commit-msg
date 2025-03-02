@@ -1,0 +1,5 @@
+#!/bin/sh
+
+exec < /dev/tty
+
+node ./dist/index.mjs --commitlint --hook

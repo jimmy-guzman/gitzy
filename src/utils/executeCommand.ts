@@ -1,11 +1,11 @@
 import { spawn } from "node:child_process";
+import { writeFileSync } from "node:fs";
 
 import type { Flags, GitzyState } from "../interfaces";
 
 import { formatCommitMessage } from "./format-message";
 import { info, log } from "./logging";
 
-/* istanbul ignore next */
 export const executeCommand = (
   command: string,
   args: string[] = [],
@@ -31,12 +31,18 @@ export const executeDryRun = (message: string): void => {
 
 export const executeGitMessage = (
   { answers, config }: GitzyState,
-  { dryRun = false, emoji = true, passthrough = [] }: Flags,
+  { dryRun = false, emoji = true, hook = false, passthrough = [] }: Flags,
 ): void => {
-  const message = formatCommitMessage(config, answers, emoji);
+  const message = formatCommitMessage(config, answers, emoji, true);
 
   if (dryRun) {
     executeDryRun(message);
+
+    return;
+  }
+
+  if (hook) {
+    writeFileSync(".git/COMMIT_EDITMSG", message);
   } else {
     executeCommand("git", ["commit", "-m", `"${message}"`, ...passthrough]);
   }

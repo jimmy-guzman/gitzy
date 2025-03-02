@@ -14,6 +14,7 @@ exports[`lang > should create lang 1`] = `
     "breaking": "skip "breaking" question and provide your own "breaking" message",
     "commitlint": "leverage commitlint's configuration",
     "dryRun": "displays git message but does not commit",
+    "hook": "run gitzy inside a Git hook",
     "issues": "skip "issues" question and provide your own "issues" message",
     "noEmoji": "disable all emojis",
     "passthrough": "subsequent command line args passed through to "git"",

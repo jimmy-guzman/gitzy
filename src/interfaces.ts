@@ -97,6 +97,7 @@ export interface Flags {
   dryRun?: boolean;
   emoji?: boolean;
   help?: boolean;
+  hook?: boolean;
   issues?: string;
   noEmoji?: boolean;
   passthrough?: string[];
