@@ -33,7 +33,7 @@ export const executeGitMessage = (
   { answers, config }: GitzyState,
   { dryRun = false, emoji = true, hook = false, passthrough = [] }: Flags,
 ): void => {
-  const message = formatCommitMessage(config, answers, emoji, true);
+  const message = formatCommitMessage(config, answers, emoji, hook);
 
   if (dryRun) {
     executeDryRun(message);
