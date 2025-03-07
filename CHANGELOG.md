@@ -1,3 +1,10 @@
+## [5.8.1](https://github.com/jimmy-guzman/gitzy/compare/v5.8.0...v5.8.1) (2025-03-07)
+
+
+### Bug Fixes
+
+* 🐛 only disable escaping for non hook messages ([#520](https://github.com/jimmy-guzman/gitzy/issues/520)) ([b2eb2f9](https://github.com/jimmy-guzman/gitzy/commit/b2eb2f90a145d34df4178f7120f2838c2f282bac))
+
 # [5.8.0](https://github.com/jimmy-guzman/gitzy/compare/v5.7.1...v5.8.0) (2025-03-02)
 
 
