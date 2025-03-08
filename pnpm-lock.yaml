@@ -43,8 +43,8 @@ importers:
         specifier: 4.1.3
         version: 4.1.3
       clean-pkg-json:
-        specifier: 1.2.0
-        version: 1.2.0
+        specifier: 1.2.1
+        version: 1.2.1
       commitlint:
         specifier: 19.7.1
         version: 19.7.1(@types/node@22.13.8)(typescript@5.7.2)
@@ -1330,8 +1330,8 @@ packages:
     resolution: {integrity: sha512-HutrvTNsF48wnxkzERIXOe5/mlcfFcbfCmwcg6CJnizbSue78AbDt+1cgl26zwn61WFxhcPykPfZrbqjGmBb4A==}
     engines: {node: '>=8'}
 
-  clean-pkg-json@1.2.0:
-    resolution: {integrity: sha512-QHBWWOtpSCv5nfMFKwyxn4WMvkYE0msxj5xiqejYGqYepWVrK7O/om1Vn6nSl/WPtYn8ge9YmSCbTi1Hp8k+Hg==}
+  clean-pkg-json@1.2.1:
+    resolution: {integrity: sha512-zvQBW4bCn/49SrPI3jj446QugNC3iub/9ZeFKBsCtFxxMRAlyuXTw1I5EqoOLfG1i5261Z4hKLayquHIo+/2HA==}
     hasBin: true
 
   clean-regexp@1.0.0:
@@ -5280,7 +5280,7 @@ snapshots:
 
   ci-info@4.1.0: {}
 
-  clean-pkg-json@1.2.0: {}
+  clean-pkg-json@1.2.1: {}
 
   clean-regexp@1.0.0:
     dependencies:
