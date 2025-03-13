@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@jimmy.codes/eslint-config": "4.0.0",
-    "@jimmy.codes/prettier-config": "1.4.0",
+    "@jimmy.codes/prettier-config": "1.5.0",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/git": "10.0.1",
     "@types/node": "22.13.10",
