@@ -33,8 +33,10 @@ export const directoryExists = (dirname: string, strict = true): boolean => {
     if (strict && !stat.isDirectory()) {
       throw new Error(`Path exists and is not a directory: "${dirname}"`);
     }
+
     return true;
   }
+
   return false;
 };
 
@@ -62,6 +64,7 @@ export const tryUnlink = (filepath: string): void => {
 
 /**
  * Constructs gitzy's store path based on the OS's temp directory and current directory
+ *
  * @example
  * const path = gitzyStorePath()
  * console.log(path) // /var/folders/17/{tmpdir}/T/gitzy/gitzy-store.json

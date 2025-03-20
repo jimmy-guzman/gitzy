@@ -4,6 +4,12 @@ import type { Answers, CreatedPrompt, EnquirerState } from "../interfaces";
 
 import { errorMessage, promptsLang } from "./lang";
 
+const EMOJI_LENGTH = 3;
+
+const PERCENT = 100;
+
+const PERCENT_THRESHOLD = 25;
+
 export const leadingLabel = (answers?: Answers): string => {
   const scope =
     answers?.scope && answers.scope !== "none" ? `(${answers.scope})` : "";
@@ -19,7 +25,7 @@ export const subject: CreatedPrompt = ({
   const {
     subject: { message },
   } = promptsLang;
-  const emojiLength = disableEmoji ? 0 : 3;
+  const emojiLength = disableEmoji ? 0 : EMOJI_LENGTH;
 
   return {
     message: (state?: EnquirerState): string => {
@@ -28,18 +34,19 @@ export const subject: CreatedPrompt = ({
         const inputLength = state ? state.input.length : 0;
         const remainingChar =
           headerMaxLength - inputLength - label.length - emojiLength;
-        const percentRemaining = (remainingChar / headerMaxLength) * 100;
+        const percentRemaining = (remainingChar / headerMaxLength) * PERCENT;
         const charsLeftIndicator = `${remainingChar.toString()}/${headerMaxLength.toString()}`;
 
         if (inputLength < headerMinLength) {
           return red(charsLeftIndicator);
         }
-        if (percentRemaining > 25) {
+        if (percentRemaining > PERCENT_THRESHOLD) {
           return green(charsLeftIndicator);
         }
         if (percentRemaining < 0) {
           return red(charsLeftIndicator);
         }
+
         return yellow(charsLeftIndicator);
       };
 

@@ -10,6 +10,7 @@ export const validateConfig = (userConfig: unknown): boolean | string => {
   if (userConfig && hasAdditionalProperties(userConfig as UnknownObject)) {
     return "unknown or additional properties detected";
   }
+
   return Object.entries(userConfig as UnknownObject).map(([key, value]) => {
     return schema[key](value);
   })[0];
