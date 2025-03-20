@@ -50,11 +50,13 @@ export interface GitzyConfig {
   headerMinLength: number;
   /**
    * Allows you to customize the `issues` prompt hint
+   *
    * @default '#123'
    */
   issuesHint: string;
   /**
    * Allows you to choose the `issuesPrefix` based on [Github supported keywords](https://docs.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword).
+   *
    * @default "closes"
    */
   issuesPrefix: IssuesPrefixes;

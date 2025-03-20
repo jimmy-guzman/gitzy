@@ -43,6 +43,7 @@ export const checkIfGitRepo = (): Promise<string> => {
 
 /**
  * Determines wether or not to perform git checks based on flags
+ *
  * @param array flags
  */
 export const shouldDoGitChecks = (array: string[] = []): boolean => {

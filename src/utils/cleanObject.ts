@@ -2,6 +2,7 @@ import type { UnknownObject } from "../interfaces";
 
 /**
  * Removes `null` or `undefined` values from object
+ *
  * @param object any object
  */
 export const cleanObject = (object: UnknownObject): UnknownObject => {
@@ -11,7 +12,8 @@ export const cleanObject = (object: UnknownObject): UnknownObject => {
 
       return isEmpty
         ? currentObject
-        : ((currentObject[key] = value), currentObject);
+        : // eslint-disable-next-line no-param-reassign -- TODO
+          ((currentObject[key] = value), currentObject);
     },
     {},
   );

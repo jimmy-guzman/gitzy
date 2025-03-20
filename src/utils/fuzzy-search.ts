@@ -2,12 +2,9 @@ import Fuse from "fuse.js";
 
 type Boundary = Record<string, number | string>;
 
-export const fuzzySearch = <
-  T extends Boundary,
-  K extends Extract<keyof T, string>,
->(
+export const fuzzySearch = <T extends Boundary>(
   haystack: T[],
-  keys: K[],
+  keys: Extract<keyof T, string>[],
   needle: string,
 ) => {
   if (needle) {

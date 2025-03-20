@@ -9,6 +9,7 @@ const idx = Symbol("gitzy");
 
 /**
  * Minimal typed version of [data-store](https://github.com/jonschlinkert/data-store/tree/4.1.0)
+ *
  * @todo add unit tests
  */
 export class GitzyStore<T = Record<string, unknown>> {
@@ -66,6 +67,7 @@ export class GitzyStore<T = Record<string, unknown>> {
 
       if (hasMissingOrCorruptedFile) {
         this[idx] = {} as T;
+
         return {} as T;
       }
 
