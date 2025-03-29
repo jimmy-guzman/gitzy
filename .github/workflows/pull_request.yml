@@ -15,7 +15,7 @@ jobs:
           fetch-depth: 0
 
       - name: setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
 
       - name: setup cache ${{ matrix.node }}
         uses: actions/setup-node@v4
