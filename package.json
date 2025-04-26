@@ -63,7 +63,7 @@
     "jiti": "2.4.2",
     "lint-staged": "15.5.0",
     "npm-run-all2": "7.0.2",
-    "pkgroll": "2.12.1",
+    "pkgroll": "2.12.2",
     "prettier": "3.5.3",
     "semantic-release": "24.2.3",
     "typescript": "5.8.2",
