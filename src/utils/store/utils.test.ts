@@ -9,6 +9,7 @@ describe("utils", () => {
   it("should return gitzy store path", () => {
     expect(utils.gitzyStorePath()).toMatch(/\/gitzy\/+\w+-store\.json/);
   });
+
   describe("tryUnlink", () => {
     it("should throw when there is non ENOENT error", () => {
       vi.spyOn(fs, "unlinkSync").mockImplementationOnce(() => {
@@ -19,6 +20,7 @@ describe("utils", () => {
         utils.tryUnlink("path");
       }).toThrow("some new error");
     });
+
     it("should do nothing when there is a ENOENT error", () => {
       class CustomError extends Error {
         code = "ENOENT";
@@ -32,11 +34,13 @@ describe("utils", () => {
       }).not.toThrow();
     });
   });
+
   describe("directoryExists", () => {
     it("should return false when there is no stat", () => {
       vi.spyOn(utils, "tryStat").mockReturnValueOnce(null);
       expect(utils.directoryExists("path")).toBe(false);
     });
+
     it("should throw when directory does not exist", () => {
       vi.spyOn(fs, "statSync").mockImplementationOnce(() => {
         return {
@@ -51,6 +55,7 @@ describe("utils", () => {
       }).toThrow('Path exists and is not a directory: "path"');
     });
   });
+
   describe("handleError", () => {
     it("should return error when there is null byes", () => {
       expect(() => {
@@ -61,6 +66,7 @@ describe("utils", () => {
         });
       }).toThrow("null bytes");
     });
+
     it("should return error when an error is not ignored", () => {
       expect(() => {
         utils.handleError("path", {
@@ -70,6 +76,7 @@ describe("utils", () => {
         });
       }).toThrow("message");
     });
+
     it("should not throw when error is ignored", () => {
       vi.spyOn(path, "dirname").mockReturnValueOnce("path1");
       expect(() => {
@@ -95,51 +102,68 @@ describe("utils", () => {
   describe("mkdir", () => {
     const DIR_NAME = "dirname";
 
+    beforeEach(() => {
+      vi.clearAllMocks();
+      vi.restoreAllMocks();
+    });
+
     it("should do nothing when directory exists", () => {
-      vi.spyOn(fs, "statSync").mockImplementationOnce(() => {
-        return {
-          isDirectory: () => {
-            return true;
-          },
-        } as Stats;
+      const statSyncSpy = vi.spyOn(fs, "statSync").mockReturnValue({
+        isDirectory: () => {
+          return true;
+        },
+      } as Stats);
+
+      const mkdirSyncSpy = vi.spyOn(fs, "mkdirSync").mockImplementation(() => {
+        throw new Error("mkdirSync should not be called");
       });
-      const mkdirSyncSpy = vi
-        .spyOn(fs, "mkdirSync")
-        .mockImplementationOnce(vi.fn());
 
-      const handleErrorSpy = vi.spyOn(utils, "handleError");
+      const handleErrorSpy = vi
+        .spyOn(utils, "handleError")
+        .mockImplementation(() => {
+          throw new Error("handleError should not be called");
+        });
 
-      vi.spyOn(utils, "directoryExists").mockReturnValueOnce(true);
+      const dirExists = utils.directoryExists(DIR_NAME);
+
+      expect(dirExists).toBe(true);
 
       utils.mkdir(DIR_NAME);
+
+      expect(statSyncSpy).toHaveBeenCalledWith(DIR_NAME);
       expect(mkdirSyncSpy).not.toHaveBeenCalled();
       expect(handleErrorSpy).not.toHaveBeenCalled();
     });
+
     it("should throw when mkdirSync fails", () => {
-      vi.spyOn(fs, "mkdirSync").mockImplementationOnce(() => {
-        throw new Error("Something went wrong");
+      vi.spyOn(fs, "statSync").mockImplementation(() => {
+        throw new Error("ENOENT");
       });
 
-      vi.spyOn(fs, "statSync").mockImplementationOnce(() => {
-        // eslint-disable-next-line unicorn/no-useless-undefined -- mockImplementationOnce expects undefined
-        return undefined;
+      vi.spyOn(fs, "mkdirSync").mockImplementation(() => {
+        throw new Error("Something went wrong");
       });
 
       expect(() => {
         utils.mkdir(DIR_NAME);
       }).toThrow("Something went wrong");
     });
+
     it("should call mkdirSync when directory does not exist", () => {
+      vi.spyOn(fs, "statSync").mockImplementation(() => {
+        throw new Error("ENOENT");
+      });
+
       const mkdirSyncSpy = vi
         .spyOn(fs, "mkdirSync")
-        .mockImplementationOnce(vi.fn());
-      const handleErrorSpy = vi.spyOn(utils, "handleError");
-
-      vi.spyOn(utils, "directoryExists").mockReturnValueOnce(false);
+        .mockImplementation(vi.fn());
+      const handleErrorSpy = vi
+        .spyOn(utils, "handleError")
+        .mockImplementation(vi.fn());
 
       utils.mkdir(DIR_NAME);
 
-      expect(mkdirSyncSpy).toHaveBeenNthCalledWith(1, DIR_NAME, {
+      expect(mkdirSyncSpy).toHaveBeenCalledWith(DIR_NAME, {
         recursive: true,
       });
       expect(handleErrorSpy).not.toHaveBeenCalled();
