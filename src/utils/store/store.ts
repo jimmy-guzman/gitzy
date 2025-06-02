@@ -76,7 +76,7 @@ export class GitzyStore<T = Record<string, unknown>> {
   };
 
   private readonly writeFile = (): void => {
-    mkdir(path.dirname(String(this.path)));
+    mkdir(path.dirname(this.path));
     fs.writeFileSync(this.path, this.json(), { mode: 0o0600 });
   };
 }
