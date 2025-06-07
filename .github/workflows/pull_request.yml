@@ -58,6 +58,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: streetsidesoftware/cspell-action@v6
+      - uses: streetsidesoftware/cspell-action@v7
         with:
           inline: error
