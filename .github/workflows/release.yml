@@ -32,8 +32,6 @@ jobs:
 
       - name: codecov
         uses: codecov/codecov-action@v5
-        with:
-          file: ./coverage/lcov.info
 
       - name: Publish to NPM
         env:
