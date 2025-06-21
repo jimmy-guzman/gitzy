@@ -1,3 +1,11 @@
+# [5.9.0](https://github.com/jimmy-guzman/gitzy/compare/v5.8.1...v5.9.0) (2025-06-21)
+
+
+### Features
+
+* ✨ bump `yaml` to v2.8.0 ([5b3ee95](https://github.com/jimmy-guzman/gitzy/commit/5b3ee95c047914a1d24bfc0797eda589761e6ac8))
+* ✨ drop `fuse.js` to improve bundle size ([333ad81](https://github.com/jimmy-guzman/gitzy/commit/333ad814dce724d60edddee5c87f88689c242f31))
+
 ## [5.8.1](https://github.com/jimmy-guzman/gitzy/compare/v5.8.0...v5.8.1) (2025-03-07)
 
 
