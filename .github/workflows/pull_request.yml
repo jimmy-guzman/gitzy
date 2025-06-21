@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: ["18", "20", "22"]
+        node: ["18", "20", "22", "24"]
 
     steps:
       - uses: actions/checkout@v4
@@ -34,8 +34,6 @@ jobs:
 
       - name: codecov
         uses: codecov/codecov-action@v5
-        with:
-          file: ./coverage/lcov.info
 
   commit_check:
     runs-on: ubuntu-latest
