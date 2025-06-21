@@ -19,17 +19,17 @@
   ],
   "scripts": {
     "build": "pkgroll --minify --target=node18",
+    "coverage": "vitest run --coverage",
     "format": "prettier -c .",
     "format:fix": "prettier -w .",
+    "gitzy": "pnpm build && ./dist/index.mjs --commitlint",
     "lint": "eslint --cache .",
     "lint:fix": "pnpm lint --fix",
-    "test": "vitest",
-    "coverage": "vitest run --coverage",
-    "typecheck": "tsc -b tsconfig.json",
-    "validate": "run-p lint format coverage typecheck",
-    "gitzy": "pnpm build && ./dist/index.mjs --commitlint",
     "prepack": "pnpm build && clean-pkg-json",
-    "prepare": "is-ci || husky"
+    "prepare": "is-ci || husky",
+    "test": "vitest",
+    "typecheck": "tsc -b tsconfig.json",
+    "validate": "run-p lint format coverage typecheck"
   },
   "lint-staged": {
     "*.{md,json,yml,ts}": [
@@ -47,7 +47,7 @@
     "yaml": "^2.8.0"
   },
   "devDependencies": {
-    "@jimmy.codes/eslint-config": "5.17.0",
+    "@jimmy.codes/eslint-config": "5.18.0",
     "@jimmy.codes/prettier-config": "1.5.0",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/git": "10.0.1",
@@ -62,7 +62,7 @@
     "jiti": "2.4.2",
     "lint-staged": "16.1.2",
     "npm-run-all2": "8.0.4",
-    "pkgroll": "2.12.2",
+    "pkgroll": "2.13.1",
     "prettier": "3.5.3",
     "semantic-release": "24.2.5",
     "typescript": "5.8.3",
