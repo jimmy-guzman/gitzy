@@ -26,7 +26,7 @@ importers:
         version: 5.18.1(@typescript-eslint/eslint-plugin@8.34.1(@typescript-eslint/parser@8.34.1(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.29.0(jiti@2.4.2))(ts-api-utils@2.1.0(typescript@5.8.3))(typescript@5.8.3)(vitest@3.2.4(@types/node@22.15.32)(jiti@2.4.2)(yaml@2.8.0))
       '@jimmy.codes/prettier-config':
         specifier: 1.6.0
-        version: 1.6.0(prettier@3.5.3)
+        version: 1.6.0(prettier@3.6.2)
       '@semantic-release/changelog':
         specifier: 6.0.3
         version: 6.0.3(semantic-release@24.2.5(typescript@5.8.3))
@@ -70,8 +70,8 @@ importers:
         specifier: 2.13.1
         version: 2.13.1(typescript@5.8.3)
       prettier:
-        specifier: 3.5.3
-        version: 3.5.3
+        specifier: 3.6.2
+        version: 3.6.2
       semantic-release:
         specifier: 24.2.5
         version: 24.2.5(typescript@5.8.3)
@@ -3273,8 +3273,8 @@ packages:
       prettier-plugin-svelte:
         optional: true
 
-  prettier@3.5.3:
-    resolution: {integrity: sha512-QQtaxnoDJeAkDvDKWCLiwIXkTgRhwYDEQCghU9Z6q03iyek/rxRh/2lC3HB7P8sWT2xC/y5JDctPLBIGzHKbhw==}
+  prettier@3.6.2:
+    resolution: {integrity: sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -4652,12 +4652,12 @@ snapshots:
       - typescript
       - vitest
 
-  '@jimmy.codes/prettier-config@1.6.0(prettier@3.5.3)':
+  '@jimmy.codes/prettier-config@1.6.0(prettier@3.6.2)':
     dependencies:
-      prettier: 3.5.3
+      prettier: 3.6.2
       prettier-plugin-astro: 0.14.1
-      prettier-plugin-packagejson: 2.5.17(prettier@3.5.3)
-      prettier-plugin-tailwindcss: 0.6.13(prettier-plugin-astro@0.14.1)(prettier@3.5.3)
+      prettier-plugin-packagejson: 2.5.17(prettier@3.6.2)
+      prettier-plugin-tailwindcss: 0.6.13(prettier-plugin-astro@0.14.1)(prettier@3.6.2)
     transitivePeerDependencies:
       - '@ianvs/prettier-plugin-sort-imports'
       - '@prettier/plugin-pug'
@@ -7469,23 +7469,23 @@ snapshots:
   prettier-plugin-astro@0.14.1:
     dependencies:
       '@astrojs/compiler': 2.12.2
-      prettier: 3.5.3
+      prettier: 3.6.2
       sass-formatter: 0.7.9
 
-  prettier-plugin-packagejson@2.5.17(prettier@3.5.3):
+  prettier-plugin-packagejson@2.5.17(prettier@3.6.2):
     dependencies:
       sort-package-json: 3.3.1
       synckit: 0.11.8
     optionalDependencies:
-      prettier: 3.5.3
+      prettier: 3.6.2
 
-  prettier-plugin-tailwindcss@0.6.13(prettier-plugin-astro@0.14.1)(prettier@3.5.3):
+  prettier-plugin-tailwindcss@0.6.13(prettier-plugin-astro@0.14.1)(prettier@3.6.2):
     dependencies:
-      prettier: 3.5.3
+      prettier: 3.6.2
     optionalDependencies:
       prettier-plugin-astro: 0.14.1
 
-  prettier@3.5.3: {}
+  prettier@3.6.2: {}
 
   pretty-ms@9.2.0:
     dependencies:
