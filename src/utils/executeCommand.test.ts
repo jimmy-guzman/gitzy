@@ -63,7 +63,7 @@ describe("executeGitMessage", () => {
 
     fns.executeGitMessage({ answers, config: defaultConfig }, {});
 
-    expect(mockSpawn).toHaveBeenCalledTimes(1);
+    expect(mockSpawn).toHaveBeenCalledOnce();
   });
 
   it("should call executeDryRun and not executeCommand when in dry run mode", () => {
