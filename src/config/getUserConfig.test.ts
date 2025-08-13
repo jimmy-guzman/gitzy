@@ -49,7 +49,7 @@ describe("getUserConfig", () => {
 
     expect(loadConfigSpy).toHaveBeenNthCalledWith(1, "gitzy");
     expect(validateUserConfigSpy).toHaveBeenNthCalledWith(1, mockUserConfig);
-    expect(getCommitlintConfigSpy).toHaveBeenCalledTimes(1);
+    expect(getCommitlintConfigSpy).toHaveBeenCalledOnce();
     expect(config).toStrictEqual({
       ...mockUserConfig,
       ...mockCommitlintConfig,
@@ -65,7 +65,7 @@ describe("getUserConfig", () => {
 
     expect(loadConfigSpy).toHaveBeenNthCalledWith(1, "gitzy");
     expect(validateUserConfigSpy).not.toHaveBeenCalled();
-    expect(getCommitlintConfigSpy).toHaveBeenCalledTimes(1);
+    expect(getCommitlintConfigSpy).toHaveBeenCalledOnce();
     expect(config).toStrictEqual(mockCommitlintConfig);
   });
 

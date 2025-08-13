@@ -55,8 +55,8 @@ describe("cli", () => {
       },
       { emoji: true, hook: undefined },
     );
-    expect(checkIfGitSpy).toHaveBeenCalledTimes(1);
-    expect(checkIfStagedSpy).toHaveBeenCalledTimes(1);
+    expect(checkIfGitSpy).toHaveBeenCalledOnce();
+    expect(checkIfStagedSpy).toHaveBeenCalledOnce();
     expect(getUserConfigSpy).toHaveBeenNthCalledWith(1, undefined);
     expect(executeGitMessageSpy).toHaveBeenNthCalledWith(
       1,
