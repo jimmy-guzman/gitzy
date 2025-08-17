@@ -11,7 +11,7 @@ export type GitzyPrompts =
   | "subject"
   | "type";
 
-export interface Detail {
+interface Detail {
   description: string;
   emoji: string;
 }
