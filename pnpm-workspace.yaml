@@ -1,5 +1,8 @@
+autoInstallPeers: false
+
 onlyBuiltDependencies:
   - esbuild
+  - oxc-resolver
   - unrs-resolver
-autoInstallPeers: false
+
 savePrefix: "~"
