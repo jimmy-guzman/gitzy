@@ -25,8 +25,8 @@ importers:
         specifier: 5.18.1
         version: 5.18.1(@typescript-eslint/eslint-plugin@8.34.1(@typescript-eslint/parser@8.34.1(eslint@9.33.0(jiti@2.5.1))(typescript@5.8.3))(eslint@9.33.0(jiti@2.5.1))(typescript@5.8.3))(eslint@9.33.0(jiti@2.5.1))(ts-api-utils@2.1.0(typescript@5.8.3))(typescript@5.8.3)(vitest@3.2.4(@types/node@22.15.32)(jiti@2.5.1)(yaml@2.8.0))
       '@jimmy.codes/prettier-config':
-        specifier: 1.6.0
-        version: 1.6.0(prettier@3.6.2)
+        specifier: 2.0.2
+        version: 2.0.2(prettier@3.6.2)
       '@semantic-release/changelog':
         specifier: 6.0.3
         version: 6.0.3(semantic-release@24.2.7(typescript@5.8.3))
@@ -733,9 +733,9 @@ packages:
     peerDependencies:
       eslint: ^9.10.0
 
-  '@jimmy.codes/prettier-config@1.6.0':
-    resolution: {integrity: sha512-8hcP1MpnG8x2K/mVlDXRlvrlGfh7onBFqdDuO3bYs7ZXG0QXbaaqB5DEoEPFxnp8b5mkEU5oCNgxw2BzR3lVhA==}
-    engines: {node: '>= 20'}
+  '@jimmy.codes/prettier-config@2.0.2':
+    resolution: {integrity: sha512-urXGzA/p0X7dB3nEuJ5Khb0pwi4Zm3A4uUIbJoEk0sTq38SrGap1gbksMUAIVwbb8lHaVrq5r9T34zYDd1hIlQ==}
+    engines: {node: '>= 22.6.0'}
     peerDependencies:
       prettier: ^3.0
 
@@ -927,6 +927,10 @@ packages:
 
   '@pkgr/core@0.2.7':
     resolution: {integrity: sha512-YLT9Zo3oNPJoBjBc4q8G2mjU4tqIbf5CEOORbUUr48dCD9q3umJ3IPlVqOqDakPfd2HuwccBaqlGhN4Gmr5OWg==}
+    engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
+
+  '@pkgr/core@0.2.9':
+    resolution: {integrity: sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
 
   '@pnpm/config.env-replace@1.1.0':
@@ -3615,19 +3619,21 @@ packages:
     resolution: {integrity: sha512-RiBETaaP9veVstE4vUwSIcdATj6dKmXljouXc/DDNwBSPTp8FRkLGDSGFClKsAFeeg+13SB0Z1JZvbD76bigJw==}
     engines: {node: ^14.15.0 || >=16.0.0}
 
-  prettier-plugin-packagejson@2.5.17:
-    resolution: {integrity: sha512-1WYvhTix+4EMYZQYSjAxb6+KTCULINuHUTBcxYa2ipoUS9Y2zJVjE3kuZ5I7ZWIFqyK8xpwYIunXqN5eiT7Hew==}
+  prettier-plugin-packagejson@2.5.19:
+    resolution: {integrity: sha512-Qsqp4+jsZbKMpEGZB1UP1pxeAT8sCzne2IwnKkr+QhUe665EXUo3BAvTf1kAPCqyMv9kg3ZmO0+7eOni/C6Uag==}
     peerDependencies:
       prettier: '>= 1.16.0'
     peerDependenciesMeta:
       prettier:
         optional: true
 
-  prettier-plugin-tailwindcss@0.6.13:
-    resolution: {integrity: sha512-uQ0asli1+ic8xrrSmIOaElDu0FacR4x69GynTh2oZjFY10JUt6EEumTQl5tB4fMeD6I1naKd+4rXQQ7esT2i1g==}
+  prettier-plugin-tailwindcss@0.6.14:
+    resolution: {integrity: sha512-pi2e/+ZygeIqntN+vC573BcW5Cve8zUB0SSAGxqpB4f96boZF4M3phPVoOFCeypwkpRYdi7+jQ5YJJUwrkGUAg==}
     engines: {node: '>=14.21.3'}
     peerDependencies:
       '@ianvs/prettier-plugin-sort-imports': '*'
+      '@prettier/plugin-hermes': '*'
+      '@prettier/plugin-oxc': '*'
       '@prettier/plugin-pug': '*'
       '@shopify/prettier-plugin-liquid': '*'
       '@trivago/prettier-plugin-sort-imports': '*'
@@ -3646,6 +3652,10 @@ packages:
       prettier-plugin-svelte: '*'
     peerDependenciesMeta:
       '@ianvs/prettier-plugin-sort-imports':
+        optional: true
+      '@prettier/plugin-hermes':
+        optional: true
+      '@prettier/plugin-oxc':
         optional: true
       '@prettier/plugin-pug':
         optional: true
@@ -3929,8 +3939,8 @@ packages:
   sort-object-keys@1.1.3:
     resolution: {integrity: sha512-855pvK+VkU7PaKYPc+Jjnmt4EzejQHyhhF33q31qG8x7maDzkeFhAAThdCYay11CISO+qAMwjOBP+fPZe0IPyg==}
 
-  sort-package-json@3.3.1:
-    resolution: {integrity: sha512-awjhQR2Iy5UN3NuguAK5+RezcEuUg9Ra4O8y2Aj+DlJa7MywyHaipAPf9bu4qqFj0hsYHHoT9sS3aV7Ucu728g==}
+  sort-package-json@3.4.0:
+    resolution: {integrity: sha512-97oFRRMM2/Js4oEA9LJhjyMlde+2ewpZQf53pgue27UkbEXfHJnDzHlUxQ/DWUkzqmp7DFwJp8D+wi/TYeQhpA==}
     engines: {node: '>=20'}
     hasBin: true
 
@@ -4087,6 +4097,10 @@ packages:
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  synckit@0.11.11:
+    resolution: {integrity: sha512-MeQTA1r0litLUf0Rp/iisCaL8761lKAZHaimlbGK4j0HysC4PLfqygQj9srcs0m2RdtDYnF8UuYyKpbjHYp7Jw==}
+    engines: {node: ^14.18.0 || >=16.0.0}
 
   synckit@0.11.8:
     resolution: {integrity: sha512-+XZ+r1XGIJGeQk3VvXhT6xx/VpbHsRzsTkGgF6E5RX9TTXD0118l87puaEBZ566FhqblC6U0d4XnubznJDm30A==}
@@ -5171,14 +5185,16 @@ snapshots:
       - typescript
       - vitest
 
-  '@jimmy.codes/prettier-config@1.6.0(prettier@3.6.2)':
+  '@jimmy.codes/prettier-config@2.0.2(prettier@3.6.2)':
     dependencies:
       prettier: 3.6.2
       prettier-plugin-astro: 0.14.1
-      prettier-plugin-packagejson: 2.5.17(prettier@3.6.2)
-      prettier-plugin-tailwindcss: 0.6.13(prettier-plugin-astro@0.14.1)(prettier@3.6.2)
+      prettier-plugin-packagejson: 2.5.19(prettier@3.6.2)
+      prettier-plugin-tailwindcss: 0.6.14(prettier-plugin-astro@0.14.1)(prettier@3.6.2)
     transitivePeerDependencies:
       - '@ianvs/prettier-plugin-sort-imports'
+      - '@prettier/plugin-hermes'
+      - '@prettier/plugin-oxc'
       - '@prettier/plugin-pug'
       - '@shopify/prettier-plugin-liquid'
       - '@trivago/prettier-plugin-sort-imports'
@@ -5363,6 +5379,8 @@ snapshots:
     optional: true
 
   '@pkgr/core@0.2.7': {}
+
+  '@pkgr/core@0.2.9': {}
 
   '@pnpm/config.env-replace@1.1.0': {}
 
@@ -8208,14 +8226,14 @@ snapshots:
       prettier: 3.6.2
       sass-formatter: 0.7.9
 
-  prettier-plugin-packagejson@2.5.17(prettier@3.6.2):
+  prettier-plugin-packagejson@2.5.19(prettier@3.6.2):
     dependencies:
-      sort-package-json: 3.3.1
-      synckit: 0.11.8
+      sort-package-json: 3.4.0
+      synckit: 0.11.11
     optionalDependencies:
       prettier: 3.6.2
 
-  prettier-plugin-tailwindcss@0.6.13(prettier-plugin-astro@0.14.1)(prettier@3.6.2):
+  prettier-plugin-tailwindcss@0.6.14(prettier-plugin-astro@0.14.1)(prettier@3.6.2):
     dependencies:
       prettier: 3.6.2
     optionalDependencies:
@@ -8567,7 +8585,7 @@ snapshots:
 
   sort-object-keys@1.1.3: {}
 
-  sort-package-json@3.3.1:
+  sort-package-json@3.4.0:
     dependencies:
       detect-indent: 7.0.1
       detect-newline: 4.0.1
@@ -8732,6 +8750,10 @@ snapshots:
       supports-color: 7.2.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
+
+  synckit@0.11.11:
+    dependencies:
+      '@pkgr/core': 0.2.9
 
   synckit@0.11.8:
     dependencies:
