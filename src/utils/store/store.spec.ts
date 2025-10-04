@@ -21,6 +21,7 @@ describe("gitzyStore", () => {
 
   it("should setup gitzy store", () => {
     mockGitzyStorePath();
+
     expect(new GitzyStore()).toStrictEqual(
       expect.objectContaining({
         clear: expect.any(Function),
@@ -34,14 +35,17 @@ describe("gitzyStore", () => {
       }),
     );
   });
+
   it("should load saved data", () => {
     mockGitzyStorePath();
     store.save({ some: "data" });
+
     expect(store.load()).toStrictEqual({ some: "data" });
   });
 
   it("should load data", () => {
     mockGitzyStorePath();
+
     expect(store.load()).toStrictEqual({});
   });
 
@@ -53,6 +57,7 @@ describe("gitzyStore", () => {
     vi.spyOn(fs, "readFileSync").mockImplementationOnce(() => {
       throw new CustomError();
     });
+
     expect(() => {
       store.load();
     }).toThrow("gitzy does not have permission to load this file");
@@ -66,6 +71,7 @@ describe("gitzyStore", () => {
     vi.spyOn(fs, "readFileSync").mockImplementationOnce(() => {
       throw new CustomError();
     });
+
     expect(() => {
       store.load();
     }).not.toThrow();

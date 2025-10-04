@@ -36,9 +36,11 @@ describe("searchPlaces", () => {
       }
     });
   });
+
   it("should return all search places", () => {
     expect(getSearchPlaces("gitzy")).toStrictEqual(expectedSearchPlaces);
   });
+
   it("should return null if no config is found", async () => {
     const config = await loadConfig("a");
 
@@ -55,6 +57,7 @@ describe("searchPlaces", () => {
       filepath: `${process.cwd()}/.arc.json`,
     });
   });
+
   it("should return config for yaml files", async () => {
     await writeFile(".arc.yml", "disableEmoji: true");
 

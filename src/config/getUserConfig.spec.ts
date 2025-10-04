@@ -27,6 +27,7 @@ describe("getUserConfig", () => {
     vi.clearAllMocks();
     vi.resetAllMocks();
   });
+
   it("should only return user config when loaded & isValid", async () => {
     const loadConfigSpy = mockLoadConfig();
     const getCommitlintConfigSpy = mockGetCommitlintConfig();
@@ -49,7 +50,7 @@ describe("getUserConfig", () => {
 
     expect(loadConfigSpy).toHaveBeenNthCalledWith(1, "gitzy");
     expect(validateUserConfigSpy).toHaveBeenNthCalledWith(1, mockUserConfig);
-    expect(getCommitlintConfigSpy).toHaveBeenCalledTimes(1);
+    expect(getCommitlintConfigSpy).toHaveBeenCalledExactlyOnceWith();
     expect(config).toStrictEqual({
       ...mockUserConfig,
       ...mockCommitlintConfig,
@@ -65,7 +66,7 @@ describe("getUserConfig", () => {
 
     expect(loadConfigSpy).toHaveBeenNthCalledWith(1, "gitzy");
     expect(validateUserConfigSpy).not.toHaveBeenCalled();
-    expect(getCommitlintConfigSpy).toHaveBeenCalledTimes(1);
+    expect(getCommitlintConfigSpy).toHaveBeenCalledExactlyOnceWith();
     expect(config).toStrictEqual(mockCommitlintConfig);
   });
 

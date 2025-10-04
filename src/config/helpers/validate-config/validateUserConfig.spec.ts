@@ -7,9 +7,11 @@ describe("validateConfig", () => {
       "unknown or additional properties detected",
     );
   });
+
   it("should return invalid configuration", () => {
     expect(validateConfig(1)).toBe("invalid configuration");
   });
+
   it("should return true if all validations pass", () => {
     expect(validateConfig(defaultConfig)).toBe(true);
   });
@@ -21,6 +23,7 @@ describe("validateUserConfig", () => {
       "unknown or additional properties detected",
     );
   });
+
   it("should return true if config is valid", async () => {
     await expect(validateUserConfig({ disableEmoji: true })).resolves.toBe(
       true,

@@ -57,7 +57,7 @@ export const tryUnlink = (filepath: string): void => {
     const dataStoreError = error as GitzyStoreError;
 
     if (dataStoreError.code !== "ENOENT") {
-      throw new Error(dataStoreError.message);
+      throw new Error(dataStoreError.message, { cause: error });
     }
   }
 };
