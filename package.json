@@ -18,7 +18,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "pkgroll --minify --target=node18",
+    "build": "pkgroll --minify --target=node20.19.0",
     "coverage": "vitest run --coverage",
     "format": "prettier -c .",
     "format:fix": "prettier -w .",
@@ -72,7 +72,7 @@
   },
   "packageManager": "pnpm@10.18.0",
   "engines": {
-    "node": ">= 18"
+    "node": "^20.19.0 || >=22.12.0"
   },
   "publishConfig": {
     "access": "public"
