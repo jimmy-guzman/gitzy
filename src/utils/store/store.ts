@@ -62,7 +62,9 @@ export class GitzyStore<T = Record<string, unknown>> {
         dataStoreError.name === "SyntaxError";
 
       if (hasPermissionError) {
-        throw new Error("gitzy does not have permission to load this file");
+        throw new Error("gitzy does not have permission to load this file", {
+          cause: error,
+        });
       }
 
       if (hasMissingOrCorruptedFile) {

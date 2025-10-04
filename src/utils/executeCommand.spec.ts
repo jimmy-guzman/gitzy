@@ -63,7 +63,11 @@ describe("executeGitMessage", () => {
 
     fns.executeGitMessage({ answers, config: defaultConfig }, {});
 
-    expect(mockSpawn).toHaveBeenCalledTimes(1);
+    expect(mockSpawn).toHaveBeenCalledExactlyOnceWith(
+      "git",
+      expect.anything(),
+      expect.anything(),
+    );
   });
 
   it("should call executeDryRun and not executeCommand when in dry run mode", () => {
@@ -83,7 +87,7 @@ describe("executeGitMessage", () => {
 
     fns.executeGitMessage({ answers, config: defaultConfig }, { hook: true });
 
-    expect(writeFileSyncSpy).toHaveBeenCalledWith(
+    expect(writeFileSyncSpy).toHaveBeenCalledExactlyOnceWith(
       ".git/COMMIT_EDITMSG",
       expect.stringContaining("feat(*): ✨ a cool new feature"),
     );

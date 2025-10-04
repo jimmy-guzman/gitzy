@@ -138,6 +138,7 @@ describe("formatCommitMessage", () => {
       🏁 Closes: #123"
     `);
   });
+
   it("should wrap commit message correctly when there are quotes and back ticks", () => {
     const formattedMessage = setupFormatCommitMessage(
       { ...defaultConfig, headerMaxLength: 75 },
@@ -157,6 +158,7 @@ describe("formatCommitMessage", () => {
       🏁 Closes: #123"
     `);
   });
+
   it("should allow double quotes in message", () => {
     const formattedMessage = setupFormatCommitMessage(defaultConfig, {
       body: "",
@@ -169,6 +171,7 @@ describe("formatCommitMessage", () => {
       `"feat(*): ✨ this has \\"quotes\\""`,
     );
   });
+
   it("should allow backtick quotes in message", () => {
     const formattedMessage = setupFormatCommitMessage(defaultConfig, {
       body: "",
@@ -181,6 +184,7 @@ describe("formatCommitMessage", () => {
       `"feat(*): ✨ this has \\\`quotes\\\`"`,
     );
   });
+
   it("should not wrap message when headerMaxLength is longer than the default width (72)", () => {
     const formattedMessage = setupFormatCommitMessage(
       { ...defaultConfig, headerMaxLength: 75 },
@@ -198,6 +202,7 @@ describe("formatCommitMessage", () => {
     );
     expect(formattedMessage).toHaveLength(73);
   });
+
   it("should leverage default width (72) when headerMaxLength is less", () => {
     const formattedMessage = setupFormatCommitMessage(
       { ...defaultConfig, headerMaxLength: 71 },

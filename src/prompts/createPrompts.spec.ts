@@ -35,16 +35,19 @@ describe("createPrompts", () => {
       "issues",
     ]);
   });
+
   it("should not create skipped questions", () => {
     const prompts = setupCreatePrompts({ skip: ["type"] });
 
     expect(prompts).toStrictEqual(["subject", "body", "breaking", "issues"]);
   });
+
   it("should not create multiple skipped questions", () => {
     const prompts = setupCreatePrompts({ skip: ["type", "body"] });
 
     expect(prompts).toStrictEqual(["subject", "breaking", "issues"]);
   });
+
   it("should only create user defined questions", () => {
     const prompts = setupCreatePrompts({}, ["type"]);
 

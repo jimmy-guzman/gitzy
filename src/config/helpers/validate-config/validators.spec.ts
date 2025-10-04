@@ -38,6 +38,7 @@ describe("isArrayOfStrings", () => {
   it("should return false if it is not an array", () => {
     expect(isArrayOfStrings(1)).toBe(false);
   });
+
   it("should return false if it is not an array of strings", () => {
     expect(isArrayOfStrings([1])).toBe(false);
   });
@@ -63,6 +64,7 @@ describe("isValidDetails", () => {
       }),
     ).toBe(false);
   });
+
   it('should return false if it does not contain "emoji"', () => {
     expect(
       isValidDetails({
@@ -70,6 +72,7 @@ describe("isValidDetails", () => {
       }),
     ).toBe(false);
   });
+
   it("should return every with detail values as strings", () => {
     expect(
       isValidDetails({

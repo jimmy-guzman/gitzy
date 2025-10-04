@@ -38,6 +38,7 @@ describe("utils", () => {
   describe("directoryExists", () => {
     it("should return false when there is no stat", () => {
       vi.spyOn(utils, "tryStat").mockReturnValueOnce(null);
+
       expect(utils.directoryExists("path")).toBe(false);
     });
 
@@ -79,6 +80,7 @@ describe("utils", () => {
 
     it("should not throw when error is ignored", () => {
       vi.spyOn(path, "dirname").mockReturnValueOnce("path1");
+
       expect(() => {
         utils.handleError("path2", {
           code: "EEXIST",
@@ -130,7 +132,8 @@ describe("utils", () => {
 
       utils.mkdir(DIR_NAME);
 
-      expect(statSyncSpy).toHaveBeenCalledWith(DIR_NAME);
+      expect(statSyncSpy).toHaveBeenNthCalledWith(1, DIR_NAME);
+      expect(statSyncSpy).toHaveBeenNthCalledWith(2, DIR_NAME);
       expect(mkdirSyncSpy).not.toHaveBeenCalled();
       expect(handleErrorSpy).not.toHaveBeenCalled();
     });
@@ -163,7 +166,7 @@ describe("utils", () => {
 
       utils.mkdir(DIR_NAME);
 
-      expect(mkdirSyncSpy).toHaveBeenCalledWith(DIR_NAME, {
+      expect(mkdirSyncSpy).toHaveBeenCalledExactlyOnceWith(DIR_NAME, {
         recursive: true,
       });
       expect(handleErrorSpy).not.toHaveBeenCalled();

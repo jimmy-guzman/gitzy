@@ -22,6 +22,7 @@ describe("cli", () => {
       } as unknown as Enquirer;
     });
   });
+
   it("should run with defaults", async () => {
     process.argv = [];
 
@@ -55,8 +56,8 @@ describe("cli", () => {
       },
       { emoji: true, hook: undefined },
     );
-    expect(checkIfGitSpy).toHaveBeenCalledTimes(1);
-    expect(checkIfStagedSpy).toHaveBeenCalledTimes(1);
+    expect(checkIfGitSpy).toHaveBeenCalledExactlyOnceWith();
+    expect(checkIfStagedSpy).toHaveBeenCalledExactlyOnceWith();
     expect(getUserConfigSpy).toHaveBeenNthCalledWith(1, undefined);
     expect(executeGitMessageSpy).toHaveBeenNthCalledWith(
       1,

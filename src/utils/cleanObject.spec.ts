@@ -6,6 +6,7 @@ describe("cleanObject", () => {
       orange: "y",
     });
   });
+
   it("should remove undefined values", () => {
     expect(cleanObject({ banana: undefined, orange: "y" })).toStrictEqual({
       orange: "y",

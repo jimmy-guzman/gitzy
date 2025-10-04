@@ -32,16 +32,19 @@ describe("choice", () => {
       value: "feat",
     });
   });
+
   it("should not have an emoji when disableEmoji", () => {
     const { title } = setupChoice({ disableEmoji: true });
 
     expect(title).toBe("feat:");
   });
+
   it("should not have an emoji when --no-emoji", () => {
     const { title } = setupChoice({}, { emoji: false });
 
     expect(title).toBe("feat:");
   });
+
   it('should add extra space for "refactor"', () => {
     const { title } = setupChoice({}, {}, "refactor");
 

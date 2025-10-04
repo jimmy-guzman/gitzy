@@ -1,22 +1,20 @@
 import * as child_process from "node:child_process";
 
-import type { Mock } from "vitest";
-
 import { checkIfGitRepo, checkIfStaged, shouldDoGitChecks } from "./git-utils";
 
 vi.mock("node:child_process");
 
-const childProcessMock = child_process.exec as unknown as Mock;
+const childProcessMock = vi.mocked(child_process.exec);
 
 const mockExec = (value: null | string = null): void => {
-  childProcessMock.mockImplementation(
-    (
-      _command: unknown,
-      callback: (arg0: null | string, arg1: { stdout: string }) => unknown,
-    ) => {
-      return callback(value, { stdout: "ok" });
-    },
-  );
+  childProcessMock.mockImplementation((_command, callback) => {
+    if (typeof callback === "function") {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-function-type -- mock
+      return (callback as Function)(value, { stdout: "ok" });
+    }
+
+    return undefined;
+  });
 };
 
 describe("shouldDoGitChecks", () => {
@@ -35,6 +33,7 @@ describe("checkIfStaged", () => {
 
     await expect(checkIfStaged()).rejects.toThrow("No files staged");
   });
+
   it("should rethrow", async () => {
     mockExec("error");
 
@@ -48,6 +47,7 @@ describe("checkIfGitRepo", () => {
 
     await expect(checkIfGitRepo()).rejects.toThrow("Not a git repository");
   });
+
   it("should resolve", async () => {
     mockExec();
 
