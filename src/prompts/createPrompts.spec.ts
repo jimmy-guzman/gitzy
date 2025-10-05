@@ -4,7 +4,7 @@ import { createPrompts } from "./createPrompts";
 const setupCreatePrompts = (
   flags = {},
   questions = defaultConfig.questions,
-): string[] => {
+) => {
   return createPrompts(
     {
       answers: {

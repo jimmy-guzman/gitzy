@@ -1,4 +1,3 @@
-export { cleanObject } from "./cleanObject";
 export { executeGitMessage } from "./executeCommand";
 export { fuzzySearch } from "./fuzzy-search";
 export { checkIfGitRepo, checkIfStaged, shouldDoGitChecks } from "./git-utils";

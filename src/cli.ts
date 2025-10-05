@@ -41,15 +41,11 @@ const enquirerOptions = {
   },
 };
 
-export const cli = async (): Promise<void> => {
+export const cli = async () => {
   const state = { answers: defaultAnswers, config: defaultConfig };
   const store = new GitzyStore<Answers>();
 
-  const init = async ({
-    commitlint,
-    dryRun,
-    passthrough,
-  }: Flags): Promise<void> => {
+  const init = async ({ commitlint, dryRun, passthrough }: Flags) => {
     const loadedUserConfig = await getUserConfig(commitlint);
 
     if (loadedUserConfig) {
@@ -62,7 +58,7 @@ export const cli = async (): Promise<void> => {
     }
   };
 
-  const promptQuestions = async (flags: Answers): Promise<Answers> => {
+  const promptQuestions = async (flags: Answers) => {
     const enquirer = new Enquirer(enquirerOptions, flags);
     const prompts = createPrompts(state, flags);
 

@@ -1,5 +1,3 @@
-import type { EnquirerPrompt } from "../interfaces";
-
 import { defaultConfig } from "../defaults";
 import { breaking } from "./breaking";
 
@@ -16,7 +14,7 @@ describe("breaking", () => {
       },
       config: defaultConfig,
       flags: {},
-    }) as Required<EnquirerPrompt>;
+    });
 
     expect(breakingPrompt).toMatchInlineSnapshot(`
       {

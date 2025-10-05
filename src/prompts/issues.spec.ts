@@ -1,5 +1,3 @@
-import type { EnquirerPrompt } from "../interfaces";
-
 import { defaultConfig } from "../defaults";
 import { issues } from "./issues";
 import { issuesMessage } from "./lang";
@@ -17,7 +15,7 @@ describe("issues", () => {
       },
       config: defaultConfig,
       flags: {},
-    }) as Required<EnquirerPrompt>;
+    });
 
     expect(issuesPrompt).toStrictEqual({
       hint: "#123",

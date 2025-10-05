@@ -1,5 +1,3 @@
-import type { EnquirerPrompt } from "../interfaces";
-
 import { defaultConfig } from "../defaults";
 import { body } from "./body";
 
@@ -16,7 +14,7 @@ describe("body", () => {
       },
       config: defaultConfig,
       flags: {},
-    }) as Required<EnquirerPrompt>;
+    });
 
     expect(bodyPrompt).toStrictEqual({
       format: expect.any(Function),

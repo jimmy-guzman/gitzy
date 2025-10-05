@@ -1,7 +1,7 @@
 import type { Details } from "../interfaces";
 
 // emoji's are based of https://gitmoji.dev/
-export const details: Details = {
+export const details = {
   chore: {
     description: "Other changes that don't modify src or test files",
     emoji: "🤖",
@@ -46,4 +46,4 @@ export const details: Details = {
     description: "Add or update tests",
     emoji: "✅",
   },
-};
+} satisfies Details;

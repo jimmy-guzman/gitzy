@@ -25,11 +25,11 @@ export class GitzyStore<T = Record<string, unknown>> {
     this.path = gitzyStorePath();
   }
 
-  public clear = (): void => {
+  public clear = () => {
     this.save({} as T);
   };
 
-  public destroy = (): void => {
+  public destroy = () => {
     tryUnlink(this.path);
   };
 
@@ -37,21 +37,20 @@ export class GitzyStore<T = Record<string, unknown>> {
     return this.data;
   };
 
-  public save(data: T): void {
+  public save(data: T) {
     this[idx] = data;
     this.writeFile();
   }
 
-  private readonly json = (): string => {
+  private readonly json = () => {
     return JSON.stringify(this.data, null, 2);
   };
 
-  private readonly readParseFile = (): T => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- JSON.parse returns any
-    return JSON.parse(String(fs.readFileSync(this.path)));
+  private readonly readParseFile = () => {
+    return JSON.parse(String(fs.readFileSync(this.path))) as T;
   };
 
-  private readonly tryLoad = (): T => {
+  private readonly tryLoad = () => {
     try {
       return (this[idx] = this.readParseFile());
     } catch (error: unknown) {
@@ -77,7 +76,7 @@ export class GitzyStore<T = Record<string, unknown>> {
     }
   };
 
-  private readonly writeFile = (): void => {
+  private readonly writeFile = () => {
     mkdir(path.dirname(this.path));
     fs.writeFileSync(this.path, this.json(), { mode: 0o0600 });
   };

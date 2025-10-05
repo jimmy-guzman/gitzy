@@ -1,6 +1,10 @@
 import { styleText } from "node:util";
 
-import type { Answers, CreatedPrompt, EnquirerState } from "../interfaces";
+import type {
+  Answers,
+  CreatedPromptOptions,
+  EnquirerState,
+} from "../interfaces";
 
 import { errorMessage, promptsLang } from "./lang";
 
@@ -17,9 +21,9 @@ export const leadingLabel = (answers?: Answers): string => {
   return answers?.type ? `${answers.type}${scope}: ` : "";
 };
 
-export const subject: CreatedPrompt = ({
+export const subject = ({
   config: { disableEmoji, headerMaxLength, headerMinLength },
-}) => {
+}: CreatedPromptOptions) => {
   const minTitleLengthError = errorMessage.minTitleLength(headerMinLength);
   const maxTitleLengthError = errorMessage.maxTitleLength(headerMaxLength);
   const {
@@ -55,7 +59,7 @@ export const subject: CreatedPrompt = ({
       return styleText("bold", `${message}(${getCharsLeftText()})`);
     },
     name: "subject",
-    type: "input",
+    type: "input" as const,
     validate: (input: string, state?: EnquirerState): string | true => {
       const label = leadingLabel(state?.answers);
       const isOverMaxLength =

@@ -6,7 +6,7 @@ interface Lang {
   flags: Record<keyof Omit<Flags, "emoji" | "help" | "version">, string>;
 }
 
-const skipQuestionMessage = (question: string): string => {
+const skipQuestionMessage = (question: string) => {
   return `skip "${question}" question and provide your own "${question}" message`;
 };
 
@@ -19,31 +19,31 @@ export const lang = {
   $ gitzy -lD --no-emoji
   `,
   flags: {
-    get body(): string {
+    get body() {
       return skipQuestionMessage("body");
     },
-    get breaking(): string {
+    get breaking() {
       return skipQuestionMessage("breaking");
     },
     commitlint: "leverage commitlint's configuration",
-    get dryRun(): string {
+    get dryRun() {
       return "displays git message but does not commit";
     },
     hook: "run gitzy inside a Git hook",
-    get issues(): string {
+    get issues() {
       return skipQuestionMessage("issues");
     },
     noEmoji: "disable all emojis",
     passthrough: 'subsequent command line args passed through to "git"',
     retry: "retries previous commit, skips all prompts",
-    get scope(): string {
+    get scope() {
       return skipQuestionMessage("scope");
     },
     skip: "skip questions",
-    get subject(): string {
+    get subject() {
       return skipQuestionMessage("subject");
     },
-    get type(): string {
+    get type() {
       return skipQuestionMessage("type");
     },
   },

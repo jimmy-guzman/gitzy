@@ -4,7 +4,7 @@ import path from "node:path";
 
 import type { GitzyStoreError } from "./types";
 
-export const tryStat = (filepath: string): fs.Stats | null => {
+export const tryStat = (filepath: string) => {
   try {
     return fs.statSync(filepath);
   } catch {
@@ -12,7 +12,7 @@ export const tryStat = (filepath: string): fs.Stats | null => {
   }
 };
 
-export const handleError = (dirname: string, err: GitzyStoreError): void => {
+export const handleError = (dirname: string, err: GitzyStoreError) => {
   if (err.message.includes("null bytes")) {
     throw new Error(err.message);
   }
@@ -26,7 +26,7 @@ export const handleError = (dirname: string, err: GitzyStoreError): void => {
   }
 };
 
-export const directoryExists = (dirname: string, strict = true): boolean => {
+export const directoryExists = (dirname: string, strict = true) => {
   const stat = tryStat(dirname);
 
   if (stat) {
@@ -40,7 +40,7 @@ export const directoryExists = (dirname: string, strict = true): boolean => {
   return false;
 };
 
-export const mkdir = (dirname: string): void => {
+export const mkdir = (dirname: string) => {
   if (directoryExists(dirname)) return;
 
   try {
@@ -50,7 +50,7 @@ export const mkdir = (dirname: string): void => {
   }
 };
 
-export const tryUnlink = (filepath: string): void => {
+export const tryUnlink = (filepath: string) => {
   try {
     fs.unlinkSync(filepath);
   } catch (error: unknown) {
@@ -69,6 +69,6 @@ export const tryUnlink = (filepath: string): void => {
  * const path = gitzyStorePath()
  * console.log(path) // /var/folders/17/{tmpdir}/T/gitzy/gitzy-store.json
  */
-export const gitzyStorePath = (): string => {
+export const gitzyStorePath = () => {
   return `${os.tmpdir()}/gitzy/${path.basename(process.cwd())}-store.json`;
 };

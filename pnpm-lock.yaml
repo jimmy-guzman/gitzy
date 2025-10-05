@@ -33,6 +33,9 @@ importers:
       '@semantic-release/git':
         specifier: 10.0.1
         version: 10.0.1(semantic-release@24.2.9(typescript@5.9.3))
+      '@total-typescript/ts-reset':
+        specifier: ~0.6.1
+        version: 0.6.1
       '@types/node':
         specifier: 22.15.32
         version: 22.15.32
@@ -1020,6 +1023,9 @@ packages:
     resolution: {integrity: sha512-Kn6yWyRe3dIPf7NqyDMhcsTBz2Oh8jPSOpBdlnLQhGBJ6iTMBFYA4B1UreGJ/WdfzQskSMh5imcyWF+wqa/Q5g==}
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0
+
+  '@total-typescript/ts-reset@0.6.1':
+    resolution: {integrity: sha512-cka47fVSo6lfQDIATYqb/vO1nvFfbPw7uWLayIXIhGETj0wcOOlrlkobOMDNQOFr9QOafegUPq13V2+6vtD7yg==}
 
   '@tybys/wasm-util@0.10.1':
     resolution: {integrity: sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg==}
@@ -5253,6 +5259,8 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
       - typescript
+
+  '@total-typescript/ts-reset@0.6.1': {}
 
   '@tybys/wasm-util@0.10.1':
     dependencies:

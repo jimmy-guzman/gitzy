@@ -1,9 +1,4 @@
-import type {
-  CreatedPrompt,
-  EnquirerPrompt,
-  Flags,
-  GitzyState,
-} from "../interfaces";
+import type { Flags, GitzyState } from "../interfaces";
 
 import { defaultConfig } from "../defaults";
 import { body } from "./body";
@@ -13,7 +8,7 @@ import { scope } from "./scope";
 import { subject } from "./subject";
 import { type } from "./type";
 
-const prompts: Record<string, CreatedPrompt> = {
+const prompts = {
   body,
   breaking,
   issues,
@@ -29,7 +24,7 @@ const notEmpty = <T>(value: null | T | undefined): value is T => {
 export const createPrompts = (
   { answers, config }: GitzyState,
   flags: Flags,
-): EnquirerPrompt[] => {
+) => {
   return config.questions
     .filter((question) => {
       return (

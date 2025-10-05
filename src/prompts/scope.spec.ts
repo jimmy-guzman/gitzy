@@ -1,12 +1,12 @@
-import type { CreatedPromptOptions, EnquirerPrompt } from "../interfaces";
+import type { CreatedPromptOptions } from "../interfaces";
 
 import { defaultConfig } from "../defaults";
 import { scope } from "./scope";
 
-const setupScope = (config = {}): Required<EnquirerPrompt> => {
+const setupScope = (config = {}) => {
   return scope({
     config: { ...defaultConfig, ...config },
-  } as CreatedPromptOptions) as Required<EnquirerPrompt>;
+  } as CreatedPromptOptions);
 };
 
 describe("scope", () => {
@@ -15,9 +15,9 @@ describe("scope", () => {
   });
 
   it("should suggest needle in the haystack", () => {
-    const { suggest } = setupScope({ scopes: ["build"] });
+    const scope = setupScope({ scopes: ["build"] });
 
-    const needle = suggest("ui");
+    const needle = scope?.suggest("ui");
 
     expect(needle).toStrictEqual([
       { indent: " ", title: "build", value: "build" },

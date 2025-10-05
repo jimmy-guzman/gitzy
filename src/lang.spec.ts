@@ -1,6 +1,10 @@
 import { lang } from "./lang";
 
 describe("lang", () => {
+  it("should create lang", () => {
+    expect(lang).toMatchSnapshot();
+  });
+
   it("should compose description", () => {
     expect(lang.description).toBe("interactive conventional commits cli");
   });

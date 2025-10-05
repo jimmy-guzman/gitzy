@@ -10,7 +10,7 @@ export const executeCommand = (
   command: string,
   args: string[] = [],
   env = process.env,
-): void => {
+) => {
   const proc = spawn(command, args, {
     env,
     shell: true,
@@ -24,7 +24,7 @@ export const executeCommand = (
   });
 };
 
-export const executeDryRun = (message: string): void => {
+export const executeDryRun = (message: string) => {
   log(info(`Message...`));
   log(`\n${message}\n`);
 };
@@ -32,7 +32,7 @@ export const executeDryRun = (message: string): void => {
 export const executeGitMessage = (
   { answers, config }: GitzyState,
   { dryRun = false, emoji = true, hook = false, passthrough = [] }: Flags,
-): void => {
+) => {
   const message = formatCommitMessage(config, answers, emoji, hook);
 
   if (dryRun) {

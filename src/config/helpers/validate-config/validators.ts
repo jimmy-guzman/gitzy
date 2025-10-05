@@ -1,39 +1,42 @@
-import type { UnknownObject } from "../../../interfaces";
+import type { IssuesPrefixes } from "../../../interfaces";
 
 import { defaultConfig } from "../../../defaults";
 import { validIssuesPrefixes } from "./constants";
 
-type Validator<T = unknown> = (value: T) => boolean;
-
-export const hasProperty = (object: UnknownObject, key: string): boolean => {
+export const hasProperty = <K extends string>(
+  object: Record<string, unknown>,
+  key: K,
+): object is Record<K, unknown> => {
   return Object.prototype.hasOwnProperty.call(object, key);
 };
 
-export const isString: Validator = (value) => {
+export const isString = (value: unknown): value is string => {
   return typeof value === "string";
 };
 
-export const isBoolean: Validator = (value) => {
+export const isBoolean = (value: unknown): value is boolean => {
   return typeof value === "boolean";
 };
 
-export const isNumber: Validator = (value) => {
+export const isNumber = (value: unknown): value is number => {
   return typeof value === "number";
 };
 
-export const isObject: Validator = (value) => {
+export const isObject = (value: unknown): value is Record<string, unknown> => {
   return typeof value === "object";
 };
 
-export const isArrayOfStrings: Validator = (value) => {
+export const isArrayOfStrings = (value: unknown): value is string[] => {
   return Array.isArray(value) && value.every(isString);
 };
 
-export const isValidDetails: Validator = (value) => {
+export const isValidDetails = (
+  value: unknown,
+): value is Record<string, { description: string; emoji: string }> => {
   return (
     isObject(value) &&
-    Object.values(value as UnknownObject).every((object) => {
-      const detail = object as UnknownObject;
+    Object.values(value).every((object) => {
+      const detail = object;
 
       return (
         isObject(detail) &&
@@ -45,14 +48,11 @@ export const isValidDetails: Validator = (value) => {
   );
 };
 
-export const isValidIssues: Validator = (value) => {
-  return (
-    isString(value) &&
-    (validIssuesPrefixes as string[]).includes(value as string)
-  );
+export const isValidIssues = (value: unknown): value is IssuesPrefixes => {
+  return isString(value) && validIssuesPrefixes.includes(value);
 };
 
-export const hasAdditionalProperties = (object: UnknownObject): boolean => {
+export const hasAdditionalProperties = (object: Record<string, unknown>) => {
   const allowedKeys = Object.keys(defaultConfig);
 
   return Object.keys(object).some((key) => {

@@ -1,6 +1,6 @@
 import type { IssuesPrefixes } from "../../../interfaces";
 
-export const validIssuesPrefixes: IssuesPrefixes[] = [
+export const validIssuesPrefixes = [
   "close",
   "closes",
   "closed",
@@ -10,4 +10,4 @@ export const validIssuesPrefixes: IssuesPrefixes[] = [
   "resolve",
   "resolves",
   "resolved",
-];
+] satisfies IssuesPrefixes[];

@@ -78,19 +78,6 @@ export interface EnquirerState {
   answers: Answers;
   input: string;
 }
-export interface EnquirerPrompt {
-  choices?: EnquirerChoice[];
-  footer?: (state: EnquirerState) => string;
-  format?: (value: string) => string;
-  hint?: string;
-  message: ((state?: EnquirerState) => string) | string;
-  multiline?: boolean;
-  name: string;
-  skip?: boolean;
-  suggest?: (input: string) => EnquirerChoice[];
-  type: "autocomplete" | "input" | "text";
-  validate?: (input: string, state?: EnquirerState) => string | true;
-}
 
 export interface Flags {
   body?: string;
@@ -116,14 +103,6 @@ export interface CreatedPromptOptions {
   config: GitzyConfig;
   flags: Flags;
 }
-
-export type CreatedPrompt = ({
-  answers,
-  config,
-  flags,
-}: CreatedPromptOptions) => EnquirerPrompt | null;
-
-export type UnknownObject = Record<string, unknown>;
 
 export interface GitzyState {
   answers: Answers;
