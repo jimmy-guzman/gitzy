@@ -1,3 +1,23 @@
+# [6.0.0](https://github.com/jimmy-guzman/gitzy/compare/v5.9.0...v6.0.0) (2025-10-05)
+
+
+### Bug Fixes
+
+* 🐛 add missing `cause` in errors ([e0460ba](https://github.com/jimmy-guzman/gitzy/commit/e0460bab4538f5390993f1dd38300f10fa973403))
+* 🐛 bump `yaml` to v2.8.1 ([605bfa7](https://github.com/jimmy-guzman/gitzy/commit/605bfa7bddbc0b92aa7b42fff63cbd20434d0bb6))
+
+
+### Features
+
+* ✨ bump `commander` to v14 ([182ad82](https://github.com/jimmy-guzman/gitzy/commit/182ad82bda02fe41de68b05a5d6ceab97677cd66))
+* ✨ drop support for node v18 ([6f5a52c](https://github.com/jimmy-guzman/gitzy/commit/6f5a52c4a79ce75c282cfa73de1939e0bd14ac43))
+* ✨ use native `styleText` instead of `ansi-colors` ([25217bc](https://github.com/jimmy-guzman/gitzy/commit/25217bc32361644ad95843694ae87fdd2403f04c))
+
+
+### BREAKING CHANGES
+
+* 💥 node v18 is no longer supported
+
 # [5.9.0](https://github.com/jimmy-guzman/gitzy/compare/v5.8.1...v5.9.0) (2025-06-21)
 
 
