@@ -1,6 +1,7 @@
+import { styleText } from "node:util";
+
 import type { CommanderError } from "commander";
 
-import { cyan, red } from "ansi-colors";
 import { program } from "commander";
 import Enquirer from "enquirer";
 
@@ -30,7 +31,14 @@ const enquirerOptions = {
   cancel: (): null => {
     return null;
   },
-  styles: { danger: red, submitted: cyan },
+  styles: {
+    danger: (value: string) => {
+      return styleText("red", value);
+    },
+    submitted: (value: string) => {
+      return styleText("cyan", value);
+    },
+  },
 };
 
 export const cli = async (): Promise<void> => {

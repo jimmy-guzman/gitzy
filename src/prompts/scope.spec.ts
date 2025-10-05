@@ -25,21 +25,22 @@ describe("scope", () => {
   });
 
   it("should return scope prompt if there is a scope", () => {
-    expect(setupScope({ scopes: ["build"] })).toMatchObject({
-      choices: [
-        {
-          indent: " ",
-          title: "build",
-          value: "build",
-        },
-      ],
-      hint: "[2m...type or use arrow keys[22m",
-      limit: 10,
-      message: "Choose the scope",
-      name: "scope",
-
-      suggest: expect.any(Function),
-      type: "autocomplete",
-    });
+    expect(setupScope({ scopes: ["build"] })).toMatchInlineSnapshot(`
+      {
+        "choices": [
+          {
+            "indent": " ",
+            "title": "build",
+            "value": "build",
+          },
+        ],
+        "hint": "...type or use arrow keys",
+        "limit": 10,
+        "message": "Choose the scope",
+        "name": "scope",
+        "suggest": [Function],
+        "type": "autocomplete",
+      }
+    `);
   });
 });

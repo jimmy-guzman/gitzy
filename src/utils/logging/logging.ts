@@ -1,15 +1,15 @@
-import { blue, red, yellow } from "ansi-colors";
+import { styleText } from "node:util";
 
 export const info = (message: string): string => {
-  return blue(`❯ ${message}`);
+  return styleText("blue", `❯ ${message}`);
 };
 
 export const hint = (message: string): string => {
-  return yellow(`❯ ${message}`);
+  return styleText("yellow", `❯ ${message}`);
 };
 
 export const danger = (message: string): string => {
-  return red(`❯ ${message}`);
+  return styleText("red", `❯ ${message}`);
 };
 
 export const log = (message: string): void => {

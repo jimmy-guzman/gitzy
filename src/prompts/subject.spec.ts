@@ -1,5 +1,3 @@
-import { bold, green, red, yellow } from "ansi-colors";
-
 import type {
   Answers,
   CreatedPromptOptions,
@@ -104,7 +102,7 @@ describe("subject", () => {
       const { message } = setupSubject();
 
       expect(message({ answers, input: "" })).toBe(
-        bold(`Add a short description(${red("52/64")})`),
+        `Add a short description(52/64)`,
       );
     });
 
@@ -112,7 +110,7 @@ describe("subject", () => {
       const { message } = setupSubject();
 
       expect(message({ answers, input: "#".repeat(5) })).toBe(
-        bold(`Add a short description(${green("47/64")})`),
+        `Add a short description(47/64)`,
       );
     });
 
@@ -120,7 +118,7 @@ describe("subject", () => {
       const { message } = setupSubject();
 
       expect(message({ answers, input: "#".repeat(65) })).toBe(
-        bold(`Add a short description(${red("-13/64")})`),
+        `Add a short description(-13/64)`,
       );
     });
 
@@ -128,14 +126,14 @@ describe("subject", () => {
       const { message } = setupSubject();
 
       expect(message({ answers, input: "#".repeat(52) })).toBe(
-        bold(`Add a short description(${yellow("0/64")})`),
+        `Add a short description(0/64)`,
       );
     });
 
     it("should return indicator when no state", () => {
       const { message } = setupSubject();
 
-      expect(message()).toBe(bold(`Add a short description(${red("61/64")})`));
+      expect(message()).toBe(`Add a short description(61/64)`);
     });
   });
 });

@@ -18,12 +18,14 @@ describe("breaking", () => {
       flags: {},
     }) as Required<EnquirerPrompt>;
 
-    expect(breakingPrompt).toStrictEqual({
-      hint: "[2m...skip when none[22m",
-      message: `[1mAdd any breaking changes[22m
-  [31mBREAKING CHANGE:[39m`,
-      name: "breaking",
-      type: "text",
-    });
+    expect(breakingPrompt).toMatchInlineSnapshot(`
+      {
+        "hint": "...skip when none",
+        "message": "Add any breaking changes
+        BREAKING CHANGE:",
+        "name": "breaking",
+        "type": "text",
+      }
+    `);
   });
 });
