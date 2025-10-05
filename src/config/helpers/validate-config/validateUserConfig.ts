@@ -1,5 +1,3 @@
-import type { UnknownObject } from "../../../interfaces";
-
 import { schema } from "./schema";
 import { hasAdditionalProperties, isObject, isString } from "./validators";
 
@@ -8,11 +6,11 @@ export const validateConfig = (userConfig: unknown) => {
     return "invalid configuration";
   }
 
-  if (hasAdditionalProperties(userConfig as UnknownObject)) {
+  if (hasAdditionalProperties(userConfig)) {
     return "unknown or additional properties detected";
   }
 
-  return Object.entries(userConfig as UnknownObject).map(([key, value]) => {
+  return Object.entries(userConfig).map(([key, value]) => {
     return schema[key](value);
   })[0];
 };

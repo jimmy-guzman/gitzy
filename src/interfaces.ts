@@ -104,8 +104,6 @@ export interface CreatedPromptOptions {
   flags: Flags;
 }
 
-export type UnknownObject = Record<string, unknown>;
-
 export interface GitzyState {
   answers: Answers;
   config: GitzyConfig;

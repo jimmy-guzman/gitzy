@@ -1,11 +1,12 @@
-import type { UnknownObject } from "../../../interfaces";
+import type { IssuesPrefixes } from "../../../interfaces";
 
 import { defaultConfig } from "../../../defaults";
 import { validIssuesPrefixes } from "./constants";
 
-type Validator<T = unknown> = (value: T) => boolean;
-
-export const hasProperty = (object: UnknownObject, key: string) => {
+export const hasProperty = <K extends string>(
+  object: Record<string, unknown>,
+  key: K,
+): object is Record<K, unknown> => {
   return Object.prototype.hasOwnProperty.call(object, key);
 };
 
@@ -29,11 +30,13 @@ export const isArrayOfStrings = (value: unknown): value is string[] => {
   return Array.isArray(value) && value.every(isString);
 };
 
-export const isValidDetails: Validator = (value) => {
+export const isValidDetails = (
+  value: unknown,
+): value is Record<string, { description: string; emoji: string }> => {
   return (
     isObject(value) &&
-    Object.values(value as UnknownObject).every((object) => {
-      const detail = object as UnknownObject;
+    Object.values(value).every((object) => {
+      const detail = object;
 
       return (
         isObject(detail) &&
@@ -45,11 +48,11 @@ export const isValidDetails: Validator = (value) => {
   );
 };
 
-export const isValidIssues: Validator = (value) => {
+export const isValidIssues = (value: unknown): value is IssuesPrefixes => {
   return isString(value) && validIssuesPrefixes.includes(value);
 };
 
-export const hasAdditionalProperties = (object: UnknownObject) => {
+export const hasAdditionalProperties = (object: Record<string, unknown>) => {
   const allowedKeys = Object.keys(defaultConfig);
 
   return Object.keys(object).some((key) => {
