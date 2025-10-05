@@ -5,8 +5,8 @@ import { hint } from "./logging";
 /**
  * Determines wether or not files are staged.
  */
-export const checkIfStaged = (): Promise<string> => {
-  return new Promise((resolve, reject) => {
+export const checkIfStaged = () => {
+  return new Promise<string>((resolve, reject) => {
     exec("git --no-pager diff --cached --quiet --exit-code", (error) => {
       if (error) {
         resolve("");
@@ -25,8 +25,8 @@ export const checkIfStaged = (): Promise<string> => {
 /**
  * Determines wether or not it's git repository.
  */
-export const checkIfGitRepo = (): Promise<string> => {
-  return new Promise((resolve, reject) => {
+export const checkIfGitRepo = () => {
+  return new Promise<string>((resolve, reject) => {
     exec("git rev-parse --is-inside-work-tree", (error) => {
       if (error) {
         reject(
@@ -46,7 +46,7 @@ export const checkIfGitRepo = (): Promise<string> => {
  *
  * @param array flags
  */
-export const shouldDoGitChecks = (array: string[] = []): boolean => {
+export const shouldDoGitChecks = (array: string[] = []) => {
   return !["--add", "-a", "--amend"].some((flag) => {
     return array.includes(flag);
   });

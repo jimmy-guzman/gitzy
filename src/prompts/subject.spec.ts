@@ -1,21 +1,12 @@
-import type {
-  Answers,
-  CreatedPromptOptions,
-  EnquirerPrompt,
-  EnquirerState,
-} from "../interfaces";
+import type { Answers, CreatedPromptOptions } from "../interfaces";
 
 import { defaultConfig } from "../defaults";
 import { leadingLabel, subject } from "./subject";
 
-interface Custom extends Omit<Required<EnquirerPrompt>, "message"> {
-  message: (state?: EnquirerState) => string;
-}
-
-const setupSubject = (config = {}): Custom => {
+const setupSubject = (config = {}) => {
   return subject({
     config: { ...defaultConfig, ...config },
-  } as CreatedPromptOptions) as Custom;
+  } as CreatedPromptOptions);
 };
 
 const answers = {

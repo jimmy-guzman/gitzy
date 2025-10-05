@@ -1,9 +1,4 @@
-import type {
-  CreatedPrompt,
-  EnquirerChoice,
-  Flags,
-  GitzyConfig,
-} from "../interfaces";
+import type { CreatedPromptOptions, Flags, GitzyConfig } from "../interfaces";
 
 import { fuzzySearch } from "../utils";
 import { promptsLang } from "./lang";
@@ -12,7 +7,7 @@ export const choice = (
   { details, disableEmoji }: GitzyConfig,
   type: string,
   flags?: Flags,
-): EnquirerChoice => {
+) => {
   const {
     [type]: { description, emoji },
   } = details;
@@ -27,7 +22,7 @@ export const choice = (
   };
 };
 
-export const type: CreatedPrompt = ({ config, flags }) => {
+export const type = ({ config, flags }: CreatedPromptOptions) => {
   const choices = config.types.map((configType) => {
     return choice(config, configType, flags);
   });
@@ -41,6 +36,6 @@ export const type: CreatedPrompt = ({ config, flags }) => {
     suggest: (input: string) => {
       return fuzzySearch(choices, ["title", "hint"], input);
     },
-    type: "autocomplete",
+    type: "autocomplete" as const,
   };
 };

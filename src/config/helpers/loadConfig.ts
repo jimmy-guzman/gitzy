@@ -14,7 +14,7 @@ interface LoadConfigResult<T> {
   isEmpty?: boolean;
 }
 
-const defaultSearchPlaces = (name: string): string[] => {
+const defaultSearchPlaces = (name: string) => {
   return [
     `.${name}rc`,
     `.${name}rc.json`,
@@ -27,7 +27,7 @@ const defaultSearchPlaces = (name: string): string[] => {
   ];
 };
 
-export const getSearchPlaces = (configName: string): string[] => {
+export const getSearchPlaces = (configName: string) => {
   return [
     "package.json",
     ...defaultSearchPlaces(configName),

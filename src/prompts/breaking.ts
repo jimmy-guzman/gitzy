@@ -1,12 +1,12 @@
-import type { CreatedPrompt } from "../interfaces";
+import type { CreatedPromptOptions } from "../interfaces";
 
 import { promptsLang } from "./lang";
 
-export const breaking: CreatedPrompt = () => {
+export const breaking = (_options: CreatedPromptOptions) => {
   return {
     hint: promptsLang.breaking.hint,
     message: promptsLang.breaking.message,
     name: "breaking",
-    type: "text",
+    type: "text" as const,
   };
 };

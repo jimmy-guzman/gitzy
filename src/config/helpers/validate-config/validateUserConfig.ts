@@ -3,11 +3,12 @@ import type { UnknownObject } from "../../../interfaces";
 import { schema } from "./schema";
 import { hasAdditionalProperties, isObject, isString } from "./validators";
 
-export const validateConfig = (userConfig: unknown): boolean | string => {
+export const validateConfig = (userConfig: unknown) => {
   if (!isObject(userConfig)) {
     return "invalid configuration";
   }
-  if (userConfig && hasAdditionalProperties(userConfig as UnknownObject)) {
+
+  if (hasAdditionalProperties(userConfig as UnknownObject)) {
     return "unknown or additional properties detected";
   }
 
@@ -16,13 +17,11 @@ export const validateConfig = (userConfig: unknown): boolean | string => {
   })[0];
 };
 
-export const validateUserConfig = async (
-  userConfig: unknown,
-): Promise<boolean | string> => {
+export const validateUserConfig = async (userConfig: unknown) => {
   const validation = await Promise.resolve(validateConfig(userConfig));
 
   if (isString(validation)) {
-    throw new Error(validation as string);
+    throw new Error(validation);
   }
 
   return validation;

@@ -1,9 +1,9 @@
-import type { CreatedPrompt } from "../interfaces";
+import type { CreatedPromptOptions } from "../interfaces";
 
 import { fuzzySearch } from "../utils";
 import { promptsLang } from "./lang";
 
-export const scope: CreatedPrompt = ({ config: { scopes } }) => {
+export const scope = ({ config: { scopes } }: CreatedPromptOptions) => {
   const choices = scopes.map((choice) => {
     return {
       indent: " ",
@@ -23,7 +23,7 @@ export const scope: CreatedPrompt = ({ config: { scopes } }) => {
         suggest: (input: string) => {
           return fuzzySearch(choices, ["title"], input);
         },
-        type: "autocomplete",
+        type: "autocomplete" as const,
       }
     : null;
 };

@@ -1,16 +1,16 @@
-import type { CreatedPrompt } from "../interfaces";
+import type { CreatedPromptOptions } from "../interfaces";
 
 import { promptsLang } from "./lang";
 
-export const body: CreatedPrompt = () => {
+export const body = (_options: CreatedPromptOptions) => {
   return {
-    format: (value): string => {
+    format: (value: string) => {
       return value.trim();
     },
     hint: promptsLang.body.hint,
     message: promptsLang.body.message,
     multiline: true,
     name: "body",
-    type: "text",
+    type: "text" as const,
   };
 };
