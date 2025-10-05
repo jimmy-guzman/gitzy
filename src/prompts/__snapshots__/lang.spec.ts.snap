@@ -8,19 +8,19 @@ exports[`lang > promptsLang > should create prompts lang 1`] = `
 ",
   },
   "breaking": {
-    "hint": "[2m...skip when none[22m",
-    "message": "[1mAdd any breaking changes[22m
-  [31mBREAKING CHANGE:[39m",
+    "hint": "...skip when none",
+    "message": "Add any breaking changes
+  BREAKING CHANGE:",
   },
   "scope": {
-    "hint": "[2m...type or use arrow keys[22m",
+    "hint": "...type or use arrow keys",
     "message": "Choose the scope",
   },
   "subject": {
     "message": "Add a short description",
   },
   "type": {
-    "hint": "[2m...type or use arrow keys[22m",
+    "hint": "...type or use arrow keys",
     "message": "Choose the type",
   },
 }

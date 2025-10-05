@@ -1,42 +1,44 @@
-import { bold, dim, red, reset } from "ansi-colors";
+import { styleText } from "node:util";
 
 import type { IssuesPrefixes, PromptsLang } from "../interfaces";
 
-const breaking = red("BREAKING CHANGE:");
+const breaking = styleText("red", "BREAKING CHANGE:");
 
-const closes = (issuesPrefix: IssuesPrefixes): string => {
-  return reset(`${issuesPrefix}:`);
+const closes = (issuesPrefix: IssuesPrefixes) => {
+  return styleText("reset", `${issuesPrefix}:`);
 };
 
-export const promptsLang: PromptsLang = {
+export const promptsLang = {
   body: {
     hint: "...supports multi line, press enter to go to next line",
     message: "Add a longer description\n",
   },
   breaking: {
-    hint: dim("...skip when none"),
-    message: `${bold("Add any breaking changes")}\n  ${breaking}`,
+    hint: styleText("dim", "...skip when none"),
+    message: `${styleText("bold", "Add any breaking changes")}\n  ${breaking}`,
   },
   scope: {
-    hint: dim("...type or use arrow keys"),
+    hint: styleText("dim", "...type or use arrow keys"),
     message: "Choose the scope",
   },
-  subject: { message: "Add a short description" },
+  subject: {
+    message: "Add a short description",
+  },
   type: {
-    hint: dim("...type or use arrow keys"),
+    hint: styleText("dim", "...type or use arrow keys"),
     message: "Choose the type",
   },
-};
+} satisfies PromptsLang;
 
-export const issuesMessage = (issuesPrefix: IssuesPrefixes): string => {
-  return `${bold(`Add issues this commit closes`)}\n  ${closes(issuesPrefix)}`;
+export const issuesMessage = (issuesPrefix: IssuesPrefixes) => {
+  return `${styleText("bold", `Add issues this commit closes`)}\n  ${closes(issuesPrefix)}`;
 };
 
 export const errorMessage = {
-  maxTitleLength: (length: number): string => {
+  maxTitleLength: (length: number) => {
     return `The subject must be less than ${length.toString()} characters`;
   },
-  minTitleLength: (length: number): string => {
+  minTitleLength: (length: number) => {
     return `The subject must have at least ${length.toString()} characters`;
   },
 };

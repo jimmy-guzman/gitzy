@@ -19,7 +19,7 @@ describe("executeDryRun", () => {
       [MockFunction log] {
         "calls": [
           [
-            "[34m❯ Message...[39m",
+            "❯ Message...",
           ],
           [
             "

@@ -8,11 +8,11 @@ describe("logging", () => {
   });
 
   it("should log info", () => {
-    expect(info(message)).toMatchInlineSnapshot(`"[34m❯ logging...[39m"`);
+    expect(info(message)).toMatchInlineSnapshot(`"❯ logging..."`);
   });
 
   it("should log danger", () => {
-    expect(danger(message)).toMatchInlineSnapshot(`"[31m❯ logging...[39m"`);
+    expect(danger(message)).toMatchInlineSnapshot(`"❯ logging..."`);
   });
 
   it("should log log", () => {

@@ -1,4 +1,4 @@
-import { bold, green, red, yellow } from "ansi-colors";
+import { styleText } from "node:util";
 
 import type { Answers, CreatedPrompt, EnquirerState } from "../interfaces";
 
@@ -38,19 +38,21 @@ export const subject: CreatedPrompt = ({
         const charsLeftIndicator = `${remainingChar.toString()}/${headerMaxLength.toString()}`;
 
         if (inputLength < headerMinLength) {
-          return red(charsLeftIndicator);
-        }
-        if (percentRemaining > PERCENT_THRESHOLD) {
-          return green(charsLeftIndicator);
-        }
-        if (percentRemaining < 0) {
-          return red(charsLeftIndicator);
+          return styleText("red", charsLeftIndicator);
         }
 
-        return yellow(charsLeftIndicator);
+        if (percentRemaining > PERCENT_THRESHOLD) {
+          return styleText("green", charsLeftIndicator);
+        }
+
+        if (percentRemaining < 0) {
+          return styleText("red", charsLeftIndicator);
+        }
+
+        return styleText("yellow", charsLeftIndicator);
       };
 
-      return bold(`${message}(${getCharsLeftText()})`);
+      return styleText("bold", `${message}(${getCharsLeftText()})`);
     },
     name: "subject",
     type: "input",

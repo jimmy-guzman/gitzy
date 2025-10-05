@@ -54,14 +54,84 @@ describe("choice", () => {
 
 describe("type", () => {
   it("should return scope prompt if there is a scope", () => {
-    expect(setupType({ scopes: ["build"] })).toMatchObject({
-      hint: "[2m...type or use arrow keys[22m",
-      message: "Choose the type",
-      name: "type",
-
-      suggest: expect.any(Function),
-      type: "autocomplete",
-    });
+    expect(setupType({ scopes: ["build"] })).toMatchInlineSnapshot(`
+      {
+        "choices": [
+          {
+            "hint": "other changes that don't modify src or test files",
+            "indent": " ",
+            "title": "chore:",
+            "value": "chore",
+          },
+          {
+            "hint": "add or update documentation",
+            "indent": " ",
+            "title": "docs:",
+            "value": "docs",
+          },
+          {
+            "hint": "a new feature",
+            "indent": " ",
+            "title": "feat:",
+            "value": "feat",
+          },
+          {
+            "hint": "fix a bug",
+            "indent": " ",
+            "title": "fix:",
+            "value": "fix",
+          },
+          {
+            "hint": "refactor code",
+            "indent": " ",
+            "title": "refactor:",
+            "value": "refactor",
+          },
+          {
+            "hint": "add or update tests",
+            "indent": " ",
+            "title": "test:",
+            "value": "test",
+          },
+          {
+            "hint": "improve structure / format of the code",
+            "indent": " ",
+            "title": "style:",
+            "value": "style",
+          },
+          {
+            "hint": "changes to ci configuration files and scripts",
+            "indent": " ",
+            "title": "ci:",
+            "value": "ci",
+          },
+          {
+            "hint": "improve performance",
+            "indent": " ",
+            "title": "perf:",
+            "value": "perf",
+          },
+          {
+            "hint": "revert changes",
+            "indent": " ",
+            "title": "revert:",
+            "value": "revert",
+          },
+          {
+            "hint": "deploy stuff",
+            "indent": " ",
+            "title": "release:",
+            "value": "release",
+          },
+        ],
+        "hint": "...type or use arrow keys",
+        "limit": 10,
+        "message": "Choose the type",
+        "name": "type",
+        "suggest": [Function],
+        "type": "autocomplete",
+      }
+    `);
   });
 
   it("should suggest needle in the haystack", () => {
