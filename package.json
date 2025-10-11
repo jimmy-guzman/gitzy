@@ -48,7 +48,7 @@
     "yaml": "^2.8.1"
   },
   "devDependencies": {
-    "@jimmy.codes/eslint-config": "6.13.2",
+    "@jimmy.codes/eslint-config": "6.14.0",
     "@jimmy.codes/prettier-config": "2.0.2",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/git": "10.0.1",
