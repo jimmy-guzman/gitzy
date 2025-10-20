@@ -70,8 +70,8 @@ importers:
         specifier: 8.0.4
         version: 8.0.4
       pkgroll:
-        specifier: 2.18.1
-        version: 2.18.1(typescript@5.9.3)
+        specifier: 2.20.1
+        version: 2.20.1(typescript@5.9.3)
       prettier:
         specifier: 3.6.2
         version: 3.6.2
@@ -3299,8 +3299,8 @@ packages:
   pkg-types@2.3.0:
     resolution: {integrity: sha512-SIqCzDRg0s9npO5XQ3tNZioRY1uK06lA41ynBC1YmFTmnY6FjUjVt6s4LoADmwoig1qqD0oK8h1p/8mlMx8Oig==}
 
-  pkgroll@2.18.1:
-    resolution: {integrity: sha512-5fXXV3Bvc0zvD3kwmPrqwJJ84kIB3RUV3VC9RHkQa2bcRLj4s2W/J0PkVL57VzlLlG+BeE09lFp0wr1ULBGQuQ==}
+  pkgroll@2.20.1:
+    resolution: {integrity: sha512-+ljnIUQDxOgceLmtM7P3jj88GGk6P8YMqT/EkwKQXIgnsAX7W4LhcMQXQlWYfDE9Rg08k+57FG1omqaeT8+gew==}
     engines: {node: '>=18'}
     hasBin: true
     peerDependencies:
@@ -7711,7 +7711,7 @@ snapshots:
       exsolve: 1.0.7
       pathe: 2.0.3
 
-  pkgroll@2.18.1(typescript@5.9.3):
+  pkgroll@2.20.1(typescript@5.9.3):
     dependencies:
       '@rollup/plugin-alias': 5.1.1(rollup@4.52.4)
       '@rollup/plugin-commonjs': 28.0.6(rollup@4.52.4)
@@ -7725,6 +7725,7 @@ snapshots:
       magic-string: 0.30.19
       rollup: 4.52.4
       rollup-pluginutils: 2.8.2
+      yaml: 2.8.1
     optionalDependencies:
       typescript: 5.9.3
 
