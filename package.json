@@ -62,7 +62,7 @@
     "is-ci": "4.1.0",
     "jiti": "2.6.1",
     "knip": "5.64.1",
-    "lint-staged": "16.2.3",
+    "lint-staged": "16.2.6",
     "npm-run-all2": "8.0.4",
     "pkgroll": "2.18.1",
     "prettier": "3.6.2",
