@@ -19,6 +19,8 @@
   ],
   "scripts": {
     "build": "pkgroll --minify --target=node20.19.0",
+    "precheck": "pnpm build",
+    "check": "run-p knip lint format coverage typecheck lint:package",
     "coverage": "vitest run --coverage",
     "format": "prettier -c .",
     "format:fix": "prettier -w .",
@@ -26,11 +28,11 @@
     "knip": "knip",
     "lint": "eslint --cache .",
     "lint:fix": "pnpm lint --fix",
+    "lint:package": "publint",
     "prepack": "pnpm build && clean-pkg-json",
     "prepare": "is-ci || husky",
     "test": "vitest",
-    "typecheck": "tsc",
-    "validate": "run-p knip lint format coverage typecheck"
+    "typecheck": "tsc"
   },
   "lint-staged": {
     "*.{md,json,yml,ts}": [
@@ -65,6 +67,7 @@
     "npm-run-all2": "8.0.4",
     "pkgroll": "2.20.1",
     "prettier": "3.6.2",
+    "publint": "0.3.15",
     "typescript": "5.9.3",
     "vitest": "3.2.4"
   },

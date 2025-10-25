@@ -24,11 +24,8 @@ jobs:
       - name: install
         run: pnpm install --frozen-lockfile
 
-      - name: build
-        run: pnpm build
-
-      - name: validate
-        run: pnpm validate
+      - name: check
+        run: pnpm check
 
       - name: codecov
         uses: codecov/codecov-action@v5
