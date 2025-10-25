@@ -1,3 +1,15 @@
+# [6.1.0](https://github.com/jimmy-guzman/gitzy/compare/v6.0.0...v6.1.0) (2025-10-25)
+
+
+### Bug Fixes
+
+* **deps:** 🐛 bump `vite` to fix CWE-22 ([b535bcc](https://github.com/jimmy-guzman/gitzy/commit/b535bccd5d242fc440dc773262277712d587a43c))
+
+
+### Features
+
+* ✨ improve fuzzy matching with `@leeoniya/ufuzzy` ([43f591a](https://github.com/jimmy-guzman/gitzy/commit/43f591af98aad75951d8cd465e1446c051aea998))
+
 # [6.0.0](https://github.com/jimmy-guzman/gitzy/compare/v5.9.0...v6.0.0) (2025-10-05)
 
 
