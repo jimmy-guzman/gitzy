@@ -209,7 +209,7 @@
 
 ### Bug Fixes
 
-* **cli:** 🐛 prevent wraping if `headerMaxLength` is over `72` ([9b1ed6b](https://github.com/jimmy-guzman/gitzy/commit/9b1ed6b384cb67ffcb0de0b779ded868a83f1c3a))
+* **cli:** 🐛 prevent wrapping if `headerMaxLength` is over `72` ([9b1ed6b](https://github.com/jimmy-guzman/gitzy/commit/9b1ed6b384cb67ffcb0de0b779ded868a83f1c3a))
 
 
 ### Features
