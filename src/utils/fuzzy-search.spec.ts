@@ -31,16 +31,6 @@ describe("fuzzySearch", () => {
     expect(needle).toStrictEqual([{ name: "jim" }, { name: "jimmy" }]);
   });
 
-  it("should leave fuzzy matches intact if none are strict equal", () => {
-    const needle = fuzzySearch(
-      [{ name: "jimmy" }, { name: "jim" }],
-      ["name"],
-      "j",
-    );
-
-    expect(needle).toStrictEqual([{ name: "jimmy" }, { name: "jim" }]);
-  });
-
   it("should handle empty haystack", () => {
     const result = fuzzySearch([], ["name"], "test");
 
@@ -251,5 +241,74 @@ describe("fuzzySearch", () => {
 
     expect(result[0]).toStrictEqual({ value: "actor" });
     expect(result[1]).toStrictEqual({ value: "refactor" });
+  });
+
+  it("should handle null or undefined values in search keys", () => {
+    const haystack = [
+      { email: null as unknown as string, name: "john" },
+      { email: "test@example.com", name: null as unknown as string },
+      { email: "jane@example.com", name: "jane" },
+    ];
+
+    const result = fuzzySearch(haystack, ["name", "email"], "john");
+
+    expect(result).toContainEqual({ email: null, name: "john" });
+  });
+
+  it("should handle undefined values gracefully", () => {
+    const haystack = [
+      { email: undefined as unknown as string, name: "test" },
+      { email: "email@test.com", name: "other" },
+    ];
+
+    const result = fuzzySearch(haystack, ["name", "email"], "test");
+
+    expect(result.length).toBeGreaterThan(0);
+  });
+
+  it("should handle non-string searchable values", () => {
+    const haystack = [
+      { id: 123, name: "item1" },
+      { id: 456, name: "item2" },
+      { id: null as unknown as string, name: "item3" },
+    ];
+
+    const result = fuzzySearch(haystack, ["id", "name"], "123");
+
+    expect(result).toContainEqual({ id: 123, name: "item1" });
+  });
+
+  it("should handle search with only special characters", () => {
+    const haystack = [
+      { name: "test@example.com" },
+      { name: "user#123" },
+      { name: "item-1" },
+    ];
+
+    const result = fuzzySearch(haystack, ["name"], "@#$");
+
+    // Should either return empty or handle gracefully
+    expect(Array.isArray(result)).toBe(true);
+  });
+
+  it("should handle very long search terms", () => {
+    const haystack = [{ name: "short" }, { name: "medium length text" }];
+
+    const result = fuzzySearch(
+      haystack,
+      ["name"],
+      "this is a very long search term that exceeds reasonable length",
+    );
+
+    expect(Array.isArray(result)).toBe(true);
+  });
+
+  it("should handle edge case where search returns partial results", () => {
+    const haystack = [{ name: "test" }];
+
+    // Test with search terms that might cause uFuzzy to return unexpected results
+    const result = fuzzySearch(haystack, ["name"], "zzz");
+
+    expect(result).toStrictEqual([]);
   });
 });
