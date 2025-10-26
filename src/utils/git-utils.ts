@@ -49,10 +49,17 @@ export const checkIfGitRepo = async () => {
 /**
  * Determines whether or not to perform git checks based on flags
  *
- * @param array flags
+ * @param passthroughFlags flags
  */
-export const shouldDoGitChecks = (array: string[] = []) => {
+export const shouldDoGitChecks = (
+  passthroughFlags: string[] = [],
+  cliFlags: { dryRun?: boolean; hook?: boolean } = {},
+) => {
+  if (cliFlags.dryRun || cliFlags.hook) {
+    return false;
+  }
+
   return !["--add", "-a", "--amend"].some((flag) => {
-    return array.includes(flag);
+    return passthroughFlags.includes(flag);
   });
 };

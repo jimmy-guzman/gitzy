@@ -45,14 +45,14 @@ export const cli = async () => {
   const state = { answers: defaultAnswers, config: defaultConfig };
   const store = new GitzyStore<Answers>();
 
-  const init = async ({ commitlint, dryRun, passthrough }: Flags) => {
+  const init = async ({ commitlint, dryRun, hook, passthrough }: Flags) => {
     const loadedUserConfig = await getUserConfig(commitlint);
 
     if (loadedUserConfig) {
       state.config = { ...state.config, ...loadedUserConfig };
     }
 
-    if (shouldDoGitChecks(passthrough) && !dryRun) {
+    if (shouldDoGitChecks(passthrough, { dryRun, hook })) {
       await checkIfGitRepo();
       await checkIfStaged();
     }

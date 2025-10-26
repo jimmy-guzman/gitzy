@@ -2,4 +2,4 @@
 
 exec < /dev/tty
 
-node ./dist/index.mjs --commitlint --hook
+tsx src/index.ts --commitlint --hook

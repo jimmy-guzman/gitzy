@@ -9,8 +9,20 @@ describe("shouldDoGitChecks", () => {
     expect(shouldDoGitChecks([flag])).toBe(false);
   });
 
-  it("should perform check if no flags", () => {
+  it("should perform check if no passthrough flags", () => {
     expect(shouldDoGitChecks()).toBe(true);
+  });
+
+  it("should perform check if no cli flags", () => {
+    expect(shouldDoGitChecks([], { dryRun: false, hook: false })).toBe(true);
+  });
+
+  it("should skip git check if dryRun flag is true", () => {
+    expect(shouldDoGitChecks([], { dryRun: true, hook: false })).toBe(false);
+  });
+
+  it("should skip git check if hook flag is true", () => {
+    expect(shouldDoGitChecks([], { dryRun: false, hook: true })).toBe(false);
   });
 });
 
