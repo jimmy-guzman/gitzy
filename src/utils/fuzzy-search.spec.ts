@@ -311,4 +311,12 @@ describe("fuzzySearch", () => {
 
     expect(result).toStrictEqual([]);
   });
+
+  it("should handle edge case where search term is '*'", () => {
+    const haystack = [{ name: "*" }];
+
+    const result = fuzzySearch(haystack, ["name"], "*");
+
+    expect(result).toStrictEqual([{ name: "*" }]);
+  });
 });
