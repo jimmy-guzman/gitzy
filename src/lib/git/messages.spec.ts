@@ -221,6 +221,102 @@ describe("formatCommitMessage", () => {
     `);
   });
 
+  it("should handle whitespace tolerance in issues", () => {
+    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+      issues: "  #123 , #456  ,#789  ",
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*): ✨ a cool new feature
+
+      this an amazing feature, lots of details
+
+      BREAKING CHANGE: 💥 breaks everything
+
+      🏁 Closes #123, Closes #456, Closes #789"
+    `);
+  });
+
+  it("should handle issues with excessive whitespace", () => {
+    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+      issues: "#123  ,   #456   ,    #789",
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*): ✨ a cool new feature
+
+      this an amazing feature, lots of details
+
+      BREAKING CHANGE: 💥 breaks everything
+
+      🏁 Closes #123, Closes #456, Closes #789"
+    `);
+  });
+
+  it("should handle empty issues after filtering whitespace", () => {
+    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+      issues: "#123, , #456",
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+    "feat(*): ✨ a cool new feature
+
+    this an amazing feature, lots of details
+
+    BREAKING CHANGE: 💥 breaks everything
+
+    🏁 Closes #123, Closes #456"
+  `);
+  });
+
+  it("should handle issues without spaces after commas", () => {
+    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+      issues: "#123,#456,#789",
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+    "feat(*): ✨ a cool new feature
+
+    this an amazing feature, lots of details
+
+    BREAKING CHANGE: 💥 breaks everything
+
+    🏁 Closes #123, Closes #456, Closes #789"
+  `);
+  });
+
+  it("should handle issues with multiple spaces around commas", () => {
+    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+      issues: "#123   ,   #456",
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+    "feat(*): ✨ a cool new feature
+
+    this an amazing feature, lots of details
+
+    BREAKING CHANGE: 💥 breaks everything
+
+    🏁 Closes #123, Closes #456"
+  `);
+  });
+
+  it("should handle mixed spacing around commas", () => {
+    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+      issues: "#123,#456  ,  #789",
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+    "feat(*): ✨ a cool new feature
+
+    this an amazing feature, lots of details
+
+    BREAKING CHANGE: 💥 breaks everything
+
+    🏁 Closes #123, Closes #456, Closes #789"
+  `);
+  });
+
   it("should wrap commit message", () => {
     const formattedMessage = setupFormatCommitMessage(defaultConfig, {
       body: "this is a very very very very very very very very very very very very very very very very very very very long description",
