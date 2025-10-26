@@ -1,6 +1,7 @@
-import type { CreatedPromptOptions, Flags, GitzyConfig } from "../interfaces";
+import type { CreatedPromptOptions, Flags, GitzyConfig } from "@/interfaces";
 
-import { fuzzySearch } from "../utils";
+import { fuzzySearch } from "@/lib/fuzzy-search";
+
 import { promptsLang } from "./lang";
 
 export const choice = (

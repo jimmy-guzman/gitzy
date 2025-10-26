@@ -1,6 +1,7 @@
-import type { Answers, CreatedPromptOptions } from "../interfaces";
+import type { Answers, CreatedPromptOptions } from "@/interfaces";
 
-import { defaultConfig } from "../defaults";
+import { defaultConfig } from "@/defaults/config";
+
 import { leadingLabel, subject } from "./subject";
 
 const setupSubject = (config = {}) => {

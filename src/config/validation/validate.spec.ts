@@ -1,5 +1,6 @@
-import { defaultConfig } from "../../../defaults";
-import { validateConfig, validateUserConfig } from "./validateUserConfig";
+import { defaultConfig } from "@/defaults/config";
+
+import { validateConfig, validateUserConfig } from "./validate";
 
 describe("validateConfig", () => {
   it("should return unknown or additional properties detected", () => {

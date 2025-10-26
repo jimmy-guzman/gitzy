@@ -1,4 +1,4 @@
-import type { GitzyConfig, GitzyPrompts } from "../interfaces";
+import type { GitzyConfig, GitzyPrompts } from "@/interfaces";
 
 import { details } from "./details";
 

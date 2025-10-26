@@ -1,6 +1,7 @@
-import type { CreatedPromptOptions } from "../interfaces";
+import type { CreatedPromptOptions } from "@/interfaces";
 
-import { defaultConfig } from "../defaults";
+import { defaultConfig } from "@/defaults/config";
+
 import { scope } from "./scope";
 
 const setupScope = (config = {}) => {

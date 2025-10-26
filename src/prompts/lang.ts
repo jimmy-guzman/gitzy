@@ -1,6 +1,6 @@
 import { styleText } from "node:util";
 
-import type { IssuesPrefixes, PromptsLang } from "../interfaces";
+import type { IssuesPrefixes, PromptsLang } from "@/interfaces";
 
 const breaking = styleText("red", "BREAKING CHANGE:");
 

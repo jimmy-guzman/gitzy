@@ -1,4 +1,4 @@
-import { fuzzySearch } from "./fuzzy-search";
+import { fuzzySearch } from "@/lib/fuzzy-search";
 
 describe("fuzzySearch", () => {
   it("should return the needle in the haystack", () => {

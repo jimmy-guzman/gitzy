@@ -1,4 +1,4 @@
-import type { CreatedPromptOptions } from "../interfaces";
+import type { CreatedPromptOptions } from "@/interfaces";
 
 import { promptsLang } from "./lang";
 

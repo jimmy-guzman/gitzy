@@ -1,6 +1,7 @@
-import type { IssuesPrefixes } from "../../../interfaces";
+import type { IssuesPrefixes } from "@/interfaces";
 
-import { defaultConfig } from "../../../defaults";
+import { defaultConfig } from "@/defaults/config";
+
 import { validIssuesPrefixes } from "./constants";
 
 export const hasProperty = <K extends string>(

@@ -19,7 +19,12 @@
     "outDir": "dist",
     "types": ["vitest/globals"],
 
-    "skipLibCheck": true
+    "skipLibCheck": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
   "include": ["src/**/*", "*.config.ts", "e2e"],
   "exclude": ["dist/"]

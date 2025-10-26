@@ -1,7 +1,9 @@
-import type { GitzyConfig } from "../interfaces";
+import type { GitzyConfig } from "@/interfaces";
 
-import { getUserConfig } from "./getUserConfig";
-import * as helpers from "./helpers";
+import * as validations from "../validation/validate";
+import * as commitlint from "./commitlint";
+import * as loaders from "./loader";
+import { loadUserConfig } from "./user";
 
 const mockUserConfig = { disableEmoji: true };
 const mockCommitlintConfig = { headerMinLength: 5 };
@@ -10,19 +12,23 @@ const mockLoadConfig = (
   config: null | Partial<GitzyConfig> = mockUserConfig,
 ) => {
   return vi
-    .spyOn(helpers, "loadConfig")
+    .spyOn(loaders, "loadConfig")
     .mockResolvedValueOnce(config ? { config, filepath: "" } : null);
 };
 
 const mockGetCommitlintConfig = (config = mockCommitlintConfig) => {
-  return vi.spyOn(helpers, "getCommitlintConfig").mockResolvedValueOnce(config);
+  return vi
+    .spyOn(commitlint, "loadCommitlintConfig")
+    .mockResolvedValueOnce(config);
 };
 
 const mockValidateUserConfig = (isValid = true) => {
-  return vi.spyOn(helpers, "validateUserConfig").mockResolvedValueOnce(isValid);
+  return vi
+    .spyOn(validations, "validateUserConfig")
+    .mockResolvedValueOnce(isValid);
 };
 
-describe("getUserConfig", () => {
+describe("loadUserConfig", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.resetAllMocks();
@@ -33,7 +39,7 @@ describe("getUserConfig", () => {
     const getCommitlintConfigSpy = mockGetCommitlintConfig();
     const validateUserConfigSpy = mockValidateUserConfig();
 
-    const config = await getUserConfig();
+    const config = await loadUserConfig();
 
     expect(loadConfigSpy).toHaveBeenNthCalledWith(1, "gitzy");
     expect(validateUserConfigSpy).toHaveBeenNthCalledWith(1, mockUserConfig);
@@ -46,7 +52,7 @@ describe("getUserConfig", () => {
     const getCommitlintConfigSpy = mockGetCommitlintConfig();
     const validateUserConfigSpy = mockValidateUserConfig();
 
-    const config = await getUserConfig(true);
+    const config = await loadUserConfig(true);
 
     expect(loadConfigSpy).toHaveBeenNthCalledWith(1, "gitzy");
     expect(validateUserConfigSpy).toHaveBeenNthCalledWith(1, mockUserConfig);
@@ -62,7 +68,7 @@ describe("getUserConfig", () => {
     const getCommitlintConfigSpy = mockGetCommitlintConfig();
     const validateUserConfigSpy = mockValidateUserConfig();
 
-    const config = await getUserConfig(true);
+    const config = await loadUserConfig(true);
 
     expect(loadConfigSpy).toHaveBeenNthCalledWith(1, "gitzy");
     expect(validateUserConfigSpy).not.toHaveBeenCalled();
@@ -75,7 +81,7 @@ describe("getUserConfig", () => {
     const getCommitlintConfigSpy = mockGetCommitlintConfig();
     const validateUserConfigSpy = mockValidateUserConfig();
 
-    const config = await getUserConfig();
+    const config = await loadUserConfig();
 
     expect(loadConfigSpy).toHaveBeenNthCalledWith(1, "gitzy");
     expect(validateUserConfigSpy).not.toHaveBeenCalled();
@@ -88,7 +94,7 @@ describe("getUserConfig", () => {
     const getCommitlintConfigSpy = mockGetCommitlintConfig();
     const validateUserConfigSpy = mockValidateUserConfig(false);
 
-    const config = await getUserConfig();
+    const config = await loadUserConfig();
 
     expect(loadConfigSpy).toHaveBeenNthCalledWith(1, "gitzy");
     expect(validateUserConfigSpy).toHaveBeenNthCalledWith(1, mockUserConfig);

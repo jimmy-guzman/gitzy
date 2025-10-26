@@ -1,6 +1,7 @@
-import type { Flags, GitzyState } from "../interfaces";
+import type { Flags, GitzyState } from "@/interfaces";
 
-import { defaultConfig } from "../defaults";
+import { defaultConfig } from "@/defaults/config";
+
 import { body } from "./body";
 import { breaking } from "./breaking";
 import { issues } from "./issues";
