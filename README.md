@@ -3,7 +3,7 @@
 > Interactive [conventional commits][conventional-commits] cli, inspired by [git-cz][git-cz] with the ability to leverage [commitlint](https://commitlint.js.org/#/) configuration, configuration validation, versatile configuration and more.
 
 <p align="center">
-  <img width="750" src="./assets/cli.svg" alt="gitzy CLI screenshot">
+  <img width="750" src="./assets/cli.svg" alt="Gitzy CLI Screenshot">
 </p>
 
 ![actions][actions-badge]
@@ -84,7 +84,7 @@ breakingChangeEmoji: "💥"
 ```sh
 fix: 🐛 resolved nasty bug
 
-🏁 Closes: #123
+🏁 Closes #123
 ```
 
 ```yml
@@ -96,7 +96,7 @@ closedIssueEmoji: "🏁"
 Allows you to customize the `issues` prompt hint
 
 ```yml
-issuesHint: #123
+issuesHint: "#123, #456, resolves #789, org/repo#100"
 ```
 
 ### issuesPrefix
@@ -106,6 +106,9 @@ Allows you to choose the `issuesPrefix` based on [Github supported keywords](htt
 ```yml
 issuesPrefix: closes # must be one of close, closes, closed, fix, fixes, fixed, resolve, resolves, resolved
 ```
+
+> [!TIP]
+> Specify multiple issues separated by commas: `#123, #456` or with keywords: `resolves #123, fixes #456` or cross-repo: `org/repo#123`
 
 ### disableEmoji
 

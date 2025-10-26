@@ -34,21 +34,22 @@ const createIssues = (
   const formattedIssues = issues
     .split(",")
     .map((issue) => {
-      return issue.trim();
-    })
-    .filter(Boolean)
-    .map((issue) => {
-      const match = issue.match(hasPrefixRegex);
+      const trimmed = issue.trim();
+
+      if (!trimmed) return null;
+
+      const match = trimmed.match(hasPrefixRegex);
 
       if (match) {
         const prefix = capitalize(match[1]);
-        const issueRef = issue.slice(match[0].length);
+        const issueRef = trimmed.slice(match[0].length);
 
         return `${prefix} ${issueRef}`;
       }
 
-      return `${capitalize(validPrefix)} ${issue}`;
+      return `${capitalize(validPrefix)} ${trimmed}`;
     })
+    .filter(Boolean)
     .join(", ");
 
   const emojiPrefix = disableEmoji ? "" : `${closedIssueEmoji} `;
