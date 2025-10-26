@@ -1,8 +1,6 @@
-import type { IssuesPrefixes } from "@/interfaces";
+import type { IssuesPrefixes } from "@/defaults/config";
 
-import { defaultConfig } from "@/defaults/config";
-
-import { validIssuesPrefixes } from "./constants";
+import { defaultConfig, validIssuesPrefixes } from "@/defaults/config";
 
 export const hasProperty = <K extends string>(
   object: Record<string, unknown>,

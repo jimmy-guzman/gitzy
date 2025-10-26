@@ -1,16 +1,4 @@
-import type { IssuesPrefixes } from "@/interfaces";
-
-export const validIssuesPrefixes = [
-  "close",
-  "closes",
-  "closed",
-  "fix",
-  "fixes",
-  "fixed",
-  "resolve",
-  "resolves",
-  "resolved",
-] satisfies IssuesPrefixes[];
+import { validIssuesPrefixes } from "@/defaults/config";
 
 export const lang = {
   breakingChangeEmoji: "breakingChangeEmoji must be a string",

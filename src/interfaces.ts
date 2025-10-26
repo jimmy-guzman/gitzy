@@ -1,3 +1,5 @@
+import type { IssuesPrefixes } from "./defaults/config";
+
 interface PromptLang {
   hint?: string;
   message: string;
@@ -26,20 +28,6 @@ export interface Answers {
   subject: string;
   type: string;
 }
-
-/**
- * https://docs.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword
- */
-export type IssuesPrefixes =
-  | "close"
-  | "closed"
-  | "closes"
-  | "fix"
-  | "fixed"
-  | "fixes"
-  | "resolve"
-  | "resolved"
-  | "resolves";
 
 export interface GitzyConfig {
   breakingChangeEmoji: string;

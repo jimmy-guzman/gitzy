@@ -1,4 +1,4 @@
-import { lang } from "./constants";
+import { lang } from "./lang";
 import {
   isArrayOfStrings,
   isBoolean,
