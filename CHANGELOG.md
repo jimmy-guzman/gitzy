@@ -1,3 +1,10 @@
+# [6.2.0](https://github.com/jimmy-guzman/gitzy/compare/v6.1.1...v6.2.0) (2025-10-26)
+
+
+### Features
+
+* ✨ support multiple issues with full syntax ([#583](https://github.com/jimmy-guzman/gitzy/issues/583)) ([2d2ca3f](https://github.com/jimmy-guzman/gitzy/commit/2d2ca3fcb2a161c8041c033078359965e115b4ae))
+
 ## [6.1.1](https://github.com/jimmy-guzman/gitzy/compare/v6.1.0...v6.1.1) (2025-10-26)
 
 
