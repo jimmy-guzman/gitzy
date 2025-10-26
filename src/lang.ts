@@ -22,9 +22,8 @@ export const lang = {
     get body() {
       return skipQuestionMessage("body");
     },
-    get breaking() {
-      return skipQuestionMessage("breaking");
-    },
+    breaking:
+      'mark as breaking change. Pass a message for "footer"/"both" formats, or just the flag for "!" format',
     commitlint: "leverage commitlint's configuration",
     get dryRun() {
       return "displays git message but does not commit";

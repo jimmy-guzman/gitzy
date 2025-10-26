@@ -1,4 +1,8 @@
-import type { GitzyPrompts, IssuesPrefixes } from "./defaults/config";
+import type {
+  BreakingChangeFormats,
+  GitzyPrompts,
+  IssuesPrefixes,
+} from "./defaults/config";
 
 interface PromptLang {
   hint?: string;
@@ -14,7 +18,7 @@ export type Details = Record<string, Detail>;
 
 export interface Answers {
   body: string;
-  breaking: string;
+  breaking: boolean | string;
   issues: string;
   scope: string;
   subject: string;
@@ -23,6 +27,34 @@ export interface Answers {
 
 export interface GitzyConfig {
   breakingChangeEmoji: string;
+  /**
+   * Allows you to customize the format of the breaking change indicator and prompts behavior.
+   *
+   * - `"!"`: Append `!` to the type/scope in the header and simply ask whether or not change is a breaking change
+   * - `"footer"`: Prompt and add a `BREAKING CHANGE` footer (default)
+   * - `"both"`: Prompt and add both an indicator and a footer
+   *
+   * @example
+   * // "!" format - adds ! to header, prompts for yes/no
+   * feat!: send an email to the customer when a product is shipped
+   *
+   * @example
+   * // "footer" format - prompts for description, adds to footer
+   * feat: allow provided config object to extend other configs
+   *
+   * BREAKING CHANGE: `extends` key in config file is now used for extending other config files
+   *
+   * @example
+   * // "both" format - adds ! to header AND prompts for footer description
+   * chore!: drop support for Node 6
+   *
+   * BREAKING CHANGE: use JavaScript features not available in Node 6.
+   *
+   * @see {@link https://www.conventionalcommits.org/en/v1.0.0/#specification | Conventional Commits Specification}
+   *
+   * @default "footer"
+   */
+  breakingChangeFormat: BreakingChangeFormats;
   closedIssueEmoji: string;
   details: Details;
   disableEmoji: boolean;
@@ -60,7 +92,7 @@ export interface EnquirerState {
 
 export interface Flags {
   body?: string;
-  breaking?: string;
+  breaking?: boolean | string;
   commitlint?: boolean;
   dryRun?: boolean;
   emoji?: boolean;

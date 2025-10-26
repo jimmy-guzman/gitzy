@@ -4,6 +4,7 @@ import {
   isBoolean,
   isNumber,
   isString,
+  isValidBreakingChangeFormat,
   isValidDetails,
   isValidIssues,
 } from "./validators";
@@ -13,6 +14,9 @@ type Scheme = (value: unknown) => boolean | string;
 export const schema: Record<string, Scheme> = {
   breakingChangeEmoji: (value) => {
     return isString(value) || lang.breakingChangeEmoji;
+  },
+  breakingChangeFormat: (value) => {
+    return isValidBreakingChangeFormat(value) || lang.breakingChangeFormat;
   },
   closedIssueEmoji: (value) => {
     return isString(value) || lang.closedIssueEmoji;

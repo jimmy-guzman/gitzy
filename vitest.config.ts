@@ -13,7 +13,7 @@ export default defineConfig({
       reporter: ["text", "html", "clover", "json", "lcovonly"],
       thresholds: {
         branches: 95,
-        functions: 94,
+        functions: 95,
         lines: 95,
         statements: 95,
       },

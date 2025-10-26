@@ -15,6 +15,7 @@ export type GitzyPrompts = (typeof questions)[number];
 
 export const defaultConfig: GitzyConfig = {
   breakingChangeEmoji: "💥",
+  breakingChangeFormat: "footer",
   closedIssueEmoji: "🏁",
   details,
   disableEmoji: false,
@@ -58,3 +59,7 @@ export const validIssuesPrefixes = [
  * @see https://docs.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword
  */
 export type IssuesPrefixes = (typeof validIssuesPrefixes)[number];
+
+export const validBreakingChangeFormats = ["!", "footer", "both"] as const;
+
+export type BreakingChangeFormats = (typeof validBreakingChangeFormats)[number];
