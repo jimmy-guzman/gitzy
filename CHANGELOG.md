@@ -1,3 +1,12 @@
+## [6.1.1](https://github.com/jimmy-guzman/gitzy/compare/v6.1.0...v6.1.1) (2025-10-26)
+
+
+### Bug Fixes
+
+* 🐛 improve git commands execution & cross-platform support ([e5df0fa](https://github.com/jimmy-guzman/gitzy/commit/e5df0fa3e9ed71028bf1a0e639598a2082bc195a))
+* 🐛 should handle single characters w/ autocomplete ([f269c6b](https://github.com/jimmy-guzman/gitzy/commit/f269c6b45afe4901843a755827c754d0683ae109))
+* 🐛 should NOT do git checks during `--hook` ([88f582d](https://github.com/jimmy-guzman/gitzy/commit/88f582d6d17ad23ce8e2745b05dbcefe3eaa0739))
+
 # [6.1.0](https://github.com/jimmy-guzman/gitzy/compare/v6.0.0...v6.1.0) (2025-10-25)
 
 
