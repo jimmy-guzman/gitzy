@@ -46,8 +46,12 @@ export const fuzzySearch = <T extends Boundary>(
     normalizedNeedle,
   );
 
-  if (!indexes || !info) {
-    return [];
+  if (!indexes || !info || indexes.length === 0) {
+    return haystack.flatMap((item, idx) => {
+      return item.toLowerCase().includes(needle.toLowerCase())
+        ? [items[idx]]
+        : [];
+    });
   }
 
   const result = order.map((orderIdx) => {
