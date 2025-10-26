@@ -1,48 +1,53 @@
-import { exec } from "node:child_process";
+import { x } from "tinyexec";
 
 import { hint } from "./logging";
 
 /**
- * Determines wether or not files are staged.
+ * Determines whether or not files are staged.
  */
-export const checkIfStaged = () => {
-  return new Promise<string>((resolve, reject) => {
-    exec("git --no-pager diff --cached --quiet --exit-code", (error) => {
-      if (error) {
-        resolve("");
-      }
-      reject(
-        new Error(
-          `No files staged \n${hint(
-            'You can use "gitzy -p -a" to replicate git -am',
-          )}`,
-        ),
-      );
-    });
-  });
+
+export const checkIfStaged = async () => {
+  const result = await x("git", [
+    "--no-pager",
+    "diff",
+    "--cached",
+    "--quiet",
+    "--exit-code",
+  ]);
+
+  if (result.exitCode === 0) {
+    throw new Error(
+      `No files staged \n${hint('You can use "gitzy -p -a" to replicate git -am')}`,
+    );
+  }
+
+  if (result.exitCode === 1) {
+    return "";
+  }
+
+  throw new Error("Failed to check staged files (git diff)");
 };
 
 /**
- * Determines wether or not it's git repository.
+ * Determines whether or not it's a git repository.
  */
-export const checkIfGitRepo = () => {
-  return new Promise<string>((resolve, reject) => {
-    exec("git rev-parse --is-inside-work-tree", (error) => {
-      if (error) {
-        reject(
-          new Error(
-            `Not a git repository \n${hint('You can try running "git init"')}`,
-          ),
-        );
-      }
-
-      resolve("");
+export const checkIfGitRepo = async () => {
+  try {
+    await x("git", ["rev-parse", "--is-inside-work-tree"], {
+      throwOnError: true,
     });
-  });
+
+    return "";
+  } catch (error) {
+    throw new Error(
+      `Not a git repository \n${hint('You can try running "git init"')}`,
+      { cause: error },
+    );
+  }
 };
 
 /**
- * Determines wether or not to perform git checks based on flags
+ * Determines whether or not to perform git checks based on flags
  *
  * @param array flags
  */

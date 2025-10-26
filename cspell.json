@@ -36,6 +36,7 @@
     "shellcheck",
     "socio",
     "streetsidesoftware",
+    "tinyexec",
     "tocstop",
     "typecheck",
     "ufuzzy",
