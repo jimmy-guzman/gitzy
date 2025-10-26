@@ -68,4 +68,10 @@ describe("scheme", () => {
       "breakingChangeFormat must be one of '!', 'footer', 'both'",
     );
   });
+
+  it(`should return message if breakingChangeFormat is invalid string`, () => {
+    expect(schema.breakingChangeFormat("invalid")).toBe(
+      "breakingChangeFormat must be one of '!', 'footer', 'both'",
+    );
+  });
 });
