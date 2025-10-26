@@ -149,7 +149,7 @@ describe("formatCommitMessage", () => {
     );
 
     expect(formattedMessage).toMatchInlineSnapshot(`
-      "feat(*): ✨ reduce deps by replacing \\\`cosmiconfig\\\` w/ \\\`lilconfig\\\` & \\\`yaml\\\`
+      "feat(*): ✨ reduce deps by replacing \`cosmiconfig\` w/ \`lilconfig\` & \`yaml\`
 
       this an amazing feature, lots of details
 
@@ -168,7 +168,7 @@ describe("formatCommitMessage", () => {
     });
 
     expect(formattedMessage).toMatchInlineSnapshot(
-      `"feat(*): ✨ this has \\"quotes\\""`,
+      `"feat(*): ✨ this has "quotes""`,
     );
   });
 
@@ -181,7 +181,7 @@ describe("formatCommitMessage", () => {
     });
 
     expect(formattedMessage).toMatchInlineSnapshot(
-      `"feat(*): ✨ this has \\\`quotes\\\`"`,
+      `"feat(*): ✨ this has \`quotes\`"`,
     );
   });
 
@@ -247,7 +247,6 @@ describe("formatCommitMessage", () => {
         subject: "a cool new `feature`",
         type: "feat",
       },
-      true,
       true,
     );
 

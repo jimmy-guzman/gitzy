@@ -18,11 +18,11 @@ import {
   checkIfGitRepo,
   checkIfStaged,
   danger,
-  executeGitMessage,
   GitzyStore,
   hint,
   info,
   log,
+  performCommit,
   shouldDoGitChecks,
 } from "./utils";
 
@@ -132,7 +132,7 @@ Examples:
         process.exit(1);
       }
 
-      executeGitMessage(state, flags);
+      await performCommit(state, flags);
     });
 
   await program.parseAsync(process.argv);

@@ -2,10 +2,6 @@ import type { Answers, GitzyConfig } from "../../interfaces";
 
 const MAX_WIDTH = 72;
 
-const normalizeMessage = (message: string) => {
-  return message.replaceAll('"', String.raw`\"`).replaceAll("`", "\\`");
-};
-
 const createBreaking = (
   breaking: string,
   { breakingChangeEmoji, disableEmoji }: GitzyConfig,
@@ -43,7 +39,6 @@ export const formatCommitMessage = (
   config: GitzyConfig,
   answers: Answers,
   emoji: boolean,
-  isHook = false,
 ) => {
   const hasEmoji =
     !config.disableEmoji && config.details[answers.type].emoji && emoji;
@@ -55,7 +50,5 @@ export const formatCommitMessage = (
   const issues = createIssues(answers.issues, config);
   const maxWidth = Math.max(config.headerMaxLength, MAX_WIDTH);
 
-  const message = wrap(`${head}${body}${breaking}${issues}`, maxWidth);
-
-  return isHook ? message : normalizeMessage(message);
+  return wrap(`${head}${body}${breaking}${issues}`, maxWidth);
 };
