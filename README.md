@@ -79,6 +79,35 @@ BREAKING CHANGE: 💥 breaks stuff
 breakingChangeEmoji: "💥"
 ```
 
+### breakingChangeFormat
+
+Allows you to customize the format of the breaking change indicator and prompts behavior.
+
+- `!` - Append `!` to the type/scope in the header and simply ask whether or not change is a breaking change
+- `footer` - Prompt for a description and add a `BREAKING CHANGE` footer (default)
+- `both` - Prompt for a description and add both an indicator (`!`) and a footer
+
+#### Examples
+
+```sh
+# "!" format - adds ! to header, prompts for yes/no
+feat!: send an email to the customer when a product is shipped
+
+# "footer" format - prompts for description, adds to footer
+feat: allow provided config object to extend other configs
+
+BREAKING CHANGE: `extends` key in config file is now used for extending other config files
+
+# "both" format - adds ! to header AND prompts for footer description
+chore!: drop support for Node 6
+
+BREAKING CHANGE: use JavaScript features not available in Node 6.
+```
+
+```yml
+breakingChangeFormat: "footer" # "!" | "footer" | "both"
+```
+
 ### closedIssueEmoji
 
 ```sh
@@ -232,23 +261,23 @@ useCommitlintConfig: false
 
 ## Flags
 
-| flag            | alias | description                                                      |
-| --------------- | ----- | ---------------------------------------------------------------- |
-| `--breaking`    | `-b`  | skip "breaking" question and provide your own "breaking" message |
-| `--body`        | `-d`  | skip "body" question and provide your own "body" message         |
-| `--help`        | `-h`  | display help for command                                         |
-| `--issues`      | `-i`  | skip "issues" question and provide your own "issue" message      |
-| `--subject`     | `-m`  | skip "subject" question and provide your own "subject" message   |
-| `--passthrough` | `-p`  | subsequent command line args passed through to `git`             |
-| `--scope`       | `-s`  | skip "scope" question and provide your own "scope" message       |
-| `--type`        | `-t`  | skip "type" question and provide your own "type" message         |
-| `--dry-run`     | `-D`  | output the git message but do not commit                         |
-| `--version`     | `-v`  | output the version number                                        |
-| `--commitlint`  | `-l`  | leverage commitlint's configuration                              |
-| `--skip`        | `-S`  | skip questions                                                   |
-| `--no-emoji`    |       | disable all emojis                                               |
-| `--retry`       | `-r`  | retries previous commit, skips all prompts                       |
-| `--hook`        | `-H`  | run `gitzy` inside a Git hook                                    |
+| flag            | alias | description                                                                                          |
+| --------------- | ----- | ---------------------------------------------------------------------------------------------------- |
+| `--breaking`    | `-b`  | mark as breaking change. Pass a message for "footer"/"both" formats, or just the flag for "!" format |
+| `--body`        | `-d`  | skip "body" question and provide your own "body" message                                             |
+| `--help`        | `-h`  | display help for command                                                                             |
+| `--issues`      | `-i`  | skip "issues" question and provide your own "issue" message                                          |
+| `--subject`     | `-m`  | skip "subject" question and provide your own "subject" message                                       |
+| `--passthrough` | `-p`  | subsequent command line args passed through to `git`                                                 |
+| `--scope`       | `-s`  | skip "scope" question and provide your own "scope" message                                           |
+| `--type`        | `-t`  | skip "type" question and provide your own "type" message                                             |
+| `--dry-run`     | `-D`  | output the git message but do not commit                                                             |
+| `--version`     | `-v`  | output the version number                                                                            |
+| `--commitlint`  | `-l`  | leverage commitlint's configuration                                                                  |
+| `--skip`        | `-S`  | skip questions                                                                                       |
+| `--no-emoji`    |       | disable all emojis                                                                                   |
+| `--retry`       | `-r`  | retries previous commit, skips all prompts                                                           |
+| `--hook`        | `-H`  | run `gitzy` inside a Git hook                                                                        |
 
 <!-- references -->
 

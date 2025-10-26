@@ -2,6 +2,8 @@ import { validIssuesPrefixes } from "@/defaults/config";
 
 export const lang = {
   breakingChangeEmoji: "breakingChangeEmoji must be a string",
+  breakingChangeFormat:
+    "breakingChangeFormat must be one of '!', 'footer', 'both'",
   closedIssueEmoji: "closedIssueEmoji must be a string",
   details:
     'details must look like "{ description: "A new feature", emoji: "✨" }"',

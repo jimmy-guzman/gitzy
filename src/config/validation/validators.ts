@@ -1,6 +1,10 @@
-import type { IssuesPrefixes } from "@/defaults/config";
+import type { BreakingChangeFormats, IssuesPrefixes } from "@/defaults/config";
 
-import { defaultConfig, validIssuesPrefixes } from "@/defaults/config";
+import {
+  defaultConfig,
+  validBreakingChangeFormats,
+  validIssuesPrefixes,
+} from "@/defaults/config";
 
 export const hasProperty = <K extends string>(
   object: Record<string, unknown>,
@@ -49,6 +53,12 @@ export const isValidDetails = (
 
 export const isValidIssues = (value: unknown): value is IssuesPrefixes => {
   return isString(value) && validIssuesPrefixes.includes(value);
+};
+
+export const isValidBreakingChangeFormat = (
+  value: unknown,
+): value is BreakingChangeFormats => {
+  return isString(value) && validBreakingChangeFormats.includes(value);
 };
 
 export const hasAdditionalProperties = (object: Record<string, unknown>) => {

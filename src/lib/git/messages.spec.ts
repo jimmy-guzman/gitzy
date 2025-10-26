@@ -421,18 +421,55 @@ describe("formatCommitMessage", () => {
     expect(formattedMessage.split("\n")[0]).toHaveLength(65);
   });
 
-  describe("wrap", () => {
-    it("should wrap", () => {
-      const wrappedString = wrap(
-        `feat(*): ✨ this is a very very very very very very very very very subject`,
-      );
-
-      expect(wrappedString).toMatchInlineSnapshot(`
-        "feat(*): ✨ this is a very very very very very very very very very
-        subject"
-      `);
-      expect(wrappedString.split("\n")[0]).toHaveLength(65);
+  it("should add '!' when breakingChangeFormat is '!' and there is a breaking change", () => {
+    const formattedMessage = setupFormatCommitMessage({
+      breaking: true,
+      breakingChangeFormat: "!",
     });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*)!: ✨ a cool new feature
+
+      this an amazing feature, lots of details
+
+      🏁 Closes #123"
+    `);
+  });
+
+  it("should NOT add '!' when breakingChangeFormat is '!' and there is no breaking change", () => {
+    const formattedMessage = setupFormatCommitMessage(
+      {
+        breakingChangeFormat: "!",
+      },
+      {
+        breaking: false,
+      },
+    );
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*): ✨ a cool new feature
+
+      this an amazing feature, lots of details
+
+      🏁 Closes #123"
+    `);
+  });
+
+  it("should add '!' & footer when breakingChangeFormat is 'both' and there is a breaking change", () => {
+    const formattedMessage = setupFormatCommitMessage({
+      breaking: "breaks everything",
+      breakingChangeFormat: "both",
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*)!: ✨ a cool new feature
+
+      this an amazing feature, lots of details
+
+      BREAKING CHANGE: 💥 breaks everything
+
+      🏁 Closes #123"
+    `);
   });
 
   it("should format correctly when in hook mode", () => {
@@ -458,5 +495,19 @@ describe("formatCommitMessage", () => {
 
       🏁 Closes #123"
     `);
+  });
+});
+
+describe("wrap", () => {
+  it("should wrap", () => {
+    const wrappedString = wrap(
+      `feat(*): ✨ this is a very very very very very very very very very subject`,
+    );
+
+    expect(wrappedString).toMatchInlineSnapshot(`
+        "feat(*): ✨ this is a very very very very very very very very very
+        subject"
+      `);
+    expect(wrappedString.split("\n")[0]).toHaveLength(65);
   });
 });

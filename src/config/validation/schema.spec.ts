@@ -62,4 +62,10 @@ describe("scheme", () => {
       "useCommitlintConfig must be a boolean",
     );
   });
+
+  it(`should return message if breakingChangeFormat is invalid`, () => {
+    expect(schema.breakingChangeFormat(1)).toBe(
+      "breakingChangeFormat must be one of '!', 'footer', 'both'",
+    );
+  });
 });

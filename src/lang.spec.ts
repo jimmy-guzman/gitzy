@@ -13,7 +13,7 @@ describe("lang", () => {
         ",
         "flags": {
           "body": "skip "body" question and provide your own "body" message",
-          "breaking": "skip "breaking" question and provide your own "breaking" message",
+          "breaking": "mark as breaking change. Pass a message for "footer"/"both" formats, or just the flag for "!" format",
           "commitlint": "leverage commitlint's configuration",
           "dryRun": "displays git message but does not commit",
           "hook": "run gitzy inside a Git hook",
@@ -53,7 +53,7 @@ describe("lang", () => {
 
   it("should compose flags.breaking", () => {
     expect(lang.flags.breaking).toBe(
-      'skip "breaking" question and provide your own "breaking" message',
+      'mark as breaking change. Pass a message for "footer"/"both" formats, or just the flag for "!" format',
     );
   });
 

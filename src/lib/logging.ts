@@ -5,11 +5,15 @@ export const info = (message: string) => {
 };
 
 export const hint = (message: string) => {
-  return styleText("yellow", `❯ ${message}`);
+  return styleText("green", `❯ ${message}`);
 };
 
 export const danger = (message: string) => {
   return styleText("red", `❯ ${message}`);
+};
+
+export const warn = (message: string) => {
+  return styleText("yellow", `❯ ${message}`);
 };
 
 export const log = (message: string) => {

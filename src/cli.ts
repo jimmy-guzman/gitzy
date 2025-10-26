@@ -6,7 +6,7 @@ import { program } from "commander";
 import Enquirer from "enquirer";
 import { version } from "package.json" assert { type: "json" };
 
-import type { Answers, Flags } from "./interfaces";
+import type { Answers, Flags, GitzyConfig } from "./interfaces";
 
 import { options } from "./cli/options";
 import { loadUserConfig } from "./config/loaders/user";
@@ -19,7 +19,7 @@ import {
   shouldDoGitChecks,
 } from "./lib/git/checks";
 import { performCommit } from "./lib/git/commits";
-import { danger, hint, info, log } from "./lib/logging";
+import { danger, hint, info, log, warn } from "./lib/logging";
 import { createPrompts } from "./prompts/create-prompts";
 import { GitzyStore } from "./store/gitzy";
 
@@ -39,7 +39,10 @@ const enquirerOptions = {
 };
 
 export const cli = async () => {
-  const state = { answers: defaultAnswers, config: defaultConfig };
+  const state: { answers: Answers; config: GitzyConfig } = {
+    answers: defaultAnswers,
+    config: defaultConfig,
+  };
   const store = new GitzyStore<Answers>();
 
   const init = async ({ commitlint, dryRun, hook, passthrough }: Flags) => {
@@ -74,7 +77,13 @@ export const cli = async () => {
     .version(version, "-v, --version")
     .description(lang.description)
     .option("-d, --body <body>", lang.flags.body)
-    .option("-b, --breaking <breaking>", lang.flags.breaking)
+    .option(
+      "-b, --breaking [breaking]",
+      lang.flags.breaking,
+      (value: string | undefined) => {
+        return value ?? true;
+      },
+    )
     .option("-D, --dry-run", lang.flags.dryRun)
     .option("-i, --issues <body>", lang.flags.issues)
     .option("-p, --passthrough <flags...>", lang.flags.passthrough)
@@ -105,6 +114,18 @@ Examples:
 
       if (flags.dryRun) {
         log(info("running in dry mode..."));
+      }
+
+      if (
+        typeof flags.breaking === "string" &&
+        flags.breaking &&
+        state.config.breakingChangeFormat === "!"
+      ) {
+        log(
+          warn(
+            "--breaking message ignored when using '!' format. Use --breaking (without value) instead.",
+          ),
+        );
       }
 
       try {

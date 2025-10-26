@@ -5,9 +5,13 @@ import { validIssuesPrefixes } from "@/defaults/config";
 const MAX_WIDTH = 72;
 
 const createBreaking = (
-  breaking: string,
-  { breakingChangeEmoji, disableEmoji }: GitzyConfig,
+  breaking: boolean | string,
+  { breakingChangeEmoji, breakingChangeFormat, disableEmoji }: GitzyConfig,
 ) => {
+  if (breakingChangeFormat === "!") {
+    return "";
+  }
+
   return breaking
     ? `\n\nBREAKING CHANGE: ${
         disableEmoji ? "" : `${breakingChangeEmoji} `
@@ -62,6 +66,18 @@ const createScope = (scope: string) => {
   return scope && scope !== "none" ? `(${scope})` : "";
 };
 
+const createHead = (
+  answers: Answers,
+  scope: string,
+  config: GitzyConfig,
+  emojiPrefix: string,
+) => {
+  const breakingIndicator =
+    config.breakingChangeFormat !== "footer" && answers.breaking ? "!" : "";
+
+  return `${answers.type + scope}${breakingIndicator}: ${emojiPrefix}${answers.subject}`;
+};
+
 export const wrap = (string: string, maxWidth = MAX_WIDTH) => {
   const regex = new RegExp(
     `(?![^\\n]{1,${maxWidth.toString()}}$)([^\\n]{1,${maxWidth.toString()}})\\s`,
@@ -80,7 +96,7 @@ export const formatMessage = (
     !config.disableEmoji && config.details[answers.type].emoji && emoji;
   const emojiPrefix = hasEmoji ? `${config.details[answers.type].emoji} ` : "";
   const scope = createScope(answers.scope);
-  const head = `${answers.type + scope}: ${emojiPrefix}${answers.subject}`;
+  const head = createHead(answers, scope, config, emojiPrefix);
   const body = answers.body.trim() ? `\n\n${answers.body}` : "";
   const breaking = createBreaking(answers.breaking, config);
   const issues = createIssues(answers.issues, config);
