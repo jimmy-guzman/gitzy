@@ -1,3 +1,10 @@
+# [6.3.0](https://github.com/jimmy-guzman/gitzy/compare/v6.2.0...v6.3.0) (2025-10-26)
+
+
+### Features
+
+* ✨ add `breakingChangeFormat` option for "!" syntax support ([#584](https://github.com/jimmy-guzman/gitzy/issues/584)) ([1362526](https://github.com/jimmy-guzman/gitzy/commit/13625264a313da27eadaac12d752107545a300c2))
+
 # [6.2.0](https://github.com/jimmy-guzman/gitzy/compare/v6.1.1...v6.2.0) (2025-10-26)
 
 
