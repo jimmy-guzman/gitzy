@@ -23,14 +23,14 @@ describe("reverse", () => {
     );
 
     expect(result).toMatchInlineSnapshot(`
-"chore(e2e): 🤖 testing
+      "chore(e2e): 🤖 testing
 
-some longer description
+      some longer description
 
-BREAKING CHANGE: 💥 this broke something
+      BREAKING CHANGE: 💥 this broke something
 
-🏁 Closes: #123"
-`);
+      🏁 Closes #123"
+    `);
   });
   it("should create commit message w/ type, scope, message and issues closed", async () => {
     const result = await setupGitzy(
@@ -38,10 +38,10 @@ BREAKING CHANGE: 💥 this broke something
     );
 
     expect(result).toMatchInlineSnapshot(`
-"chore(e2e): 🤖 testing
+      "chore(e2e): 🤖 testing
 
-🏁 Closes: #123"
-`);
+      🏁 Closes #123"
+    `);
   });
   it("should create commit message w/ type, scope, message and description", async () => {
     const result = await setupGitzy(

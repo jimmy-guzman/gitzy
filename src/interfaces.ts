@@ -1,17 +1,9 @@
-import type { IssuesPrefixes } from "./defaults/config";
+import type { GitzyPrompts, IssuesPrefixes } from "./defaults/config";
 
 interface PromptLang {
   hint?: string;
   message: string;
 }
-
-export type GitzyPrompts =
-  | "body"
-  | "breaking"
-  | "issues"
-  | "scope"
-  | "subject"
-  | "type";
 
 interface Detail {
   description: string;
@@ -48,19 +40,18 @@ export interface GitzyConfig {
    * @default "closes"
    */
   issuesPrefix: IssuesPrefixes;
-  questions: GitzyPrompts[];
+  questions: readonly GitzyPrompts[];
   scopes: string[];
   types: string[];
   useCommitlintConfig: boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions -- Argument of type 'EnquirerChoice[]' is not assignable to parameter of type 'Boundary[]'
-export type EnquirerChoice = {
+export interface EnquirerChoice {
   hint?: string;
   indent?: string;
   title: string;
   value: string;
-};
+}
 
 export interface EnquirerState {
   answers: Answers;

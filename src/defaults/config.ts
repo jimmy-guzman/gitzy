@@ -1,15 +1,17 @@
-import type { GitzyConfig, GitzyPrompts } from "@/interfaces";
+import type { GitzyConfig } from "@/interfaces";
 
 import { details } from "./details";
 
-export const questions: GitzyPrompts[] = [
+export const questions = [
   "type",
   "scope",
   "subject",
   "body",
   "breaking",
   "issues",
-];
+] as const;
+
+export type GitzyPrompts = (typeof questions)[number];
 
 export const defaultConfig: GitzyConfig = {
   breakingChangeEmoji: "💥",
@@ -18,7 +20,7 @@ export const defaultConfig: GitzyConfig = {
   disableEmoji: false,
   headerMaxLength: 64,
   headerMinLength: 3,
-  issuesHint: "#123",
+  issuesHint: "#123, #456, resolves #789, org/repo#100",
   issuesPrefix: "closes",
   questions,
   scopes: [],
@@ -51,6 +53,8 @@ export const validIssuesPrefixes = [
 ] as const;
 
 /**
- * https://docs.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword
+ * Issues prefixes supported by GitHub for linking pull requests to issues.
+ *
+ * @see https://docs.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword
  */
 export type IssuesPrefixes = (typeof validIssuesPrefixes)[number];

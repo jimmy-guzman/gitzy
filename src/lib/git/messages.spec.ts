@@ -29,7 +29,7 @@ describe("formatCommitMessage", () => {
 
       BREAKING CHANGE: 💥 breaks everything
 
-      🏁 Closes: #123"
+      🏁 Closes #123"
     `);
   });
 
@@ -43,7 +43,7 @@ describe("formatCommitMessage", () => {
 
       BREAKING CHANGE: breaks everything
 
-      Closes: #123"
+      Closes #123"
     `);
   });
 
@@ -57,7 +57,7 @@ describe("formatCommitMessage", () => {
 
       BREAKING CHANGE: 💥 breaks everything
 
-      🏁 Closes: #123"
+      🏁 Closes #123"
     `);
   });
 
@@ -71,7 +71,7 @@ describe("formatCommitMessage", () => {
 
       BREAKING CHANGE: 💥 breaks everything
 
-      🏁 Closes: #123"
+      🏁 Closes #123"
     `);
   });
 
@@ -87,7 +87,7 @@ describe("formatCommitMessage", () => {
 
       BREAKING CHANGE: 💥 breaks everything
 
-      🏁 Closes: #123"
+      🏁 Closes #123"
     `);
   });
 
@@ -115,8 +115,206 @@ describe("formatCommitMessage", () => {
 
       this an amazing feature, lots of details
 
-      🏁 Closes: #123"
+      🏁 Closes #123"
     `);
+  });
+
+  it("should format commit message with multiple issues", () => {
+    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+      issues: "#123, #456, #789",
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*): ✨ a cool new feature
+
+      this an amazing feature, lots of details
+
+      BREAKING CHANGE: 💥 breaks everything
+
+      🏁 Closes #123, Closes #456, Closes #789"
+    `);
+  });
+
+  it("should format commit message with multiple issues using full syntax", () => {
+    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+      issues: "resolves #10, fixes #123, closes #456",
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*): ✨ a cool new feature
+
+      this an amazing feature, lots of details
+
+      BREAKING CHANGE: 💥 breaks everything
+
+      🏁 Resolves #10, Fixes #123, Closes #456"
+    `);
+  });
+
+  it("should format commit message with cross-repo issues", () => {
+    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+      issues: "octo-org/octo-repo#100",
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*): ✨ a cool new feature
+
+      this an amazing feature, lots of details
+
+      BREAKING CHANGE: 💥 breaks everything
+
+      🏁 Closes octo-org/octo-repo#100"
+    `);
+  });
+
+  it("should format commit message with mixed issue formats", () => {
+    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+      issues: "resolves #10, #123, resolves octo-org/octo-repo#100",
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*): ✨ a cool new feature
+
+      this an amazing feature, lots of details
+
+      BREAKING CHANGE: 💥 breaks everything
+
+      🏁 Resolves #10, Closes #123, Resolves octo-org/octo-repo#100"
+    `);
+  });
+
+  it("should format commit message with multiple issues and no emoji", () => {
+    const formattedMessage = setupFormatCommitMessage(
+      { disableEmoji: true },
+      {
+        issues: "resolves #10, resolves #123",
+      },
+    );
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*): a cool new feature
+
+      this an amazing feature, lots of details
+
+      BREAKING CHANGE: breaks everything
+
+      Resolves #10, Resolves #123"
+    `);
+  });
+
+  it("should format commit message with custom issuesPrefix", () => {
+    const formattedMessage = setupFormatCommitMessage(
+      { issuesPrefix: "fixes" },
+      {
+        issues: "#123, #456",
+      },
+    );
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*): ✨ a cool new feature
+
+      this an amazing feature, lots of details
+
+      BREAKING CHANGE: 💥 breaks everything
+
+      🏁 Fixes #123, Fixes #456"
+    `);
+  });
+
+  it("should handle whitespace tolerance in issues", () => {
+    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+      issues: "  #123 , #456  ,#789  ",
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*): ✨ a cool new feature
+
+      this an amazing feature, lots of details
+
+      BREAKING CHANGE: 💥 breaks everything
+
+      🏁 Closes #123, Closes #456, Closes #789"
+    `);
+  });
+
+  it("should handle issues with excessive whitespace", () => {
+    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+      issues: "#123  ,   #456   ,    #789",
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*): ✨ a cool new feature
+
+      this an amazing feature, lots of details
+
+      BREAKING CHANGE: 💥 breaks everything
+
+      🏁 Closes #123, Closes #456, Closes #789"
+    `);
+  });
+
+  it("should handle empty issues after filtering whitespace", () => {
+    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+      issues: "#123, , #456",
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+    "feat(*): ✨ a cool new feature
+
+    this an amazing feature, lots of details
+
+    BREAKING CHANGE: 💥 breaks everything
+
+    🏁 Closes #123, Closes #456"
+  `);
+  });
+
+  it("should handle issues without spaces after commas", () => {
+    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+      issues: "#123,#456,#789",
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+    "feat(*): ✨ a cool new feature
+
+    this an amazing feature, lots of details
+
+    BREAKING CHANGE: 💥 breaks everything
+
+    🏁 Closes #123, Closes #456, Closes #789"
+  `);
+  });
+
+  it("should handle issues with multiple spaces around commas", () => {
+    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+      issues: "#123   ,   #456",
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+    "feat(*): ✨ a cool new feature
+
+    this an amazing feature, lots of details
+
+    BREAKING CHANGE: 💥 breaks everything
+
+    🏁 Closes #123, Closes #456"
+  `);
+  });
+
+  it("should handle mixed spacing around commas", () => {
+    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+      issues: "#123,#456  ,  #789",
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+    "feat(*): ✨ a cool new feature
+
+    this an amazing feature, lots of details
+
+    BREAKING CHANGE: 💥 breaks everything
+
+    🏁 Closes #123, Closes #456, Closes #789"
+  `);
   });
 
   it("should wrap commit message", () => {
@@ -136,7 +334,7 @@ describe("formatCommitMessage", () => {
       very very very very very very very very very very very long breaking
       change
 
-      🏁 Closes: #123"
+      🏁 Closes #123"
     `);
   });
 
@@ -156,7 +354,7 @@ describe("formatCommitMessage", () => {
 
       BREAKING CHANGE: 💥 breaks everything
 
-      🏁 Closes: #123"
+      🏁 Closes #123"
     `);
   });
 
@@ -258,7 +456,7 @@ describe("formatCommitMessage", () => {
 
       BREAKING CHANGE: 💥 breaks everything
 
-      🏁 Closes: #123"
+      🏁 Closes #123"
     `);
   });
 });
