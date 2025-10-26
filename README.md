@@ -1,9 +1,9 @@
-# gitzy🪄
+# gitzy 🪄
 
-> Interactive [conventional commits][conventional-commits] cli, inspired by [git-cz][git-cz] with the ability to leverage [commitlint](https://commitlint.js.org/#/) configuration, configuration validation, versatile configuration and more.
+> Interactive [conventional commits][conventional-commits] CLI, inspired by [git-cz][git-cz], with support for [commitlint](https://commitlint.js.org/#/) configuration, validation, and flexible setup. See [features](#features).
 
 <p align="center">
-  <img width="750" src="./assets/cli.svg" alt="Gitzy CLI Screenshot">
+  <img width="750" src="./assets/cli.svg" alt="Gitzy CLI screenshot">
 </p>
 
 ![actions][actions-badge]
@@ -13,28 +13,30 @@
 [![code style: prettier][prettier-badge]][prettier]
 [![Code Coverage][coverage-badge]][coverage]
 
-<!-- toc -->
-
 ## Table of Contents
 
+- [Features](#features)
 - [Usage](#usage)
 - [Configuration](#configuration)
 - [Flags](#flags)
-<!-- tocstop -->
+
+## Features
+
+- Commitlint integration
+- Config validation
+- Multiple breaking-change formats (`!`, `footer`, `both`)
+- Flexible emoji control
+- Typed details for descriptions and emojis
+- Dynamic scopes and types
+- Retry (`--retry`) and dry-run (`--dry-run`) modes
+- Git passthrough and hook support
+- Flexible config discovery (`package.json`, `.gitzyrc.*`, `.config/`)
 
 ## Usage
 
-### Quick start
-
 ```sh-session
 npx gitzy
-```
-
-### Getting Started
-
-<!-- usage -->
-
-```sh-session
+# or
 npm install -g gitzy
 gitzy
 gitzy -p -a
@@ -42,19 +44,21 @@ gitzy -m "added cool new feature" -t "feat" -s "amazing"
 gitzy -lD --no-emoji
 ```
 
-<!-- usagestop -->
-
 ## Configuration
 
-By default `gitzy` comes ready to run out of the box but provides various configuration methods and options
+By default, `gitzy` works out of the box and supports multiple configuration methods.
 
-You can use a `gitzy` object in your `package.json`, or the following files: `.gitzyrc`, `.gitzyrc.json`, `.gitzyrc.yaml`, `.gitzyrc.yml`, `.gitzyrc.js`, `.gitzyrc.cjs`, `gitzy.config.js`, `gitzy.config.cjs`, `.gitzyrc.mjs`, or `gitzy.config.mjs`.
+You can use a `gitzy` object in your `package.json`, or one of the following files:
+`.gitzyrc`, `.gitzyrc.json`, `.gitzyrc.yaml`, `.gitzyrc.yml`, `.gitzyrc.js`, `.gitzyrc.cjs`, `gitzy.config.js`, `gitzy.config.cjs`, `.gitzyrc.mjs`, or `gitzy.config.mjs`.
 
-- _all the files can also live under a `.config/` directory_
+- _All of these files can also live under a `.config/` directory._
 
 ## Options
 
+The following configuration options are supported:
+
 - [breakingChangeEmoji](#breakingchangeemoji)
+- [breakingChangeFormat](#breakingchangeformat)
 - [closedIssueEmoji](#closedissueemoji)
 - [issuesHint](#issueshint)
 - [issuesPrefix](#issuesprefix)
@@ -81,9 +85,9 @@ breakingChangeEmoji: "💥"
 
 ### breakingChangeFormat
 
-Allows you to customize the format of the breaking change indicator and prompts behavior.
+Allows you to customize the format of the breaking change indicator and prompt behavior.
 
-- `!` - Append `!` to the type/scope in the header and simply ask whether or not change is a breaking change
+- `!` - Append `!` to the type/scope in the header and simply ask whether or not the change is a breaking change
 - `footer` - Prompt for a description and add a `BREAKING CHANGE` footer (default)
 - `both` - Prompt for a description and add both an indicator (`!`) and a footer
 
@@ -105,7 +109,8 @@ BREAKING CHANGE: use JavaScript features not available in Node 6.
 ```
 
 ```yml
-breakingChangeFormat: "footer" # "!" | "footer" | "both"
+breakingChangeFormat: "footer"
+# Options: "!", "footer", or "both"
 ```
 
 ### closedIssueEmoji
@@ -122,7 +127,7 @@ closedIssueEmoji: "🏁"
 
 ### issuesHint
 
-Allows you to customize the `issues` prompt hint
+Allows you to customize the `issues` prompt hint.
 
 ```yml
 issuesHint: "#123, #456, resolves #789, org/repo#100"
@@ -130,18 +135,18 @@ issuesHint: "#123, #456, resolves #789, org/repo#100"
 
 ### issuesPrefix
 
-Allows you to choose the `issuesPrefix` based on [Github supported keywords](https://docs.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword).
+Allows you to choose the `issuesPrefix` based on [GitHub supported keywords](https://docs.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword).
 
 ```yml
 issuesPrefix: closes # must be one of close, closes, closed, fix, fixes, fixed, resolve, resolves, resolved
 ```
 
 > [!TIP]
-> Specify multiple issues separated by commas: `#123, #456` or with keywords: `resolves #123, fixes #456` or cross-repo: `org/repo#123`
+> Specify multiple issues separated by commas: `#123, #456`, or with keywords: `resolves #123, fixes #456`, or cross-repo: `org/repo#123`.
 
 ### disableEmoji
 
-Disable all emojis, overrides `breakingChangeEmoji`, `closedIssueEmoji` and `emoji` options
+Disables all emojis; overrides `breakingChangeEmoji`, `closedIssueEmoji`, and `emoji` options.
 
 ```yml
 disableEmoji: false
@@ -149,8 +154,8 @@ disableEmoji: false
 
 ### details
 
-Allows you to further configure cli and git message output based on `type`.
-_Default emojis follow standards set by [gitmoji][gitmoji]_
+Allows you to configure CLI and git message output by `type`.
+_Default emojis follow standards set by [gitmoji][gitmoji]._
 
 ```yml
 details:
@@ -182,7 +187,7 @@ details:
     description: Revert changes.
     emoji: "⏪"
   style:
-    description: Improve structure / format of the code.
+    description: Improve structure/format of the code.
     emoji: "🎨"
   test:
     description: Add or update tests.
@@ -212,24 +217,24 @@ questions:
   - subject # Add a short description
   - body # Add a longer description
   - breaking # Add a short description
-  - issues # Add issues this commit closes, e.g #123
+  - issues # Add issues this commit closes, e.g. #123
 ```
 
-_`scope` question will not be turned if there's no scopes_
+_`scope` question will not be shown if no scopes are provided._
 
 ### scopes
 
-Allows you to provide list of `scopes` to choose from.
+Allows you to provide a list of `scopes` to choose from.
 
 ```yml
 scopes: []
 ```
 
-_Will enable `scope` question if scopes are provided._
+_Will enable the `scope` question if scopes are provided._
 
 ### types
 
-Allows you to provide list of `types` to choose from. Can be further configured through `Details`.
+Allows you to provide a list of `types` to choose from. Further configurable via `details`.
 
 ```yml
 types:
@@ -248,12 +253,12 @@ types:
 
 ### useCommitlintConfig
 
-Will leverage [Commitlint's configuration](https://commitlint.js.org/#/reference-configuration) instead for these options:
+If enabled, uses [Commitlint configuration](https://commitlint.js.org/#/reference-configuration) for:
 
-- `types` correlates to [`rules[type-enum][2]`](https://commitlint.js.org/#/reference-rules?id=type-enum)
-- `scopes` correlates to [`rules[scope-enum][2]`](https://commitlint.js.org/#/reference-rules?id=scope-enum)
-- `headerMaxLength` correlates to [`rules[header-max-length][2]`](https://commitlint.js.org/#/reference-rules?id=header-max-length)
-- `headerMinLength` correlates to [`rules[header-min-length][2]`](https://commitlint.js.org/#/reference-rules?id=header-min-length)
+- `types` → [`rules[type-enum][2]`](https://commitlint.js.org/#/reference-rules?id=type-enum)
+- `scopes` → [`rules[scope-enum][2]`](https://commitlint.js.org/#/reference-rules?id=scope-enum)
+- `headerMaxLength` → [`rules[header-max-length][2]`](https://commitlint.js.org/#/reference-rules?id=header-max-length)
+- `headerMinLength` → [`rules[header-min-length][2]`](https://commitlint.js.org/#/reference-rules?id=header-min-length)
 
 ```yml
 useCommitlintConfig: false
@@ -261,37 +266,37 @@ useCommitlintConfig: false
 
 ## Flags
 
-| flag            | alias | description                                                                                          |
-| --------------- | ----- | ---------------------------------------------------------------------------------------------------- |
-| `--breaking`    | `-b`  | mark as breaking change. Pass a message for "footer"/"both" formats, or just the flag for "!" format |
-| `--body`        | `-d`  | skip "body" question and provide your own "body" message                                             |
-| `--help`        | `-h`  | display help for command                                                                             |
-| `--issues`      | `-i`  | skip "issues" question and provide your own "issue" message                                          |
-| `--subject`     | `-m`  | skip "subject" question and provide your own "subject" message                                       |
-| `--passthrough` | `-p`  | subsequent command line args passed through to `git`                                                 |
-| `--scope`       | `-s`  | skip "scope" question and provide your own "scope" message                                           |
-| `--type`        | `-t`  | skip "type" question and provide your own "type" message                                             |
-| `--dry-run`     | `-D`  | output the git message but do not commit                                                             |
-| `--version`     | `-v`  | output the version number                                                                            |
-| `--commitlint`  | `-l`  | leverage commitlint's configuration                                                                  |
-| `--skip`        | `-S`  | skip questions                                                                                       |
-| `--no-emoji`    |       | disable all emojis                                                                                   |
-| `--retry`       | `-r`  | retries previous commit, skips all prompts                                                           |
-| `--hook`        | `-H`  | run `gitzy` inside a Git hook                                                                        |
+| flag            | alias | description                                                                            |
+| --------------- | ----- | -------------------------------------------------------------------------------------- |
+| `--breaking`    | `-b`  | mark as a breaking change. Pass a message for "footer"/"both" or just the flag for "!" |
+| `--body`        | `-d`  | skip "body" question and provide your own message                                      |
+| `--issues`      | `-i`  | skip "issues" question and provide your own message                                    |
+| `--subject`     | `-m`  | skip "subject" question and provide your own message                                   |
+| `--scope`       | `-s`  | skip "scope" question and provide your own message                                     |
+| `--type`        | `-t`  | skip "type" question and provide your own message                                      |
+| `--passthrough` | `-p`  | pass subsequent args through to `git`                                                  |
+| `--dry-run`     | `-D`  | print commit message without committing                                                |
+| `--retry`       | `-r`  | recreate previous commit without prompts                                               |
+| `--commitlint`  | `-l`  | use commitlint configuration                                                           |
+| `--hook`        | `-H`  | run `gitzy` inside a Git hook                                                          |
+| `--skip`        | `-S`  | skip all questions                                                                     |
+| `--no-emoji`    |       | disable all emojis                                                                     |
+| `--version`     | `-v`  | show version                                                                           |
+| `--help`        | `-h`  | show help                                                                              |
 
-<!-- references -->
+---
 
 [actions-badge]: https://img.shields.io/github/actions/workflow/status/jimmy-guzman/gitzy/release.yml?style=flat-square&logo=github-actions
 [version-badge]: https://img.shields.io/npm/v/gitzy.svg?logo=npm&style=flat-square
 [package]: https://www.npmjs.com/package/gitzy
 [downloads-badge]: https://img.shields.io/npm/dm/gitzy.svg?logo=npm&style=flat-square
-[npmtrends]: http://www.npmtrends.com/gitzy
+[npmtrends]: https://www.npmtrends.com/gitzy
 [semantic-release]: https://github.com/semantic-release/semantic-release
 [semantic-release-badge]: https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg?style=flat-square
 [prettier-badge]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square&logo=prettier
 [prettier]: https://github.com/prettier/prettier
 [gitmoji]: https://gitmoji.carloscuesta.me/
-[license]: https://github.com/jimmy-guzman/gitzy/blob/master/package.json
+[license]: https://github.com/jimmy-guzman/gitzy/blob/master/LICENSE
 [license-badge]: https://img.shields.io/npm/l/gitzy.svg?style=flat-square
 [conventional-commits]: https://www.conventionalcommits.org/
 [git-cz]: https://github.com/streamich/git-cz
