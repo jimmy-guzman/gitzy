@@ -87,7 +87,7 @@ breakingChangeEmoji: "💥"
 
 Allows you to customize the format of the breaking change indicator and prompt behavior.
 
-- `!` - Append `!` to the type/scope in the header and simply ask whether or not the change is a breaking change
+- `!` - Append `!` to the type/scope in the header and simply ask whether the change is a breaking change
 - `footer` - Prompt for a description and add a `BREAKING CHANGE` footer (default)
 - `both` - Prompt for a description and add both an indicator (`!`) and a footer
 
