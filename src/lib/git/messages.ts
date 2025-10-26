@@ -1,5 +1,8 @@
 import type { Answers, GitzyConfig } from "@/interfaces";
 
+import { isValidIssues } from "@/config/validation/validators";
+import { validIssuesPrefixes } from "@/defaults/config";
+
 const MAX_WIDTH = 72;
 
 const createBreaking = (
@@ -13,13 +16,44 @@ const createBreaking = (
     : "";
 };
 
+const capitalize = (str: string) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
 const createIssues = (
   issues: string,
-  { closedIssueEmoji, disableEmoji }: GitzyConfig,
+  { closedIssueEmoji, disableEmoji, issuesPrefix = "closes" }: GitzyConfig,
 ) => {
-  return issues
-    ? `\n\n${disableEmoji ? "" : `${closedIssueEmoji} `}Closes: ${issues}`
-    : "";
+  if (!issues) return "";
+
+  const prefixPattern = validIssuesPrefixes.join("|");
+  const hasPrefixRegex = new RegExp(`^(${prefixPattern})\\s+`, "i");
+
+  const validPrefix = isValidIssues(issuesPrefix) ? issuesPrefix : "closes";
+
+  const formattedIssues = issues
+    .split(",")
+    .map((issue) => {
+      return issue.trim();
+    })
+    .filter(Boolean)
+    .map((issue) => {
+      const match = issue.match(hasPrefixRegex);
+
+      if (match) {
+        const prefix = capitalize(match[1]);
+        const issueRef = issue.slice(match[0].length);
+
+        return `${prefix} ${issueRef}`;
+      }
+
+      return `${capitalize(validPrefix)} ${issue}`;
+    })
+    .join(", ");
+
+  const emojiPrefix = disableEmoji ? "" : `${closedIssueEmoji} `;
+
+  return `\n\n${emojiPrefix}${formattedIssues}`;
 };
 
 const createScope = (scope: string) => {

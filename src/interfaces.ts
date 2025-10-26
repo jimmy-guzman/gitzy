@@ -1,17 +1,9 @@
-import type { IssuesPrefixes } from "./defaults/config";
+import type { GitzyPrompts, IssuesPrefixes } from "./defaults/config";
 
 interface PromptLang {
   hint?: string;
   message: string;
 }
-
-export type GitzyPrompts =
-  | "body"
-  | "breaking"
-  | "issues"
-  | "scope"
-  | "subject"
-  | "type";
 
 interface Detail {
   description: string;
@@ -48,7 +40,7 @@ export interface GitzyConfig {
    * @default "closes"
    */
   issuesPrefix: IssuesPrefixes;
-  questions: GitzyPrompts[];
+  questions: readonly GitzyPrompts[];
   scopes: string[];
   types: string[];
   useCommitlintConfig: boolean;

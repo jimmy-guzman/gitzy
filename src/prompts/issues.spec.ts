@@ -19,7 +19,7 @@ describe("issues", () => {
     });
 
     expect(issuesPrompt).toStrictEqual({
-      hint: "#123",
+      hint: "#123, #456, resolves #789, org/repo#100",
       message: issuesMessage(defaultConfig.issuesPrefix),
       name: "issues",
       type: "text",
