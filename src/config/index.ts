@@ -1,1 +1,0 @@
-export { getUserConfig } from "./getUserConfig";

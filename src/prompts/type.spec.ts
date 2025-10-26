@@ -1,6 +1,7 @@
-import type { CreatedPromptOptions, EnquirerChoice } from "../interfaces";
+import type { CreatedPromptOptions, EnquirerChoice } from "@/interfaces";
 
-import { defaultConfig } from "../defaults";
+import { defaultConfig } from "@/defaults/config";
+
 import { choice, type } from "./type";
 
 const setupType = (config = {}) => {

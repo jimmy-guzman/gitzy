@@ -1,4 +1,4 @@
-import type { Answers } from "../interfaces";
+import type { Answers } from "@/interfaces";
 
 export const defaultAnswers = {
   body: "",

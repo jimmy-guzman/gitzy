@@ -1,7 +1,7 @@
 import { Option } from "commander";
 
-import { questions } from "../defaults";
-import { lang } from "../lang";
+import { questions } from "@/defaults/config";
+import { lang } from "@/lang";
 
 export const options = {
   get skip() {

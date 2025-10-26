@@ -1,1 +1,0 @@
-export { GitzyStore } from "./store";

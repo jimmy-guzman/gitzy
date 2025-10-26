@@ -1,6 +1,7 @@
-import type { CreatedPromptOptions } from "../interfaces";
+import type { CreatedPromptOptions } from "@/interfaces";
 
-import { fuzzySearch } from "../utils";
+import { fuzzySearch } from "@/lib/fuzzy-search";
+
 import { promptsLang } from "./lang";
 
 export const scope = ({ config: { scopes } }: CreatedPromptOptions) => {

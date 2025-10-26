@@ -4,7 +4,7 @@ import type {
   Answers,
   CreatedPromptOptions,
   EnquirerState,
-} from "../interfaces";
+} from "@/interfaces";
 
 import { errorMessage, promptsLang } from "./lang";
 

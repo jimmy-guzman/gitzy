@@ -2,16 +2,16 @@ import { writeFileSync } from "node:fs";
 
 import { x } from "tinyexec";
 
-import type { Flags, GitzyState } from "../interfaces";
+import type { Flags, GitzyState } from "@/interfaces";
 
-import { formatCommitMessage } from "./format-message";
-import { info, log } from "./logging";
+import { info, log } from "../logging";
+import { formatMessage } from "./messages";
 
 export const performCommit = async (
   { answers, config }: GitzyState,
   { dryRun = false, emoji = true, hook = false, passthrough = [] }: Flags,
 ) => {
-  const message = formatCommitMessage(config, answers, emoji);
+  const message = formatMessage(config, answers, emoji);
 
   if (dryRun) {
     log(info(`Message...`));

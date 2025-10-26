@@ -2,8 +2,9 @@ import { writeFileSync } from "node:fs";
 
 import { x } from "tinyexec";
 
-import { defaultConfig } from "../defaults";
-import { performCommit } from "./perform-commit";
+import { defaultConfig } from "@/defaults/config";
+
+import { performCommit } from "./commits";
 
 vi.mock("tinyexec");
 vi.mock("fs");

@@ -1,4 +1,4 @@
-import type { GitzyConfig, GitzyPrompts } from "../interfaces";
+import type { GitzyConfig, GitzyPrompts } from "@/interfaces";
 
 import { details } from "./details";
 
@@ -37,3 +37,20 @@ export const defaultConfig: GitzyConfig = {
   ],
   useCommitlintConfig: false,
 };
+
+export const validIssuesPrefixes = [
+  "close",
+  "closes",
+  "closed",
+  "fix",
+  "fixes",
+  "fixed",
+  "resolve",
+  "resolves",
+  "resolved",
+] as const;
+
+/**
+ * https://docs.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword
+ */
+export type IssuesPrefixes = (typeof validIssuesPrefixes)[number];

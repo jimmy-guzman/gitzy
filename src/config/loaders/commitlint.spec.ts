@@ -1,10 +1,7 @@
-import {
-  getCommitlintConfig,
-  getCommitlintOverrides,
-} from "./getCommitlintConfig";
-import * as utils from "./loadConfig";
+import { getCommitlintOverrides, loadCommitlintConfig } from "./commitlint";
+import * as utils from "./loader";
 
-describe("getCommitlintConfig", () => {
+describe("loadCommitlintConfig", () => {
   describe("getCommitlintOverrides", () => {
     it("should return all overrides", () => {
       expect(
@@ -27,7 +24,7 @@ describe("getCommitlintConfig", () => {
     it("should return null when there is no commitlint config", async () => {
       vi.spyOn(utils, "loadConfig").mockResolvedValueOnce(null);
 
-      await expect(getCommitlintConfig()).resolves.toBeNull();
+      await expect(loadCommitlintConfig()).resolves.toBeNull();
     });
 
     it("should return null when the commitlint config is not valid", async () => {
@@ -36,7 +33,7 @@ describe("getCommitlintConfig", () => {
         filepath: "",
       });
 
-      await expect(getCommitlintConfig()).resolves.toBeNull();
+      await expect(loadCommitlintConfig()).resolves.toBeNull();
     });
 
     it("should return commitlint config", async () => {
@@ -49,7 +46,7 @@ describe("getCommitlintConfig", () => {
         filepath: "",
       });
 
-      await expect(getCommitlintConfig()).resolves.toStrictEqual({
+      await expect(loadCommitlintConfig()).resolves.toStrictEqual({
         scopes: ["feat"],
       });
     });

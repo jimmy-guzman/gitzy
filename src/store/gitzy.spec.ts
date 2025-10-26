@@ -1,6 +1,6 @@
 import fs from "node:fs";
 
-import { GitzyStore } from "./store";
+import { GitzyStore } from "./gitzy";
 import * as utils from "./utils";
 
 const mockGitzyStorePath = (): void => {

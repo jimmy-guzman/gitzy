@@ -1,4 +1,5 @@
-import { defaultConfig } from "../defaults";
+import { defaultConfig } from "@/defaults/config";
+
 import { body } from "./body";
 
 describe("body", () => {

@@ -1,6 +1,6 @@
 import { x } from "tinyexec";
 
-import { hint } from "./logging";
+import { hint } from "../logging";
 
 /**
  * Determines whether or not files are staged.

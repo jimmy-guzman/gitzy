@@ -1,4 +1,4 @@
-import type { Answers, GitzyConfig } from "../../interfaces";
+import type { Answers, GitzyConfig } from "@/interfaces";
 
 const MAX_WIDTH = 72;
 
@@ -35,7 +35,7 @@ export const wrap = (string: string, maxWidth = MAX_WIDTH) => {
   return string.replace(regex, "$1\n");
 };
 
-export const formatCommitMessage = (
+export const formatMessage = (
   config: GitzyConfig,
   answers: Answers,
   emoji: boolean,

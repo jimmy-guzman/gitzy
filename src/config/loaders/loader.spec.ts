@@ -1,7 +1,7 @@
 import { access, unlinkSync } from "node:fs";
 import { writeFile } from "node:fs/promises";
 
-import { getSearchPlaces, loadConfig } from "./loadConfig";
+import { getSearchPlaces, loadConfig } from "./loader";
 
 const expectedSearchPlaces = [
   "package.json",

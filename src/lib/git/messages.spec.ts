@@ -1,8 +1,9 @@
-import { defaultConfig } from "../../defaults";
-import { formatCommitMessage, wrap } from "./formatGitMessage";
+import { defaultConfig } from "@/defaults/config";
+
+import { formatMessage, wrap } from "./messages";
 
 const setupFormatCommitMessage = (config = {}, answers = {}): string => {
-  return formatCommitMessage(
+  return formatMessage(
     { ...defaultConfig, ...config },
     {
       body: "this an amazing feature, lots of details",
@@ -237,7 +238,7 @@ describe("formatCommitMessage", () => {
   });
 
   it("should format correctly when in hook mode", () => {
-    const formattedMessage = formatCommitMessage(
+    const formattedMessage = formatMessage(
       defaultConfig,
       {
         body: "this an amazing feature, lots of details",

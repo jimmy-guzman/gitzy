@@ -1,6 +1,6 @@
 import { x } from "tinyexec";
 
-import { checkIfGitRepo, checkIfStaged, shouldDoGitChecks } from "./git-utils";
+import { checkIfGitRepo, checkIfStaged, shouldDoGitChecks } from "./checks";
 
 vi.mock("tinyexec");
 

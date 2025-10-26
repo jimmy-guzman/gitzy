@@ -1,9 +1,11 @@
 import Enquirer from "enquirer";
 
 import { cli } from "./cli";
-import * as config from "./config";
-import { defaultAnswers, defaultConfig } from "./defaults";
-import * as utils from "./utils";
+import * as config from "./config/loaders/user";
+import { defaultAnswers } from "./defaults/answers";
+import { defaultConfig } from "./defaults/config";
+import * as gitChecks from "./lib/git/checks";
+import * as gitCommits from "./lib/git/commits";
 
 vi.mock("enquirer");
 
@@ -30,17 +32,17 @@ describe("cli", () => {
 
   it("should run with defaults", async () => {
     const performCommitSpy = vi
-      .spyOn(utils, "performCommit")
+      .spyOn(gitCommits, "performCommit")
       .mockResolvedValueOnce(undefined);
     const checkIfGitSpy = vi
-      .spyOn(utils, "checkIfGitRepo")
+      .spyOn(gitChecks, "checkIfGitRepo")
       .mockResolvedValueOnce("");
     const checkIfStagedSpy = vi
-      .spyOn(utils, "checkIfStaged")
+      .spyOn(gitChecks, "checkIfStaged")
       .mockResolvedValueOnce("");
 
     const getUserConfigSpy = vi
-      .spyOn(config, "getUserConfig")
+      .spyOn(config, "loadUserConfig")
       .mockResolvedValueOnce(defaultConfig);
 
     await cli();

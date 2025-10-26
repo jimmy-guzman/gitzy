@@ -4,27 +4,24 @@ import type { CommanderError } from "commander";
 
 import { program } from "commander";
 import Enquirer from "enquirer";
+import { version } from "package.json" assert { type: "json" };
 
 import type { Answers, Flags } from "./interfaces";
 
-// eslint-disable-next-line import-x/extensions -- TODO: refactor
-import { version } from "../package.json" assert { type: "json" };
 import { options } from "./cli/options";
-import { getUserConfig } from "./config";
-import { defaultAnswers, defaultConfig } from "./defaults";
+import { loadUserConfig } from "./config/loaders/user";
+import { defaultAnswers } from "./defaults/answers";
+import { defaultConfig } from "./defaults/config";
 import { lang } from "./lang";
-import { createPrompts } from "./prompts";
 import {
   checkIfGitRepo,
   checkIfStaged,
-  danger,
-  GitzyStore,
-  hint,
-  info,
-  log,
-  performCommit,
   shouldDoGitChecks,
-} from "./utils";
+} from "./lib/git/checks";
+import { performCommit } from "./lib/git/commits";
+import { danger, hint, info, log } from "./lib/logging";
+import { createPrompts } from "./prompts/create-prompts";
+import { GitzyStore } from "./store/gitzy";
 
 const enquirerOptions = {
   autofill: true,
@@ -46,7 +43,7 @@ export const cli = async () => {
   const store = new GitzyStore<Answers>();
 
   const init = async ({ commitlint, dryRun, hook, passthrough }: Flags) => {
-    const loadedUserConfig = await getUserConfig(commitlint);
+    const loadedUserConfig = await loadUserConfig(commitlint);
 
     if (loadedUserConfig) {
       state.config = { ...state.config, ...loadedUserConfig };

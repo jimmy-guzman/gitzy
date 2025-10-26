@@ -1,4 +1,4 @@
-import { validIssuesPrefixes } from "./constants";
+import { validIssuesPrefixes } from "@/defaults/config";
 
 export const lang = {
   breakingChangeEmoji: "breakingChangeEmoji must be a string",
