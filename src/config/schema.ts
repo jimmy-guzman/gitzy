@@ -33,7 +33,10 @@ const detailsSchema = record(
 );
 
 export const configSchema = strictObject({
-  breakingChangeEmoji: message(optional(string()), lang.breakingChangeEmoji),
+  breakingChangeEmoji: message(
+    optional(string(), defaultConfig.breakingChangeEmoji),
+    lang.breakingChangeEmoji,
+  ),
   breakingChangeFormat: message(
     optional(
       picklist(validBreakingChangeFormats),
@@ -70,7 +73,10 @@ export const configSchema = strictObject({
     lang.issuesPrefix,
   ),
   questions: message(
-    pipe(optional(array(picklist(questions))), readonly()),
+    pipe(
+      optional(array(picklist(questions)), defaultConfig.questions),
+      readonly(),
+    ),
     lang.questions,
   ),
   scopes: message(

@@ -1,5 +1,7 @@
 import * as v from "valibot";
 
+import { defaultConfig } from "@/defaults/config";
+
 import { lang } from "./lang";
 import { configSchema } from "./schema";
 
@@ -130,5 +132,11 @@ describe("configSchema", () => {
     const result = v.safeParse(configSchema, { unknownProp: "value" });
 
     expect(result.success).toBe(false);
+  });
+
+  it("should have defaultConfig conforming to configSchema", () => {
+    expect(() => {
+      return v.parse(configSchema, defaultConfig);
+    }).not.toThrow();
   });
 });
