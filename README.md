@@ -2,13 +2,12 @@
 
 > Interactive [conventional commits][conventional-commits] CLI, inspired by [git-cz][git-cz], with support for [commitlint](https://commitlint.js.org/#/) configuration, validation, and flexible setup. See [features](#features).
 
-<!-- markdownlint-disable-next-line MD033 -->
+<!-- markdownlint-disable MD033 -->
 <p align="center">
-<!-- markdownlint-disable-next-line MD033 -->
   <img width="750" src="./assets/demo.cast.svg" alt="Gitzy CLI screenshot"><br>
-  <!-- markdownlint-disable-next-line MD033 -->
   <sub>Recorded with <a href="https://github.com/MrMarble/termsvg">termsvg</a></sub>
 </p>
+<!-- markdownlint-enable MD033 -->
 
 ![actions][actions-badge]
 [![version][version-badge]][package] [![downloads][downloads-badge]][npmtrends]
