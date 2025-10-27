@@ -1,3 +1,10 @@
+## [6.4.1](https://github.com/jimmy-guzman/gitzy/compare/v6.4.0...v6.4.1) (2025-10-27)
+
+
+### Bug Fixes
+
+* 🐛 actually support `.mjs` extension in config files ([#589](https://github.com/jimmy-guzman/gitzy/issues/589)) ([17c78e8](https://github.com/jimmy-guzman/gitzy/commit/17c78e8eed9d200fdb3bc5c7506b93b50ccc4445))
+
 # [6.4.0](https://github.com/jimmy-guzman/gitzy/compare/v6.3.0...v6.4.0) (2025-10-27)
 
 
