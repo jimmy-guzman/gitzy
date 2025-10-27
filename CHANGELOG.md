@@ -1,3 +1,10 @@
+# [6.4.0](https://github.com/jimmy-guzman/gitzy/compare/v6.3.0...v6.4.0) (2025-10-27)
+
+
+### Features
+
+* **cli:** ✨ bundle dependencies for faster execution ([#587](https://github.com/jimmy-guzman/gitzy/issues/587)) ([287e437](https://github.com/jimmy-guzman/gitzy/commit/287e4374ab68903e5d22e08a1d5f168574a7ad2b))
+
 # [6.3.0](https://github.com/jimmy-guzman/gitzy/compare/v6.2.0...v6.3.0) (2025-10-26)
 
 
