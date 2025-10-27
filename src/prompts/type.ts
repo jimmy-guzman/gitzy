@@ -1,11 +1,12 @@
-import type { CreatedPromptOptions, Flags, GitzyConfig } from "@/interfaces";
+import type { Config } from "@/config/gitzy-schema";
+import type { Flags } from "@/interfaces";
 
 import { fuzzySearch } from "@/lib/fuzzy-search";
 
 import { promptsLang } from "./lang";
 
 export const choice = (
-  { details, disableEmoji }: GitzyConfig,
+  { details, disableEmoji }: Config,
   type: string,
   flags?: Flags,
 ) => {
@@ -23,7 +24,7 @@ export const choice = (
   };
 };
 
-export const type = ({ config, flags }: CreatedPromptOptions) => {
+export const type = ({ config, flags }: { config: Config; flags?: Flags }) => {
   const choices = config.types.map((configType) => {
     return choice(config, configType, flags);
   });

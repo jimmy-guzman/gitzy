@@ -1,5 +1,3 @@
-import type { GitzyConfig } from "@/interfaces";
-
 import { details } from "./details";
 
 export const questions = [
@@ -11,9 +9,7 @@ export const questions = [
   "issues",
 ] as const;
 
-export type GitzyPrompts = (typeof questions)[number];
-
-export const defaultConfig: GitzyConfig = {
+export const defaultConfig = {
   breakingChangeEmoji: "💥",
   breakingChangeFormat: "footer",
   closedIssueEmoji: "🏁",
@@ -39,7 +35,7 @@ export const defaultConfig: GitzyConfig = {
     "release",
   ],
   useCommitlintConfig: false,
-};
+} as const;
 
 export const validIssuesPrefixes = [
   "close",
@@ -53,13 +49,4 @@ export const validIssuesPrefixes = [
   "resolved",
 ] as const;
 
-/**
- * Issues prefixes supported by GitHub for linking pull requests to issues.
- *
- * @see https://docs.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword
- */
-export type IssuesPrefixes = (typeof validIssuesPrefixes)[number];
-
 export const validBreakingChangeFormats = ["!", "footer", "both"] as const;
-
-export type BreakingChangeFormats = (typeof validBreakingChangeFormats)[number];

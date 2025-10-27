@@ -1,18 +1,14 @@
 import type { Loader } from "lilconfig";
+import type { BaseIssue, BaseSchema } from "valibot";
 
 import { lilconfig } from "lilconfig";
+import { isValiError, parseAsync, summarize } from "valibot";
 import yaml from "yaml";
 
 const loadYaml: Loader = (_filepath, content) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- parse returns any
   return yaml.parse(content);
 };
-
-interface LoadConfigResult<T> {
-  config: T;
-  filepath: string;
-  isEmpty?: boolean;
-}
 
 const configVariants = (name: string) => {
   return [
@@ -29,7 +25,7 @@ const configVariants = (name: string) => {
   ];
 };
 
-export const getSearchPlaces = (configName: string) => {
+const getSearchPlaces = (configName: string) => {
   const variant = configVariants(configName);
 
   return [
@@ -41,9 +37,12 @@ export const getSearchPlaces = (configName: string) => {
   ];
 };
 
-export const loadConfig = async <T>(
+export const loadConfig = async <
+  const TSchema extends BaseSchema<unknown, unknown, BaseIssue<unknown>>,
+>(
   configName: string,
-): Promise<LoadConfigResult<T> | null> => {
+  schema: TSchema,
+) => {
   const explorer = lilconfig(configName, {
     loaders: {
       ".yaml": loadYaml,
@@ -53,5 +52,17 @@ export const loadConfig = async <T>(
     searchPlaces: getSearchPlaces(configName),
   });
 
-  return explorer.search(process.cwd());
+  const result = await explorer.search(process.cwd());
+
+  if (!result?.config) return null;
+
+  try {
+    return await parseAsync(schema, result.config);
+  } catch (error) {
+    if (isValiError(error)) {
+      throw new TypeError(summarize(error.issues), { cause: error });
+    }
+
+    throw new TypeError("Invalid configuration", { cause: error });
+  }
 };
