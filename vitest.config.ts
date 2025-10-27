@@ -8,7 +8,7 @@ export default defineConfig({
       exclude: [
         ...(configDefaults.coverage.exclude ?? []),
         "**/{interfaces,types,index}.ts",
-        "knip.config.ts",
+        "{knip,tsdown}.config.ts",
       ],
       reporter: ["text", "html", "clover", "json", "lcovonly"],
       thresholds: {
