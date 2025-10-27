@@ -37,6 +37,7 @@
     "shellcheck",
     "socio",
     "streetsidesoftware",
+    "termsvg",
     "tinyexec",
     "tocstop",
     "typecheck",
@@ -58,7 +59,7 @@
     "*.dll", // Ignore all .dll files.
     "**/*.dll", // Ignore all .dll files,
     "yarn.lock",
-    "assets/cli.svg",
+    "assets/demo.cast.svg",
     "pnpm-lock.yaml",
     ".gitignore"
   ]

@@ -1,5 +1,0 @@
-#!/bin/sh
-
-exec < /dev/tty
-
-tsx src/index.ts --commitlint --hook
