@@ -5,7 +5,7 @@
 <!-- markdownlint-disable MD033 -->
 <p align="center">
   <img width="750" src="./assets/demo.cast.svg" alt="Gitzy CLI screenshot"><br>
-  <sub>Recorded with <a href="https://github.com/MrMarble/termsvg">termsvg</a></sub>
+  <sub>Recorded with <a href="https://github.com/MrMarble/termsvg">termsvg</a> (glyphs look better IRL)</sub>
 </p>
 <!-- markdownlint-enable MD033 -->
 
