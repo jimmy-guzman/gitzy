@@ -14,7 +14,7 @@ interface LoadConfigResult<T> {
   isEmpty?: boolean;
 }
 
-const defaultSearchPlaces = (name: string) => {
+const configVariants = (name: string) => {
   return [
     `.${name}rc`,
     `.${name}rc.json`,
@@ -22,17 +22,21 @@ const defaultSearchPlaces = (name: string) => {
     `.${name}rc.yml`,
     `.${name}rc.js`,
     `.${name}rc.cjs`,
+    `.${name}rc.mjs`,
     `${name}.config.js`,
     `${name}.config.cjs`,
+    `${name}.config.mjs`,
   ];
 };
 
 export const getSearchPlaces = (configName: string) => {
+  const variant = configVariants(configName);
+
   return [
     "package.json",
-    ...defaultSearchPlaces(configName),
-    ...defaultSearchPlaces(configName).map((searchPlace) => {
-      return `.config/${searchPlace}`;
+    ...variant,
+    ...variant.map((place) => {
+      return `.config/${place}`;
     }),
   ];
 };
