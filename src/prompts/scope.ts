@@ -1,10 +1,14 @@
-import type { CreatedPromptOptions } from "@/interfaces";
+import type { Config } from "@/config/schema";
 
 import { fuzzySearch } from "@/lib/fuzzy-search";
 
 import { promptsLang } from "./lang";
 
-export const scope = ({ config: { scopes } }: CreatedPromptOptions) => {
+export const scope = ({
+  config: { scopes },
+}: {
+  config: { scopes: Config["scopes"] };
+}) => {
   const choices = scopes.map((choice) => {
     return {
       indent: " ",

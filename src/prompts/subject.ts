@@ -1,10 +1,7 @@
 import { styleText } from "node:util";
 
-import type {
-  Answers,
-  CreatedPromptOptions,
-  EnquirerState,
-} from "@/interfaces";
+import type { Config } from "@/config/schema";
+import type { Answers, EnquirerState } from "@/interfaces";
 
 import { errorMessage, promptsLang } from "./lang";
 
@@ -23,7 +20,9 @@ export const leadingLabel = (answers?: Answers): string => {
 
 export const subject = ({
   config: { disableEmoji, headerMaxLength, headerMinLength },
-}: CreatedPromptOptions) => {
+}: {
+  config: Pick<Config, "disableEmoji" | "headerMaxLength" | "headerMinLength">;
+}) => {
   const minTitleLengthError = errorMessage.minTitleLength(headerMinLength);
   const maxTitleLengthError = errorMessage.maxTitleLength(headerMaxLength);
   const {

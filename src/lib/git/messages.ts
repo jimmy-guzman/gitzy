@@ -1,4 +1,5 @@
-import type { Answers, GitzyConfig } from "@/interfaces";
+import type { Config } from "@/config/schema";
+import type { Answers } from "@/interfaces";
 
 import { validIssuesPrefixes } from "@/defaults/config";
 
@@ -6,7 +7,7 @@ const MAX_WIDTH = 72;
 
 const createBreaking = (
   breaking: boolean | string,
-  { breakingChangeEmoji, breakingChangeFormat, disableEmoji }: GitzyConfig,
+  { breakingChangeEmoji, breakingChangeFormat, disableEmoji }: Config,
 ) => {
   if (breakingChangeFormat === "!") {
     return "";
@@ -45,7 +46,7 @@ const parseIssue = (issue: string, defaultPrefix: string) => {
 
 const createIssues = (
   issues: string,
-  { closedIssueEmoji, disableEmoji, issuesPrefix = "closes" }: GitzyConfig,
+  { closedIssueEmoji, disableEmoji, issuesPrefix = "closes" }: Config,
 ) => {
   if (!issues) return "";
 
@@ -69,7 +70,7 @@ const createScope = (scope: string) => {
 const createHead = (
   answers: Answers,
   scope: string,
-  config: GitzyConfig,
+  config: Config,
   emojiPrefix: string,
 ) => {
   const breakingIndicator =
@@ -88,7 +89,7 @@ export const wrap = (string: string, maxWidth = MAX_WIDTH) => {
 };
 
 export const formatMessage = (
-  config: GitzyConfig,
+  config: Config,
   answers: Answers,
   emoji: boolean,
 ) => {

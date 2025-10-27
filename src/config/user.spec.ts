@@ -1,16 +1,14 @@
-import type { GitzyConfig } from "@/interfaces";
+import type { Config } from "./schema";
 
-import * as validations from "../validation/validate";
 import * as commitlint from "./commitlint";
 import * as loaders from "./loader";
 import { loadUserConfig } from "./user";
+import * as validations from "./validate";
 
 const mockUserConfig = { disableEmoji: true };
 const mockCommitlintConfig = { headerMinLength: 5 };
 
-const mockLoadConfig = (
-  config: null | Partial<GitzyConfig> = mockUserConfig,
-) => {
+const mockLoadConfig = (config: null | Partial<Config> = mockUserConfig) => {
   return vi
     .spyOn(loaders, "loadConfig")
     .mockResolvedValueOnce(config ? { config, filepath: "" } : null);

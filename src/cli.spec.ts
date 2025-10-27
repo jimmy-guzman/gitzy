@@ -1,7 +1,7 @@
 import Enquirer from "enquirer";
 
 import { cli } from "./cli";
-import * as config from "./config/loaders/user";
+import * as config from "./config/user";
 import { defaultAnswers } from "./defaults/answers";
 import { defaultConfig } from "./defaults/config";
 import * as gitChecks from "./lib/git/checks";

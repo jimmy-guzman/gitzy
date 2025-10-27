@@ -27,13 +27,15 @@ describe("loadCommitlintConfig", () => {
       await expect(loadCommitlintConfig()).resolves.toBeNull();
     });
 
-    it("should return null when the commitlint config is not valid", async () => {
+    it("should throw when the commitlint config is not valid", async () => {
       vi.spyOn(utils, "loadConfig").mockResolvedValueOnce({
-        config: "not valid",
+        config: { rules: { "header-max-length": ["2", "always", "10"] } },
         filepath: "",
       });
 
-      await expect(loadCommitlintConfig()).resolves.toBeNull();
+      await expect(loadCommitlintConfig()).rejects.toThrow(
+        "× headerMaxLength must be a number",
+      );
     });
 
     it("should return commitlint config", async () => {

@@ -1,11 +1,11 @@
 import { styleText } from "node:util";
 
-import type { IssuesPrefixes } from "@/defaults/config";
+import type { IssuesPrefix } from "@/config/schema";
 import type { PromptsLang } from "@/interfaces";
 
 const breaking = styleText("red", "BREAKING CHANGE:");
 
-const closes = (issuesPrefix: IssuesPrefixes) => {
+const closes = (issuesPrefix: IssuesPrefix) => {
   return styleText("reset", `${issuesPrefix}:`);
 };
 
@@ -31,7 +31,7 @@ export const promptsLang = {
   },
 } satisfies PromptsLang;
 
-export const issuesMessage = (issuesPrefix: IssuesPrefixes) => {
+export const issuesMessage = (issuesPrefix: IssuesPrefix) => {
   return `${styleText("bold", `Add issues this commit closes`)}\n  ${closes(issuesPrefix)}`;
 };
 

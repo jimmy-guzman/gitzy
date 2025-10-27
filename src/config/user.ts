@@ -1,14 +1,14 @@
-import type { GitzyConfig } from "@/interfaces";
+import type { Config } from "./schema";
 
-import { validateUserConfig } from "../validation/validate";
 import { loadCommitlintConfig } from "./commitlint";
 import { loadConfig } from "./loader";
+import { validateUserConfig } from "./validate";
 
 export const loadUserConfig = async (commitlint?: boolean) => {
-  const loaded = await loadConfig<GitzyConfig>("gitzy");
+  const loaded = await loadConfig<Config>("gitzy");
 
   if (commitlint && !loaded) {
-    return loadCommitlintConfig() as Promise<GitzyConfig>;
+    return loadCommitlintConfig();
   }
 
   if (loaded) {

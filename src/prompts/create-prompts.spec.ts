@@ -1,10 +1,12 @@
+import type { Questions } from "@/config/schema";
+
 import { defaultConfig } from "@/defaults/config";
 
 import { createPrompts } from "./create-prompts";
 
 const setupCreatePrompts = (
   flags = {},
-  questions = defaultConfig.questions,
+  questions: Questions = defaultConfig.questions,
 ) => {
   return createPrompts(
     {

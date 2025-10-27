@@ -1,4 +1,4 @@
-import type { CreatedPromptOptions, EnquirerChoice } from "@/interfaces";
+import type { EnquirerChoice } from "@/interfaces";
 
 import { defaultConfig } from "@/defaults/config";
 
@@ -7,7 +7,7 @@ import { choice, type } from "./type";
 const setupType = (config = {}) => {
   return type({
     config: { ...defaultConfig, ...config },
-  } as CreatedPromptOptions);
+  });
 };
 const setupChoice = (
   config = {},

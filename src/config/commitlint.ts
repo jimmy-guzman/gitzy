@@ -1,5 +1,5 @@
-import { validateUserConfig } from "../validation/validate";
 import { loadConfig } from "./loader";
+import { validateUserConfig } from "./validate";
 
 interface CommitlintConfig {
   rules?: {
@@ -30,9 +30,10 @@ export const loadCommitlintConfig = async () => {
 
   if (commitlint) {
     const commitlintOverrides = getCommitlintOverrides(commitlint.config);
-    const isValid = await validateUserConfig(commitlintOverrides);
 
-    return isValid ? commitlintOverrides : null;
+    await validateUserConfig(commitlintOverrides);
+
+    return commitlintOverrides;
   }
 
   return null;
