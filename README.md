@@ -29,11 +29,13 @@
 - Config validation
 - Multiple breaking-change formats (`!`, `footer`, `both`)
 - Flexible emoji control
-- Typed details for descriptions and emojis
+- Customizable type descriptions and emojis
 - Dynamic scopes and types
+- Friendly multiple issues support
 - Retry (`--retry`) and dry-run (`--dry-run`) modes
 - Git passthrough and hook support
 - Flexible config discovery (`package.json`, `.gitzyrc.*`, `.config/`)
+- ⚡ [Lightweight (~300 kB install, ~260 kB publish)](https://packagephobia.com/result?p=gitzy)
 
 ## Usage
 
@@ -54,7 +56,8 @@ By default, `gitzy` works out of the box and supports multiple configuration met
 You can use a `gitzy` object in your `package.json`, or one of the following files:
 `.gitzyrc`, `.gitzyrc.json`, `.gitzyrc.yaml`, `.gitzyrc.yml`, `.gitzyrc.js`, `.gitzyrc.cjs`, `gitzy.config.js`, `gitzy.config.cjs`, `.gitzyrc.mjs`, or `gitzy.config.mjs`.
 
-- _All of these files can also live under a `.config/` directory._
+> [!INFO]
+> All of these files can also live under a `.config/` directory.
 
 ## Options
 
