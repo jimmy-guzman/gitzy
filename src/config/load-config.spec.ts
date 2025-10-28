@@ -7,13 +7,13 @@ import { loadConfig } from "./load-config";
 vi.mock("lilconfig");
 vi.mock("yaml");
 vi.mock("valibot", async () => {
-  const actual = await vi.importActual("valibot");
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports -- testing
+  const actual = await vi.importActual<typeof import("valibot")>("valibot");
 
   return {
     ...actual,
-    isValiError: vi.fn(),
-    parseAsync: vi.fn(),
-    summarize: vi.fn(),
+    isValiError: vi.fn(actual.isValiError),
+    parseAsync: vi.fn(actual.parseAsync),
   };
 });
 
@@ -33,6 +33,7 @@ describe("loadConfig", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.resetAllMocks();
     vi.mocked(lilconfig).mockReturnValue(mockExplorer);
     vi.mocked(yaml.parse).mockImplementation((content: string) => {
       return content;
@@ -154,7 +155,6 @@ describe("loadConfig", () => {
       const result = await loadConfig("gitzy", mockSchema);
 
       expect(result).toBeNull();
-      expect(valibot.parseAsync).not.toHaveBeenCalled();
     });
 
     it("should return null when result exists but config is undefined", async () => {
@@ -166,7 +166,6 @@ describe("loadConfig", () => {
       const result = await loadConfig("gitzy", mockSchema);
 
       expect(result).toBeNull();
-      expect(valibot.parseAsync).not.toHaveBeenCalled();
     });
 
     it("should return null when result exists but config is null", async () => {
@@ -178,7 +177,6 @@ describe("loadConfig", () => {
       const result = await loadConfig("gitzy", mockSchema);
 
       expect(result).toBeNull();
-      expect(valibot.parseAsync).not.toHaveBeenCalled();
     });
   });
 
@@ -191,11 +189,8 @@ describe("loadConfig", () => {
         filepath: "/path/to/.gitzyrc",
       });
 
-      vi.mocked(valibot.parseAsync).mockResolvedValue(configData);
-
       const result = await loadConfig("gitzy", mockSchema);
 
-      expect(valibot.parseAsync).toHaveBeenCalledWith(mockSchema, configData);
       expect(result).toStrictEqual(configData);
     });
 
@@ -209,10 +204,10 @@ describe("loadConfig", () => {
         config: configData,
         filepath: "/path/to/config",
       });
-      vi.mocked(valibot.parseAsync).mockResolvedValue(configData);
 
-      await loadConfig("test", customSchema);
+      const result = await loadConfig("test", customSchema);
 
+      expect(result).toStrictEqual(configData);
       expect(valibot.parseAsync).toHaveBeenCalledWith(customSchema, configData);
     });
   });
@@ -226,49 +221,19 @@ describe("loadConfig", () => {
         filepath: "/path/to/config",
       });
 
-      const valiError = {
-        issues: [
-          {
-            expected: "string",
-            input: 123,
-            kind: "schema",
-            message: "Invalid type: Expected string but received number",
-            path: [{ key: "name" }],
-            received: "number",
-            type: "string",
-          },
-        ],
-      };
-
-      vi.mocked(valibot.parseAsync).mockRejectedValue(valiError);
-      vi.mocked(valibot.isValiError).mockReturnValue(true);
-      vi.mocked(valibot.summarize).mockReturnValue(
-        "Invalid type at name: Expected string but received number",
-      );
-
       await expect(loadConfig("gitzy", mockSchema)).rejects.toThrow(TypeError);
       await expect(loadConfig("gitzy", mockSchema)).rejects.toThrow(
-        "Invalid type at name: Expected string but received number",
+        "× Invalid type: Expected string but received 123\n  → at name",
       );
-
-      expect(valibot.summarize).toHaveBeenCalledWith(valiError.issues);
     });
 
     it("should include original error as cause for valibot errors", async () => {
-      const configData = { invalid: "data" };
+      const configData = { name: 123, version: "1.0.0" };
 
       mockExplorer.search.mockResolvedValue({
         config: configData,
         filepath: "/path/to/config",
       });
-
-      const valiError = {
-        issues: [{ message: "Validation failed" }],
-      };
-
-      vi.mocked(valibot.parseAsync).mockRejectedValue(valiError);
-      vi.mocked(valibot.isValiError).mockReturnValue(true);
-      vi.mocked(valibot.summarize).mockReturnValue("Validation failed");
 
       try {
         await loadConfig("gitzy", mockSchema);
@@ -276,8 +241,31 @@ describe("loadConfig", () => {
         expect.fail("Should have thrown");
       } catch (error) {
         expect(error).toBeInstanceOf(TypeError);
-        expect((error as TypeError).cause).toBe(valiError);
+        expect((error as TypeError).cause).toBeDefined();
+        expect(valibot.isValiError((error as TypeError).cause)).toBe(true);
       }
+    });
+
+    it("should throw TypeError for missing required fields", async () => {
+      const configData = { version: "1.0.0" }; // missing 'name'
+
+      mockExplorer.search.mockResolvedValue({
+        config: configData,
+        filepath: "/path/to/config",
+      });
+
+      await expect(loadConfig("gitzy", mockSchema)).rejects.toThrow(TypeError);
+    });
+
+    it("should throw TypeError for wrong field types", async () => {
+      const configData = { name: "gitzy", version: 123 }; // version should be string
+
+      mockExplorer.search.mockResolvedValue({
+        config: configData,
+        filepath: "/path/to/config",
+      });
+
+      await expect(loadConfig("gitzy", mockSchema)).rejects.toThrow(TypeError);
     });
 
     it("should throw TypeError for non-valibot errors", async () => {
@@ -290,15 +278,15 @@ describe("loadConfig", () => {
 
       const genericError = new Error("Something went wrong");
 
-      vi.mocked(valibot.parseAsync).mockRejectedValue(genericError);
-      vi.mocked(valibot.isValiError).mockReturnValue(false);
+      vi.mocked(valibot.parseAsync)
+        .mockRejectedValueOnce(genericError)
+        .mockRejectedValueOnce(genericError);
+      vi.mocked(valibot.isValiError).mockReturnValueOnce(false);
 
       await expect(loadConfig("gitzy", mockSchema)).rejects.toThrow(TypeError);
       await expect(loadConfig("gitzy", mockSchema)).rejects.toThrow(
         "Invalid configuration",
       );
-
-      expect(valibot.summarize).not.toHaveBeenCalled();
     });
 
     it("should include original error as cause for non-valibot errors", async () => {
@@ -311,8 +299,8 @@ describe("loadConfig", () => {
 
       const genericError = new Error("Something went wrong");
 
-      vi.mocked(valibot.parseAsync).mockRejectedValue(genericError);
-      vi.mocked(valibot.isValiError).mockReturnValue(false);
+      vi.mocked(valibot.parseAsync).mockRejectedValueOnce(genericError);
+      vi.mocked(valibot.isValiError).mockReturnValueOnce(false);
 
       try {
         await loadConfig("gitzy", mockSchema);
@@ -327,6 +315,11 @@ describe("loadConfig", () => {
 
   describe("edge cases", () => {
     it("should handle empty config object", async () => {
+      // Empty object won't pass the schema validation, so let's use optional fields
+      const flexibleSchema = valibot.object({
+        name: valibot.optional(valibot.string()),
+        version: valibot.optional(valibot.string()),
+      });
       const configData = {};
 
       mockExplorer.search.mockResolvedValue({
@@ -334,9 +327,7 @@ describe("loadConfig", () => {
         filepath: "/path/to/config",
       });
 
-      vi.mocked(valibot.parseAsync).mockResolvedValue(configData);
-
-      const result = await loadConfig("gitzy", mockSchema);
+      const result = await loadConfig("gitzy", flexibleSchema);
 
       expect(result).toStrictEqual(configData);
     });

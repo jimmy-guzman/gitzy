@@ -34,10 +34,10 @@
     "typecheck": "tsc"
   },
   "lint-staged": {
-    "*.{md,json,yml,ts}": [
+    "*.{md,json,yml,yaml,ts}": [
       "prettier -w"
     ],
-    "*.{js,ts,test}": [
+    "*.ts": [
       "eslint --fix"
     ]
   },
