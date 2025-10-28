@@ -1,3 +1,10 @@
+# [6.5.0](https://github.com/jimmy-guzman/gitzy/compare/v6.4.1...v6.5.0) (2025-10-28)
+
+
+### Features
+
+* ✨ improve validation by using schema based parser ([#590](https://github.com/jimmy-guzman/gitzy/issues/590)) ([f5a0a6a](https://github.com/jimmy-guzman/gitzy/commit/f5a0a6aff36cbf17a74ac76e1c4fbac8b3d277b1))
+
 ## [6.4.1](https://github.com/jimmy-guzman/gitzy/compare/v6.4.0...v6.4.1) (2025-10-27)
 
 
