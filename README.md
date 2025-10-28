@@ -56,7 +56,7 @@ By default, `gitzy` works out of the box and supports multiple configuration met
 You can use a `gitzy` object in your `package.json`, or one of the following files:
 `.gitzyrc`, `.gitzyrc.json`, `.gitzyrc.yaml`, `.gitzyrc.yml`, `.gitzyrc.js`, `.gitzyrc.cjs`, `gitzy.config.js`, `gitzy.config.cjs`, `.gitzyrc.mjs`, or `gitzy.config.mjs`.
 
-> [!INFO]
+> [!NOTE]
 > All of these files can also live under a `.config/` directory.
 
 ## Options
