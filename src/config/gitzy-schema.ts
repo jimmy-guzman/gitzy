@@ -3,7 +3,6 @@ import type { InferOutput } from "valibot";
 import {
   array,
   boolean,
-  message,
   number,
   object,
   optional,
@@ -16,13 +15,11 @@ import {
 } from "valibot";
 
 import {
-  defaultConfig,
+  defaultConfig as defaults,
   questions,
   validBreakingChangeFormats,
   validIssuesPrefixes,
 } from "@/defaults/config";
-
-import { lang } from "./lang";
 
 const detailsSchema = record(
   string(),
@@ -33,64 +30,25 @@ const detailsSchema = record(
 );
 
 export const ConfigSchema = strictObject({
-  breakingChangeEmoji: message(
-    optional(string(), defaultConfig.breakingChangeEmoji),
-    lang.breakingChangeEmoji,
+  breakingChangeEmoji: optional(string(), defaults.breakingChangeEmoji),
+  breakingChangeFormat: optional(
+    picklist(validBreakingChangeFormats),
+    defaults.breakingChangeFormat,
   ),
-  breakingChangeFormat: message(
-    optional(
-      picklist(validBreakingChangeFormats),
-      defaultConfig.breakingChangeFormat,
-    ),
-    lang.breakingChangeFormat,
+  closedIssueEmoji: optional(string(), defaults.closedIssueEmoji),
+  details: optional(detailsSchema, defaults.details),
+  disableEmoji: optional(boolean(), defaults.disableEmoji),
+  headerMaxLength: optional(number(), defaults.headerMaxLength),
+  headerMinLength: optional(number(), defaults.headerMinLength),
+  issuesHint: optional(string(), defaults.issuesHint),
+  issuesPrefix: optional(picklist(validIssuesPrefixes), defaults.issuesPrefix),
+  questions: pipe(
+    optional(array(picklist(questions)), defaults.questions),
+    readonly(),
   ),
-  closedIssueEmoji: message(
-    optional(string(), defaultConfig.closedIssueEmoji),
-    lang.closedIssueEmoji,
-  ),
-  details: message(
-    optional(detailsSchema, defaultConfig.details),
-    lang.details,
-  ),
-  disableEmoji: message(
-    optional(boolean(), defaultConfig.disableEmoji),
-    lang.disableEmoji,
-  ),
-  headerMaxLength: message(
-    optional(number(), defaultConfig.headerMaxLength),
-    lang.headerMaxLength,
-  ),
-  headerMinLength: message(
-    optional(number(), defaultConfig.headerMinLength),
-    lang.headerMinLength,
-  ),
-  issuesHint: message(
-    optional(string(), defaultConfig.issuesHint),
-    lang.issuesHint,
-  ),
-  issuesPrefix: message(
-    optional(picklist(validIssuesPrefixes), defaultConfig.issuesPrefix),
-    lang.issuesPrefix,
-  ),
-  questions: message(
-    pipe(
-      optional(array(picklist(questions)), defaultConfig.questions),
-      readonly(),
-    ),
-    lang.questions,
-  ),
-  scopes: message(
-    pipe(optional(array(string()), defaultConfig.scopes), readonly()),
-    lang.scopes,
-  ),
-  types: message(
-    pipe(optional(array(string()), defaultConfig.types), readonly()),
-    lang.types,
-  ),
-  useCommitlintConfig: message(
-    optional(boolean(), defaultConfig.useCommitlintConfig),
-    lang.useCommitlintConfig,
-  ),
+  scopes: pipe(optional(array(string()), defaults.scopes), readonly()),
+  types: pipe(optional(array(string()), defaults.types), readonly()),
+  useCommitlintConfig: optional(boolean(), defaults.useCommitlintConfig),
 });
 
 export type Config = InferOutput<typeof ConfigSchema>;
