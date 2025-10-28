@@ -25,7 +25,7 @@ const capitalize = (str: string) => {
 };
 
 const prefixPattern = validIssuesPrefixes.join("|");
-const hasPrefixRegex = new RegExp(`^(${prefixPattern})\\s+`, "i");
+const hasPrefixRegex = new RegExp(String.raw`^(${prefixPattern})\s+`, "i");
 
 const parseIssue = (issue: string, defaultPrefix: string) => {
   const trimmed = issue.trim();
@@ -81,7 +81,7 @@ const createHead = (
 
 export const wrap = (string: string, maxWidth = MAX_WIDTH) => {
   const regex = new RegExp(
-    `(?![^\\n]{1,${maxWidth.toString()}}$)([^\\n]{1,${maxWidth.toString()}})\\s`,
+    String.raw`(?![^\n]{1,${maxWidth.toString()}}$)([^\n]{1,${maxWidth.toString()}})\s`,
     "g",
   );
 

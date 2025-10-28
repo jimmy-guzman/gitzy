@@ -1,4 +1,4 @@
-import type { Config } from "@/config/gitzy-schema";
+import type { Scopes } from "@/config/gitzy-schema";
 
 import { fuzzySearch } from "@/lib/fuzzy-search";
 
@@ -7,7 +7,7 @@ import { promptsLang } from "./lang";
 export const scope = ({
   config: { scopes },
 }: {
-  config: { scopes: Config["scopes"] };
+  config: { scopes: Scopes };
 }) => {
   const choices = scopes.map((choice) => {
     return {

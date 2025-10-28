@@ -19,31 +19,19 @@ export const lang = {
   $ gitzy -lD --no-emoji
   `,
   flags: {
-    get body() {
-      return skipQuestionMessage("body");
-    },
+    body: skipQuestionMessage("body"),
     breaking:
       'mark as breaking change. Pass a message for "footer"/"both" formats, or just the flag for "!" format',
     commitlint: "leverage commitlint's configuration",
-    get dryRun() {
-      return "displays git message but does not commit";
-    },
+    dryRun: "displays git message but does not commit",
     hook: "run gitzy inside a Git hook",
-    get issues() {
-      return skipQuestionMessage("issues");
-    },
+    issues: skipQuestionMessage("issues"),
     noEmoji: "disable all emojis",
     passthrough: 'subsequent command line args passed through to "git"',
     retry: "retries previous commit, skips all prompts",
-    get scope() {
-      return skipQuestionMessage("scope");
-    },
+    scope: skipQuestionMessage("scope"),
     skip: "skip questions",
-    get subject() {
-      return skipQuestionMessage("subject");
-    },
-    get type() {
-      return skipQuestionMessage("type");
-    },
+    subject: skipQuestionMessage("subject"),
+    type: skipQuestionMessage("type"),
   },
 } satisfies Lang;

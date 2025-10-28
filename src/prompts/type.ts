@@ -5,19 +5,13 @@ import { fuzzySearch } from "@/lib/fuzzy-search";
 
 import { promptsLang } from "./lang";
 
-export const choice = (
-  { details, disableEmoji }: Config,
-  type: string,
-  flags?: Flags,
-) => {
-  const {
-    [type]: { description, emoji },
-  } = details;
-  const hasEmoji = emoji && !disableEmoji && flags?.emoji;
-  const prefix = hasEmoji ? `${emoji} ` : "";
+export const choice = (config: Config, type: string, flags?: Flags) => {
+  const typeDetails = config.details[type];
+  const hasEmoji = typeDetails.emoji && !config.disableEmoji && flags?.emoji;
+  const prefix = hasEmoji ? `${typeDetails.emoji} ` : "";
 
   return {
-    hint: description.toLowerCase(),
+    hint: typeDetails.description.toLowerCase(),
     indent: " ",
     title: `${type === "refactor" && hasEmoji ? `${prefix} ` : prefix}${type}:`,
     value: type,

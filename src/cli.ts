@@ -94,7 +94,6 @@ export const cli = async () => {
     .option("-r, --retry", lang.flags.retry)
     .option("--no-emoji", lang.flags.noEmoji)
     .option("-H, --hook", lang.flags.hook)
-
     .addOption(options.skip)
     .addHelpText(
       "after",
@@ -104,7 +103,6 @@ Examples:
     `,
     )
     .name("gitzy")
-
     .action(async () => {
       const opts = program.opts<Flags>();
       const flags = {
