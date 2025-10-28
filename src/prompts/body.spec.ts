@@ -18,13 +18,13 @@ describe("body", () => {
     });
 
     expect(bodyPrompt).toStrictEqual({
-      format: expect.any(Function),
       hint: "...supports multi line, press enter to go to next line",
       message: "Add a longer description\n",
       multiline: true,
       name: "body",
+      result: expect.any(Function),
       type: "text",
     });
-    expect(bodyPrompt.format(" whitespace ")).toBe("whitespace");
+    expect(bodyPrompt.result(" whitespace ")).toBe("whitespace");
   });
 });
