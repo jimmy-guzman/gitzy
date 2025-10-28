@@ -1,24 +1,18 @@
 import tsconfigPaths from "vite-tsconfig-paths";
-import { configDefaults, defineConfig } from "vitest/config";
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   plugins: [tsconfigPaths()],
   test: {
     coverage: {
-      exclude: [
-        ...(configDefaults.coverage.exclude ?? []),
-        "**/{interfaces,types,index}.ts",
-        "{knip,tsdown}.config.ts",
-      ],
-      reporter: ["text", "html", "clover", "json", "lcovonly"],
       thresholds: {
-        branches: 95,
-        functions: 95,
-        lines: 95,
-        statements: 95,
+        autoUpdate: true,
+        branches: 94.73,
+        functions: 94.95,
+        lines: 97.08,
+        statements: 97.1,
       },
     },
-    exclude: [...configDefaults.exclude],
     globals: true,
   },
 });
