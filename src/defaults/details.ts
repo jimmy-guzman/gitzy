@@ -44,4 +44,4 @@ export const details = {
     description: "Add or update tests",
     emoji: "✅",
   },
-};
+} as const;
