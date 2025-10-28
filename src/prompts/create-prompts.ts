@@ -18,25 +18,20 @@ const prompts = {
   type,
 };
 
-const notEmpty = <T>(value: null | T | undefined): value is T => {
-  return value !== null && value !== undefined;
-};
-
 export const createPrompts = (
   { answers, config }: GitzyState,
   flags: Flags,
 ) => {
-  return config.questions
-    .filter((question) => {
-      return (
-        defaultConfig.questions.includes(question) &&
-        !flags.skip?.includes(question)
-      );
-    })
-    .map((name) => {
-      return prompts[name]({ answers, config, flags });
-    })
-    .filter((value) => {
-      return notEmpty(value);
-    });
+  return config.questions.flatMap((question) => {
+    if (
+      !defaultConfig.questions.includes(question) ||
+      flags.skip?.includes(question)
+    ) {
+      return [];
+    }
+
+    const prompt = prompts[question]({ answers, config, flags });
+
+    return prompt ? [prompt] : [];
+  });
 };

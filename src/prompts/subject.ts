@@ -6,12 +6,10 @@ import type { Answers, EnquirerState } from "@/interfaces";
 import { errorMessage, promptsLang } from "./lang";
 
 const EMOJI_LENGTH = 3;
-
 const PERCENT = 100;
-
 const PERCENT_THRESHOLD = 25;
 
-export const leadingLabel = (answers?: Answers): string => {
+export const leadingLabel = (answers?: Answers) => {
   const scope =
     answers?.scope && answers.scope !== "none" ? `(${answers.scope})` : "";
 
@@ -25,41 +23,30 @@ export const subject = ({
 }) => {
   const minTitleLengthError = errorMessage.minTitleLength(headerMinLength);
   const maxTitleLengthError = errorMessage.maxTitleLength(headerMaxLength);
-  const {
-    subject: { message },
-  } = promptsLang;
   const emojiLength = disableEmoji ? 0 : EMOJI_LENGTH;
 
+  const getColor = (inputLen: number, percentRem: number) => {
+    if (inputLen < headerMinLength || percentRem < 0) return "red";
+    if (percentRem > PERCENT_THRESHOLD) return "green";
+
+    return "yellow";
+  };
+
   return {
-    message: (state?: EnquirerState): string => {
-      const getCharsLeftText = (): string => {
-        const label = leadingLabel(state?.answers);
-        const inputLength = state ? state.input.length : 0;
-        const remainingChar =
-          headerMaxLength - inputLength - label.length - emojiLength;
-        const percentRemaining = (remainingChar / headerMaxLength) * PERCENT;
-        const charsLeftIndicator = `${remainingChar.toString()}/${headerMaxLength.toString()}`;
+    message: (state?: EnquirerState) => {
+      const inputLength = state?.input.length ?? 0;
+      const label = leadingLabel(state?.answers);
+      const remainingChar =
+        headerMaxLength - inputLength - label.length - emojiLength;
+      const percentRemaining = (remainingChar / headerMaxLength) * PERCENT;
+      const charsLeftIndicator = `${remainingChar}/${headerMaxLength}`;
+      const message = `${promptsLang.subject.message}(${styleText(getColor(inputLength, percentRemaining), charsLeftIndicator)})`;
 
-        if (inputLength < headerMinLength) {
-          return styleText("red", charsLeftIndicator);
-        }
-
-        if (percentRemaining > PERCENT_THRESHOLD) {
-          return styleText("green", charsLeftIndicator);
-        }
-
-        if (percentRemaining < 0) {
-          return styleText("red", charsLeftIndicator);
-        }
-
-        return styleText("yellow", charsLeftIndicator);
-      };
-
-      return styleText("bold", `${message}(${getCharsLeftText()})`);
+      return styleText("bold", message);
     },
     name: "subject",
     type: "input" as const,
-    validate: (input: string, state?: EnquirerState): string | true => {
+    validate: (input: string, state?: EnquirerState) => {
       const label = leadingLabel(state?.answers);
       const isOverMaxLength =
         input.length + label.length + emojiLength > headerMaxLength;

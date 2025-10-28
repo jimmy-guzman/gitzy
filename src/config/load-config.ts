@@ -2,7 +2,7 @@ import type { Loader } from "lilconfig";
 import type { BaseIssue, BaseSchema } from "valibot";
 
 import { lilconfig } from "lilconfig";
-import { isValiError, parseAsync, summarize } from "valibot";
+import { safeParse, summarize } from "valibot";
 import yaml from "yaml";
 
 const loadYaml: Loader = (_filepath, content) => {
@@ -56,13 +56,11 @@ export const loadConfig = async <
 
   if (!result?.config) return null;
 
-  try {
-    return await parseAsync(schema, result.config);
-  } catch (error) {
-    if (isValiError(error)) {
-      throw new TypeError(summarize(error.issues), { cause: error });
-    }
+  const parsed = safeParse(schema, result.config);
 
-    throw new TypeError("Invalid configuration", { cause: error });
+  if (!parsed.success) {
+    throw new TypeError(summarize(parsed.issues));
   }
+
+  return parsed.output;
 };

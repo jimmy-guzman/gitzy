@@ -22,8 +22,8 @@
     "precheck": "pnpm build",
     "check": "run-p knip lint format coverage typecheck",
     "coverage": "vitest run --coverage",
-    "format": "prettier -c .",
-    "format:fix": "prettier -w .",
+    "format": "prettier --cache -c .",
+    "format:fix": "prettier --cache -w .",
     "gitzy": "tsx src/index.ts --commitlint",
     "knip": "knip",
     "lint": "eslint --cache .",
@@ -47,8 +47,8 @@
     "tinyexec": "^1.0.1"
   },
   "devDependencies": {
-    "@jimmy.codes/eslint-config": "6.14.3",
-    "@jimmy.codes/prettier-config": "2.1.0",
+    "@jimmy.codes/eslint-config": "6.15.0",
+    "@jimmy.codes/prettier-config": "2.1.1",
     "@leeoniya/ufuzzy": "1.0.19",
     "@total-typescript/ts-reset": "0.6.1",
     "@types/node": "22.18.12",
@@ -61,7 +61,7 @@
     "husky": "9.1.7",
     "is-ci": "4.1.0",
     "jiti": "2.6.1",
-    "knip": "5.66.3",
+    "knip": "5.66.4",
     "lint-staged": "16.2.6",
     "npm-run-all2": "8.0.4",
     "prettier": "3.6.2",
@@ -74,7 +74,7 @@
     "vitest": "4.0.4",
     "yaml": "2.8.1"
   },
-  "packageManager": "pnpm@10.19.0",
+  "packageManager": "pnpm@10.20.0",
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
   },
