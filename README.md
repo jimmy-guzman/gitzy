@@ -259,12 +259,12 @@ types:
 
 ### useCommitlintConfig
 
-If enabled, uses [Commitlint configuration](https://commitlint.js.org/#/reference-configuration) for:
+If enabled, uses [Commitlint configuration](https://commitlint.js.org/reference/configuration) for:
 
-- `types` → [`rules[type-enum][2]`](https://commitlint.js.org/#/reference-rules?id=type-enum)
-- `scopes` → [`rules[scope-enum][2]`](https://commitlint.js.org/#/reference-rules?id=scope-enum)
-- `headerMaxLength` → [`rules[header-max-length][2]`](https://commitlint.js.org/#/reference-rules?id=header-max-length)
-- `headerMinLength` → [`rules[header-min-length][2]`](https://commitlint.js.org/#/reference-rules?id=header-min-length)
+- `types` → [`rules[type-enum][2]`](https://commitlint.js.org/reference/rules#type-enum)
+- `scopes` → [`rules[scope-enum][2]`](https://commitlint.js.org/reference/rules#scope-enum)
+- `headerMaxLength` → [`rules[header-max-length][2]`](https://commitlint.js.org/reference/rules#header-max-length)
+- `headerMinLength` → [`rules[header-min-length][2]`](https://commitlint.js.org/reference/rules#header-min-length)
 
 ```yml
 useCommitlintConfig: false
