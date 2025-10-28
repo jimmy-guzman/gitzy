@@ -1,4 +1,4 @@
-import type { Config } from "@/config/schema";
+import type { Config } from "@/config/gitzy-schema";
 import type { Answers } from "@/interfaces";
 
 import { validIssuesPrefixes } from "@/defaults/config";

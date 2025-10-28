@@ -32,7 +32,7 @@ const detailsSchema = record(
   }),
 );
 
-export const configSchema = strictObject({
+export const ConfigSchema = strictObject({
   breakingChangeEmoji: message(
     optional(string(), defaultConfig.breakingChangeEmoji),
     lang.breakingChangeEmoji,
@@ -93,6 +93,6 @@ export const configSchema = strictObject({
   ),
 });
 
-export type Config = InferOutput<typeof configSchema>;
+export type Config = InferOutput<typeof ConfigSchema>;
 export type Questions = Config["questions"];
 export type IssuesPrefix = Config["issuesPrefix"];

@@ -1,6 +1,6 @@
 import { styleText } from "node:util";
 
-import type { Config } from "@/config/schema";
+import type { Config } from "@/config/gitzy-schema";
 import type { Answers, EnquirerState } from "@/interfaces";
 
 import { errorMessage, promptsLang } from "./lang";

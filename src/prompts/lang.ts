@@ -1,6 +1,6 @@
 import { styleText } from "node:util";
 
-import type { IssuesPrefix } from "@/config/schema";
+import type { IssuesPrefix } from "@/config/gitzy-schema";
 import type { PromptsLang } from "@/interfaces";
 
 const breaking = styleText("red", "BREAKING CHANGE:");

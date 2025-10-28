@@ -1,16 +1,9 @@
-import type { Config } from "./config/schema";
+import type { Config } from "./config/gitzy-schema";
 
 interface PromptLang {
   hint?: string;
   message: string;
 }
-
-interface Detail {
-  description: string;
-  emoji: string;
-}
-
-export type Details = Record<string, Detail>;
 
 export interface Answers {
   body: string;

@@ -1,4 +1,4 @@
-import type { Config } from "@/config/schema";
+import type { Config } from "@/config/gitzy-schema";
 import type { Flags } from "@/interfaces";
 
 import { fuzzySearch } from "@/lib/fuzzy-search";
