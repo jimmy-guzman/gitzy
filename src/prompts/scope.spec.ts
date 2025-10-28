@@ -1,5 +1,3 @@
-import type { CreatedPromptOptions } from "@/interfaces";
-
 import { defaultConfig } from "@/defaults/config";
 
 import { scope } from "./scope";
@@ -7,7 +5,7 @@ import { scope } from "./scope";
 const setupScope = (config = {}) => {
   return scope({
     config: { ...defaultConfig, ...config },
-  } as CreatedPromptOptions);
+  });
 };
 
 describe("scope", () => {

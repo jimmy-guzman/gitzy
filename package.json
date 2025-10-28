@@ -34,10 +34,10 @@
     "typecheck": "tsc"
   },
   "lint-staged": {
-    "*.{md,json,yml,ts}": [
+    "*.{md,json,yml,yaml,ts}": [
       "prettier -w"
     ],
-    "*.{js,ts,test}": [
+    "*.ts": [
       "eslint --fix"
     ]
   },
@@ -69,6 +69,7 @@
     "tsdown": "0.15.11",
     "tsx": "4.20.6",
     "typescript": "5.9.3",
+    "valibot": "1.1.0",
     "vite-tsconfig-paths": "5.1.4",
     "vitest": "4.0.4",
     "yaml": "2.8.1"

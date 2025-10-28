@@ -6,10 +6,10 @@ import { program } from "commander";
 import Enquirer from "enquirer";
 import { version } from "package.json" assert { type: "json" };
 
-import type { Answers, Flags, GitzyConfig } from "./interfaces";
+import type { Answers, Flags, GitzyState } from "./interfaces";
 
 import { options } from "./cli/options";
-import { loadUserConfig } from "./config/loaders/user";
+import { loadGitzyConfig } from "./config/load-gitzy-config";
 import { defaultAnswers } from "./defaults/answers";
 import { defaultConfig } from "./defaults/config";
 import { lang } from "./lang";
@@ -39,14 +39,14 @@ const enquirerOptions = {
 };
 
 export const cli = async () => {
-  const state: { answers: Answers; config: GitzyConfig } = {
+  const state: GitzyState = {
     answers: defaultAnswers,
     config: defaultConfig,
   };
   const store = new GitzyStore<Answers>();
 
   const init = async ({ commitlint, dryRun, hook, passthrough }: Flags) => {
-    const loadedUserConfig = await loadUserConfig(commitlint);
+    const loadedUserConfig = await loadGitzyConfig(commitlint);
 
     if (loadedUserConfig) {
       state.config = { ...state.config, ...loadedUserConfig };

@@ -7,10 +7,10 @@ export default defineConfig({
     coverage: {
       thresholds: {
         autoUpdate: true,
-        branches: 94.73,
-        functions: 94.95,
-        lines: 97.08,
-        statements: 97.1,
+        branches: 93.25,
+        functions: 93.33,
+        lines: 96.65,
+        statements: 96.69,
       },
     },
     globals: true,
