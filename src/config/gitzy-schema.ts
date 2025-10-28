@@ -10,7 +10,6 @@ import {
   pipe,
   readonly,
   record,
-  strictObject,
   string,
 } from "valibot";
 
@@ -29,7 +28,7 @@ const detailsSchema = record(
   }),
 );
 
-export const ConfigSchema = strictObject({
+export const ConfigSchema = object({
   breakingChangeEmoji: optional(string(), defaults.breakingChangeEmoji),
   breakingChangeFormat: optional(
     picklist(validBreakingChangeFormats),
