@@ -13,10 +13,10 @@ about: I have a suggestion (and might want to implement myself 🙂)!
 
 ---
 
-### Describe the feature you'd like:
+### Describe The Feature You'd Like
 
-### Suggested implementation:
+### Suggested Implementation
 
-### Describe alternatives you've considered:
+### Describe Alternatives You've Considered
 
-### Teachability, Documentation, Adoption, Migration Strategy:
+### Teachability, Documentation, Adoption, Migration Strategy
