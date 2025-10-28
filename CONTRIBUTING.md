@@ -12,44 +12,46 @@ or [traditional fork a repo](https://docs.github.com/en/github/getting-started-w
 
 ## Install
 
-Use either `nvm` or `volta` to be in sync with node version
-
-- with [volta](https://volta.sh/) _(recommended)_
-
-```bash
-curl https://get.volta.sh | bash
-```
+Make sure you're using the correct Node.js version
 
 ```bash
 pnpm install
 ```
 
-- with [nvm](https://github.com/nvm-sh/nvm)
-
-```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
-```
-
-```bash
-nvm use && pnpm
-```
-
 ## Scripts
-
-Run build and typechecking in watch mode
-
-```bash
-pnpm dev
-```
 
 Run tests in watch mode
 
 ```bash
-pnpm test:watch
+pnpm test
 ```
 
-Run commit cli
+Run all checks (build, knip, lint, format, coverage, typecheck)
 
 ```bash
-pnpm cz
+pnpm check
+```
+
+Run the commit CLI
+
+```bash
+pnpm gitzy
+```
+
+Fix formatting issues
+
+```bash
+pnpm format:fix
+```
+
+Fix linting issues
+
+```bash
+pnpm lint:fix
+```
+
+Run tests with coverage
+
+```bash
+pnpm coverage
 ```

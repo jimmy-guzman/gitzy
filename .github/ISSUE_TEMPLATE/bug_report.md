@@ -17,19 +17,19 @@ about: Bugs, missing documentation, or unexpected behavior 🤔.
 - `node` version:
 - `commitlint` version:
 
-### Relevant config:
+### Relevant Config
 
 ```yml
 # .gitzyrc.yml
 headerMinLength: 3
 ```
 
-### What you did:
+### What You Did
 
-### What happened:
+### What Happened
 
-### Reproduction:
+### Reproduction
 
-### Problem description:
+### Problem Description
 
-### Suggested solution:
+### Suggested Solution

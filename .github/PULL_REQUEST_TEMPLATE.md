@@ -1,19 +1,20 @@
-## Pull Request Checklist
+# Pull Request
 
-🚨 Please review the [guidelines for contributing](../CONTRIBUTING.md) to this repository.
+## What does this PR do?
 
-- [ ] Appropriate label or labels have been added
-- [ ] ✅ Tests for the changes have been added (for `type:fix` / `type:feat`)
-- [ ] 📝 Docs have been reviewed, added or updated if needed (for `type:fix` / `type:feat`)
-- [ ] 🏁 Issue number has been linked if this PR closes one
+<!-- Brief description of your changes -->
 
-## Description
+## Checklist
 
-Please describe your pull request.
+- [ ] Tests added/updated
+- [ ] Documentation updated
+- [ ] Linked issue: #
 
-## Breaking Change?
+## Breaking change?
 
-- [ ] 💥 Yes
+- [ ] Yes
 - [ ] No
 
-❤️ Thank you for contributing!
+---
+
+💡 See [CONTRIBUTING.md](../CONTRIBUTING.md) for guidelines
