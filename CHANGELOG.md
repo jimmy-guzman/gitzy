@@ -1,3 +1,11 @@
+## [6.5.1](https://github.com/jimmy-guzman/gitzy/compare/v6.5.0...v6.5.1) (2025-10-29)
+
+
+### Bug Fixes
+
+* 🐛 cursor within body prompt is nolonger lost ([1bb3494](https://github.com/jimmy-guzman/gitzy/commit/1bb349426d815e913fd2c665d53355ded459ba4e))
+* **cli:** 🐛 use 🔄 as default refactor emoji for consistent rendering ([d22d915](https://github.com/jimmy-guzman/gitzy/commit/d22d9154f9c809c54b8ceb237488dd4020b36cd4))
+
 # [6.5.0](https://github.com/jimmy-guzman/gitzy/compare/v6.4.1...v6.5.0) (2025-10-28)
 
 
