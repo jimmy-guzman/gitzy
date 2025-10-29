@@ -13,7 +13,7 @@ export const choice = (config: Config, type: string, flags?: Flags) => {
   return {
     hint: typeDetails.description.toLowerCase(),
     indent: " ",
-    title: `${type === "refactor" && hasEmoji ? `${prefix} ` : prefix}${type}:`,
+    title: `${prefix}${type}:`,
     value: type,
   };
 };

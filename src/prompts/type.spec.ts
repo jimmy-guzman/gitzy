@@ -42,10 +42,10 @@ describe("choice", () => {
     expect(title).toBe("feat:");
   });
 
-  it('should add extra space for "refactor"', () => {
+  it('should NOT add extra space for "refactor"', () => {
     const { title } = setupChoice({}, {}, "refactor");
 
-    expect(title).toBe("♻️  refactor:");
+    expect(title).toBe("🔄 refactor:");
   });
 });
 

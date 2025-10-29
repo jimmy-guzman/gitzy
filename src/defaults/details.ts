@@ -1,4 +1,7 @@
-// emoji's are based of https://gitmoji.dev/
+/**
+ * Default emojis for each type based on https://gitmoji.dev/
+ * - except for refactor due to its narrower rendering in most terminals
+ */
 export const details = {
   chore: {
     description: "Other changes that don't modify src or test files",
@@ -26,7 +29,7 @@ export const details = {
   },
   refactor: {
     description: "Refactor code",
-    emoji: "♻️",
+    emoji: "🔄",
   },
   release: {
     description: "Deploy stuff",
