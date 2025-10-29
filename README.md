@@ -161,7 +161,10 @@ disableEmoji: false
 ### details
 
 Allows you to configure CLI and git message output by `type`.
-_Default emojis follow standards set by [gitmoji][gitmoji]._
+_Default emojis follow standards set by [gitmoji][gitmoji], except for refactor due to its narrower rendering in most terminals._
+
+> [!CAUTION]
+> Emoji rendering varies by terminal. Some emojis (like ♻️) may cause alignment issues. Test custom emojis in your terminal before committing to them.
 
 ```yml
 details:
@@ -185,7 +188,7 @@ details:
     emoji: "⚡️"
   refactor:
     description: Refactor code.
-    emoji: "♻️"
+    emoji: "🔄"
   release:
     description: Deploy stuff.
     emoji: "🚀"
