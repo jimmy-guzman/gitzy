@@ -25,7 +25,7 @@
 
 ## Features
 
-- Commitlint integration
+- Partial commitlint configuration support
 - Config validation
 - Multiple breaking-change formats (`!`, `footer`, `both`)
 - Flexible emoji control
@@ -275,23 +275,23 @@ useCommitlintConfig: false
 
 ## Flags
 
-| flag            | alias | description                                                                            |
-| --------------- | ----- | -------------------------------------------------------------------------------------- |
-| `--breaking`    | `-b`  | mark as a breaking change. Pass a message for "footer"/"both" or just the flag for "!" |
-| `--body`        | `-d`  | skip "body" question and provide your own message                                      |
-| `--issues`      | `-i`  | skip "issues" question and provide your own message                                    |
-| `--subject`     | `-m`  | skip "subject" question and provide your own message                                   |
-| `--scope`       | `-s`  | skip "scope" question and provide your own message                                     |
-| `--type`        | `-t`  | skip "type" question and provide your own message                                      |
-| `--passthrough` | `-p`  | pass subsequent args through to `git`                                                  |
-| `--dry-run`     | `-D`  | print commit message without committing                                                |
-| `--retry`       | `-r`  | recreate previous commit without prompts                                               |
-| `--commitlint`  | `-l`  | use commitlint configuration                                                           |
-| `--hook`        | `-H`  | run `gitzy` inside a Git hook                                                          |
-| `--skip`        | `-S`  | skip all questions                                                                     |
-| `--no-emoji`    |       | disable all emojis                                                                     |
-| `--version`     | `-v`  | show version                                                                           |
-| `--help`        | `-h`  | show help                                                                              |
+| Flag                       | Alias | Description                                                                           |
+| -------------------------- | ----- | ------------------------------------------------------------------------------------- |
+| `--version`                | `-v`  | output the version number                                                             |
+| `--body <body>`            | `-d`  | set body inline                                                                       |
+| `--breaking [breaking]`    | `-b`  | mark as breaking; add message for "footer"/"both" formats, or the flag for "!" format |
+| `--dry-run`                | `-D`  | show commit message without committing                                                |
+| `--issues <body>`          | `-i`  | set issues inline                                                                     |
+| `--passthrough <flags...>` | `-p`  | pass remaining arguments to git (e.g. after `--`)                                     |
+| `--scope <scope>`          | `-s`  | set scope inline                                                                      |
+| `--subject <message>`      | `-m`  | set subject inline                                                                    |
+| `--type <type>`            | `-t`  | set type inline                                                                       |
+| `--commitlint`             | `-l`  | leverage local commitlint config                                                      |
+| `--retry`                  | `-r`  | retry last commit and skip prompts                                                    |
+| `--no-emoji`               |       | disable all emojis                                                                    |
+| `--hook`                   | `-H`  | enable running inside a git hook (e.g. pre-commit)                                    |
+| `--skip <questions...>`    | `-S`  | skip prompts (choices: "type", "scope", "subject", "body", "breaking", "issues")      |
+| `--help`                   | `-h`  | display help for command                                                              |
 
 ---
 

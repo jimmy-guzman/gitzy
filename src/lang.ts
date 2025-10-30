@@ -6,32 +6,28 @@ interface Lang {
   flags: Record<keyof Omit<Flags, "emoji" | "help" | "version">, string>;
 }
 
-const skipQuestionMessage = (question: string) => {
-  return `skip "${question}" question and provide your own "${question}" message`;
-};
-
 export const lang = {
   description: "interactive conventional commits cli",
   examples: `
   $ gitzy
   $ gitzy -p -a
-  $ gitzy -m "added cool new feature" -t "feat" -s "amazing"
+  $ gitzy -m "add cool new feature" -t feat -s amazing
   $ gitzy -lD --no-emoji
   `,
   flags: {
-    body: skipQuestionMessage("body"),
+    body: "set body inline",
     breaking:
-      'mark as breaking change. Pass a message for "footer"/"both" formats, or just the flag for "!" format',
-    commitlint: "leverage commitlint's configuration",
-    dryRun: "displays git message but does not commit",
-    hook: "run gitzy inside a Git hook",
-    issues: skipQuestionMessage("issues"),
+      'mark as breaking; add message for "footer"/"both" formats, or the flag for "!" format',
+    commitlint: "leverage local commitlint config",
+    dryRun: "show commit message without committing",
+    hook: "enable running inside a git hook (e.g. pre-commit)",
+    issues: "set issues inline",
     noEmoji: "disable all emojis",
-    passthrough: 'subsequent command line args passed through to "git"',
-    retry: "retries previous commit, skips all prompts",
-    scope: skipQuestionMessage("scope"),
-    skip: "skip questions",
-    subject: skipQuestionMessage("subject"),
-    type: skipQuestionMessage("type"),
+    passthrough: "pass remaining arguments to git (e.g. after `--`)",
+    retry: "retry last commit and skip prompts",
+    scope: "set scope inline",
+    skip: "skip prompts",
+    subject: "set subject inline",
+    type: "set type inline",
   },
 } satisfies Lang;
