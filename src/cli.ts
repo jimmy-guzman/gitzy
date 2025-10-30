@@ -8,7 +8,7 @@ import { version } from "package.json" assert { type: "json" };
 
 import type { Answers, Flags, GitzyState } from "./interfaces";
 
-import { options } from "./cli/options";
+import { skipOption } from "./cli/options";
 import { loadGitzyConfig } from "./config/load-gitzy-config";
 import { defaultAnswers } from "./defaults/answers";
 import { defaultConfig } from "./defaults/config";
@@ -77,13 +77,7 @@ export const cli = async () => {
     .version(version, "-v, --version")
     .description(lang.description)
     .option("-d, --body <body>", lang.flags.body)
-    .option(
-      "-b, --breaking [breaking]",
-      lang.flags.breaking,
-      (value: string | undefined) => {
-        return value ?? true;
-      },
-    )
+    .option("-b, --breaking [breaking]", lang.flags.breaking)
     .option("-D, --dry-run", lang.flags.dryRun)
     .option("-i, --issues <body>", lang.flags.issues)
     .option("-p, --passthrough <flags...>", lang.flags.passthrough)
@@ -94,7 +88,7 @@ export const cli = async () => {
     .option("-r, --retry", lang.flags.retry)
     .option("--no-emoji", lang.flags.noEmoji)
     .option("-H, --hook", lang.flags.hook)
-    .addOption(options.skip)
+    .addOption(skipOption)
     .addHelpText(
       "after",
       `
@@ -105,6 +99,7 @@ Examples:
     .name("gitzy")
     .action(async () => {
       const opts = program.opts<Flags>();
+
       const flags = {
         ...opts,
         hook: process.env.GIT_DIR !== undefined || opts.hook,
