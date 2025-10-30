@@ -10,10 +10,11 @@
 <!-- markdownlint-enable MD033 -->
 
 ![actions][actions-badge]
-[![version][version-badge]][package] [![downloads][downloads-badge]][npmtrends]
+[![version][version-badge]][package]
+[![downloads][downloads-badge]][npmtrends]
+[![Install Size][install-size-badge]][packagephobia]
+[![Publish Size][publish-size-badge]][packagephobia]
 [![License][license-badge]][license]
-[![semantic-release][semantic-release-badge]][semantic-release]
-[![code style: prettier][prettier-badge]][prettier]
 [![Code Coverage][coverage-badge]][coverage]
 
 ## Table of Contents
@@ -35,7 +36,7 @@
 - Retry (`--retry`) and dry-run (`--dry-run`) modes
 - Git passthrough and hook support
 - Flexible config discovery (`package.json`, `.gitzyrc.*`, `.config/`)
-- ⚡ [Lightweight (~300 kB install, ~260 kB publish)](https://packagephobia.com/result?p=gitzy)
+- ⚡ [Lightweight (~300 kB install, ~260 kB publish)][packagephobia]
 
 ## Usage
 
@@ -293,21 +294,22 @@ useCommitlintConfig: false
 | `--skip <questions...>`    | `-S`  | skip prompts (choices: "type", "scope", "subject", "body", "breaking", "issues")      |
 | `--help`                   | `-h`  | display help for command                                                              |
 
----
+## Credits
 
-[actions-badge]: https://img.shields.io/github/actions/workflow/status/jimmy-guzman/gitzy/release.yml?style=flat-square&logo=github-actions
-[version-badge]: https://img.shields.io/npm/v/gitzy.svg?logo=npm&style=flat-square
+- [git-cz](https://github.com/streamich/git-cz) by [streamich](https://github.com/streamich)
+
+[actions-badge]: https://flat.badgen.net/github/checks/jimmy-guzman/gitzy/main?icon=github
+[version-badge]: https://flat.badgen.net/npm/v/gitzy?icon=npm
 [package]: https://www.npmjs.com/package/gitzy
-[downloads-badge]: https://img.shields.io/npm/dm/gitzy.svg?logo=npm&style=flat-square
+[downloads-badge]: https://flat.badgen.net/npm/dm/gitzy?icon=npm
 [npmtrends]: https://www.npmtrends.com/gitzy
-[semantic-release]: https://github.com/semantic-release/semantic-release
-[semantic-release-badge]: https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg?style=flat-square
-[prettier-badge]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square&logo=prettier
-[prettier]: https://github.com/prettier/prettier
 [gitmoji]: https://gitmoji.carloscuesta.me/
 [license]: https://github.com/jimmy-guzman/gitzy/blob/master/LICENSE
-[license-badge]: https://img.shields.io/npm/l/gitzy.svg?style=flat-square
+[license-badge]: https://flat.badgen.net/github/license/jimmy-guzman/gitzy?icon=packagephobia
 [conventional-commits]: https://www.conventionalcommits.org/
 [git-cz]: https://github.com/streamich/git-cz
-[coverage-badge]: https://img.shields.io/codecov/c/github/jimmy-guzman/gitzy.svg?style=flat-square&logo=codecov
+[coverage-badge]: https://flat.badgen.net/codecov/github/jimmy-guzman/gitzy?icon=codecov
 [coverage]: https://codecov.io/github/jimmy-guzman/gitzy
+[packagephobia]: https://packagephobia.com/result?p=gitzy
+[install-size-badge]: https://flat.badgen.net/packagephobia/install/gitzy?icon=packagephobia
+[publish-size-badge]: https://flat.badgen.net/packagephobia/publish/gitzy?icon=packagephobia

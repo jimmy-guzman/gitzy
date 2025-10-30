@@ -37,6 +37,7 @@
     "postpublish",
     "shellcheck",
     "socio",
+    "streamich",
     "streetsidesoftware",
     "termsvg",
     "tinyexec",
