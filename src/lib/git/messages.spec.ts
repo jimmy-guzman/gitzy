@@ -472,6 +472,20 @@ describe("formatCommitMessage", () => {
     `);
   });
 
+  it("should NOT include BREAKING CHANGE footer when breaking is a boolean", () => {
+    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+      breaking: true,
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*): ✨ a cool new feature
+
+      this an amazing feature, lots of details
+
+      🏁 Closes #123"
+    `);
+  });
+
   it("should format correctly when in hook mode", () => {
     const formattedMessage = formatMessage(
       defaultConfig,

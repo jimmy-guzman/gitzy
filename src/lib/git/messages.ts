@@ -9,15 +9,13 @@ const createBreaking = (
   breaking: boolean | string,
   { breakingChangeEmoji, breakingChangeFormat, disableEmoji }: Config,
 ) => {
-  if (breakingChangeFormat === "!") {
+  if (breakingChangeFormat === "!" || typeof breaking === "boolean") {
     return "";
   }
 
-  return breaking
-    ? `\n\nBREAKING CHANGE: ${
-        disableEmoji ? "" : `${breakingChangeEmoji} `
-      }${breaking}`
-    : "";
+  const emoji = disableEmoji ? "" : `${breakingChangeEmoji} `;
+
+  return breaking ? `\n\nBREAKING CHANGE: ${emoji}${breaking}` : "";
 };
 
 const capitalize = (str: string) => {

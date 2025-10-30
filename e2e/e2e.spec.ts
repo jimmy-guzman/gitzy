@@ -68,4 +68,12 @@ some longer description"
 
     expect(result).toMatchInlineSnapshot(`"chore: 🤖 testing"`);
   });
+
+  it("should NOT add '!' when breaking is true", async () => {
+    const result = await setupGitzy(
+      "--skip body issues scope -t chore -m testing --breaking",
+    );
+
+    expect(result).toMatchInlineSnapshot(`"chore: 🤖 testing"`);
+  });
 });
