@@ -1,3 +1,11 @@
+## [6.5.2](https://github.com/jimmy-guzman/gitzy/compare/v6.5.1...v6.5.2) (2025-10-30)
+
+
+### Bug Fixes
+
+* 🐛 avoid confusing language in flag descriptions ([762b4a9](https://github.com/jimmy-guzman/gitzy/commit/762b4a9c82e532d0102fe2d87a018ce952ae86e7))
+* **cli:** 🐛 don't include breaking change footer when just `--breaking` ([c7c4a12](https://github.com/jimmy-guzman/gitzy/commit/c7c4a12341f096f3daf4bbacdc560d7eceb52087))
+
 ## [6.5.1](https://github.com/jimmy-guzman/gitzy/compare/v6.5.0...v6.5.1) (2025-10-29)
 
 
