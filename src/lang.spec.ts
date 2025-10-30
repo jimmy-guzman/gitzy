@@ -8,102 +8,25 @@ describe("lang", () => {
         "examples": "
         $ gitzy
         $ gitzy -p -a
-        $ gitzy -m "added cool new feature" -t "feat" -s "amazing"
+        $ gitzy -m "add cool new feature" -t feat -s amazing
         $ gitzy -lD --no-emoji
         ",
         "flags": {
-          "body": "skip "body" question and provide your own "body" message",
-          "breaking": "mark as breaking change. Pass a message for "footer"/"both" formats, or just the flag for "!" format",
-          "commitlint": "leverage commitlint's configuration",
-          "dryRun": "displays git message but does not commit",
-          "hook": "run gitzy inside a Git hook",
-          "issues": "skip "issues" question and provide your own "issues" message",
+          "body": "set body inline",
+          "breaking": "mark as breaking; add message for "footer"/"both" formats, or the flag for "!" format",
+          "commitlint": "leverage local commitlint config",
+          "dryRun": "show commit message without committing",
+          "hook": "enable running inside a git hook (e.g. pre-commit)",
+          "issues": "set issues inline",
           "noEmoji": "disable all emojis",
-          "passthrough": "subsequent command line args passed through to "git"",
-          "retry": "retries previous commit, skips all prompts",
-          "scope": "skip "scope" question and provide your own "scope" message",
-          "skip": "skip questions",
-          "subject": "skip "subject" question and provide your own "subject" message",
-          "type": "skip "type" question and provide your own "type" message",
+          "passthrough": "pass remaining arguments to git (e.g. after \`--\`)",
+          "retry": "retry last commit and skip prompts",
+          "scope": "set scope inline",
+          "skip": "skip prompts",
+          "subject": "set subject inline",
+          "type": "set type inline",
         },
       }
     `);
-  });
-
-  it("should compose description", () => {
-    expect(lang.description).toBe("interactive conventional commits cli");
-  });
-
-  it("should compose examples", () => {
-    expect(lang.examples).toMatchInlineSnapshot(`
-      "
-        $ gitzy
-        $ gitzy -p -a
-        $ gitzy -m "added cool new feature" -t "feat" -s "amazing"
-        $ gitzy -lD --no-emoji
-        "
-    `);
-  });
-
-  it("should compose flags.body", () => {
-    expect(lang.flags.body).toBe(
-      'skip "body" question and provide your own "body" message',
-    );
-  });
-
-  it("should compose flags.breaking", () => {
-    expect(lang.flags.breaking).toBe(
-      'mark as breaking change. Pass a message for "footer"/"both" formats, or just the flag for "!" format',
-    );
-  });
-
-  it("should compose flags.commitlint", () => {
-    expect(lang.flags.commitlint).toBe("leverage commitlint's configuration");
-  });
-
-  it("should compose flags.dryRun", () => {
-    expect(lang.flags.dryRun).toBe("displays git message but does not commit");
-  });
-
-  it("should compose flags.issues", () => {
-    expect(lang.flags.issues).toBe(
-      'skip "issues" question and provide your own "issues" message',
-    );
-  });
-
-  it("should compose flags.noEmoji", () => {
-    expect(lang.flags.noEmoji).toBe("disable all emojis");
-  });
-
-  it("should compose flags.passthrough", () => {
-    expect(lang.flags.passthrough).toBe(
-      'subsequent command line args passed through to "git"',
-    );
-  });
-
-  it("should compose flags.retry", () => {
-    expect(lang.flags.retry).toBe("retries previous commit, skips all prompts");
-  });
-
-  it("should compose flags.scope", () => {
-    expect(lang.flags.scope).toBe(
-      'skip "scope" question and provide your own "scope" message',
-    );
-  });
-
-  it("should compose flags.skip", () => {
-    expect(lang.flags.skip).toBe("skip questions");
-  });
-
-  it("should compose flags.subject", () => {
-    expect(lang.flags.subject).toBe(
-      'skip "subject" question and provide your own "subject" message',
-    );
-  });
-
-  it("should compose flags.type", () => {
-    expect(lang.flags.type).toBe(
-      'skip "type" question and provide your own "type" message',
-    );
   });
 });
