@@ -1,6 +1,6 @@
 import { execSync } from "node:child_process";
 
-const setupGitzy = async (args: string): Promise<unknown> => {
+const setupGitzy = async (args: string) => {
   return new Promise((resolve, reject) => {
     try {
       const result = execSync(`node ./dist/index.mjs --dry-run ${args}`)
@@ -16,7 +16,7 @@ const setupGitzy = async (args: string): Promise<unknown> => {
   });
 };
 
-describe("reverse", () => {
+describe("gitzy", () => {
   it("should create commit message w/ type, scope, message, description, breaking changes and issues closed", async () => {
     const result = await setupGitzy(
       '-t chore -s e2e -m testing -b "this broke something" -i "#123" -d "some longer description"',
