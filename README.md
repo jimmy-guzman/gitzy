@@ -13,7 +13,6 @@
 [![version][version-badge]][package]
 [![downloads][downloads-badge]][npmtrends]
 [![Install Size][install-size-badge]][packagephobia]
-[![Publish Size][publish-size-badge]][packagephobia]
 [![License][license-badge]][license]
 [![Code Coverage][coverage-badge]][coverage]
 
@@ -36,7 +35,7 @@
 - Retry (`--retry`) and dry-run (`--dry-run`) modes
 - Git passthrough and hook support
 - Flexible config discovery (`package.json`, `.gitzyrc.*`, `.config/`)
-- ⚡ [Lightweight (~300 kB install, ~260 kB publish)][packagephobia]
+- ⚡ [Lightweight (~300 kB install)][packagephobia]
 
 ## Usage
 
@@ -312,4 +311,3 @@ useCommitlintConfig: false
 [coverage]: https://codecov.io/github/jimmy-guzman/gitzy
 [packagephobia]: https://packagephobia.com/result?p=gitzy
 [install-size-badge]: https://flat.badgen.net/packagephobia/install/gitzy?icon=packagephobia
-[publish-size-badge]: https://flat.badgen.net/packagephobia/publish/gitzy?icon=packagephobia
