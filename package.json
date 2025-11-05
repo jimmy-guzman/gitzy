@@ -47,7 +47,7 @@
     "tinyexec": "^1.0.1"
   },
   "devDependencies": {
-    "@jimmy.codes/eslint-config": "6.15.0",
+    "@jimmy.codes/eslint-config": "6.16.2",
     "@jimmy.codes/prettier-config": "2.1.1",
     "@leeoniya/ufuzzy": "1.0.19",
     "@total-typescript/ts-reset": "0.6.1",
@@ -57,7 +57,7 @@
     "commander": "14.0.2",
     "commitlint": "20.1.0",
     "enquirer": "2.3.6",
-    "eslint": "9.38.0",
+    "eslint": "9.39.1",
     "husky": "9.1.7",
     "is-ci": "4.1.0",
     "jiti": "2.6.1",
