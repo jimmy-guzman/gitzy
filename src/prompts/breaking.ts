@@ -1,20 +1,34 @@
-import type { CreatedPromptOptions } from "@/interfaces";
+import { styleText } from "node:util";
 
-import { promptsLang } from "./lang";
+import { confirm, isCancel, text } from "@clack/prompts";
 
-export const breaking = (options: CreatedPromptOptions) => {
+import type { Config } from "@/config/gitzy-schema";
+
+export const breaking = async (options: { config: Config }) => {
   if (options.config.breakingChangeFormat === "!") {
-    return {
+    const result = await confirm({
       message: "Is this a breaking change?",
-      name: "breaking",
-      type: "confirm" as const,
-    };
+    });
+
+    if (isCancel(result)) {
+      process.exit(0);
+    }
+
+    return result;
   }
 
-  return {
-    hint: promptsLang.breaking.hint,
-    message: promptsLang.breaking.message,
-    name: "breaking",
-    type: "text" as const,
-  };
+  const emoji = options.config.disableEmoji
+    ? ""
+    : ` ${options.config.breakingChangeEmoji} `;
+
+  const result = await text({
+    message: styleText("red", `BREAKING CHANGE:${emoji}`),
+    placeholder: "Add breaking changes (optional)",
+  });
+
+  if (isCancel(result)) {
+    process.exit(0);
+  }
+
+  return result.trim();
 };

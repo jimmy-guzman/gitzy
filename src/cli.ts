@@ -1,9 +1,7 @@
-import { styleText } from "node:util";
-
 import type { CommanderError } from "commander";
 
+import { intro, log } from "@clack/prompts";
 import { program } from "commander";
-import Enquirer from "enquirer";
 import { version } from "package.json" assert { type: "json" };
 
 import type { Answers, Flags, GitzyState } from "./interfaces";
@@ -19,18 +17,9 @@ import {
   shouldDoGitChecks,
 } from "./lib/git/checks";
 import { performCommit } from "./lib/git/commits";
-import { danger, hint, info, log, warn } from "./lib/logging";
+import { danger } from "./lib/logging";
 import { createPrompts } from "./prompts/create-prompts";
 import { GitzyStore } from "./store/gitzy";
-
-const enquirerOptions = {
-  autofill: true,
-  cancel: (): null => null,
-  styles: {
-    danger: (value: string) => styleText("red", value),
-    submitted: (value: string) => styleText("cyan", value),
-  },
-};
 
 export const cli = async () => {
   const state: GitzyState = {
@@ -52,12 +41,7 @@ export const cli = async () => {
     }
   };
 
-  const promptQuestions = async (flags: Answers) => {
-    const enquirer = new Enquirer(enquirerOptions, flags);
-    const prompts = createPrompts(state, flags);
-
-    return enquirer.prompt(prompts);
-  };
+  const promptQuestions = async (flags: Answers) => createPrompts(state, flags);
 
   program
     .configureOutput({
@@ -97,8 +81,10 @@ Examples:
         hook: process.env.GIT_DIR !== undefined || opts.hook,
       };
 
+      intro("Hi there! Welcome to gitzy 🪄");
+
       if (flags.dryRun) {
-        log(info("running in dry mode..."));
+        log.info("Running in dry mode...");
       }
 
       if (
@@ -106,10 +92,8 @@ Examples:
         flags.breaking &&
         state.config.breakingChangeFormat === "!"
       ) {
-        log(
-          warn(
-            "--breaking message ignored when using '!' format. Use --breaking (without value) instead.",
-          ),
+        log.warn(
+          "--breaking message ignored when using '!' format. Use --breaking (without value) instead.",
         );
       }
 
@@ -118,7 +102,7 @@ Examples:
         const previousAnswers = flags.retry ? store.load() : {};
 
         if (flags.retry && Object.keys(previousAnswers).length === 0) {
-          log(hint(`there is no previous gitzy commit to retry...`));
+          log.warn(`there is no previous gitzy commit to retry...`);
         }
 
         const answers = await promptQuestions({
@@ -130,7 +114,7 @@ Examples:
 
         state.answers = { ...state.answers, ...answers };
       } catch (error: unknown) {
-        log(`\n${danger((error as CommanderError).message)}\n`);
+        log.error(`\n${danger((error as CommanderError).message)}\n`);
 
         process.exit(1);
       }

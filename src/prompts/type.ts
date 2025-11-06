@@ -1,9 +1,7 @@
+import { autocomplete, isCancel } from "@clack/prompts";
+
 import type { Config } from "@/config/gitzy-schema";
 import type { Flags } from "@/interfaces";
-
-import { fuzzySearch } from "@/lib/fuzzy-search";
-
-import { promptsLang } from "./lang";
 
 export const choice = (config: Config, type: string, flags?: Flags) => {
   const typeDetails = config.details[type];
@@ -12,24 +10,32 @@ export const choice = (config: Config, type: string, flags?: Flags) => {
 
   return {
     hint: typeDetails.description.toLowerCase(),
-    indent: " ",
-    title: `${prefix}${type}:`,
+    label: `${prefix}${type}`,
     value: type,
   };
 };
 
-export const type = ({ config, flags }: { config: Config; flags?: Flags }) => {
-  const choices = config.types.map((configType) => {
-    return choice(config, configType, flags);
+export const type = async (options: { config: Config; flags: Flags }) => {
+  const choices = options.config.types.map((configType) => {
+    return choice(options.config, configType, options.flags);
   });
 
-  return {
-    choices,
-    hint: promptsLang.type.hint,
-    limit: 10,
-    message: promptsLang.type.message,
-    name: "type",
-    suggest: (input: string) => fuzzySearch(choices, ["title", "hint"], input),
-    type: "autocomplete" as const,
-  };
+  const result = await autocomplete({
+    maxItems: 10,
+    message: "Type of change?",
+    options: choices.map((choice) => {
+      return {
+        hint: choice.hint,
+        label: choice.label,
+        value: choice.value,
+      };
+    }),
+    placeholder: "Select a type",
+  });
+
+  if (isCancel(result)) {
+    process.exit(0);
+  }
+
+  return result;
 };
