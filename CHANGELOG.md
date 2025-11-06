@@ -1,3 +1,10 @@
+## [6.5.3](https://github.com/jimmy-guzman/gitzy/compare/v6.5.2...v6.5.3) (2025-11-06)
+
+
+### Bug Fixes
+
+* **deps:** 🐛 bump `tinyexec` to v1.0.2 ([#603](https://github.com/jimmy-guzman/gitzy/issues/603)) ([abec4be](https://github.com/jimmy-guzman/gitzy/commit/abec4be60d1844d51ba6e3f2f1c43c41bb7e1f45))
+
 ## [6.5.2](https://github.com/jimmy-guzman/gitzy/compare/v6.5.1...v6.5.2) (2025-10-30)
 
 
