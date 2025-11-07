@@ -8,9 +8,7 @@ export const body = (_options: CreatedPromptOptions) => {
     message: promptsLang.body.message,
     multiline: true,
     name: "body",
-    result: (value: string) => {
-      return value.trim();
-    },
+    result: (value: string) => value.trim(),
     type: "text" as const,
   };
 };

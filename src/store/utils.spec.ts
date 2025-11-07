@@ -45,15 +45,13 @@ describe("utils", () => {
     it("should throw when directory does not exist", () => {
       vi.spyOn(fs, "statSync").mockImplementationOnce(() => {
         return {
-          isDirectory: () => {
-            return false;
-          },
+          isDirectory: () => false,
         } as Stats;
       });
 
-      expect(() => {
-        return utils.directoryExists("path");
-      }).toThrow('Path exists and is not a directory: "path"');
+      expect(() => utils.directoryExists("path")).toThrow(
+        'Path exists and is not a directory: "path"',
+      );
     });
   });
 
@@ -111,9 +109,7 @@ describe("utils", () => {
 
     it("should do nothing when directory exists", () => {
       const statSyncSpy = vi.spyOn(fs, "statSync").mockReturnValue({
-        isDirectory: () => {
-          return true;
-        },
+        isDirectory: () => true,
       } as Stats);
 
       const mkdirSyncSpy = vi.spyOn(fs, "mkdirSync").mockImplementation(() => {

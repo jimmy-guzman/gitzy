@@ -47,7 +47,7 @@
     "tinyexec": "^1.0.2"
   },
   "devDependencies": {
-    "@jimmy.codes/eslint-config": "6.16.2",
+    "@jimmy.codes/eslint-config": "6.17.1",
     "@jimmy.codes/prettier-config": "2.1.1",
     "@leeoniya/ufuzzy": "1.0.19",
     "@total-typescript/ts-reset": "0.6.1",
@@ -61,7 +61,7 @@
     "husky": "9.1.7",
     "is-ci": "4.1.0",
     "jiti": "2.6.1",
-    "knip": "5.67.1",
+    "knip": "5.68.0",
     "lint-staged": "16.2.6",
     "npm-run-all2": "8.0.4",
     "prettier": "3.6.2",

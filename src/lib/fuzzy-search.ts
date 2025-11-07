@@ -30,13 +30,7 @@ export const fuzzySearch = <T extends Boundary>(
     return items;
   }
 
-  const haystack = items.map((item) => {
-    return keys
-      .map((key) => {
-        return item[key];
-      })
-      .join("|");
-  });
+  const haystack = items.map((item) => keys.map((key) => item[key]).join("|"));
 
   const normalizedNeedle = uFuzzy.latinize(needle);
   const normalizedHaystack = uFuzzy.latinize(haystack);
@@ -54,9 +48,7 @@ export const fuzzySearch = <T extends Boundary>(
     });
   }
 
-  const result = order.map((orderIdx) => {
-    return items[indexes[orderIdx]];
-  });
+  const result = order.map((orderIdx) => items[indexes[orderIdx]]);
 
   return result;
 };

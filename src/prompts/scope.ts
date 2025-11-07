@@ -25,9 +25,7 @@ export const scope = ({
         limit: 10,
         message: promptsLang.scope.message,
         name: "scope",
-        suggest: (input: string) => {
-          return fuzzySearch(choices, ["title"], input);
-        },
+        suggest: (input: string) => fuzzySearch(choices, ["title"], input),
         type: "autocomplete" as const,
       }
     : null;
