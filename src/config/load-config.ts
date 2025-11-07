@@ -31,9 +31,7 @@ const getSearchPlaces = (configName: string) => {
   return [
     "package.json",
     ...variant,
-    ...variant.map((place) => {
-      return `.config/${place}`;
-    }),
+    ...variant.map((place) => `.config/${place}`),
   ];
 };
 

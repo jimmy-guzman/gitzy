@@ -18,9 +18,7 @@ const createBreaking = (
   return breaking ? `\n\nBREAKING CHANGE: ${emoji}${breaking}` : "";
 };
 
-const capitalize = (str: string) => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-};
+const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
 const prefixPattern = validIssuesPrefixes.join("|");
 const hasPrefixRegex = new RegExp(String.raw`^(${prefixPattern})\s+`, "i");
@@ -50,9 +48,7 @@ const createIssues = (
 
   const formatted = issues
     .split(/\s*,\s*/)
-    .map((issue) => {
-      return parseIssue(issue, issuesPrefix);
-    })
+    .map((issue) => parseIssue(issue, issuesPrefix))
     .filter(Boolean)
     .join(", ");
 

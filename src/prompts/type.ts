@@ -29,9 +29,7 @@ export const type = ({ config, flags }: { config: Config; flags?: Flags }) => {
     limit: 10,
     message: promptsLang.type.message,
     name: "type",
-    suggest: (input: string) => {
-      return fuzzySearch(choices, ["title", "hint"], input);
-    },
+    suggest: (input: string) => fuzzySearch(choices, ["title", "hint"], input),
     type: "autocomplete" as const,
   };
 };

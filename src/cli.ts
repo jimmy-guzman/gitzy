@@ -25,16 +25,10 @@ import { GitzyStore } from "./store/gitzy";
 
 const enquirerOptions = {
   autofill: true,
-  cancel: (): null => {
-    return null;
-  },
+  cancel: (): null => null,
   styles: {
-    danger: (value: string) => {
-      return styleText("red", value);
-    },
-    submitted: (value: string) => {
-      return styleText("cyan", value);
-    },
+    danger: (value: string) => styleText("red", value),
+    submitted: (value: string) => styleText("cyan", value),
   },
 };
 
@@ -70,9 +64,7 @@ export const cli = async () => {
       outputError: (error, write) => {
         write(`\n${danger(error)}\n`);
       },
-      writeErr: (str) => {
-        return process.stdout.write(str.replace("error: ", ""));
-      },
+      writeErr: (str) => process.stdout.write(str.replace("error: ", "")),
     })
     .version(version, "-v, --version")
     .description(lang.description)

@@ -33,18 +33,14 @@ export class GitzyStore<T = Record<string, unknown>> {
     tryUnlink(this.path);
   };
 
-  public load = (): T => {
-    return this.data;
-  };
+  public load = (): T => this.data;
 
   public save(data: T) {
     this[idx] = data;
     this.writeFile();
   }
 
-  private readonly json = () => {
-    return JSON.stringify(this.data, null, 2);
-  };
+  private readonly json = () => JSON.stringify(this.data, null, 2);
 
   private readonly readParseFile = () => {
     return JSON.parse(String(fs.readFileSync(this.path))) as T;

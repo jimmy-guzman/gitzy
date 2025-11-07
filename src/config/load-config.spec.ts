@@ -34,9 +34,7 @@ describe("loadConfig", () => {
     vi.clearAllMocks();
     vi.resetAllMocks();
     vi.mocked(lilconfig).mockReturnValue(mockExplorer);
-    vi.mocked(yaml.parse).mockImplementation((content: string) => {
-      return content;
-    });
+    vi.mocked(yaml.parse).mockImplementation((content: string) => content);
   });
 
   describe("lilconfig initialization", () => {

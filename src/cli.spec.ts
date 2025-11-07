@@ -9,12 +9,10 @@ import * as gitCommits from "./lib/git/commits";
 
 vi.mock("enquirer");
 
-vi.mock("../package.json", () => {
-  return {
-    engines: { node: "18" },
-    version: "1.0.0",
-  };
-});
+vi.mock("../package.json", () => ({
+  engines: { node: "18" },
+  version: "1.0.0",
+}));
 
 describe("cli", () => {
   beforeAll(() => {
