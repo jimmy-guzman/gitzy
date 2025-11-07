@@ -17,7 +17,7 @@ importers:
     devDependencies:
       '@jimmy.codes/eslint-config':
         specifier: 6.17.1
-        version: 6.17.1(@typescript-eslint/eslint-plugin@8.46.3(@typescript-eslint/parser@8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(prettier@3.6.2)(typescript@5.9.3)(vitest@4.0.7(@types/node@22.18.12)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
+        version: 6.17.1(@typescript-eslint/eslint-plugin@8.46.3(@typescript-eslint/parser@8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(prettier@3.6.2)(typescript@5.9.3)(vitest@4.0.7(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
       '@jimmy.codes/prettier-config':
         specifier: 2.1.1
         version: 2.1.1(prettier@3.6.2)
@@ -28,11 +28,11 @@ importers:
         specifier: 0.6.1
         version: 0.6.1
       '@types/node':
-        specifier: 22.18.12
-        version: 22.18.12
+        specifier: 22.19.0
+        version: 22.19.0
       '@vitest/coverage-v8':
         specifier: 4.0.7
-        version: 4.0.7(vitest@4.0.7(@types/node@22.18.12)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
+        version: 4.0.7(vitest@4.0.7(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
       clean-pkg-json:
         specifier: 1.3.0
         version: 1.3.0
@@ -41,7 +41,7 @@ importers:
         version: 14.0.2
       commitlint:
         specifier: 20.1.0
-        version: 20.1.0(@types/node@22.18.12)(typescript@5.9.3)
+        version: 20.1.0(@types/node@22.19.0)(typescript@5.9.3)
       enquirer:
         specifier: 2.3.6
         version: 2.3.6
@@ -59,7 +59,7 @@ importers:
         version: 2.6.1
       knip:
         specifier: 5.68.0
-        version: 5.68.0(@types/node@22.18.12)(typescript@5.9.3)
+        version: 5.68.0(@types/node@22.19.0)(typescript@5.9.3)
       lint-staged:
         specifier: 16.2.6
         version: 16.2.6
@@ -86,10 +86,10 @@ importers:
         version: 1.1.0(typescript@5.9.3)
       vite-tsconfig-paths:
         specifier: 5.1.4
-        version: 5.1.4(typescript@5.9.3)(vite@7.1.12(@types/node@22.18.12)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
+        version: 5.1.4(typescript@5.9.3)(vite@7.1.12(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
       vitest:
         specifier: 4.0.7
-        version: 4.0.7(@types/node@22.18.12)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1)
+        version: 4.0.7(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1)
       yaml:
         specifier: 2.8.1
         version: 2.8.1
@@ -957,8 +957,8 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
-  '@types/node@22.18.12':
-    resolution: {integrity: sha512-BICHQ67iqxQGFSzfCFTT7MRQ5XcBjG5aeKh5Ok38UBbPe5fxTyE+aHFxwVrGyr8GNlqFMLKD1D3P2K/1ks8tog==}
+  '@types/node@22.19.0':
+    resolution: {integrity: sha512-xpr/lmLPQEj+TUnHmR+Ab91/glhJvsqcjB+yY0Ix9GO70H6Lb4FHH5GeqdOE5btAx7eIMwuHkp4H2MSkLcqWbA==}
 
   '@typescript-eslint/eslint-plugin@8.46.3':
     resolution: {integrity: sha512-sbaQ27XBUopBkRiuY/P9sWGOWUW4rl8fDoHIUmLpZd8uldsTyB4/Zg6bWTegPoTLnKj9Hqgn3QD6cjPNB32Odw==}
@@ -3593,11 +3593,11 @@ snapshots:
 
   '@bcoe/v8-coverage@1.0.2': {}
 
-  '@commitlint/cli@20.1.0(@types/node@22.18.12)(typescript@5.9.3)':
+  '@commitlint/cli@20.1.0(@types/node@22.19.0)(typescript@5.9.3)':
     dependencies:
       '@commitlint/format': 20.0.0
       '@commitlint/lint': 20.0.0
-      '@commitlint/load': 20.1.0(@types/node@22.18.12)(typescript@5.9.3)
+      '@commitlint/load': 20.1.0(@types/node@22.19.0)(typescript@5.9.3)
       '@commitlint/read': 20.0.0
       '@commitlint/types': 20.0.0
       tinyexec: 1.0.2
@@ -3639,7 +3639,7 @@ snapshots:
       '@commitlint/rules': 20.0.0
       '@commitlint/types': 20.0.0
 
-  '@commitlint/load@20.1.0(@types/node@22.18.12)(typescript@5.9.3)':
+  '@commitlint/load@20.1.0(@types/node@22.19.0)(typescript@5.9.3)':
     dependencies:
       '@commitlint/config-validator': 20.0.0
       '@commitlint/execute-rule': 20.0.0
@@ -3647,7 +3647,7 @@ snapshots:
       '@commitlint/types': 20.0.0
       chalk: 5.6.2
       cosmiconfig: 9.0.0(typescript@5.9.3)
-      cosmiconfig-typescript-loader: 6.1.0(@types/node@22.18.12)(cosmiconfig@9.0.0(typescript@5.9.3))(typescript@5.9.3)
+      cosmiconfig-typescript-loader: 6.1.0(@types/node@22.19.0)(cosmiconfig@9.0.0(typescript@5.9.3))(typescript@5.9.3)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -3950,7 +3950,7 @@ snapshots:
     dependencies:
       '@isaacs/balanced-match': 4.0.1
 
-  '@jimmy.codes/eslint-config@6.17.1(@typescript-eslint/eslint-plugin@8.46.3(@typescript-eslint/parser@8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(prettier@3.6.2)(typescript@5.9.3)(vitest@4.0.7(@types/node@22.18.12)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))':
+  '@jimmy.codes/eslint-config@6.17.1(@typescript-eslint/eslint-plugin@8.46.3(@typescript-eslint/parser@8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(prettier@3.6.2)(typescript@5.9.3)(vitest@4.0.7(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))':
     dependencies:
       '@eslint-community/eslint-plugin-eslint-comments': 4.5.0(eslint@9.39.1(jiti@2.6.1))
       '@eslint-react/eslint-plugin': 2.3.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
@@ -3961,7 +3961,7 @@ snapshots:
       '@types/eslint': 9.6.1
       '@typescript-eslint/parser': 8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
       '@typescript-eslint/utils': 8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
-      '@vitest/eslint-plugin': 1.4.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)(vitest@4.0.7(@types/node@22.18.12)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
+      '@vitest/eslint-plugin': 1.4.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)(vitest@4.0.7(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
       astro-eslint-parser: 1.2.2
       eslint: 9.39.1(jiti@2.6.1)
       eslint-config-flat-gitignore: 2.1.0(eslint@9.39.1(jiti@2.6.1))
@@ -4296,7 +4296,7 @@ snapshots:
 
   '@types/conventional-commits-parser@5.0.1':
     dependencies:
-      '@types/node': 22.18.12
+      '@types/node': 22.19.0
 
   '@types/deep-eql@4.0.2': {}
 
@@ -4309,7 +4309,7 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
-  '@types/node@22.18.12':
+  '@types/node@22.19.0':
     dependencies:
       undici-types: 6.21.0
 
@@ -4517,7 +4517,7 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
     optional: true
 
-  '@vitest/coverage-v8@4.0.7(vitest@4.0.7(@types/node@22.18.12)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))':
+  '@vitest/coverage-v8@4.0.7(vitest@4.0.7(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))':
     dependencies:
       '@bcoe/v8-coverage': 1.0.2
       '@vitest/utils': 4.0.7
@@ -4530,18 +4530,18 @@ snapshots:
       magicast: 0.3.5
       std-env: 3.9.0
       tinyrainbow: 3.0.3
-      vitest: 4.0.7(@types/node@22.18.12)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1)
+      vitest: 4.0.7(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1)
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/eslint-plugin@1.4.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)(vitest@4.0.7(@types/node@22.18.12)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))':
+  '@vitest/eslint-plugin@1.4.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)(vitest@4.0.7(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))':
     dependencies:
       '@typescript-eslint/scope-manager': 8.46.3
       '@typescript-eslint/utils': 8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
       eslint: 9.39.1(jiti@2.6.1)
     optionalDependencies:
       typescript: 5.9.3
-      vitest: 4.0.7(@types/node@22.18.12)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1)
+      vitest: 4.0.7(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -4554,13 +4554,13 @@ snapshots:
       chai: 6.2.0
       tinyrainbow: 3.0.3
 
-  '@vitest/mocker@4.0.7(vite@7.1.12(@types/node@22.18.12)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))':
+  '@vitest/mocker@4.0.7(vite@7.1.12(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))':
     dependencies:
       '@vitest/spy': 4.0.7
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 7.1.12(@types/node@22.18.12)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1)
+      vite: 7.1.12(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1)
 
   '@vitest/pretty-format@4.0.7':
     dependencies:
@@ -4824,9 +4824,9 @@ snapshots:
 
   comment-parser@1.4.1: {}
 
-  commitlint@20.1.0(@types/node@22.18.12)(typescript@5.9.3):
+  commitlint@20.1.0(@types/node@22.19.0)(typescript@5.9.3):
     dependencies:
-      '@commitlint/cli': 20.1.0(@types/node@22.18.12)(typescript@5.9.3)
+      '@commitlint/cli': 20.1.0(@types/node@22.19.0)(typescript@5.9.3)
       '@commitlint/types': 20.0.0
     transitivePeerDependencies:
       - '@types/node'
@@ -4862,9 +4862,9 @@ snapshots:
     dependencies:
       browserslist: 4.27.0
 
-  cosmiconfig-typescript-loader@6.1.0(@types/node@22.18.12)(cosmiconfig@9.0.0(typescript@5.9.3))(typescript@5.9.3):
+  cosmiconfig-typescript-loader@6.1.0(@types/node@22.19.0)(cosmiconfig@9.0.0(typescript@5.9.3))(typescript@5.9.3):
     dependencies:
-      '@types/node': 22.18.12
+      '@types/node': 22.19.0
       cosmiconfig: 9.0.0(typescript@5.9.3)
       jiti: 2.6.1
       typescript: 5.9.3
@@ -5957,10 +5957,10 @@ snapshots:
     dependencies:
       json-buffer: 3.0.1
 
-  knip@5.68.0(@types/node@22.18.12)(typescript@5.9.3):
+  knip@5.68.0(@types/node@22.19.0)(typescript@5.9.3):
     dependencies:
       '@nodelib/fs.walk': 1.2.8
-      '@types/node': 22.18.12
+      '@types/node': 22.19.0
       fast-glob: 3.3.3
       formatly: 0.3.0
       jiti: 2.6.1
@@ -6865,18 +6865,18 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
-  vite-tsconfig-paths@5.1.4(typescript@5.9.3)(vite@7.1.12(@types/node@22.18.12)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1)):
+  vite-tsconfig-paths@5.1.4(typescript@5.9.3)(vite@7.1.12(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1)):
     dependencies:
       debug: 4.4.3
       globrex: 0.1.2
       tsconfck: 3.1.6(typescript@5.9.3)
     optionalDependencies:
-      vite: 7.1.12(@types/node@22.18.12)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1)
+      vite: 7.1.12(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1)
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  vite@7.1.12(@types/node@22.18.12)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1):
+  vite@7.1.12(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1):
     dependencies:
       esbuild: 0.25.10
       fdir: 6.5.0(picomatch@4.0.3)
@@ -6885,16 +6885,16 @@ snapshots:
       rollup: 4.52.4
       tinyglobby: 0.2.15
     optionalDependencies:
-      '@types/node': 22.18.12
+      '@types/node': 22.19.0
       fsevents: 2.3.3
       jiti: 2.6.1
       tsx: 4.20.6
       yaml: 2.8.1
 
-  vitest@4.0.7(@types/node@22.18.12)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1):
+  vitest@4.0.7(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1):
     dependencies:
       '@vitest/expect': 4.0.7
-      '@vitest/mocker': 4.0.7(vite@7.1.12(@types/node@22.18.12)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
+      '@vitest/mocker': 4.0.7(vite@7.1.12(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
       '@vitest/pretty-format': 4.0.7
       '@vitest/runner': 4.0.7
       '@vitest/snapshot': 4.0.7
@@ -6911,10 +6911,10 @@ snapshots:
       tinyexec: 0.3.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vite: 7.1.12(@types/node@22.18.12)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1)
+      vite: 7.1.12(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 22.18.12
+      '@types/node': 22.19.0
     transitivePeerDependencies:
       - jiti
       - less
