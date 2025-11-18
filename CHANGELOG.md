@@ -1,3 +1,10 @@
+## [6.5.4](https://github.com/jimmy-guzman/gitzy/compare/v6.5.3...v6.5.4) (2025-11-18)
+
+
+### Bug Fixes
+
+* 🐛 exit instead of throwing like before ([#611](https://github.com/jimmy-guzman/gitzy/issues/611)) ([d9fd765](https://github.com/jimmy-guzman/gitzy/commit/d9fd765b6d6228b4b7ca3d6421b1f5f3c7d30a84))
+
 ## [6.5.3](https://github.com/jimmy-guzman/gitzy/compare/v6.5.2...v6.5.3) (2025-11-06)
 
 
