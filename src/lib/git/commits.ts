@@ -27,6 +27,8 @@ export const performCommit = async (
       nodeOptions: { stdio: "inherit" },
     });
 
+    // This is restoring previous behavior where we exit the process on failure
+    // https://github.com/jimmy-guzman/gitzy/blob/v6.1.0/src/utils/executeCommand.ts#L20-L24
     if (result.exitCode !== 0) {
       process.exit(result.exitCode);
     }
