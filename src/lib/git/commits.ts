@@ -23,13 +23,12 @@ export const performCommit = async (
   if (hook) {
     writeFileSync(".git/COMMIT_EDITMSG", message);
   } else {
-    try {
-      await x("git", ["commit", "-m", message, ...passthrough], {
-        nodeOptions: { stdio: "inherit" },
-        throwOnError: true,
-      });
-    } catch (error) {
-      throw new Error("Failed to execute git commit", { cause: error });
+    const result = await x("git", ["commit", "-m", message, ...passthrough], {
+      nodeOptions: { stdio: "inherit" },
+    });
+
+    if (result.exitCode !== 0) {
+      process.exit(result.exitCode);
     }
   }
 };
