@@ -41,7 +41,7 @@ describe("performCommit", () => {
         "-m",
         expect.stringContaining("feat(*): ✨ a cool new feature"),
       ],
-      { nodeOptions: { stdio: "inherit" }, throwOnError: true },
+      { nodeOptions: { stdio: "inherit" } },
     );
   });
 
@@ -95,7 +95,7 @@ describe("performCommit", () => {
         "--no-verify",
         "--amend",
       ],
-      { nodeOptions: { stdio: "inherit" }, throwOnError: true },
+      { nodeOptions: { stdio: "inherit" } },
     );
   });
 
@@ -123,11 +123,47 @@ describe("performCommit", () => {
     );
   });
 
-  it("should handle errors from tinyexec x()", async () => {
-    vi.mocked(x).mockRejectedValue(new Error("git error"));
+  it("should exit with code 1 when git commit fails", async () => {
+    const mockExit = vi
+      .spyOn(process, "exit")
+      .mockImplementation(vi.fn() as never);
 
-    await expect(
-      performCommit({ answers, config: defaultConfig }, {}),
-    ).rejects.toThrow("Failed to execute git commit");
+    vi.mocked(x).mockResolvedValue({
+      exitCode: 1,
+      stderr: "error message",
+      stdout: "",
+    });
+
+    await performCommit({ answers, config: defaultConfig }, {});
+
+    expect(mockExit).toHaveBeenCalledWith(1);
+  });
+
+  it("should exit with the actual git exit code on failure", async () => {
+    const mockExit = vi
+      .spyOn(process, "exit")
+      .mockImplementation(vi.fn() as never);
+
+    vi.mocked(x).mockResolvedValue({
+      exitCode: 128,
+      stderr: "fatal error",
+      stdout: "",
+    });
+
+    await performCommit({ answers, config: defaultConfig }, {});
+
+    expect(mockExit).toHaveBeenCalledWith(128);
+  });
+
+  it("should not exit when git commit succeeds", async () => {
+    const mockExit = vi
+      .spyOn(process, "exit")
+      .mockImplementation(vi.fn() as never);
+
+    vi.mocked(x).mockResolvedValue(mockOutput);
+
+    await performCommit({ answers, config: defaultConfig }, {});
+
+    expect(mockExit).not.toHaveBeenCalled();
   });
 });

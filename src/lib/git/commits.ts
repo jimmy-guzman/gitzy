@@ -23,13 +23,14 @@ export const performCommit = async (
   if (hook) {
     writeFileSync(".git/COMMIT_EDITMSG", message);
   } else {
-    try {
-      await x("git", ["commit", "-m", message, ...passthrough], {
-        nodeOptions: { stdio: "inherit" },
-        throwOnError: true,
-      });
-    } catch (error) {
-      throw new Error("Failed to execute git commit", { cause: error });
+    const result = await x("git", ["commit", "-m", message, ...passthrough], {
+      nodeOptions: { stdio: "inherit" },
+    });
+
+    // This is restoring previous behavior where we exit the process on failure
+    // https://github.com/jimmy-guzman/gitzy/blob/v6.1.0/src/utils/executeCommand.ts#L20-L24
+    if (result.exitCode !== 0) {
+      process.exit(result.exitCode);
     }
   }
 };
