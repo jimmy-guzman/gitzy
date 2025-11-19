@@ -1,4 +1,4 @@
-import type { InferOutput } from "valibot";
+import type { InferInput, InferOutput } from "valibot";
 
 import {
   array,
@@ -51,5 +51,6 @@ export const ConfigSchema = object({
 });
 
 export type Config = InferOutput<typeof ConfigSchema>;
+export type _UserConfig = InferInput<typeof ConfigSchema>;
 export type Questions = Config["questions"];
 export type Scopes = Config["scopes"];

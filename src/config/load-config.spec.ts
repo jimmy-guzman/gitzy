@@ -3,9 +3,13 @@ import * as valibot from "valibot";
 import yaml from "yaml";
 
 import { loadConfig } from "./load-config";
+import * as loadTsModule from "./load-ts";
 
 vi.mock("lilconfig");
 vi.mock("yaml");
+vi.mock("./load-ts", () => ({
+  loadTs: vi.fn(),
+}));
 vi.mock("valibot", async () => {
   // eslint-disable-next-line @typescript-eslint/consistent-type-imports -- testing
   const actual = await vi.importActual<typeof import("valibot")>("valibot");
@@ -46,7 +50,7 @@ describe("loadConfig", () => {
       expect(lilconfig).toHaveBeenCalledWith("gitzy", expect.any(Object));
     });
 
-    it("should configure YAML loaders", async () => {
+    it("should configure loaders for all supported formats", async () => {
       mockExplorer.search.mockResolvedValue(null);
 
       await loadConfig("gitzy", mockSchema);
@@ -54,6 +58,8 @@ describe("loadConfig", () => {
       const config = vi.mocked(lilconfig).mock.calls[0][1];
 
       expect(config?.loaders).toStrictEqual({
+        ".mts": loadTsModule.loadTs,
+        ".ts": loadTsModule.loadTs,
         ".yaml": expect.any(Function),
         ".yml": expect.any(Function),
         "noExt": expect.any(Function),
@@ -76,9 +82,13 @@ describe("loadConfig", () => {
         ".gitzyrc.js",
         ".gitzyrc.cjs",
         ".gitzyrc.mjs",
+        ".gitzyrc.ts",
+        ".gitzyrc.mts",
         "gitzy.config.js",
         "gitzy.config.cjs",
         "gitzy.config.mjs",
+        "gitzy.config.ts",
+        "gitzy.config.mts",
         ".config/.gitzyrc",
         ".config/.gitzyrc.json",
         ".config/.gitzyrc.yaml",
@@ -86,9 +96,13 @@ describe("loadConfig", () => {
         ".config/.gitzyrc.js",
         ".config/.gitzyrc.cjs",
         ".config/.gitzyrc.mjs",
+        ".config/.gitzyrc.ts",
+        ".config/.gitzyrc.mts",
         ".config/gitzy.config.js",
         ".config/gitzy.config.cjs",
         ".config/gitzy.config.mjs",
+        ".config/gitzy.config.ts",
+        ".config/gitzy.config.mts",
       ]);
     });
 
@@ -145,6 +159,39 @@ describe("loadConfig", () => {
       const noExtLoader = config?.loaders?.noExt;
 
       expect(yamlLoader).toBe(noExtLoader);
+    });
+  });
+
+  describe("TypeScript loader", () => {
+    it("should use loadTs for .ts files", async () => {
+      mockExplorer.search.mockResolvedValue(null);
+      await loadConfig("gitzy", mockSchema);
+
+      const config = vi.mocked(lilconfig).mock.calls[0][1];
+      const tsLoader = config?.loaders?.[".ts"];
+
+      expect(tsLoader).toBe(loadTsModule.loadTs);
+    });
+
+    it("should use loadTs for .mts files", async () => {
+      mockExplorer.search.mockResolvedValue(null);
+      await loadConfig("gitzy", mockSchema);
+
+      const config = vi.mocked(lilconfig).mock.calls[0][1];
+      const mtsLoader = config?.loaders?.[".mts"];
+
+      expect(mtsLoader).toBe(loadTsModule.loadTs);
+    });
+
+    it("should use same loader for both .ts and .mts", async () => {
+      mockExplorer.search.mockResolvedValue(null);
+      await loadConfig("gitzy", mockSchema);
+
+      const config = vi.mocked(lilconfig).mock.calls[0][1];
+      const tsLoader = config?.loaders?.[".ts"];
+      const mtsLoader = config?.loaders?.[".mts"];
+
+      expect(tsLoader).toBe(mtsLoader);
     });
   });
 
@@ -209,6 +256,55 @@ describe("loadConfig", () => {
 
       expect(result).toStrictEqual(configData);
       expect(valibot.safeParse).toHaveBeenCalledWith(customSchema, configData);
+    });
+  });
+
+  describe("config factory functions", () => {
+    it("should handle config as a factory function", async () => {
+      const configData = { name: "gitzy", version: "1.0.0" };
+      const configFactory = vi.fn().mockResolvedValue(configData);
+
+      mockExplorer.search.mockResolvedValue({
+        config: configFactory,
+        filepath: "/path/to/config",
+      });
+
+      const result = await loadConfig("gitzy", mockSchema);
+
+      expect(configFactory).toHaveBeenCalledWith();
+      expect(result).toStrictEqual(configData);
+    });
+
+    it("should handle async config factory", async () => {
+      const configData = { name: "gitzy", version: "1.0.0" };
+      const configFactory = async () => {
+        await new Promise((resolve) => {
+          setTimeout(resolve, 10);
+        });
+
+        return configData;
+      };
+
+      mockExplorer.search.mockResolvedValue({
+        config: configFactory,
+        filepath: "/path/to/config",
+      });
+
+      const result = await loadConfig("gitzy", mockSchema);
+
+      expect(result).toStrictEqual(configData);
+    });
+
+    it("should validate config from factory function", async () => {
+      const invalidConfigData = { name: 123, version: "1.0.0" };
+      const configFactory = vi.fn().mockResolvedValue(invalidConfigData);
+
+      mockExplorer.search.mockResolvedValue({
+        config: configFactory,
+        filepath: "/path/to/config",
+      });
+
+      await expect(loadConfig("gitzy", mockSchema)).rejects.toThrow(TypeError);
     });
   });
 
@@ -291,6 +387,32 @@ describe("loadConfig", () => {
 
       expect(config?.searchPlaces).toContain(".my-special-gitzyrc");
       expect(config?.searchPlaces).toContain("my-special-gitzy.config.js");
+    });
+
+    it("should throw validation error when config factory returns null", async () => {
+      const configFactory = vi.fn().mockResolvedValue(null);
+
+      mockExplorer.search.mockResolvedValue({
+        config: configFactory,
+        filepath: "/path/to/config",
+      });
+
+      await expect(loadConfig("gitzy", mockSchema)).rejects.toThrow(TypeError);
+
+      expect(configFactory).toHaveBeenCalledWith();
+    });
+
+    it("should throw validation error when config factory returns undefined", async () => {
+      const configFactory = vi.fn().mockResolvedValue(undefined);
+
+      mockExplorer.search.mockResolvedValue({
+        config: configFactory,
+        filepath: "/path/to/config",
+      });
+
+      await expect(loadConfig("gitzy", mockSchema)).rejects.toThrow(TypeError);
+
+      expect(configFactory).toHaveBeenCalledWith();
     });
   });
 });

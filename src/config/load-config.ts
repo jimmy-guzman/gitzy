@@ -1,8 +1,10 @@
 import type { Loader } from "lilconfig";
-import type { BaseIssue, BaseSchema } from "valibot";
+import type { BaseIssue, BaseSchema, InferOutput } from "valibot";
 
 import { lilconfig } from "lilconfig";
 import { safeParse, summarize } from "valibot";
+
+import { loadTs } from "./load-ts";
 
 const loadYaml: Loader = async (_filepath, content) => {
   const yaml = await import("yaml");
@@ -11,7 +13,7 @@ const loadYaml: Loader = async (_filepath, content) => {
   return yaml.parse(content) as unknown;
 };
 
-const configExts = [".js", ".cjs", ".mjs"] as const;
+const configExts = [".js", ".cjs", ".mjs", ".ts", ".mts"] as const;
 
 const getSearchPlaces = (configName: string) => {
   const rcExts = ["", ".json", ".yaml", ".yml", ...configExts];
@@ -24,14 +26,20 @@ const getSearchPlaces = (configName: string) => {
   return ["package.json", ...base, ...base.map((path) => `.config/${path}`)];
 };
 
+const isConfigFactory = (value: unknown): value is () => Promise<unknown> => {
+  return typeof value === "function";
+};
+
 export const loadConfig = async <
   const TSchema extends BaseSchema<unknown, unknown, BaseIssue<unknown>>,
 >(
   configName: string,
   schema: TSchema,
-) => {
+): Promise<InferOutput<TSchema> | null> => {
   const explorer = lilconfig(configName, {
     loaders: {
+      ".mts": loadTs,
+      ".ts": loadTs,
       ".yaml": loadYaml,
       ".yml": loadYaml,
       "noExt": loadYaml,
@@ -43,7 +51,13 @@ export const loadConfig = async <
 
   if (!result?.config) return null;
 
-  const parsed = safeParse(schema, result.config);
+  const maybeConfig = result.config as unknown;
+
+  const rawConfig = isConfigFactory(maybeConfig)
+    ? await maybeConfig()
+    : maybeConfig;
+
+  const parsed = safeParse(schema, rawConfig);
 
   if (!parsed.success) {
     throw new TypeError(summarize(parsed.issues));
