@@ -114,7 +114,7 @@ describe("loadConfig", () => {
 
       const content = "name: test\nversion: 1.0.0";
 
-      vi.mocked(yaml.parse).mockResolvedValue({
+      vi.mocked(yaml.parse).mockReturnValue({
         name: "test",
         version: "1.0.0",
       });
