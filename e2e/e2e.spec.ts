@@ -3,7 +3,7 @@ import { execSync } from "node:child_process";
 const setupGitzy = async (args: string) => {
   return new Promise((resolve, reject) => {
     try {
-      const result = execSync(`node ./dist/index.mjs --dry-run ${args}`)
+      const result = execSync(`node ./dist/run.mjs --dry-run ${args}`)
         .toString("utf8")
         .split("\n");
 
