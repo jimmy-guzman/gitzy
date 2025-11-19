@@ -114,9 +114,12 @@ describe("loadConfig", () => {
 
       const content = "name: test\nversion: 1.0.0";
 
-      vi.mocked(yaml.parse).mockReturnValue({ name: "test", version: "1.0.0" });
+      vi.mocked(yaml.parse).mockReturnValue({
+        name: "test",
+        version: "1.0.0",
+      });
 
-      const result = yamlLoader("/path/to/file.yaml", content);
+      const result = await yamlLoader("/path/to/file.yaml", content);
 
       expect(yaml.parse).toHaveBeenCalledWith(content);
       expect(result).toStrictEqual({ name: "test", version: "1.0.0" });
