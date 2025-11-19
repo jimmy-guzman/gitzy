@@ -13,7 +13,7 @@
   "license": "MIT",
   "author": "jimmy-guzman @jimmy-guzman",
   "type": "module",
-  "bin": "./dist/index.mjs",
+  "bin": "./dist/run.mjs",
   "files": [
     "dist"
   ],
@@ -24,7 +24,7 @@
     "coverage": "vitest run --coverage",
     "format": "prettier --cache -c .",
     "format:fix": "prettier --cache -w .",
-    "gitzy": "tsx src/index.ts --commitlint",
+    "gitzy": "tsx src/run.ts --commitlint",
     "knip": "knip",
     "lint": "eslint --cache .",
     "lint:fix": "pnpm lint --fix",
