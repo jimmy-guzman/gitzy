@@ -1,3 +1,10 @@
+## [6.5.5](https://github.com/jimmy-guzman/gitzy/compare/v6.5.4...v6.5.5) (2025-11-19)
+
+
+### Bug Fixes
+
+* 🐛 defer `yaml` module until parsing is needed ([#615](https://github.com/jimmy-guzman/gitzy/issues/615)) ([c8c240f](https://github.com/jimmy-guzman/gitzy/commit/c8c240f0be871d046a70615e2b8d59956c6a8432))
+
 ## [6.5.4](https://github.com/jimmy-guzman/gitzy/compare/v6.5.3...v6.5.4) (2025-11-18)
 
 
