@@ -3,11 +3,12 @@ import type { BaseIssue, BaseSchema } from "valibot";
 
 import { lilconfig } from "lilconfig";
 import { safeParse, summarize } from "valibot";
-import yaml from "yaml";
 
-const loadYaml: Loader = (_filepath, content) => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- parse returns any
-  return yaml.parse(content);
+const loadYaml: Loader = async (_filepath, content) => {
+  const yaml = await import("yaml");
+
+  // yaml.parse returns `any`, so keep it as `unknown` at the boundary.
+  return yaml.parse(content) as unknown;
 };
 
 const configVariants = (name: string) => {
