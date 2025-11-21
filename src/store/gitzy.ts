@@ -10,70 +10,67 @@ const idx = Symbol("gitzy");
 /**
  * Minimal typed version of [data-store](https://github.com/jonschlinkert/data-store/tree/4.1.0)
  *
- * @todo add unit tests
  */
 export class GitzyStore<T = Record<string, unknown>> {
   [idx]?: T;
-
   path: string;
 
   get data(): T {
-    return this[idx] ?? this.tryLoad();
+    return this[idx] ?? this.#tryLoad();
   }
 
   constructor() {
     this.path = gitzyStorePath();
   }
 
-  public clear = () => {
+  clear() {
     this.save({} as T);
-  };
-
-  public destroy = () => {
-    tryUnlink(this.path);
-  };
-
-  public load = (): T => this.data;
-
-  public save(data: T) {
-    this[idx] = data;
-    this.writeFile();
   }
 
-  private readonly json = () => JSON.stringify(this.data, null, 2);
+  destroy() {
+    tryUnlink(this.path);
+  }
 
-  private readonly readParseFile = () => {
+  load(): T {
+    return this.data;
+  }
+
+  save(data: T) {
+    this[idx] = data;
+    this.#writeFile();
+  }
+
+  #json() {
+    return JSON.stringify(this.data, null, 2);
+  }
+
+  #readParseFile() {
     return JSON.parse(String(fs.readFileSync(this.path))) as T;
-  };
+  }
 
-  private readonly tryLoad = () => {
+  #tryLoad(): T {
     try {
-      return (this[idx] = this.readParseFile());
-    } catch (error: unknown) {
-      const dataStoreError = error as GitzyStoreError;
-      const hasPermissionError = dataStoreError.code === "EACCES";
-      const hasMissingOrCorruptedFile =
-        dataStoreError.code === "ENOENT" ||
-        dataStoreError.name === "SyntaxError";
+      return (this[idx] = this.#readParseFile());
+    } catch (error) {
+      const err = error as GitzyStoreError;
 
-      if (hasPermissionError) {
+      if (err.code === "EACCES") {
         throw new Error("gitzy does not have permission to load this file", {
           cause: error,
         });
       }
 
-      if (hasMissingOrCorruptedFile) {
-        this[idx] = {} as T;
-
-        return {} as T;
+      if (err.code === "ENOENT" || err.name === "SyntaxError") {
+        return (this[idx] = {} as T);
       }
 
       return {} as T;
     }
-  };
+  }
 
-  private readonly writeFile = () => {
+  #writeFile() {
     mkdir(path.dirname(this.path));
-    fs.writeFileSync(this.path, this.json(), { mode: 0o0600 });
-  };
+
+    fs.writeFileSync(this.path, this.#json(), { mode: 0o0600 });
+  }
 }

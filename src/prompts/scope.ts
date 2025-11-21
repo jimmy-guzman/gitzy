@@ -1,8 +1,8 @@
+import { styleText } from "node:util";
+
 import type { Scopes } from "@/config/gitzy-schema";
 
 import { fuzzySearch } from "@/lib/fuzzy-search";
-
-import { promptsLang } from "./lang";
 
 export const scope = ({
   config: { scopes },
@@ -21,9 +21,9 @@ export const scope = ({
   return scopes.length > 0
     ? {
         choices,
-        hint: promptsLang.scope.hint,
+        hint: styleText("dim", "...type or use arrow keys"),
         limit: 10,
-        message: promptsLang.scope.message,
+        message: "Choose the scope",
         name: "scope",
         suggest: (input: string) => fuzzySearch(choices, ["title"], input),
         type: "autocomplete" as const,

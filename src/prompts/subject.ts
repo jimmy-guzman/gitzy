@@ -3,8 +3,6 @@ import { styleText } from "node:util";
 import type { Config } from "@/config/gitzy-schema";
 import type { Answers, EnquirerState } from "@/interfaces";
 
-import { errorMessage, promptsLang } from "./lang";
-
 const EMOJI_LENGTH = 3;
 const PERCENT = 100;
 const PERCENT_THRESHOLD = 25;
@@ -21,8 +19,8 @@ export const subject = ({
 }: {
   config: Pick<Config, "disableEmoji" | "headerMaxLength" | "headerMinLength">;
 }) => {
-  const minTitleLengthError = errorMessage.minTitleLength(headerMinLength);
-  const maxTitleLengthError = errorMessage.maxTitleLength(headerMaxLength);
+  const minTitleLengthError = `The subject must have at least ${headerMinLength} characters`;
+  const maxTitleLengthError = `The subject must be less than ${headerMaxLength} characters`;
   const emojiLength = disableEmoji ? 0 : EMOJI_LENGTH;
 
   const getColor = (inputLen: number, percentRem: number) => {
@@ -40,7 +38,7 @@ export const subject = ({
         headerMaxLength - inputLength - label.length - emojiLength;
       const percentRemaining = (remainingChar / headerMaxLength) * PERCENT;
       const charsLeftIndicator = `${remainingChar}/${headerMaxLength}`;
-      const message = `${promptsLang.subject.message}(${styleText(getColor(inputLength, percentRemaining), charsLeftIndicator)})`;
+      const message = `Add a short description(${styleText(getColor(inputLength, percentRemaining), charsLeftIndicator)})`;
 
       return styleText("bold", message);
     },

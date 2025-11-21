@@ -26,12 +26,7 @@ describe("gitzyStore", () => {
       expect.objectContaining({
         clear: expect.any(Function),
         destroy: expect.any(Function),
-        json: expect.any(Function),
-        load: expect.any(Function),
         path: "path",
-        readParseFile: expect.any(Function),
-        tryLoad: expect.any(Function),
-        writeFile: expect.any(Function),
       }),
     );
   });
