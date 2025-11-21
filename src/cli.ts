@@ -23,15 +23,6 @@ import { danger, hint, info, log, warn } from "./lib/logging";
 import { createPrompts } from "./prompts/create-prompts";
 import { GitzyStore } from "./store/gitzy";
 
-const enquirerOptions = {
-  autofill: true,
-  cancel: (): null => null,
-  styles: {
-    danger: (value: string) => styleText("red", value),
-    submitted: (value: string) => styleText("cyan", value),
-  },
-};
-
 export const cli = async () => {
   const state: GitzyState = {
     answers: defaultAnswers,
@@ -53,7 +44,17 @@ export const cli = async () => {
   };
 
   const promptQuestions = async (flags: Answers) => {
-    const enquirer = new Enquirer(enquirerOptions, flags);
+    const enquirer = new Enquirer(
+      {
+        autofill: true,
+        cancel: () => null,
+        styles: {
+          danger: (value: string) => styleText("red", value),
+          submitted: (value: string) => styleText("cyan", value),
+        },
+      },
+      flags,
+    );
     const prompts = createPrompts(state, flags);
 
     return enquirer.prompt(prompts);

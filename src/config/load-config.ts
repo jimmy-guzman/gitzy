@@ -11,29 +11,17 @@ const loadYaml: Loader = async (_filepath, content) => {
   return yaml.parse(content) as unknown;
 };
 
-const configVariants = (name: string) => {
-  return [
-    `.${name}rc`,
-    `.${name}rc.json`,
-    `.${name}rc.yaml`,
-    `.${name}rc.yml`,
-    `.${name}rc.js`,
-    `.${name}rc.cjs`,
-    `.${name}rc.mjs`,
-    `${name}.config.js`,
-    `${name}.config.cjs`,
-    `${name}.config.mjs`,
-  ];
-};
+const configExts = [".js", ".cjs", ".mjs"] as const;
 
 const getSearchPlaces = (configName: string) => {
-  const variant = configVariants(configName);
+  const rcExts = ["", ".json", ".yaml", ".yml", ...configExts];
 
-  return [
-    "package.json",
-    ...variant,
-    ...variant.map((place) => `.config/${place}`),
+  const base = [
+    ...rcExts.map((ext) => `.${configName}rc${ext}`),
+    ...configExts.map((ext) => `${configName}.config${ext}`),
   ];
+
+  return ["package.json", ...base, ...base.map((path) => `.config/${path}`)];
 };
 
 export const loadConfig = async <
