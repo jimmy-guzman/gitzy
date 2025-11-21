@@ -1,32 +1,23 @@
-import type { Scopes } from "@/config/gitzy-schema";
+import { autocomplete, isCancel } from "@clack/prompts";
 
-import { fuzzySearch } from "@/lib/fuzzy-search";
+import type { Config } from "@/config/gitzy-schema";
 
-import { promptsLang } from "./lang";
+export const scope = async ({ config: { scopes } }: { config: Config }) => {
+  if (scopes.length === 0) return undefined;
 
-export const scope = ({
-  config: { scopes },
-}: {
-  config: { scopes: Scopes };
-}) => {
-  const choices = scopes.map((choice) => {
-    return {
-      indent: " ",
-      title: choice,
+  const result = await autocomplete({
+    maxItems: 10,
+    message: "Scope for this change?",
+    options: scopes.map((choice) => ({
+      label: choice,
       value: choice,
-    };
+    })),
+    placeholder: "Select a scope",
   });
 
-  // TODO: use skip once https://github.com/enquirer/enquirer/issues/128 is resolved
-  return scopes.length > 0
-    ? {
-        choices,
-        hint: promptsLang.scope.hint,
-        limit: 10,
-        message: promptsLang.scope.message,
-        name: "scope",
-        suggest: (input: string) => fuzzySearch(choices, ["title"], input),
-        type: "autocomplete" as const,
-      }
-    : null;
+  if (isCancel(result)) {
+    process.exit(0);
+  }
+
+  return result;
 };

@@ -1,10 +1,10 @@
 import { writeFileSync } from "node:fs";
 
+import { log } from "@clack/prompts";
 import { x } from "tinyexec";
 
 import type { Flags, GitzyState } from "@/interfaces";
 
-import { info, log } from "../logging";
 import { formatMessage } from "./messages";
 
 export const performCommit = async (
@@ -14,8 +14,8 @@ export const performCommit = async (
   const message = formatMessage(config, answers, emoji);
 
   if (dryRun) {
-    log(info(`Message...`));
-    log(`\n${message}\n`);
+    log.info(`Message...`);
+    log.message(message);
 
     return;
   }

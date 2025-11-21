@@ -1,5 +1,6 @@
 import { writeFileSync } from "node:fs";
 
+import { log } from "@clack/prompts";
 import { x } from "tinyexec";
 
 import { defaultConfig } from "@/defaults/config";
@@ -47,15 +48,18 @@ describe("performCommit", () => {
 
   it("should log message and not call x() when in dry run mode", async () => {
     const mockX = vi.mocked(x);
-    const logSpy = vi.spyOn(console, "log").mockImplementation(vi.fn());
+    const logInfoSpy = vi.spyOn(log, "info").mockImplementation(vi.fn());
+    const logMessageSpy = vi.spyOn(log, "message").mockImplementation(vi.fn());
 
     await performCommit({ answers, config: defaultConfig }, { dryRun: true });
 
-    expect(logSpy).toHaveBeenCalledTimes(2);
-    expect(logSpy).toHaveBeenCalledWith("❯ Message...");
-    expect(logSpy).toHaveBeenCalledWith(
+    expect(logInfoSpy).toHaveBeenCalledExactlyOnceWith(
+      expect.stringContaining("Message..."),
+    );
+    expect(logMessageSpy).toHaveBeenCalledExactlyOnceWith(
       expect.stringContaining("feat(*): ✨ a cool new feature"),
     );
+
     expect(mockX).not.toHaveBeenCalled();
   });
 

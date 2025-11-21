@@ -51,6 +51,3 @@ export const ConfigSchema = object({
 });
 
 export type Config = InferOutput<typeof ConfigSchema>;
-export type Questions = Config["questions"];
-export type IssuesPrefix = Config["issuesPrefix"];
-export type Scopes = Config["scopes"];

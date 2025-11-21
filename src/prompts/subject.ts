@@ -1,13 +1,9 @@
-import { styleText } from "node:util";
+import { isCancel, text } from "@clack/prompts";
 
 import type { Config } from "@/config/gitzy-schema";
-import type { Answers, EnquirerState } from "@/interfaces";
-
-import { errorMessage, promptsLang } from "./lang";
+import type { Answers } from "@/interfaces";
 
 const EMOJI_LENGTH = 3;
-const PERCENT = 100;
-const PERCENT_THRESHOLD = 25;
 
 export const leadingLabel = (answers?: Answers) => {
   const scope =
@@ -16,42 +12,27 @@ export const leadingLabel = (answers?: Answers) => {
   return answers?.type ? `${answers.type}${scope}: ` : "";
 };
 
-export const subject = ({
+export const subject = async ({
+  answers,
   config: { disableEmoji, headerMaxLength, headerMinLength },
 }: {
-  config: Pick<Config, "disableEmoji" | "headerMaxLength" | "headerMinLength">;
+  answers?: Answers;
+  config: Config;
 }) => {
-  const minTitleLengthError = errorMessage.minTitleLength(headerMinLength);
-  const maxTitleLengthError = errorMessage.maxTitleLength(headerMaxLength);
+  const minTitleLengthError = `The subject must have at least ${headerMinLength} characters`;
+  const maxTitleLengthError = `The subject must be less than ${headerMaxLength} characters`;
   const emojiLength = disableEmoji ? 0 : EMOJI_LENGTH;
+  const label = leadingLabel(answers);
 
-  const getColor = (inputLen: number, percentRem: number) => {
-    if (inputLen < headerMinLength || percentRem < 0) return "red";
-    if (percentRem > PERCENT_THRESHOLD) return "green";
-
-    return "yellow";
-  };
-
-  return {
-    message: (state?: EnquirerState) => {
-      const inputLength = state?.input.length ?? 0;
-      const label = leadingLabel(state?.answers);
-      const remainingChar =
-        headerMaxLength - inputLength - label.length - emojiLength;
-      const percentRemaining = (remainingChar / headerMaxLength) * PERCENT;
-      const charsLeftIndicator = `${remainingChar}/${headerMaxLength}`;
-      const message = `${promptsLang.subject.message}(${styleText(getColor(inputLength, percentRemaining), charsLeftIndicator)})`;
-
-      return styleText("bold", message);
-    },
-    name: "subject",
-    type: "input" as const,
-    validate: (input: string, state?: EnquirerState) => {
-      const label = leadingLabel(state?.answers);
+  const result = await text({
+    message: "Add a short description",
+    placeholder: `${headerMinLength}-${headerMaxLength} characters`,
+    validate: (input) => {
+      const inputLength = input?.length ?? 0;
       const isOverMaxLength =
-        input.length + label.length + emojiLength > headerMaxLength;
+        inputLength + label.length + emojiLength > headerMaxLength;
 
-      if (input.length < headerMinLength) {
+      if (inputLength < headerMinLength) {
         return minTitleLengthError;
       }
 
@@ -59,7 +40,13 @@ export const subject = ({
         return maxTitleLengthError;
       }
 
-      return true;
+      return undefined;
     },
-  };
+  });
+
+  if (isCancel(result)) {
+    process.exit(0);
+  }
+
+  return result;
 };
