@@ -15,7 +15,7 @@ const loadYaml: Loader = async (_filepath, content) => {
 
 const configExts = [".js", ".cjs", ".mjs", ".ts", ".mts"] as const;
 
-export const getSearchPlaces = (configName: string) => {
+const getSearchPlaces = (configName: string) => {
   const rcExts = ["", ".json", ".yaml", ".yml", ...configExts];
 
   const base = [
