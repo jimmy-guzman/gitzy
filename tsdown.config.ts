@@ -1,7 +1,7 @@
 import { defineConfig } from "tsdown";
 
 export default defineConfig({
-  entry: "src/run.ts",
+  entry: ["./src/{index,run,config}.ts"],
   minify: true,
   publint: true,
 });

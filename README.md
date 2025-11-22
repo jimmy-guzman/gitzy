@@ -51,13 +51,27 @@ gitzy -lD --no-emoji
 
 ## Configuration
 
-By default, `gitzy` works out of the box and supports multiple configuration methods.
+`gitzy` works out of the box, but you can configure it using either a `gitzy` field in `package.json` or a config file.
 
-You can use a `gitzy` object in your `package.json`, or one of the following files:
-`.gitzyrc`, `.gitzyrc.json`, `.gitzyrc.yaml`, `.gitzyrc.yml`, `.gitzyrc.js`, `.gitzyrc.cjs`, `gitzy.config.js`, `gitzy.config.cjs`, `.gitzyrc.mjs`, or `gitzy.config.mjs`.
+Supported config files:
+
+```txt
+.gitzyrc
+.gitzyrc.{json,yaml,yml,js,cjs,mjs}
+gitzy.config.{js,cjs,mjs}
+```
+
+TypeScript configs are also supported when using **Node 22.8+**:
+
+```txt
+.gitzyrc.{ts,mts}
+gitzy.config.{ts,mts}
+```
+
+For TypeScript configs, `gitzy` also exports a `defineConfig` helper for full type safety.
 
 > [!NOTE]
-> All of these files can also live under a `.config/` directory.
+> All config files may also live inside a `.config/` directory.
 
 ## Options
 

@@ -54,9 +54,6 @@ importers:
       is-ci:
         specifier: 4.1.0
         version: 4.1.0
-      jiti:
-        specifier: 2.6.1
-        version: 2.6.1
       knip:
         specifier: 5.70.1
         version: 5.70.1(@types/node@22.19.1)(typescript@5.9.3)
