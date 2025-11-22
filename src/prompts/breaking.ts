@@ -1,6 +1,6 @@
-import type { CreatedPromptOptions } from "@/interfaces";
+import { styleText } from "node:util";
 
-import { promptsLang } from "./lang";
+import type { CreatedPromptOptions } from "@/interfaces";
 
 export const breaking = (options: CreatedPromptOptions) => {
   if (options.config.breakingChangeFormat === "!") {
@@ -12,8 +12,8 @@ export const breaking = (options: CreatedPromptOptions) => {
   }
 
   return {
-    hint: promptsLang.breaking.hint,
-    message: promptsLang.breaking.message,
+    hint: styleText("dim", "...skip when none"),
+    message: `${styleText("bold", "Add any breaking changes")}\n  ${styleText("red", "BREAKING CHANGE:")}`,
     name: "breaking",
     type: "text" as const,
   };

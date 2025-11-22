@@ -5,7 +5,6 @@ import { hint } from "../logging";
 /**
  * Determines whether or not files are staged.
  */
-
 export const checkIfStaged = async () => {
   const result = await x("git", [
     "--no-pager",

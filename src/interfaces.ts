@@ -1,10 +1,5 @@
 import type { Config } from "./config/gitzy-schema";
 
-interface PromptLang {
-  hint?: string;
-  message: string;
-}
-
 export interface Answers {
   body: string;
   breaking: boolean | string;
@@ -54,12 +49,4 @@ export interface CreatedPromptOptions {
 export interface GitzyState {
   answers: Answers;
   config: Required<Config>;
-}
-
-export interface PromptsLang {
-  body: PromptLang;
-  breaking: PromptLang;
-  scope: PromptLang;
-  subject: PromptLang;
-  type: PromptLang;
 }

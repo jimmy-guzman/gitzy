@@ -67,7 +67,7 @@ describe("subject", () => {
           answers: { ...answers, scope: "*", type: "fix" },
           input,
         }),
-      ).toBe("The subject must be less than 64 characters");
+      ).toBe("The subject must not exceed 64 characters");
     });
 
     it("should return true when the length is valid", () => {
