@@ -20,7 +20,7 @@ export const subject = ({
   config: Pick<Config, "disableEmoji" | "headerMaxLength" | "headerMinLength">;
 }) => {
   const minTitleLengthError = `The subject must have at least ${headerMinLength} characters`;
-  const maxTitleLengthError = `The subject must be less than ${headerMaxLength} characters`;
+  const maxTitleLengthError = `The subject must not exceed ${headerMaxLength} characters`;
   const emojiLength = disableEmoji ? 0 : EMOJI_LENGTH;
 
   const getColor = (inputLen: number, percentRem: number) => {

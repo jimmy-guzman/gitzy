@@ -11,8 +11,7 @@ export const extractCommitlintRules = (config: CommitlintConfig) => {
   const { rules } = config;
   const out: Record<string, unknown> = {};
 
-  for (const key in RULES) {
-    const ruleName = RULES[key as keyof typeof RULES];
+  for (const [key, ruleName] of Object.entries(RULES)) {
     const value = rules?.[ruleName]?.[2];
 
     if (value !== undefined) out[key] = value;

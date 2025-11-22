@@ -1,9 +1,9 @@
-import { styleText } from "node:util";
-
 import type { Config } from "@/config/gitzy-schema";
 import type { Flags } from "@/interfaces";
 
 import { fuzzySearch } from "@/lib/fuzzy-search";
+
+import { AUTOCOMPLETE_HINT } from "./constants";
 
 export const choice = (config: Config, type: string, flags?: Flags) => {
   const typeDetails = config.details[type];
@@ -25,7 +25,7 @@ export const type = ({ config, flags }: { config: Config; flags?: Flags }) => {
 
   return {
     choices,
-    hint: styleText("dim", "...type or use arrow keys"),
+    hint: AUTOCOMPLETE_HINT,
     limit: 10,
     message: "Choose the type",
     name: "type",

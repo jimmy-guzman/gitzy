@@ -7,7 +7,7 @@ export const issues = ({
 }: CreatedPromptOptions) => {
   return {
     hint: issuesHint,
-    message: `${styleText("bold", `Add issues this commit closes`)}\n  ${styleText("reset", `${issuesPrefix}:`)}`,
+    message: `${styleText("bold", `Add issues this commit closes`)}\n  ${issuesPrefix}:`,
     name: "issues",
     type: "text" as const,
   };
