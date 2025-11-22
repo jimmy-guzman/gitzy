@@ -1,3 +1,10 @@
+## [6.5.6](https://github.com/jimmy-guzman/gitzy/compare/v6.5.5...v6.5.6) (2025-11-22)
+
+
+### Bug Fixes
+
+* **prompts:** 🐛 clarify subject length error message ([#621](https://github.com/jimmy-guzman/gitzy/issues/621)) ([ebca062](https://github.com/jimmy-guzman/gitzy/commit/ebca062a5aa19424b4b5cedaec93f5deaf620a67))
+
 ## [6.5.5](https://github.com/jimmy-guzman/gitzy/compare/v6.5.4...v6.5.5) (2025-11-19)
 
 
