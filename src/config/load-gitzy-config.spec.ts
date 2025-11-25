@@ -1,5 +1,3 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-
 import { CommitlintConfigSchema } from "./commitlint-schema";
 import { ConfigSchema } from "./gitzy-schema";
 import { loadConfig } from "./load-config";
