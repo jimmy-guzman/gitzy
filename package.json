@@ -69,7 +69,7 @@
     "tsdown": "0.16.6",
     "tsx": "4.20.6",
     "typescript": "5.9.3",
-    "valibot": "1.1.0",
+    "valibot": "1.2.0",
     "vite-tsconfig-paths": "5.1.4",
     "vitest": "4.0.13",
     "yaml": "2.8.1"
