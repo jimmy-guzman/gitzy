@@ -1,3 +1,10 @@
+## [6.5.7](https://github.com/jimmy-guzman/gitzy/compare/v6.5.6...v6.5.7) (2025-12-02)
+
+
+### Bug Fixes
+
+* 🐛 bump `valibot` to v1.2.0 ([#622](https://github.com/jimmy-guzman/gitzy/issues/622)) ([9c5491a](https://github.com/jimmy-guzman/gitzy/commit/9c5491a49b09350bb42c54e666d46eba172db0ac))
+
 ## [6.5.6](https://github.com/jimmy-guzman/gitzy/compare/v6.5.5...v6.5.6) (2025-11-22)
 
 
