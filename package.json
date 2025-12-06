@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@jimmy.codes/eslint-config": "6.22.0",
-    "@jimmy.codes/prettier-config": "2.1.1",
+    "@jimmy.codes/prettier-config": "2.1.2",
     "@leeoniya/ufuzzy": "1.0.19",
     "@total-typescript/ts-reset": "0.6.1",
     "@types/node": "22.19.1",
