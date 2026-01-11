@@ -1,7 +1,7 @@
+import type { Stats } from "node:fs";
+
 import fs from "node:fs";
 import path from "node:path";
-
-import type { Stats } from "node:fs";
 
 import * as utils from "./utils";
 
@@ -18,7 +18,7 @@ describe("utils", () => {
 
       expect(() => {
         utils.tryUnlink("path");
-      }).toThrow("some new error");
+      }).toThrowError("some new error");
     });
 
     it("should do nothing when there is a ENOENT error", () => {
@@ -31,7 +31,7 @@ describe("utils", () => {
 
       expect(() => {
         utils.tryUnlink("path");
-      }).not.toThrow();
+      }).not.toThrowError();
     });
   });
 
@@ -43,13 +43,11 @@ describe("utils", () => {
     });
 
     it("should throw when directory does not exist", () => {
-      vi.spyOn(fs, "statSync").mockImplementationOnce(() => {
-        return {
-          isDirectory: () => false,
-        } as Stats;
-      });
+      vi.spyOn(fs, "statSync").mockReturnValueOnce({
+        isDirectory: () => false,
+      } as Stats);
 
-      expect(() => utils.directoryExists("path")).toThrow(
+      expect(() => utils.directoryExists("path")).toThrowError(
         'Path exists and is not a directory: "path"',
       );
     });
@@ -63,7 +61,7 @@ describe("utils", () => {
           message: "null bytes",
           name: "name",
         });
-      }).toThrow("null bytes");
+      }).toThrowError("null bytes");
     });
 
     it("should return error when an error is not ignored", () => {
@@ -73,7 +71,7 @@ describe("utils", () => {
           message: "message",
           name: "name",
         });
-      }).toThrow("message");
+      }).toThrowError("message");
     });
 
     it("should not throw when error is ignored", () => {
@@ -85,7 +83,7 @@ describe("utils", () => {
           message: "MESSAGE",
           name: "name",
         });
-      }).not.toThrow();
+      }).not.toThrowError();
     });
   });
 
@@ -145,7 +143,7 @@ describe("utils", () => {
 
       expect(() => {
         utils.mkdir(DIR_NAME);
-      }).toThrow("Something went wrong");
+      }).toThrowError("Something went wrong");
     });
 
     it("should call mkdirSync when directory does not exist", () => {

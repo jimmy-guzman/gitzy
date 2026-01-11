@@ -15,14 +15,6 @@ vi.mock("../package.json", () => ({
 }));
 
 describe("cli", () => {
-  beforeAll(() => {
-    vi.mocked(Enquirer).mockImplementation(() => {
-      return {
-        prompt: vi.fn(),
-      } as unknown as Enquirer;
-    });
-  });
-
   beforeEach(() => {
     vi.resetAllMocks();
     process.argv = [];

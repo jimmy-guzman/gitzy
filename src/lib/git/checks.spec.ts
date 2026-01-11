@@ -34,7 +34,7 @@ describe("checkIfStaged", () => {
   it("should throw when no files are staged (exit code 0)", async () => {
     vi.mocked(x).mockResolvedValue({ exitCode: 0, stderr: "", stdout: "" });
 
-    await expect(checkIfStaged()).rejects.toThrow("No files staged");
+    await expect(checkIfStaged()).rejects.toThrowError("No files staged");
   });
 
   it("should resolve when files are staged (exit code 1)", async () => {
@@ -46,7 +46,7 @@ describe("checkIfStaged", () => {
   it("should throw when git command fails (exit code > 1)", async () => {
     vi.mocked(x).mockResolvedValue({ exitCode: 128, stderr: "", stdout: "" });
 
-    await expect(checkIfStaged()).rejects.toThrow(
+    await expect(checkIfStaged()).rejects.toThrowError(
       "Failed to check staged files (git diff)",
     );
   });
@@ -56,7 +56,7 @@ describe("checkIfStaged", () => {
 
     vi.mocked(x).mockRejectedValue(spawnError);
 
-    await expect(checkIfStaged()).rejects.toThrow("spawn git ENOENT");
+    await expect(checkIfStaged()).rejects.toThrowError("spawn git ENOENT");
   });
 
   it("should call git with correct arguments", async () => {
@@ -85,7 +85,7 @@ describe("checkIfGitRepo", () => {
       "fatal: not a git repository (or any of the parent directories): .git",
     );
 
-    await expect(checkIfGitRepo()).rejects.toThrow("Not a git repository");
+    await expect(checkIfGitRepo()).rejects.toThrowError("Not a git repository");
   });
 
   it("should resolve when inside a git repository (exit code 0)", async () => {
@@ -99,7 +99,7 @@ describe("checkIfGitRepo", () => {
 
     vi.mocked(x).mockRejectedValue(spawnError);
 
-    await expect(checkIfGitRepo()).rejects.toThrow("Not a git repository");
+    await expect(checkIfGitRepo()).rejects.toThrowError("Not a git repository");
   });
 
   it("should call git with correct arguments", async () => {

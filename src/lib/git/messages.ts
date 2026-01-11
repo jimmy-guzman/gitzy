@@ -42,7 +42,7 @@ const parseIssue = (issue: string, defaultPrefix: string) => {
 
 const createIssues = (
   issues: string,
-  { closedIssueEmoji, disableEmoji, issuesPrefix = "closes" }: Config,
+  { closedIssueEmoji, disableEmoji, issuesPrefix }: Config,
 ) => {
   if (!issues) return "";
 

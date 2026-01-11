@@ -55,7 +55,7 @@ describe("gitzyStore", () => {
 
     expect(() => {
       store.load();
-    }).toThrow("gitzy does not have permission to load this file");
+    }).toThrowError("gitzy does not have permission to load this file");
   });
 
   it("should return empty data if there is a syntax error", () => {
@@ -69,7 +69,7 @@ describe("gitzyStore", () => {
 
     expect(() => {
       store.load();
-    }).not.toThrow();
+    }).not.toThrowError();
     expect(store.load()).toStrictEqual({});
   });
 });

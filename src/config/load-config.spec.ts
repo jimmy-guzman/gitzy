@@ -221,8 +221,10 @@ describe("loadConfig", () => {
         filepath: "/path/to/config",
       });
 
-      await expect(loadConfig("gitzy", mockSchema)).rejects.toThrow(TypeError);
-      await expect(loadConfig("gitzy", mockSchema)).rejects.toThrow(
+      await expect(loadConfig("gitzy", mockSchema)).rejects.toThrowError(
+        TypeError,
+      );
+      await expect(loadConfig("gitzy", mockSchema)).rejects.toThrowError(
         "× Invalid type: Expected string but received 123\n  → at name",
       );
     });
@@ -235,7 +237,9 @@ describe("loadConfig", () => {
         filepath: "/path/to/config",
       });
 
-      await expect(loadConfig("gitzy", mockSchema)).rejects.toThrow(TypeError);
+      await expect(loadConfig("gitzy", mockSchema)).rejects.toThrowError(
+        TypeError,
+      );
     });
 
     it("should throw TypeError for wrong field types", async () => {
@@ -246,7 +250,9 @@ describe("loadConfig", () => {
         filepath: "/path/to/config",
       });
 
-      await expect(loadConfig("gitzy", mockSchema)).rejects.toThrow(TypeError);
+      await expect(loadConfig("gitzy", mockSchema)).rejects.toThrowError(
+        TypeError,
+      );
     });
   });
 

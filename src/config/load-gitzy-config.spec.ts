@@ -301,7 +301,7 @@ describe("loadGitzyConfig", () => {
     it("should handle when loadConfig throws an error", async () => {
       vi.mocked(loadConfig).mockRejectedValue(new Error("Config load failed"));
 
-      await expect(loadGitzyConfig(false)).rejects.toThrow(
+      await expect(loadGitzyConfig(false)).rejects.toThrowError(
         "Config load failed",
       );
     });
