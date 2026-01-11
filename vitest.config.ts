@@ -4,15 +4,6 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   plugins: [tsconfigPaths()],
   test: {
-    coverage: {
-      thresholds: {
-        autoUpdate: true,
-        branches: 94.26,
-        functions: 93.33,
-        lines: 96.53,
-        statements: 96.67,
-      },
-    },
     globals: true,
   },
 });

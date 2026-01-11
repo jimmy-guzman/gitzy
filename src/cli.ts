@@ -1,6 +1,6 @@
-import { styleText } from "node:util";
-
 import type { CommanderError } from "commander";
+
+import { styleText } from "node:util";
 
 import { program } from "commander";
 import Enquirer from "enquirer";

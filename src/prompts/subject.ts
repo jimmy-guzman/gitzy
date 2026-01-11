@@ -25,6 +25,7 @@ export const subject = ({
 
   const getColor = (inputLen: number, percentRem: number) => {
     if (inputLen < headerMinLength || percentRem < 0) return "red";
+
     if (percentRem > PERCENT_THRESHOLD) return "green";
 
     return "yellow";
