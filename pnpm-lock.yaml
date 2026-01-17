@@ -16,8 +16,8 @@ importers:
         version: 1.0.2
     devDependencies:
       '@jimmy.codes/eslint-config':
-        specifier: 6.31.0
-        version: 6.31.0(@typescript-eslint/eslint-plugin@8.52.0(@typescript-eslint/parser@8.52.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(prettier@3.7.4)(typescript@5.9.3)(vitest@4.0.16(@types/node@22.19.1)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.1))
+        specifier: 6.31.1
+        version: 6.31.1(@typescript-eslint/eslint-plugin@8.52.0(@typescript-eslint/parser@8.52.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(prettier@3.7.4)(typescript@5.9.3)(vitest@4.0.16(@types/node@22.19.1)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.1))
       '@jimmy.codes/prettier-config':
         specifier: 2.1.2
         version: 2.1.2(prettier@3.7.4)
@@ -716,8 +716,8 @@ packages:
     resolution: {integrity: sha512-ZT55BDLV0yv0RBm2czMiZ+SqCGO7AvmOM3G/w2xhVPH+te0aKgFjmBvGlL1dH+ql2tgGO3MVrbb3jCKyvpgnxA==}
     engines: {node: 20 || >=22}
 
-  '@jimmy.codes/eslint-config@6.31.0':
-    resolution: {integrity: sha512-qWWvJ96rs55ajTL9tox+p0dYufm3Y5vJgiPO7pVnxkSM4mWWuXf2uS5A8KhT/CqFIvs6hN1WAjW6/A21QpF4WQ==}
+  '@jimmy.codes/eslint-config@6.31.1':
+    resolution: {integrity: sha512-emJUMpmfdzwPVdU6Y8LsOOGf2h4aL66ptVm428XZ8slSwh9eIYZ6PffxhsPgYzpMGt55LOr4Jv1MxbF3HPTKZw==}
     engines: {node: '>= 20.10.0'}
     peerDependencies:
       eslint: ^9.10.0
@@ -4202,7 +4202,7 @@ snapshots:
     dependencies:
       '@isaacs/balanced-match': 4.0.1
 
-  '@jimmy.codes/eslint-config@6.31.0(@typescript-eslint/eslint-plugin@8.52.0(@typescript-eslint/parser@8.52.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(prettier@3.7.4)(typescript@5.9.3)(vitest@4.0.16(@types/node@22.19.1)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.1))':
+  '@jimmy.codes/eslint-config@6.31.1(@typescript-eslint/eslint-plugin@8.52.0(@typescript-eslint/parser@8.52.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(prettier@3.7.4)(typescript@5.9.3)(vitest@4.0.16(@types/node@22.19.1)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.1))':
     dependencies:
       '@eslint-community/eslint-plugin-eslint-comments': 4.5.0(eslint@9.39.2(jiti@2.6.1))
       '@eslint/js': 9.39.2
