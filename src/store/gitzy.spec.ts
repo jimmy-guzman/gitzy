@@ -49,6 +49,7 @@ describe("gitzyStore", () => {
     class CustomError extends Error {
       code = "EACCES";
     }
+
     vi.spyOn(fs, "readFileSync").mockImplementationOnce(() => {
       throw new CustomError();
     });
@@ -63,6 +64,7 @@ describe("gitzyStore", () => {
     class CustomError extends Error {
       code = "SyntaxError";
     }
+
     vi.spyOn(fs, "readFileSync").mockImplementationOnce(() => {
       throw new CustomError();
     });

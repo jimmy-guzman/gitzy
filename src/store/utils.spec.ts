@@ -25,6 +25,7 @@ describe("utils", () => {
       class CustomError extends Error {
         code = "ENOENT";
       }
+
       vi.spyOn(fs, "unlinkSync").mockImplementationOnce(() => {
         throw new CustomError("ENOENT");
       });
