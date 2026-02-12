@@ -70,11 +70,11 @@ importers:
         specifier: 3.8.0
         version: 3.8.0
       publint:
-        specifier: 0.3.16
-        version: 0.3.16
+        specifier: 0.3.17
+        version: 0.3.17
       tsdown:
         specifier: 0.19.0
-        version: 0.19.0(oxc-resolver@11.16.3)(publint@0.3.16)(synckit@0.11.12)(typescript@5.9.3)
+        version: 0.19.0(oxc-resolver@11.16.3)(publint@0.3.17)(synckit@0.11.12)(typescript@5.9.3)
       tsx:
         specifier: 4.21.0
         version: 4.21.0
@@ -722,8 +722,8 @@ packages:
     resolution: {integrity: sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
 
-  '@publint/pack@0.1.2':
-    resolution: {integrity: sha512-S+9ANAvUmjutrshV4jZjaiG8XQyuJIZ8a4utWmN/vW1sgQ9IfBnPndwkmQYw53QmouOIytT874u65HEmu6H5jw==}
+  '@publint/pack@0.1.4':
+    resolution: {integrity: sha512-HDVTWq3H0uTXiU0eeSQntcVUTPP3GamzeXI41+x7uU9J65JgWQh3qWZHblR1i0npXfFtF+mxBiU2nJH8znxWnQ==}
     engines: {node: '>=18'}
 
   '@quansync/fs@1.0.0':
@@ -2895,8 +2895,8 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
 
-  publint@0.3.16:
-    resolution: {integrity: sha512-MFqyfRLAExPVZdTQFwkAQELzA8idyXzROVOytg6nEJ/GEypXBUmMGrVaID8cTuzRS1U5L8yTOdOJtMXgFUJAeA==}
+  publint@0.3.17:
+    resolution: {integrity: sha512-Q3NLegA9XM6usW+dYQRG1g9uEHiYUzcCVBJDJ7yMcWRqVU9LYZUWdqbwMZfmTCFC5PZLQpLAmhvRcQRl3exqkw==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -4266,7 +4266,7 @@ snapshots:
 
   '@pkgr/core@0.2.9': {}
 
-  '@publint/pack@0.1.2': {}
+  '@publint/pack@0.1.4': {}
 
   '@quansync/fs@1.0.0':
     dependencies:
@@ -6492,9 +6492,9 @@ snapshots:
 
   prettier@3.8.0: {}
 
-  publint@0.3.16:
+  publint@0.3.17:
     dependencies:
-      '@publint/pack': 0.1.2
+      '@publint/pack': 0.1.4
       package-manager-detector: 1.6.0
       picocolors: 1.1.1
       sade: 1.8.1
@@ -6928,7 +6928,7 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
-  tsdown@0.19.0(oxc-resolver@11.16.3)(publint@0.3.16)(synckit@0.11.12)(typescript@5.9.3):
+  tsdown@0.19.0(oxc-resolver@11.16.3)(publint@0.3.17)(synckit@0.11.12)(typescript@5.9.3):
     dependencies:
       ansis: 4.2.0
       cac: 6.7.14
@@ -6947,7 +6947,7 @@ snapshots:
       unconfig-core: 7.4.2
       unrun: 0.2.25(synckit@0.11.12)
     optionalDependencies:
-      publint: 0.3.16
+      publint: 0.3.17
       typescript: 5.9.3
     transitivePeerDependencies:
       - '@ts-macro/tsc'
