@@ -1,3 +1,10 @@
+## [6.5.8](https://github.com/jimmy-guzman/gitzy/compare/v6.5.7...v6.5.8) (2026-02-20)
+
+
+### Bug Fixes
+
+* **deps:** 🐛 bump `yaml` to v2.8.2 ([#642](https://github.com/jimmy-guzman/gitzy/issues/642)) ([1a23897](https://github.com/jimmy-guzman/gitzy/commit/1a238979870933a11ed0239a8da4210101bf27f0))
+
 ## [6.5.7](https://github.com/jimmy-guzman/gitzy/compare/v6.5.6...v6.5.7) (2025-12-02)
 
 
