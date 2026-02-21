@@ -57,7 +57,7 @@
     "commander": "14.0.3",
     "commitlint": "20.4.2",
     "enquirer": "2.3.6",
-    "eslint": "9.39.2",
+    "eslint": "9.39.3",
     "husky": "9.1.7",
     "is-ci": "4.1.0",
     "jiti": "2.6.1",
