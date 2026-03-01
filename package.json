@@ -65,7 +65,7 @@
     "lint-staged": "16.3.0",
     "npm-run-all2": "8.0.4",
     "prettier": "3.8.1",
-    "publint": "0.3.17",
+    "publint": "0.3.18",
     "tsdown": "0.20.3",
     "tsx": "4.21.0",
     "typescript": "5.9.3",
