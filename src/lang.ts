@@ -1,4 +1,4 @@
-import type { Flags } from "./interfaces";
+import type { Flags } from "./cli/types";
 
 interface Lang {
   description: string;

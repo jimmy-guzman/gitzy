@@ -6,32 +6,33 @@ import { program } from "commander";
 import Enquirer from "enquirer";
 import { version } from "package.json" assert { type: "json" };
 
-import type { Answers, Flags, GitzyState } from "./interfaces";
+import type { Answers, Flags, GitzyState } from "./cli/types";
 
 import { skipOption } from "./cli/options";
-import { loadGitzyConfig } from "./config/load-gitzy-config";
-import { defaultAnswers } from "./defaults/answers";
-import { defaultConfig } from "./defaults/config";
-import { lang } from "./lang";
+import { createPrompts } from "./cli/prompts/create-prompts";
+import { danger, hint, info, log, warn } from "./cli/utils/logging";
+import { defaultConfig } from "./core/config/defaults";
+import { resolveConfig } from "./core/config/resolver";
+import { formatMessage } from "./core/conventional/message";
+import { defaultMessageParts } from "./core/conventional/types";
 import {
   checkIfGitRepo,
   checkIfStaged,
   shouldDoGitChecks,
-} from "./lib/git/checks";
-import { performCommit } from "./lib/git/commits";
-import { danger, hint, info, log, warn } from "./lib/logging";
-import { createPrompts } from "./prompts/create-prompts";
-import { GitzyStore } from "./store/gitzy";
+} from "./core/git/checks";
+import { commit } from "./core/git/operations";
+import { GitzyStore } from "./core/store/store";
+import { lang } from "./lang";
 
 export const cli = async () => {
   const state: GitzyState = {
-    answers: defaultAnswers,
+    answers: defaultMessageParts,
     config: defaultConfig,
   };
   const store = new GitzyStore<Answers>();
 
   const init = async ({ commitlint, dryRun, hook, passthrough }: Flags) => {
-    const loadedUserConfig = await loadGitzyConfig(commitlint);
+    const loadedUserConfig = await resolveConfig(commitlint);
 
     if (loadedUserConfig) {
       state.config = { ...state.config, ...loadedUserConfig };
@@ -130,13 +131,28 @@ Examples:
         store.save(answers);
 
         state.answers = { ...state.answers, ...answers };
+
+        const message = formatMessage(
+          state.config,
+          state.answers,
+          flags.emoji ?? true,
+        );
+
+        if (flags.dryRun) {
+          log(info(`Message...`));
+          log(`\n${message}\n`);
+        } else {
+          await commit(message, {
+            dryRun: flags.dryRun,
+            hook: flags.hook,
+            passthrough: flags.passthrough,
+          });
+        }
       } catch (error: unknown) {
         log(`\n${danger((error as CommanderError).message)}\n`);
 
         process.exit(1);
       }
-
-      await performCommit(state, flags);
     });
 
   await program.parseAsync(process.argv);

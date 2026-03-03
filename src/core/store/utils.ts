@@ -1,0 +1,74 @@
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+
+import type { GitzyStoreError } from "./types";
+
+const tryStat = (filepath: string) => {
+  try {
+    return fs.statSync(filepath);
+  } catch {
+    return null;
+  }
+};
+
+const handleError = (dirname: string, err: GitzyStoreError) => {
+  if (err.message.includes("null bytes")) {
+    throw new Error(err.message);
+  }
+
+  const isIgnored =
+    ["EEXIST", "EISDIR", "EPERM"].includes(err.code) &&
+    path.dirname(dirname) !== dirname;
+
+  if (!isIgnored) {
+    throw new Error(err.message);
+  }
+};
+
+const directoryExists = (dirname: string, strict = true) => {
+  const stat = tryStat(dirname);
+
+  if (stat) {
+    if (strict && !stat.isDirectory()) {
+      throw new Error(`Path exists and is not a directory: "${dirname}"`);
+    }
+
+    return true;
+  }
+
+  return false;
+};
+
+export const mkdir = (dirname: string) => {
+  if (directoryExists(dirname)) return;
+
+  try {
+    fs.mkdirSync(dirname, { recursive: true });
+  } catch (error: unknown) {
+    handleError(dirname, error as GitzyStoreError);
+  }
+};
+
+export const tryUnlink = (filepath: string) => {
+  try {
+    fs.unlinkSync(filepath);
+  } catch (error: unknown) {
+    const dataStoreError = error as GitzyStoreError;
+
+    if (dataStoreError.code !== "ENOENT") {
+      throw new Error(dataStoreError.message, { cause: error });
+    }
+  }
+};
+
+/**
+ * Constructs gitzy's store path based on the OS's temp directory and current directory
+ *
+ * @example
+ * const path = gitzyStorePath()
+ * console.log(path) // /var/folders/17/{tmpdir}/T/gitzy/gitzy-store.json
+ */
+export const gitzyStorePath = () => {
+  return `${os.tmpdir()}/gitzy/${path.basename(process.cwd())}-store.json`;
+};
