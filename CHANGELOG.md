@@ -1,3 +1,10 @@
+## [6.5.9](https://github.com/jimmy-guzman/gitzy/compare/v6.5.8...v6.5.9) (2026-03-03)
+
+
+### Bug Fixes
+
+* 🐛 prevent crash on unknown commit type ([#652](https://github.com/jimmy-guzman/gitzy/issues/652)) ([ff09e1e](https://github.com/jimmy-guzman/gitzy/commit/ff09e1ea6d6de8666d13c0c6fb18908e39771bc6))
+
 ## [6.5.8](https://github.com/jimmy-guzman/gitzy/compare/v6.5.7...v6.5.8) (2026-02-20)
 
 
