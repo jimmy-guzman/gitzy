@@ -131,27 +131,27 @@ Examples:
         store.save(answers);
 
         state.answers = { ...state.answers, ...answers };
+
+        const message = formatMessage(
+          state.config,
+          state.answers,
+          flags.emoji ?? true,
+        );
+
+        if (flags.dryRun) {
+          log(info(`Message...`));
+          log(`\n${message}\n`);
+        } else {
+          await commit(message, {
+            dryRun: flags.dryRun,
+            hook: flags.hook,
+            passthrough: flags.passthrough,
+          });
+        }
       } catch (error: unknown) {
         log(`\n${danger((error as CommanderError).message)}\n`);
 
         process.exit(1);
-      }
-
-      const message = formatMessage(
-        state.config,
-        state.answers,
-        flags.emoji ?? true,
-      );
-
-      if (flags.dryRun) {
-        log(info(`Message...`));
-        log(`\n${message}\n`);
-      } else {
-        await commit(message, {
-          dryRun: flags.dryRun,
-          hook: flags.hook,
-          passthrough: flags.passthrough,
-        });
       }
     });
 

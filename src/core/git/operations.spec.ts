@@ -1,4 +1,5 @@
 import { writeFileSync } from "node:fs";
+import path from "node:path";
 
 import { x } from "tinyexec";
 
@@ -26,7 +27,7 @@ describe("commit", () => {
     const result = await commit("feat: add feature", { hook: true });
 
     expect(writeFileSync).toHaveBeenCalledWith(
-      ".git/COMMIT_EDITMSG",
+      path.join(".git", "COMMIT_EDITMSG"),
       "feat: add feature",
     );
     expect(result).toStrictEqual({
@@ -34,6 +35,23 @@ describe("commit", () => {
       message: "feat: add feature",
     });
     expect(x).not.toHaveBeenCalled();
+  });
+
+  it("should use GIT_DIR env var when set for COMMIT_EDITMSG path", async () => {
+    vi.stubEnv("GIT_DIR", "/custom/git/dir");
+
+    const result = await commit("feat: add feature", { hook: true });
+
+    expect(writeFileSync).toHaveBeenCalledWith(
+      path.join("/custom/git/dir", "COMMIT_EDITMSG"),
+      "feat: add feature",
+    );
+    expect(result).toStrictEqual({
+      committed: true,
+      message: "feat: add feature",
+    });
+
+    vi.unstubAllEnvs();
   });
 
   it("should execute git commit with the message", async () => {

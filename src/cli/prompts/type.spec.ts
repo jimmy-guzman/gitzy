@@ -47,6 +47,15 @@ describe("choice", () => {
 
     expect(title).toBe("🔄 refactor:");
   });
+
+  it("should not crash when type is not in config.details", () => {
+    expect(setupChoice({}, {}, "unknown-type")).toStrictEqual({
+      hint: "",
+      indent: " ",
+      title: "unknown-type:",
+      value: "unknown-type",
+    });
+  });
 });
 
 describe("type", () => {

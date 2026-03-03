@@ -4,6 +4,7 @@
  */
 
 import { writeFileSync } from "node:fs";
+import path from "node:path";
 
 import { x } from "tinyexec";
 
@@ -37,7 +38,10 @@ export const commit = async (
   }
 
   if (hook) {
-    writeFileSync(".git/COMMIT_EDITMSG", message);
+    const gitDir = process.env.GIT_DIR ?? ".git";
+    const commitMsgPath = path.join(gitDir, "COMMIT_EDITMSG");
+
+    writeFileSync(commitMsgPath, message);
 
     return { committed: true, message };
   }

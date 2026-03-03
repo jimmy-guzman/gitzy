@@ -1,4 +1,5 @@
 import { defaultConfig } from "@/core/config/defaults";
+import { defaultMessageParts } from "@/core/conventional/types";
 
 import { formatMessage, wrap } from "./message";
 
@@ -509,6 +510,12 @@ describe("formatCommitMessage", () => {
 
       🏁 Closes #123"
     `);
+  });
+
+  it("should not crash when parts.type is empty (not in config.details)", () => {
+    const result = formatMessage(defaultConfig, defaultMessageParts, true);
+
+    expect(result).toBe(": ");
   });
 });
 

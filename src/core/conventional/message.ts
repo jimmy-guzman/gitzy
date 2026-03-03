@@ -104,9 +104,11 @@ export const formatMessage = (
   parts: MessageParts,
   emoji: boolean,
 ) => {
-  const hasEmoji =
-    !config.disableEmoji && config.details[parts.type].emoji && emoji;
-  const emojiPrefix = hasEmoji ? `${config.details[parts.type].emoji} ` : "";
+  const typeDetail = Object.hasOwn(config.details, parts.type)
+    ? config.details[parts.type]
+    : undefined;
+  const hasEmoji = !config.disableEmoji && typeDetail?.emoji && emoji;
+  const emojiPrefix = hasEmoji ? `${typeDetail.emoji} ` : "";
   const scope = createScope(parts.scope);
   const head = createHead(parts, scope, config, emojiPrefix);
   const body = parts.body.trim() ? `\n\n${parts.body}` : "";

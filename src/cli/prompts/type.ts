@@ -6,12 +6,14 @@ import { fuzzySearch } from "@/cli/utils/fuzzy-search";
 import { AUTOCOMPLETE_HINT } from "./constants";
 
 export const choice = (config: Config, type: string, flags?: Flags) => {
-  const typeDetails = config.details[type];
-  const hasEmoji = typeDetails.emoji && !config.disableEmoji && flags?.emoji;
+  const typeDetails = Object.hasOwn(config.details, type)
+    ? config.details[type]
+    : undefined;
+  const hasEmoji = typeDetails?.emoji && !config.disableEmoji && flags?.emoji;
   const prefix = hasEmoji ? `${typeDetails.emoji} ` : "";
 
   return {
-    hint: typeDetails.description.toLowerCase(),
+    hint: typeDetails?.description.toLowerCase() ?? "",
     indent: " ",
     title: `${prefix}${type}:`,
     value: type,
