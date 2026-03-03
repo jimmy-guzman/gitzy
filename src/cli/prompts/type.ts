@@ -9,7 +9,8 @@ export const choice = (config: Config, type: string, flags?: Flags) => {
   const typeDetails = Object.hasOwn(config.details, type)
     ? config.details[type]
     : undefined;
-  const hasEmoji = typeDetails?.emoji && !config.disableEmoji && flags?.emoji;
+  const hasEmoji =
+    typeDetails?.emoji && !config.disableEmoji && (flags?.emoji ?? true);
   const prefix = hasEmoji ? `${typeDetails.emoji} ` : "";
 
   return {

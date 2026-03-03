@@ -40,18 +40,20 @@ describe("commit", () => {
   it("should use GIT_DIR env var when set for COMMIT_EDITMSG path", async () => {
     vi.stubEnv("GIT_DIR", "/custom/git/dir");
 
-    const result = await commit("feat: add feature", { hook: true });
+    try {
+      const result = await commit("feat: add feature", { hook: true });
 
-    expect(writeFileSync).toHaveBeenCalledWith(
-      path.join("/custom/git/dir", "COMMIT_EDITMSG"),
-      "feat: add feature",
-    );
-    expect(result).toStrictEqual({
-      committed: true,
-      message: "feat: add feature",
-    });
-
-    vi.unstubAllEnvs();
+      expect(writeFileSync).toHaveBeenCalledWith(
+        path.join("/custom/git/dir", "COMMIT_EDITMSG"),
+        "feat: add feature",
+      );
+      expect(result).toStrictEqual({
+        committed: true,
+        message: "feat: add feature",
+      });
+    } finally {
+      vi.unstubAllEnvs();
+    }
   });
 
   it("should execute git commit with the message", async () => {
@@ -88,9 +90,13 @@ describe("commit", () => {
       .spyOn(process, "exit")
       .mockReturnValue(undefined as never);
 
-    await commit("feat: add feature");
+    try {
+      await commit("feat: add feature");
 
-    expect(exitSpy).toHaveBeenCalledWith(1);
+      expect(exitSpy).toHaveBeenCalledWith(1);
+    } finally {
+      exitSpy.mockRestore();
+    }
   });
 
   it("should use defaults when no options are provided", async () => {
