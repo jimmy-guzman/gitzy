@@ -89,7 +89,7 @@ export const formatBranchName = (
   const { max, pattern, separator } = config;
 
   const tokens: Record<string, string> = {
-    // Issue refs are kept as-is (e.g. "PROJ-123", "#42") — no slugification
+    // Issue refs are kept as-is (e.g. "PROJ-123", "#42") — no slug conversion
     issue: parts.issue?.trim() ?? "",
     scope: parts.scope ? slugify(parts.scope, separator) : "",
     subject: slugify(parts.subject, separator),

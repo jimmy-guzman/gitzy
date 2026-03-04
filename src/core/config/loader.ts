@@ -30,9 +30,17 @@ const getSearchPlaces = (configName: string) => {
 
 const loadTs: Loader = async (filepath) => {
   const url = pathToFileURL(filepath).href;
-  const mod = (await import(url)) as Record<string, unknown>;
 
-  return mod.default ?? mod;
+  try {
+    const mod = (await import(url)) as Record<string, unknown>;
+
+    return mod.default ?? mod;
+  } catch (error: unknown) {
+    throw new TypeError(
+      `Failed to load TypeScript config at ${filepath}: ${error instanceof Error ? error.message : String(error)}`,
+      { cause: error },
+    );
+  }
 };
 
 export const loadConfig = async <

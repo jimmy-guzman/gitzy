@@ -1,12 +1,12 @@
 import { program } from "commander";
 import { version } from "package.json" assert { type: "json" };
 
-import { registerBranchCommand } from "./cli/commands/branch";
-import { registerCommitCommand } from "./cli/commands/commit";
-import { registerConfigCommand } from "./cli/commands/config";
-import { registerInitCommand } from "./cli/commands/init";
-import { danger } from "./cli/utils/logging";
-import { lang } from "./lang";
+import { registerBranchCommand } from "@/cli/commands/branch";
+import { registerCommitCommand } from "@/cli/commands/commit";
+import { registerConfigCommand } from "@/cli/commands/config";
+import { registerInitCommand } from "@/cli/commands/init";
+import { danger } from "@/cli/utils/logging";
+import { lang } from "@/lang";
 
 export const cli = async () => {
   program

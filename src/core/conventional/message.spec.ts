@@ -375,7 +375,7 @@ describe("formatCommitMessage", () => {
     const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
       body: "",
       breaking: "",
-      issues: "",
+      issues: [],
       subject: 'this has "quotes"',
     });
 
@@ -388,7 +388,7 @@ describe("formatCommitMessage", () => {
     const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
       body: "",
       breaking: "",
-      issues: "",
+      issues: [],
       subject: "this has `quotes`",
     });
 
@@ -403,7 +403,7 @@ describe("formatCommitMessage", () => {
       {
         body: "",
         breaking: "",
-        issues: "",
+        issues: [],
         subject:
           "this is a very very very very very very very very very subject",
       },
@@ -421,7 +421,7 @@ describe("formatCommitMessage", () => {
       {
         body: "",
         breaking: "",
-        issues: "",
+        issues: [],
         subject:
           "this is a very very very very very very very very very subject", // This is intentionally longer than header.max
       },

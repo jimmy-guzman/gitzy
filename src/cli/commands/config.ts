@@ -22,7 +22,9 @@ export const registerConfigCommand = (program: Command) => {
           log(JSON.stringify(config, null, 2));
         }
       } catch (error: unknown) {
-        log(`\n${danger((error as Error).message)}\n`);
+        log(
+          `\n${danger(error instanceof Error ? error.message : String(error))}\n`,
+        );
         process.exit(1);
       }
     });

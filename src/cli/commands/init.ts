@@ -22,7 +22,9 @@ export const registerInitCommand = (program: Command) => {
           log(info(`Created config file: ${result.filePath}`));
         }
       } catch (error: unknown) {
-        log(`\n${danger((error as Error).message)}\n`);
+        log(
+          `\n${danger(error instanceof Error ? error.message : String(error))}\n`,
+        );
         process.exit(1);
       }
     });

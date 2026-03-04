@@ -1,4 +1,4 @@
-import type { BranchFlags, CommitFlags, GlobalFlags } from "./cli/types";
+import type { BranchFlags, CommitFlags, GlobalFlags } from "@/cli/types";
 
 type CommitFlagDescriptions = Record<
   keyof Omit<CommitFlags, "emoji" | "hook" | "stdin">,

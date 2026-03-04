@@ -159,10 +159,14 @@ export const registerCommitCommand = (program: Command) => {
             });
           });
 
-          autofillAnswers = {
-            ...autofillAnswers,
-            ...(JSON.parse(raw) as Partial<Answers>),
-          };
+          try {
+            autofillAnswers = {
+              ...autofillAnswers,
+              ...(JSON.parse(raw) as Partial<Answers>),
+            };
+          } catch {
+            throw new Error("Invalid JSON provided to --stdin");
+          }
         }
 
         const answers = await promptQuestions(
@@ -215,7 +219,9 @@ export const registerCommitCommand = (program: Command) => {
           }
         }
       } catch (error: unknown) {
-        log(`\n${danger((error as Error).message)}\n`);
+        log(
+          `\n${danger(error instanceof Error ? error.message : String(error))}\n`,
+        );
         process.exit(1);
       }
     });

@@ -153,7 +153,7 @@ export const registerBranchCommand = (program: Command) => {
     .option("-j, --json", lang.branch.flags.json)
     .option("--stdin", "read answers from stdin as JSON")
     .addHelpText("after", `\nExamples:\n      ${lang.branch.examples}\n    `)
-    .action(async (opts: BranchFlags) => {
+    .action(async (opts: BranchFlags, cmd: Command) => {
       const state: GitzyState = {
         answers: {
           body: "",
@@ -176,7 +176,10 @@ export const registerBranchCommand = (program: Command) => {
           const segments = currentBranch.split("/");
 
           amendInitial = {
-            subject: segments.at(-1) ?? "",
+            subject:
+              segments.length >= 3
+                ? segments.slice(2).join("/")
+                : segments.slice(1).join("/"),
             type: segments[0] ?? "",
             ...(segments.length >= 3 ? { scope: segments[1] } : {}),
           };
@@ -248,7 +251,9 @@ export const registerBranchCommand = (program: Command) => {
         } else {
           const result = await createBranch(
             branchName,
-            opts.checkout ?? state.config.branch.checkout,
+            cmd.getOptionValueSource("checkout") === "cli"
+              ? opts.checkout
+              : state.config.branch.checkout,
             opts.dryRun,
             opts.from,
           );
@@ -262,7 +267,9 @@ export const registerBranchCommand = (program: Command) => {
           }
         }
       } catch (error: unknown) {
-        log(`\n${danger((error as Error).message)}\n`);
+        log(
+          `\n${danger(error instanceof Error ? error.message : String(error))}\n`,
+        );
         process.exit(1);
       }
     });

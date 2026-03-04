@@ -10,7 +10,6 @@ import type { ResolvedConfig } from "@/core/config/types";
 import { formatBranchName } from "@/core/branch/formatter";
 
 interface RenameBranchOptions {
-  checkout?: boolean;
   dryRun?: boolean;
 }
 
@@ -52,15 +51,13 @@ const hasRemoteTracking = async (branchName: string) => {
  *
  * @param options - Rename options
  *
- * @param options.checkout - Checkout the new branch after renaming (no-op: rename keeps HEAD)
- *
  * @param options.dryRun - Show result without executing git commands
  *
  * @returns Result with old/new names and whether a remote tracking ref existed
  */
 export const renameBranch = async (
   newName: string,
-  { checkout: _checkout = true, dryRun = false }: RenameBranchOptions = {},
+  { dryRun = false }: RenameBranchOptions = {},
 ): Promise<RenameBranchResult> => {
   const oldName = await getCurrentBranch();
   const hasRemote = await hasRemoteTracking(oldName);

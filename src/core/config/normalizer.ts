@@ -37,21 +37,9 @@ const resolveScopeEntry = (entry: ScopeEntry | string): ScopeEntry => {
 };
 
 export const normalizeConfig = (config: Config | null): ResolvedConfig => {
-  const types = (
-    config?.types ?? [
-      "chore",
-      "docs",
-      "feat",
-      "fix",
-      "refactor",
-      "test",
-      "style",
-      "ci",
-      "perf",
-      "revert",
-      "release",
-    ]
-  ).map(resolveTypeEntry);
+  const types = (config?.types ?? builtinTypes.map((t) => t.name)).map(
+    resolveTypeEntry,
+  );
   const scopes = (config?.scopes ?? []).map(resolveScopeEntry);
 
   return {

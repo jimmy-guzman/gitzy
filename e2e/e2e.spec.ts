@@ -34,9 +34,7 @@ const runCommit = (args: string, stdin?: string) => {
 
       resolve(message);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        reject(error);
-      }
+      reject(error instanceof Error ? error : new Error(String(error)));
     }
   });
 };
@@ -63,9 +61,7 @@ const runBranch = (args: string, stdin?: string) => {
 
       resolve(match[1].trim());
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        reject(error);
-      }
+      reject(error instanceof Error ? error : new Error(String(error)));
     }
   });
 };

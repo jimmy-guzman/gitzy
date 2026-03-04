@@ -27,6 +27,8 @@ vi.mock("../package.json", () => ({
 }));
 
 describe("cli", () => {
+  const originalArgv = process.argv;
+
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(Enquirer).mockImplementation(function () {
@@ -41,6 +43,10 @@ describe("cli", () => {
       type: "feat",
     });
     process.argv = ["node", "gitzy"];
+  });
+
+  afterEach(() => {
+    process.argv = originalArgv;
   });
 
   it("should run with defaults", async () => {

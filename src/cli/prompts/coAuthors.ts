@@ -13,7 +13,12 @@ export const coAuthors = (_options: CreatedPromptOptions) => {
     result: (value: string) => {
       const trimmed = value.trim();
 
-      return trimmed ? trimmed.split(",").map((a) => a.trim()) : [];
+      return trimmed
+        ? trimmed
+            .split(",")
+            .map((a) => a.trim())
+            .filter(Boolean)
+        : [];
     },
     type: "text" as const,
   };

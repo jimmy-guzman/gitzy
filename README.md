@@ -283,6 +283,7 @@ import {
   slugify,
   init,
   builtinTypes,
+  defaultBranchConfig,
   defaultResolvedConfig,
 } from "gitzy";
 ```

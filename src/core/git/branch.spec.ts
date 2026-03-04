@@ -36,8 +36,8 @@ describe("renameBranch", () => {
         exitCode: 0,
         stderr: "",
         stdout: "old-branch\n",
-      }) // getCurrentBranch
-      .mockResolvedValueOnce({ exitCode: 1, stderr: "", stdout: "" }); // hasRemoteTracking (no remote)
+      })
+      .mockResolvedValueOnce({ exitCode: 1, stderr: "", stdout: "" });
 
     const result = await renameBranch("new-branch", { dryRun: true });
 
@@ -55,9 +55,9 @@ describe("renameBranch", () => {
         exitCode: 0,
         stderr: "",
         stdout: "old-branch\n",
-      }) // getCurrentBranch
-      .mockResolvedValueOnce({ exitCode: 1, stderr: "", stdout: "" }) // hasRemoteTracking (no remote)
-      .mockResolvedValueOnce({ exitCode: 0, stderr: "", stdout: "" }); // git branch -m
+      })
+      .mockResolvedValueOnce({ exitCode: 1, stderr: "", stdout: "" })
+      .mockResolvedValueOnce({ exitCode: 0, stderr: "", stdout: "" });
 
     const result = await renameBranch("new-branch");
 
@@ -79,9 +79,9 @@ describe("renameBranch", () => {
         exitCode: 0,
         stderr: "",
         stdout: "old-branch\n",
-      }) // getCurrentBranch
-      .mockResolvedValueOnce({ exitCode: 0, stderr: "", stdout: "origin\n" }) // hasRemoteTracking (has remote)
-      .mockResolvedValueOnce({ exitCode: 0, stderr: "", stdout: "" }); // git branch -m
+      })
+      .mockResolvedValueOnce({ exitCode: 0, stderr: "", stdout: "origin\n" })
+      .mockResolvedValueOnce({ exitCode: 0, stderr: "", stdout: "" });
 
     const result = await renameBranch("new-branch");
 

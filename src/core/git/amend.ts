@@ -17,16 +17,22 @@ type ParsedCommit = Partial<
   >
 >;
 
-// Matches: type(scope)!: subject  or  type!: subject  or  type(scope): subject  or  type: subject
-// Strips leading emoji if present (e.g. "✨ subject" → "subject")
+/**
+ * Matches: type(scope)!: subject  or  type!: subject  or  type(scope): subject  or  type: subject
+ * Strips leading emoji if present (e.g. "✨ subject" → "subject")
+ */
 const HEADER_REGEX =
   /^(?<type>[a-z]+)(?:\((?<scope>[^)]*)\))?(?<breaking>!)?: (?:\p{Emoji_Presentation}\s)?(?<subject>.+)$/u;
 
-// Matches: BREAKING CHANGE: <text> (optionally preceded by emoji)
+/**
+ * Matches: BREAKING CHANGE: <text> or BREAKING-CHANGE: <text> (optionally preceded by emoji)
+ */
 const BREAKING_FOOTER_REGEX =
-  /^BREAKING CHANGE: (?:\p{Emoji_Presentation}\s)?(?<breaking>.+)$/mu;
+  /^BREAKING[ -]CHANGE: (?:\p{Emoji_Presentation}\s)?(?<breaking>.+)$/mu;
 
-// Matches: Closes/Fixes/Resolves <ref> — with optional leading emoji (e.g. "🏁 Closes #123")
+/**
+ * Matches: Closes/Fixes/Resolves <ref> — with optional leading emoji (e.g. "🏁 Closes #123")
+ */
 const ISSUES_FOOTER_REGEX =
   /^(?:\p{Emoji_Presentation} )?(?:Closes|Fixes|Resolves) (?<ref>\S.*)$/gmu;
 

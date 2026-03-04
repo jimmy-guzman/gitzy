@@ -12,6 +12,7 @@ import {
 } from "valibot";
 
 import {
+  builtinTypes,
   defaultBranchConfig,
   defaultBreakingConfig,
   defaultEmojiConfig,
@@ -77,19 +78,10 @@ export const ConfigSchema = object({
   prompts: pipe(optional(array(string()), [...defaultPrompts]), readonly()),
   scopes: pipe(optional(array(scopeSchema), []), readonly()),
   types: pipe(
-    optional(array(typeSchema), [
-      "chore",
-      "docs",
-      "feat",
-      "fix",
-      "refactor",
-      "test",
-      "style",
-      "ci",
-      "perf",
-      "revert",
-      "release",
-    ]),
+    optional(
+      array(typeSchema),
+      builtinTypes.map((t) => t.name),
+    ),
     readonly(),
   ),
 });
