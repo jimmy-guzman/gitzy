@@ -30,6 +30,7 @@
     "nvmrc",
     "octo",
     "outfile",
+    "oxfmt",
     "picklist",
     "pkgroll",
     "pnpm",
@@ -45,13 +46,13 @@
     "typecheck",
     "ufuzzy",
     "unrs",
+    "unstub",
     "usagestop",
     "Vali",
     "venv",
     "vitest",
     "wagoid",
-    "yalc",
-    "unstub"
+    "yalc"
   ],
   "ignorePaths": [
     "node_modules", // this will ignore anything the node_modules directory
