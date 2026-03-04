@@ -1,7 +1,7 @@
 import { extractCommitlintRules } from "./commitlint";
 
 describe("extractCommitlintRules", () => {
-  it("should return all overrides", () => {
+  it("should return all overrides mapped to v7 nested config shape", () => {
     expect(
       extractCommitlintRules({
         rules: {
@@ -12,8 +12,7 @@ describe("extractCommitlintRules", () => {
         },
       }),
     ).toMatchObject({
-      headerMaxLength: 10,
-      headerMinLength: 1,
+      header: { max: 10, min: 1 },
       scopes: ["1", "2"],
       types: ["1", "2"],
     });
@@ -27,7 +26,7 @@ describe("extractCommitlintRules", () => {
     expect(extractCommitlintRules({ rules: undefined })).toStrictEqual({});
   });
 
-  it("should handle partial rules configuration", () => {
+  it("should handle partial rules — only header-max-length", () => {
     expect(
       extractCommitlintRules({
         rules: {
@@ -35,7 +34,19 @@ describe("extractCommitlintRules", () => {
         },
       }),
     ).toStrictEqual({
-      headerMaxLength: 100,
+      header: { max: 100 },
+    });
+  });
+
+  it("should handle partial rules — only header-min-length", () => {
+    expect(
+      extractCommitlintRules({
+        rules: {
+          "header-min-length": [2, "always", 5],
+        },
+      }),
+    ).toStrictEqual({
+      header: { min: 5 },
     });
   });
 
@@ -48,12 +59,12 @@ describe("extractCommitlintRules", () => {
         },
       }),
     ).toStrictEqual({
-      headerMaxLength: 50,
+      header: { max: 50 },
       types: ["feat", "fix"],
     });
   });
 
-  it("should handle zero as a valid headerMinLength", () => {
+  it("should handle zero as a valid header min length", () => {
     expect(
       extractCommitlintRules({
         rules: {
@@ -61,7 +72,7 @@ describe("extractCommitlintRules", () => {
         },
       }),
     ).toStrictEqual({
-      headerMinLength: 0,
+      header: { min: 0 },
     });
   });
 

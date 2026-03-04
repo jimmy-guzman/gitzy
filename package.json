@@ -13,6 +13,13 @@
   "license": "MIT",
   "author": "jimmy-guzman @jimmy-guzman",
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/api/index.d.mts",
+      "import": "./dist/api/index.mjs"
+    }
+  },
+  "types": "./dist/api/index.d.mts",
   "bin": "./dist/run.mjs",
   "files": [
     "dist"
@@ -24,7 +31,7 @@
     "coverage": "vitest run --coverage",
     "format": "prettier --cache -c .",
     "format:fix": "prettier --cache -w .",
-    "gitzy": "tsx src/run.ts --commitlint",
+    "gitzy": "tsx src/run.ts",
     "knip": "knip",
     "lint": "eslint --cache .",
     "lint:fix": "pnpm lint --fix",
@@ -71,8 +78,7 @@
     "typescript": "5.9.3",
     "valibot": "1.2.0",
     "vite-tsconfig-paths": "6.1.1",
-    "vitest": "4.0.18",
-    "yaml": "2.8.2"
+    "vitest": "4.0.18"
   },
   "packageManager": "pnpm@10.30.3",
   "engines": {

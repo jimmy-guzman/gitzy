@@ -3,23 +3,29 @@
  */
 
 import type { CommitlintConfig } from "./commitlint-schema";
+import type { Config } from "./types";
 
-const RULES = {
-  headerMaxLength: "header-max-length",
-  headerMinLength: "header-min-length",
-  scopes: "scope-enum",
-  types: "type-enum",
-} as const;
-
-export const extractCommitlintRules = (config: CommitlintConfig) => {
+export const extractCommitlintRules = (
+  config: CommitlintConfig,
+): Partial<Config> => {
   const { rules } = config;
-  const out: Record<string, unknown> = {};
+  const out: Partial<Config> = {};
 
-  for (const [key, ruleName] of Object.entries(RULES)) {
-    const value = rules?.[ruleName]?.[2];
+  const headerMax = rules?.["header-max-length"]?.[2];
+  const headerMin = rules?.["header-min-length"]?.[2];
+  const types = rules?.["type-enum"]?.[2];
+  const scopes = rules?.["scope-enum"]?.[2];
 
-    if (value !== undefined) out[key] = value;
+  if (headerMax !== undefined || headerMin !== undefined) {
+    out.header = {
+      ...(headerMax === undefined ? {} : { max: headerMax }),
+      ...(headerMin === undefined ? {} : { min: headerMin }),
+    };
   }
+
+  if (types !== undefined) out.types = types;
+
+  if (scopes !== undefined) out.scopes = scopes;
 
   return out;
 };

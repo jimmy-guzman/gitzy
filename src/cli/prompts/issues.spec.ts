@@ -1,4 +1,4 @@
-import { defaultConfig } from "@/core/config/defaults";
+import { defaultResolvedConfig } from "@/core/config/defaults";
 
 import { issues } from "./issues";
 
@@ -8,12 +8,12 @@ describe("issues", () => {
       answers: {
         body: "",
         breaking: "",
-        issues: "",
+        issues: [],
         scope: "",
         subject: "",
         type: "",
       },
-      config: defaultConfig,
+      config: defaultResolvedConfig,
       flags: {},
     });
 

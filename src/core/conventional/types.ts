@@ -9,7 +9,8 @@
 export interface MessageParts {
   body: string;
   breaking: boolean | string;
-  issues: string;
+  coAuthors?: string[];
+  issues: string[];
   scope: string;
   subject: string;
   type: string;
@@ -21,7 +22,7 @@ export interface MessageParts {
 export const defaultMessageParts: MessageParts = {
   body: "",
   breaking: false,
-  issues: "",
+  issues: [],
   scope: "",
   subject: "",
   type: "",

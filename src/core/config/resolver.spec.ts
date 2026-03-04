@@ -1,7 +1,6 @@
-import { CommitlintConfigSchema } from "./commitlint-schema";
 import { loadConfig } from "./loader";
+import { normalizeConfig } from "./normalizer";
 import { resolveConfig } from "./resolver";
-import { ConfigSchema } from "./schema";
 
 vi.mock("./loader");
 
@@ -11,70 +10,60 @@ describe("resolveConfig", () => {
   });
 
   describe("basic gitzy config loading", () => {
-    it("should load gitzy config without commitlint when commitlint param is false", async () => {
+    it("should load gitzy config and always attempt commitlint", async () => {
+      vi.mocked(loadConfig).mockResolvedValue(null);
+
+      await resolveConfig();
+
+      expect(loadConfig).toHaveBeenCalledTimes(2);
+    });
+
+    it("should return normalized defaults when no config files exist", async () => {
+      vi.mocked(loadConfig).mockResolvedValue(null);
+
+      const result = await resolveConfig();
+
+      expect(result).toStrictEqual(normalizeConfig(null));
+    });
+
+    it("should return normalized gitzy config when only gitzy config exists", async () => {
       const gitzyConfig = {
         scopes: ["api", "ui"],
         types: ["feat", "fix"],
       };
 
-      vi.mocked(loadConfig).mockResolvedValue(gitzyConfig);
+      vi.mocked(loadConfig)
+        .mockResolvedValueOnce(gitzyConfig)
+        .mockResolvedValueOnce(null);
 
-      const result = await resolveConfig(false);
+      const result = await resolveConfig();
 
-      expect(loadConfig).toHaveBeenCalledExactlyOnceWith("gitzy", ConfigSchema);
-      expect(result).toStrictEqual(gitzyConfig);
-    });
-
-    it("should return null when no gitzy config exists and commitlint is disabled", async () => {
-      vi.mocked(loadConfig).mockResolvedValue(null);
-
-      const result = await resolveConfig(false);
-
-      expect(result).toBeNull();
-      expect(loadConfig).toHaveBeenCalledOnce();
-    });
-
-    it("should load gitzy config with correct schema", async () => {
-      vi.mocked(loadConfig).mockResolvedValue({ types: ["feat"] });
-
-      await resolveConfig(false);
-
-      expect(loadConfig).toHaveBeenCalledWith("gitzy", ConfigSchema);
+      expect(result).toStrictEqual(normalizeConfig(gitzyConfig));
     });
   });
 
-  describe("commitlint integration via parameter", () => {
-    it("should load commitlint config when commitlint param is true", async () => {
-      const gitzyConfig = { types: ["feat"] };
-      const commitlintConfig = {
-        rules: {
-          "scope-enum": [2, "always", ["api"]],
-          "type-enum": [2, "always", ["feat", "fix"]],
-        },
-      };
+  describe("commitlint auto-detection", () => {
+    it("should always attempt to load commitlint config", async () => {
+      vi.mocked(loadConfig).mockResolvedValue(null);
 
-      vi.mocked(loadConfig)
-        .mockResolvedValueOnce(gitzyConfig)
-        .mockResolvedValueOnce(commitlintConfig);
-
-      const result = await resolveConfig(true);
+      await resolveConfig();
 
       expect(loadConfig).toHaveBeenCalledTimes(2);
-      expect(loadConfig).toHaveBeenNthCalledWith(1, "gitzy", ConfigSchema);
+      expect(loadConfig).toHaveBeenNthCalledWith(
+        1,
+        "gitzy",
+        expect.any(Object),
+      );
       expect(loadConfig).toHaveBeenNthCalledWith(
         2,
         "commitlint",
-        CommitlintConfigSchema,
+        expect.any(Object),
       );
-      expect(result).toStrictEqual({
-        scopes: ["api"],
-        types: ["feat", "fix"],
-      });
     });
 
-    it("should merge commitlint rules with gitzy config with commitlint taking precedence", async () => {
+    it("should merge commitlint rules with gitzy config — commitlint takes precedence", async () => {
       const gitzyConfig = {
-        headerMaxLength: 50,
+        header: { max: 50 },
         scopes: ["ui"],
         types: ["feat", "fix"],
       };
@@ -89,16 +78,17 @@ describe("resolveConfig", () => {
         .mockResolvedValueOnce(gitzyConfig)
         .mockResolvedValueOnce(commitlintConfig);
 
-      const result = await resolveConfig(true);
+      const result = await resolveConfig();
 
-      expect(result).toStrictEqual({
-        headerMaxLength: 72, // overridden
-        scopes: ["ui"], // kept from gitzy
-        types: ["feature", "bugfix"], // overridden
-      });
+      expect(result.header.max).toBe(72);
+      expect(result.scopes.map((s) => s.name)).toStrictEqual(["ui"]);
+      expect(result.types.map((t) => t.name)).toStrictEqual([
+        "feature",
+        "bugfix",
+      ]);
     });
 
-    it("should return only commitlint rules when no gitzy config exists", async () => {
+    it("should use only commitlint rules when no gitzy config exists", async () => {
       const commitlintConfig = {
         rules: {
           "type-enum": [2, "always", ["feat", "fix"]],
@@ -109,43 +99,29 @@ describe("resolveConfig", () => {
         .mockResolvedValueOnce(null)
         .mockResolvedValueOnce(commitlintConfig);
 
-      const result = await resolveConfig(true);
+      const result = await resolveConfig();
 
-      expect(result).toStrictEqual({ types: ["feat", "fix"] });
+      expect(result.types.map((t) => t.name)).toStrictEqual(["feat", "fix"]);
     });
 
-    it("should return gitzy config when commitlint is enabled but no commitlint config exists", async () => {
+    it("should return normalized gitzy config when commitlint is not present", async () => {
       const gitzyConfig = { types: ["feat"] };
 
       vi.mocked(loadConfig)
         .mockResolvedValueOnce(gitzyConfig)
         .mockResolvedValueOnce(null);
 
-      const result = await resolveConfig(true);
+      const result = await resolveConfig();
 
-      expect(result).toStrictEqual(gitzyConfig);
-    });
-
-    it("should return null when both configs are missing and commitlint is enabled", async () => {
-      vi.mocked(loadConfig).mockResolvedValue(null);
-
-      const result = await resolveConfig(true);
-
-      expect(result).toBeNull();
-      expect(loadConfig).toHaveBeenCalledTimes(2);
+      expect(result).toStrictEqual(normalizeConfig(gitzyConfig));
     });
   });
 
-  describe("commitlint integration via gitzy config", () => {
-    it("should use commitlint when useCommitlintConfig is true in gitzy config", async () => {
-      const gitzyConfig = {
-        types: ["feat"],
-        useCommitlintConfig: true,
-      };
+  describe("commitlint header rule merging", () => {
+    it("should merge header.max from commitlint", async () => {
+      const gitzyConfig = { header: { max: 50, min: 3 } };
       const commitlintConfig = {
-        rules: {
-          "type-enum": [2, "always", ["fix"]],
-        },
+        rules: { "header-max-length": [2, "always", 72] },
       };
 
       vi.mocked(loadConfig)
@@ -154,117 +130,31 @@ describe("resolveConfig", () => {
 
       const result = await resolveConfig();
 
-      expect(loadConfig).toHaveBeenCalledTimes(2);
-      expect(result).toStrictEqual({
-        types: ["fix"],
-        useCommitlintConfig: true,
-      });
+      expect(result.header.max).toBe(72);
+      expect(result.header.min).toBe(3);
     });
 
-    it("should not use commitlint when useCommitlintConfig is false in gitzy config", async () => {
-      const gitzyConfig = {
-        types: ["feat"],
-        useCommitlintConfig: false,
-      };
-
-      vi.mocked(loadConfig).mockResolvedValueOnce(gitzyConfig);
-
-      const result = await resolveConfig();
-
-      expect(loadConfig).toHaveBeenCalledOnce();
-      expect(result).toStrictEqual(gitzyConfig);
-    });
-
-    it("should not use commitlint when useCommitlintConfig is undefined in gitzy config", async () => {
-      const gitzyConfig = {
-        types: ["feat"],
-      };
-
-      vi.mocked(loadConfig).mockResolvedValueOnce(gitzyConfig);
-
-      const result = await resolveConfig();
-
-      expect(loadConfig).toHaveBeenCalledOnce();
-      expect(result).toStrictEqual(gitzyConfig);
-    });
-  });
-
-  describe("parameter precedence over config", () => {
-    it("should use commitlint parameter true even when gitzy config says false", async () => {
-      const gitzyConfig = {
-        types: ["feat"],
-        useCommitlintConfig: false,
-      };
+    it("should merge both header.max and header.min from commitlint", async () => {
       const commitlintConfig = {
         rules: {
-          "type-enum": [2, "always", ["fix"]],
+          "header-max-length": [2, "always", 100],
+          "header-min-length": [2, "always", 5],
         },
       };
 
       vi.mocked(loadConfig)
-        .mockResolvedValueOnce(gitzyConfig)
+        .mockResolvedValueOnce(null)
         .mockResolvedValueOnce(commitlintConfig);
 
-      const result = await resolveConfig(true);
+      const result = await resolveConfig();
 
-      expect(loadConfig).toHaveBeenCalledTimes(2);
-      expect(result).toStrictEqual({
-        types: ["fix"],
-        useCommitlintConfig: false,
-      });
-    });
-
-    it("should not use commitlint when parameter is false even when gitzy config says true", async () => {
-      const gitzyConfig = {
-        types: ["feat"],
-        useCommitlintConfig: true,
-      };
-
-      vi.mocked(loadConfig).mockResolvedValueOnce(gitzyConfig);
-
-      const result = await resolveConfig(false);
-
-      expect(loadConfig).toHaveBeenCalledOnce();
-      expect(result).toStrictEqual(gitzyConfig);
-    });
-
-    it("should use gitzy config setting when parameter is undefined", async () => {
-      const gitzyConfig = {
-        types: ["feat"],
-        useCommitlintConfig: true,
-      };
-      const commitlintConfig = {
-        rules: {
-          "type-enum": [2, "always", ["fix"]],
-        },
-      };
-
-      vi.mocked(loadConfig)
-        .mockResolvedValueOnce(gitzyConfig)
-        .mockResolvedValueOnce(commitlintConfig);
-
-      const result = await resolveConfig(undefined);
-
-      expect(loadConfig).toHaveBeenCalledTimes(2);
-      expect(result).toStrictEqual({
-        types: ["fix"],
-        useCommitlintConfig: true,
-      });
+      expect(result.header.max).toBe(100);
+      expect(result.header.min).toBe(5);
     });
   });
 
   describe("edge cases", () => {
-    it("should handle empty gitzy config object", async () => {
-      const gitzyConfig = {};
-
-      vi.mocked(loadConfig).mockResolvedValueOnce(gitzyConfig);
-
-      const result = await resolveConfig(false);
-
-      expect(result).toStrictEqual({});
-    });
-
-    it("should handle empty commitlint extracted rules", async () => {
+    it("should handle empty commitlint rules gracefully", async () => {
       const gitzyConfig = { types: ["feat"] };
       const commitlintConfig = { rules: {} };
 
@@ -272,97 +162,15 @@ describe("resolveConfig", () => {
         .mockResolvedValueOnce(gitzyConfig)
         .mockResolvedValueOnce(commitlintConfig);
 
-      const result = await resolveConfig(true);
+      const result = await resolveConfig();
 
-      expect(result).toStrictEqual(gitzyConfig);
+      expect(result.types.map((t) => t.name)).toStrictEqual(["feat"]);
     });
 
-    it("should handle commitlint rules with only some values defined", async () => {
-      const gitzyConfig = { types: ["feat"] };
-      const commitlintConfig = {
-        rules: {
-          "scope-enum": [2, "always", ["api", "ui"]],
-          "type-enum": [2, "always", ["feature"]],
-        },
-      };
-
-      vi.mocked(loadConfig)
-        .mockResolvedValueOnce(gitzyConfig)
-        .mockResolvedValueOnce(commitlintConfig);
-
-      const result = await resolveConfig(true);
-
-      expect(result).toStrictEqual({
-        scopes: ["api", "ui"],
-        types: ["feature"],
-      });
-    });
-
-    it("should handle when loadConfig throws an error", async () => {
+    it("should propagate errors from loadConfig", async () => {
       vi.mocked(loadConfig).mockRejectedValue(new Error("Config load failed"));
 
-      await expect(resolveConfig(false)).rejects.toThrowError(
-        "Config load failed",
-      );
-    });
-
-    it("should handle complex nested config objects", async () => {
-      const gitzyConfig = {
-        nested: {
-          deep: {
-            value: true,
-          },
-        },
-        scopes: ["api", "ui"],
-        types: ["feat", "fix"],
-      };
-      const commitlintConfig = {
-        rules: {
-          "header-max-length": [2, "always", 72],
-          "type-enum": [2, "always", ["feature"]],
-        },
-      };
-
-      vi.mocked(loadConfig)
-        .mockResolvedValueOnce(gitzyConfig)
-        .mockResolvedValueOnce(commitlintConfig);
-
-      const result = await resolveConfig(true);
-
-      expect(result).toStrictEqual({
-        headerMaxLength: 72, // added
-        nested: {
-          deep: {
-            value: true,
-          },
-        }, // kept
-        scopes: ["api", "ui"], // kept
-        types: ["feature"], // overridden
-      });
-    });
-
-    it("should call loadConfig exactly once when commitlint is not needed", async () => {
-      vi.mocked(loadConfig).mockResolvedValue({ types: ["feat"] });
-
-      await resolveConfig(false);
-
-      expect(loadConfig).toHaveBeenCalledOnce();
-    });
-
-    it("should call loadConfig exactly twice when commitlint is needed", async () => {
-      const commitlintConfig = {
-        rules: {
-          "type-enum": [2, "always", ["feat"]],
-        },
-      };
-
-      vi.mocked(loadConfig)
-        .mockResolvedValueOnce({ types: ["feat"] })
-        .mockResolvedValueOnce(commitlintConfig);
-
-      await resolveConfig(true);
-
-      expect(loadConfig).toHaveBeenCalledTimes(2);
+      await expect(resolveConfig()).rejects.toThrowError("Config load failed");
     });
   });
 
@@ -373,41 +181,13 @@ describe("resolveConfig", () => {
       // eslint-disable-next-line @typescript-eslint/require-await -- mocking async function
       vi.mocked(loadConfig).mockImplementation(async (name: string) => {
         callOrder.push(name);
-        if (name === "gitzy")
-          return { types: ["feat"], useCommitlintConfig: true };
 
-        return {
-          rules: {
-            "type-enum": [2, "always", ["feat"]],
-          },
-        };
+        return null;
       });
 
       await resolveConfig();
 
       expect(callOrder).toStrictEqual(["gitzy", "commitlint"]);
-    });
-
-    it("should extract rules from commitlint config after loading", async () => {
-      const gitzyConfig = { types: ["feat"] };
-      const commitlintConfig = {
-        rules: {
-          "scope-enum": [2, "always", ["core"]],
-          "type-enum": [2, "always", ["fix", "feat"]],
-        },
-      };
-
-      vi.mocked(loadConfig)
-        .mockResolvedValueOnce(gitzyConfig)
-        .mockResolvedValueOnce(commitlintConfig);
-
-      const result = await resolveConfig(true);
-
-      expect(loadConfig).toHaveBeenCalledTimes(2);
-      expect(result).toStrictEqual({
-        scopes: ["core"],
-        types: ["fix", "feat"],
-      });
     });
   });
 });

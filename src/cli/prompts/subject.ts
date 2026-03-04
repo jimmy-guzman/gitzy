@@ -1,7 +1,6 @@
 import { styleText } from "node:util";
 
-import type { Answers, EnquirerState } from "@/cli/types";
-import type { Config } from "@/core/config/types";
+import type { Answers, CreatedPromptOptions, EnquirerState } from "@/cli/types";
 
 const EMOJI_LENGTH = 3;
 const PERCENT = 100;
@@ -15,13 +14,15 @@ export const leadingLabel = (answers?: Answers) => {
 };
 
 export const subject = ({
-  config: { disableEmoji, headerMaxLength, headerMinLength },
-}: {
-  config: Pick<Config, "disableEmoji" | "headerMaxLength" | "headerMinLength">;
-}) => {
+  config: {
+    emoji: { enabled: emojiEnabled },
+    header: { max: headerMaxLength, min: headerMinLength },
+  },
+  initial,
+}: CreatedPromptOptions) => {
   const minTitleLengthError = `The subject must have at least ${headerMinLength} characters`;
   const maxTitleLengthError = `The subject must not exceed ${headerMaxLength} characters`;
-  const emojiLength = disableEmoji ? 0 : EMOJI_LENGTH;
+  const emojiLength = emojiEnabled ? EMOJI_LENGTH : 0;
 
   const getColor = (inputLen: number, percentRem: number) => {
     if (inputLen < headerMinLength || percentRem < 0) return "red";
@@ -32,6 +33,7 @@ export const subject = ({
   };
 
   return {
+    ...(initial?.subject === undefined ? {} : { initial: initial.subject }),
     message: (state?: EnquirerState) => {
       const inputLength = state?.input.length ?? 0;
       const label = leadingLabel(state?.answers);

@@ -1,15 +1,20 @@
-import { defaultConfig } from "@/core/config/defaults";
+import type { ResolvedConfig } from "@/core/config/types";
+
+import { defaultResolvedConfig } from "@/core/config/defaults";
 import { defaultMessageParts } from "@/core/conventional/types";
 
 import { formatMessage, wrap } from "./message";
 
-const setupFormatCommitMessage = (config = {}, answers = {}): string => {
+const setupFormatCommitMessage = (
+  config: Partial<ResolvedConfig> = {},
+  answers = {},
+): string => {
   return formatMessage(
-    { ...defaultConfig, ...config },
+    { ...defaultResolvedConfig, ...config },
     {
       body: "this an amazing feature, lots of details",
       breaking: "breaks everything",
-      issues: "#123",
+      issues: ["#123"],
       scope: "*",
       subject: "a cool new feature",
       type: "feat",
@@ -35,7 +40,9 @@ describe("formatCommitMessage", () => {
   });
 
   it("should format commit message with no emojis", () => {
-    const formattedMessage = setupFormatCommitMessage({ disableEmoji: true });
+    const formattedMessage = setupFormatCommitMessage({
+      emoji: { breaking: "💥", enabled: false, issues: "🏁" },
+    });
 
     expect(formattedMessage).toMatchInlineSnapshot(`
       "feat(*): a cool new feature
@@ -49,7 +56,7 @@ describe("formatCommitMessage", () => {
   });
 
   it("should format commit message with no body", () => {
-    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
       body: "",
     });
 
@@ -63,7 +70,7 @@ describe("formatCommitMessage", () => {
   });
 
   it("should format commit message with multiline body", () => {
-    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
       body: "\n",
     });
 
@@ -77,7 +84,7 @@ describe("formatCommitMessage", () => {
   });
 
   it("should format commit message with no scope", () => {
-    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
       scope: "",
     });
 
@@ -93,8 +100,8 @@ describe("formatCommitMessage", () => {
   });
 
   it("should format commit message with no issues", () => {
-    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
-      issues: "",
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
+      issues: [],
     });
 
     expect(formattedMessage).toMatchInlineSnapshot(`
@@ -107,7 +114,7 @@ describe("formatCommitMessage", () => {
   });
 
   it("should format commit message with no breaking change", () => {
-    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
       breaking: "",
     });
 
@@ -121,8 +128,8 @@ describe("formatCommitMessage", () => {
   });
 
   it("should format commit message with multiple issues", () => {
-    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
-      issues: "#123, #456, #789",
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
+      issues: ["#123", "#456", "#789"],
     });
 
     expect(formattedMessage).toMatchInlineSnapshot(`
@@ -137,8 +144,8 @@ describe("formatCommitMessage", () => {
   });
 
   it("should format commit message with multiple issues using full syntax", () => {
-    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
-      issues: "resolves #10, fixes #123, closes #456",
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
+      issues: ["resolves #10", "fixes #123", "closes #456"],
     });
 
     expect(formattedMessage).toMatchInlineSnapshot(`
@@ -153,8 +160,8 @@ describe("formatCommitMessage", () => {
   });
 
   it("should format commit message with cross-repo issues", () => {
-    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
-      issues: "octo-org/octo-repo#100",
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
+      issues: ["octo-org/octo-repo#100"],
     });
 
     expect(formattedMessage).toMatchInlineSnapshot(`
@@ -169,8 +176,8 @@ describe("formatCommitMessage", () => {
   });
 
   it("should format commit message with mixed issue formats", () => {
-    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
-      issues: "resolves #10, #123, resolves octo-org/octo-repo#100",
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
+      issues: ["resolves #10", "#123", "resolves octo-org/octo-repo#100"],
     });
 
     expect(formattedMessage).toMatchInlineSnapshot(`
@@ -186,9 +193,9 @@ describe("formatCommitMessage", () => {
 
   it("should format commit message with multiple issues and no emoji", () => {
     const formattedMessage = setupFormatCommitMessage(
-      { disableEmoji: true },
+      { emoji: { breaking: "💥", enabled: false, issues: "🏁" } },
       {
-        issues: "resolves #10, resolves #123",
+        issues: ["resolves #10", "resolves #123"],
       },
     );
 
@@ -203,11 +210,16 @@ describe("formatCommitMessage", () => {
     `);
   });
 
-  it("should format commit message with custom issuesPrefix", () => {
+  it("should format commit message with custom issues prefix", () => {
     const formattedMessage = setupFormatCommitMessage(
-      { issuesPrefix: "fixes" },
       {
-        issues: "#123, #456",
+        issues: {
+          ...defaultResolvedConfig.issues,
+          prefix: "fixes",
+        },
+      },
+      {
+        issues: ["#123", "#456"],
       },
     );
 
@@ -223,8 +235,8 @@ describe("formatCommitMessage", () => {
   });
 
   it("should handle whitespace tolerance in issues", () => {
-    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
-      issues: "  #123 , #456  ,#789  ",
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
+      issues: ["  #123 ", " #456  ", "#789  "],
     });
 
     expect(formattedMessage).toMatchInlineSnapshot(`
@@ -239,8 +251,8 @@ describe("formatCommitMessage", () => {
   });
 
   it("should handle issues with excessive whitespace", () => {
-    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
-      issues: "#123  ,   #456   ,    #789",
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
+      issues: ["#123", "#456", "#789"],
     });
 
     expect(formattedMessage).toMatchInlineSnapshot(`
@@ -255,71 +267,71 @@ describe("formatCommitMessage", () => {
   });
 
   it("should handle empty issues after filtering whitespace", () => {
-    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
-      issues: "#123, , #456",
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
+      issues: ["#123", "", "#456"],
     });
 
     expect(formattedMessage).toMatchInlineSnapshot(`
-    "feat(*): ✨ a cool new feature
+      "feat(*): ✨ a cool new feature
 
-    this an amazing feature, lots of details
+      this an amazing feature, lots of details
 
-    BREAKING CHANGE: 💥 breaks everything
+      BREAKING CHANGE: 💥 breaks everything
 
-    🏁 Closes #123, Closes #456"
-  `);
+      🏁 Closes #123, Closes #456"
+    `);
   });
 
   it("should handle issues without spaces after commas", () => {
-    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
-      issues: "#123,#456,#789",
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
+      issues: ["#123", "#456", "#789"],
     });
 
     expect(formattedMessage).toMatchInlineSnapshot(`
-    "feat(*): ✨ a cool new feature
+      "feat(*): ✨ a cool new feature
 
-    this an amazing feature, lots of details
+      this an amazing feature, lots of details
 
-    BREAKING CHANGE: 💥 breaks everything
+      BREAKING CHANGE: 💥 breaks everything
 
-    🏁 Closes #123, Closes #456, Closes #789"
-  `);
+      🏁 Closes #123, Closes #456, Closes #789"
+    `);
   });
 
   it("should handle issues with multiple spaces around commas", () => {
-    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
-      issues: "#123   ,   #456",
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
+      issues: ["#123", "#456"],
     });
 
     expect(formattedMessage).toMatchInlineSnapshot(`
-    "feat(*): ✨ a cool new feature
+      "feat(*): ✨ a cool new feature
 
-    this an amazing feature, lots of details
+      this an amazing feature, lots of details
 
-    BREAKING CHANGE: 💥 breaks everything
+      BREAKING CHANGE: 💥 breaks everything
 
-    🏁 Closes #123, Closes #456"
-  `);
+      🏁 Closes #123, Closes #456"
+    `);
   });
 
   it("should handle mixed spacing around commas", () => {
-    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
-      issues: "#123,#456  ,  #789",
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
+      issues: ["#123", "#456", "#789"],
     });
 
     expect(formattedMessage).toMatchInlineSnapshot(`
-    "feat(*): ✨ a cool new feature
+      "feat(*): ✨ a cool new feature
 
-    this an amazing feature, lots of details
+      this an amazing feature, lots of details
 
-    BREAKING CHANGE: 💥 breaks everything
+      BREAKING CHANGE: 💥 breaks everything
 
-    🏁 Closes #123, Closes #456, Closes #789"
-  `);
+      🏁 Closes #123, Closes #456, Closes #789"
+    `);
   });
 
   it("should wrap commit message", () => {
-    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
       body: "this is a very very very very very very very very very very very very very very very very very very very long description",
       breaking:
         "this is a very very very very very very very very very very very very very very very very very very very long breaking change",
@@ -341,7 +353,7 @@ describe("formatCommitMessage", () => {
 
   it("should wrap commit message correctly when there are quotes and back ticks", () => {
     const formattedMessage = setupFormatCommitMessage(
-      { ...defaultConfig, headerMaxLength: 75 },
+      { header: { max: 75, min: 3 } },
       {
         subject:
           "reduce deps by replacing `cosmiconfig` w/ `lilconfig` & `yaml`",
@@ -360,7 +372,7 @@ describe("formatCommitMessage", () => {
   });
 
   it("should allow double quotes in message", () => {
-    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
       body: "",
       breaking: "",
       issues: "",
@@ -373,7 +385,7 @@ describe("formatCommitMessage", () => {
   });
 
   it("should allow backtick quotes in message", () => {
-    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
       body: "",
       breaking: "",
       issues: "",
@@ -385,9 +397,9 @@ describe("formatCommitMessage", () => {
     );
   });
 
-  it("should not wrap message when headerMaxLength is longer than the default width (72)", () => {
+  it("should not wrap message when header.max is longer than the default width (72)", () => {
     const formattedMessage = setupFormatCommitMessage(
-      { ...defaultConfig, headerMaxLength: 75 },
+      { header: { max: 75, min: 3 } },
       {
         body: "",
         breaking: "",
@@ -403,15 +415,15 @@ describe("formatCommitMessage", () => {
     expect(formattedMessage).toHaveLength(73);
   });
 
-  it("should leverage default width (72) when headerMaxLength is less", () => {
+  it("should leverage default width (72) when header.max is less", () => {
     const formattedMessage = setupFormatCommitMessage(
-      { ...defaultConfig, headerMaxLength: 71 },
+      { header: { max: 71, min: 3 } },
       {
         body: "",
         breaking: "",
         issues: "",
         subject:
-          "this is a very very very very very very very very very subject", // This is intentionally longer than headerMaxLength
+          "this is a very very very very very very very very very subject", // This is intentionally longer than header.max
       },
     );
 
@@ -422,10 +434,9 @@ describe("formatCommitMessage", () => {
     expect(formattedMessage.split("\n")[0]).toHaveLength(65);
   });
 
-  it("should add '!' when breakingChangeFormat is '!' and there is a breaking change", () => {
+  it("should add '!' when breaking.format is '!' and there is a breaking change", () => {
     const formattedMessage = setupFormatCommitMessage({
-      breaking: true,
-      breakingChangeFormat: "!",
+      breaking: { format: "!" },
     });
 
     expect(formattedMessage).toMatchInlineSnapshot(`
@@ -437,10 +448,10 @@ describe("formatCommitMessage", () => {
     `);
   });
 
-  it("should NOT add '!' when breakingChangeFormat is '!' and there is no breaking change", () => {
+  it("should NOT add '!' when breaking.format is '!' and there is no breaking change", () => {
     const formattedMessage = setupFormatCommitMessage(
       {
-        breakingChangeFormat: "!",
+        breaking: { format: "!" },
       },
       {
         breaking: false,
@@ -456,10 +467,9 @@ describe("formatCommitMessage", () => {
     `);
   });
 
-  it("should add '!' & footer when breakingChangeFormat is 'both' and there is a breaking change", () => {
+  it("should add '!' & footer when breaking.format is 'both' and there is a breaking change", () => {
     const formattedMessage = setupFormatCommitMessage({
-      breaking: "breaks everything",
-      breakingChangeFormat: "both",
+      breaking: { format: "both" },
     });
 
     expect(formattedMessage).toMatchInlineSnapshot(`
@@ -474,7 +484,7 @@ describe("formatCommitMessage", () => {
   });
 
   it("should NOT include BREAKING CHANGE footer when breaking is a boolean", () => {
-    const formattedMessage = setupFormatCommitMessage(defaultConfig, {
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
       breaking: true,
     });
 
@@ -489,11 +499,11 @@ describe("formatCommitMessage", () => {
 
   it("should format correctly when in hook mode", () => {
     const formattedMessage = formatMessage(
-      defaultConfig,
+      defaultResolvedConfig,
       {
         body: "this an amazing feature, lots of details",
         breaking: "breaks everything",
-        issues: "#123",
+        issues: ["#123"],
         scope: "*",
         subject: "a cool new `feature`",
         type: "feat",
@@ -512,10 +522,58 @@ describe("formatCommitMessage", () => {
     `);
   });
 
-  it("should not crash when parts.type is empty (not in config.details)", () => {
-    const result = formatMessage(defaultConfig, defaultMessageParts, true);
+  it("should not crash when parts.type is empty (not in config.types)", () => {
+    const result = formatMessage(
+      defaultResolvedConfig,
+      defaultMessageParts,
+      true,
+    );
 
     expect(result).toBe(": ");
+  });
+
+  it("should format Jira issues without prefix", () => {
+    const formattedMessage = setupFormatCommitMessage(
+      {
+        issues: {
+          ...defaultResolvedConfig.issues,
+          pattern: "jira",
+        },
+      },
+      {
+        issues: ["PROJ-123", "PROJ-456"],
+      },
+    );
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*): ✨ a cool new feature
+
+      this an amazing feature, lots of details
+
+      BREAKING CHANGE: 💥 breaks everything
+
+      🏁 PROJ-123, PROJ-456"
+    `);
+  });
+
+  it("should include co-authors footer", () => {
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
+      coAuthors: ["Alice <alice@example.com>", "Bob <bob@example.com>"],
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*): ✨ a cool new feature
+
+      this an amazing feature, lots of details
+
+      BREAKING CHANGE: 💥 breaks everything
+
+      🏁 Closes #123
+
+      Co-authored-by: Alice <alice@example.com>
+
+      Co-authored-by: Bob <bob@example.com>"
+    `);
   });
 });
 
