@@ -83,7 +83,7 @@ The codebase is split into two layers with a thin orchestration layer connecting
 - **Config schema:** Every config file is loaded through a valibot schema with `safeParse`. Defaults are applied at the schema level via `optional(field, default)`, not manually in code. Invalid config throws a `TypeError` with a human-readable summary.
 - **Logging:** All console output goes through `src/cli/utils/logging.ts` using Node's built-in `styleText` from `node:util`. No external color library at runtime.
 - **Store (retry mode):** Previous answers persisted as JSON in `os.tmpdir()/gitzy/<cwd-basename>-store.json` at mode `0o0600`.
-- **Bundling:** `tsdown` inlines `commander`, `enquirer`, `valibot`, `@leeoniya/ufuzzy`, and `yaml` into `dist/run.mjs` to keep install size minimal. `lilconfig` and `tinyexec` remain as external runtime `dependencies`.
+- **Bundling:** `tsdown` `commander`, `enquirer`, `valibot`, `@leeoniya/ufuzzy`, and `yaml` are inlined into `dist/run.mjs` to keep install size minimal. `lilconfig` and `tinyexec` remain as external runtime `dependencies`.
 - Use `satisfies` for type narrowing when possible (e.g., `lang.ts` config objects).
 - Private class fields (`#`) used in `GitzyStore`.
 - `as const` used for tuple/literal types in defaults and schemas.
@@ -95,7 +95,7 @@ The codebase is split into two layers with a thin orchestration layer connecting
 pnpm build        # Bundle src/run.ts → dist/run.mjs (minified)
 pnpm test         # Run tests in watch mode
 pnpm coverage     # Single-run with V8 coverage report
-pnpm check        # Full suite: knip + lint + format + coverage + typecheck (precheck builds first)
+pnpm check        # Full suite: knip + lint + format + coverage + typecheck (check builds first)
 pnpm lint         # Lint (ESLint)
 pnpm lint:fix     # Lint and auto-fix
 pnpm format       # Check formatting (Prettier)
