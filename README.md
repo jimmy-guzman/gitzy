@@ -112,7 +112,7 @@ By default, `gitzy` works out of the box. You can configure it via a `gitzy` key
 `gitzy.config.js`, `gitzy.config.cjs`, `gitzy.config.mjs`, `gitzy.config.ts`, `gitzy.config.mts`
 
 > [!NOTE]
-> All of these files can also live under a `.config/` directory. TypeScript config files (`.ts`/`.mts`) require Node >=22.6.0 (`--experimental-strip-types`). Node 20 users must use a `.js`, `.cjs`, or `.mjs` config file instead.
+> All of these files can also live under a `.config/` directory. TypeScript config files (`.ts`/`.mts`) require Node >=22.12.0 (built-in TypeScript stripping, no flag needed). Use a `.js`, `.cjs`, or `.mjs` config file if you are on an older Node version.
 
 Use `defineConfig` for editor autocomplete:
 
