@@ -14,7 +14,7 @@ Add a `gitzy squash` subcommand that soft-resets the last N commits and re-commi
 
 ## Mechanism
 
-`git reset --soft HEAD~N` — unstages the last N commits back to the working tree while keeping all changes staged. The user then fills in (or confirms pre-filled) prompts for the new combined commit message.
+`git reset --soft HEAD~N` — moves the last N commits' changes back to the working tree while keeping all changes staged. The user then fills in (or confirms pre-filled) prompts for the new combined commit message.
 
 ---
 
@@ -59,7 +59,7 @@ Mirrors `gitzy commit` minus `--retry`, `--hook`, and `--amend`. Adds `--count`.
 
 ## Command Flow
 
-```
+```text
 1. resolveConfig()
 2. Determine count:
    - flags.count → use it
@@ -86,7 +86,7 @@ Note: `checkIfStaged()` is **not** called — there are no staged files before t
 
 ## `--dry-run` Output
 
-```
+```text
 Would squash 3 commits into:
 
 feat: ✨ add dark mode
