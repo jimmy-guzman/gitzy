@@ -8,7 +8,7 @@ import { formatMessage, formatMessageResult, wrap } from "./message";
 const setupFormatCommitMessage = (
   config: Partial<ResolvedConfig> = {},
   answers = {},
-): string => {
+) => {
   return formatMessage(
     { ...defaultResolvedConfig, ...config },
     {
@@ -237,22 +237,6 @@ describe("formatCommitMessage", () => {
   it("should handle whitespace tolerance in issues", () => {
     const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
       issues: ["  #123 ", " #456  ", "#789  "],
-    });
-
-    expect(formattedMessage).toMatchInlineSnapshot(`
-      "feat(*): ✨ a cool new feature
-
-      this an amazing feature, lots of details
-
-      BREAKING CHANGE: 💥 breaks everything
-
-      🏁 Closes #123, Closes #456, Closes #789"
-    `);
-  });
-
-  it("should format multiple issues as array", () => {
-    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
-      issues: ["#123", "#456", "#789"],
     });
 
     expect(formattedMessage).toMatchInlineSnapshot(`
@@ -497,7 +481,7 @@ describe("formatCommitMessage", () => {
       true,
     );
 
-    expect(result).toBe(": ");
+    expect(result).toMatchInlineSnapshot(`": "`);
   });
 
   it("should format Jira issues without prefix", () => {
