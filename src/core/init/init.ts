@@ -36,11 +36,11 @@ const CONFIG_TEMPLATE = `${JSON.stringify(
   2,
 )}\n`;
 
-export interface InitOptions {
+interface InitOptions {
   force?: boolean;
 }
 
-export interface InitResult {
+interface InitResult {
   exists: boolean;
   filePath: string;
 }

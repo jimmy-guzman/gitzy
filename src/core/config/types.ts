@@ -58,10 +58,3 @@ export interface ResolvedConfig {
   scopes: readonly ScopeEntry[];
   types: readonly TypeEntry[];
 }
-
-/**
- * Helper for typed config with editor autocomplete
- */
-export const defineConfig = (config: Config) => {
-  return config;
-};

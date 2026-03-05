@@ -1,6 +1,6 @@
 # gitzy 🪄
 
-> Interactive [conventional commits][conventional-commits] CLI with branch name generation, commitlint integration, and a public Node API.
+> Interactive [conventional commits][conventional-commits] CLI with branch name generation and commitlint integration.
 
 <!-- markdownlint-disable MD033 -->
 <p align="center">
@@ -23,7 +23,6 @@
 - [Subcommands](#subcommands)
 - [Configuration](#configuration)
 - [Config Options](#config-options)
-- [Node API](#node-api)
 
 ## Features
 
@@ -41,7 +40,6 @@
 - JSON output (`--json`) for scripting and CI
 - `--no-emoji` flag (precedence: `--no-emoji` > `GITZY_NO_EMOJI` env > `emoji.enabled` config)
 - `--stdin` for piping answers as JSON (both `commit` and `branch`)
-- Public Node API (`dist/api/index.mjs`)
 - ⚡ [Lightweight (~300 kB install)][packagephobia]
 
 ## Usage
@@ -258,84 +256,6 @@ branch: {
 ### commitlint integration
 
 gitzy always auto-detects a local commitlint config file and merges its rules as a base. Any values set in your gitzy config take priority. Use `gitzy config --json` to inspect the resolved configuration.
-
-## Node API
-
-gitzy exports a public Node API from `gitzy` (resolves to `dist/api/index.mjs`):
-
-```js
-import {
-  defineConfig,
-  resolveConfig,
-  getConfig,
-  formatMessage,
-  formatMessageResult,
-  formatBranchName,
-  commit,
-  createBranch,
-  slugify,
-  init,
-  builtinTypes,
-  defaultBranchConfig,
-  defaultResolvedConfig,
-} from "gitzy";
-```
-
-### `getConfig() / resolveConfig(): Promise<ResolvedConfig>`
-
-Loads and resolves the gitzy config (auto-detects gitzy or commitlint config). `getConfig` is an alias for `resolveConfig`.
-
-### `formatMessage(config, parts, emojiEnabled?): string`
-
-Formats a conventional commit message string from the given parts and resolved config.
-
-```js
-import { formatMessage, getConfig } from "gitzy";
-
-const config = await getConfig();
-const message = formatMessage(config, {
-  type: "feat",
-  scope: "ui",
-  subject: "add dark mode",
-  body: "",
-  breaking: false,
-  issues: [],
-});
-```
-
-### `formatMessageResult(config, parts, emojiEnabled?): CommitResult`
-
-Returns a structured result `{ message, header, body, footer, parts }` — useful for `--json` output or programmatic use.
-
-### `commit(message, options?): Promise<{ committed: boolean, message: string }>`
-
-Executes `git commit -m <message>` with optional `amend`, `noVerify`, `hook`, and `dryRun` options.
-
-### `formatBranchName(parts, branchConfig): string`
-
-Formats a branch name string from the given parts and branch config.
-
-```js
-import { formatBranchName, defaultBranchConfig } from "gitzy";
-
-const name = formatBranchName(
-  { type: "feat", scope: "ui", subject: "add dark mode" },
-  defaultBranchConfig,
-);
-// → "feat/ui/add-dark-mode"
-```
-
-### `createBranch(branchName, checkout?, dryRun?, from?): Promise<{ branchName: string }>`
-
-Creates a new git branch, optionally checking it out. Pass `from` to create from a specific base branch or ref.
-
-### `init(cwd?, options?): InitResult`
-
-Generates a starter `.gitzyrc.json` in the given directory. Pass `{ force: true }` to overwrite an existing file.
-
-### `defineConfig(config): Config`
-
-Helper for typed config with editor autocomplete. No-op at runtime.
 
 ## Credits
 

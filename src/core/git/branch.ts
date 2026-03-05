@@ -4,11 +4,6 @@
 
 import { x } from "tinyexec";
 
-import type { BranchParts } from "@/core/branch/types";
-import type { ResolvedConfig } from "@/core/config/types";
-
-import { formatBranchName } from "@/core/branch/formatter";
-
 interface RenameBranchOptions {
   dryRun?: boolean;
 }
@@ -123,45 +118,4 @@ export const createBranch = async (
   }
 
   return { branchName };
-};
-
-export interface BranchOptions {
-  checkout?: boolean;
-  dryRun?: boolean;
-  from?: string;
-}
-
-export interface BranchResult {
-  branch: string;
-  created: boolean;
-}
-
-/**
- * Format branch parts into a branch name and optionally create the branch
- *
- * @param config - Resolved configuration for formatting
- *
- * @param parts - The branch parts (type, scope, issue, subject)
- *
- * @param options - Branch options
- *
- * @param options.checkout - Whether to checkout the new branch (default: true)
- *
- * @param options.dryRun - Show result without creating branch
- *
- * @param options.from - Base branch or ref to create the branch from
- *
- * @returns Branch result with formatted name and whether it was created
- */
-export const branch = async (
-  config: ResolvedConfig,
-  parts: BranchParts,
-  options?: BranchOptions,
-): Promise<BranchResult> => {
-  const { checkout = true, dryRun = false, from } = options ?? {};
-  const branchName = formatBranchName(parts, config.branch);
-
-  await createBranch(branchName, checkout, dryRun, from);
-
-  return { branch: branchName, created: !dryRun };
 };

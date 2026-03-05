@@ -162,7 +162,7 @@ export const formatMessage = (
 /**
  * Structured result for --json output
  */
-export interface CommitResult {
+interface CommitResult {
   body: string;
   footer: string;
   header: string;

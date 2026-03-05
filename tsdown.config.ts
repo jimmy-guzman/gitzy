@@ -1,7 +1,7 @@
 import { defineConfig } from "tsdown";
 
 export default defineConfig({
-  entry: ["src/run.ts", "src/api/index.ts"],
+  entry: ["src/run.ts"],
   inlineOnly: [
     "ansi-colors",
     "commander",
