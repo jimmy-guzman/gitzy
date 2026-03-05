@@ -70,7 +70,6 @@ export const parseConventionalCommit = (message: string): ParsedCommit => {
 
   if (scope) result.scope = scope;
 
-  // Extract body (text before footer sections)
   const footerStart = rest.search(
     /^(?:\p{Emoji_Presentation}\s)?(?:BREAKING CHANGE|Co-authored-by|Closes|Fixes|Resolves)/mu,
   );
@@ -79,7 +78,6 @@ export const parseConventionalCommit = (message: string): ParsedCommit => {
 
   if (bodyText) result.body = bodyText;
 
-  // Extract BREAKING CHANGE footer
   const breakingMatch = BREAKING_FOOTER_REGEX.exec(rest);
 
   if (breakingMatch?.groups?.breaking) {
@@ -88,7 +86,6 @@ export const parseConventionalCommit = (message: string): ParsedCommit => {
     result.breaking = true;
   }
 
-  // Extract issue references from footer (Closes/Fixes/Resolves lines)
   const issueMatches = [...rest.matchAll(ISSUES_FOOTER_REGEX)];
 
   if (issueMatches.length > 0) {
