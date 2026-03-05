@@ -391,7 +391,7 @@ describe("formatCommitMessage", () => {
         breaking: "",
         issues: [],
         subject:
-          "this is a very very very very very very very very very subject", // This is intentionally longer than header.max
+          "this is a very very very very very very very very very subject",
       },
     );
 

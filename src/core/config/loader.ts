@@ -11,7 +11,7 @@ const tsExts = [".ts", ".mts"] as const;
 
 /**
  * Returns the list of file locations lilconfig will search for a config.
- * The extensionless `.${configName}rc` entry is treated as JSON by lilconfig's default loader.
+ * The `.${configName}rc` entry without an extension is treated as JSON by lilconfig's default loader.
  */
 const getSearchPlaces = (configName: string) => {
   const rcExts = [".json", ...configExts];
