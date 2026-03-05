@@ -10,7 +10,17 @@
     "scope-enum": [
       2,
       "always",
-      ["deps", "build", "*", "cli", "release", "prompts"]
+      [
+        "deps",
+        "build",
+        "*",
+        "api",
+        "branch",
+        "cli",
+        "config",
+        "release",
+        "prompts"
+      ]
     ],
     "subject-case": [
       2,
