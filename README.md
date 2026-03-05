@@ -63,7 +63,7 @@ gitzy branch -t feat -m "add dark mode" -s ui
 | `gitzy commit` | Interactive conventional commit flow (default)                                 |
 | `gitzy branch` | Generate a branch name from a conventional commit prompt                       |
 | `gitzy init`   | Generate a starter `.gitzyrc.json` in the current dir (`--force` to overwrite) |
-| `gitzy config` | Display the resolved config (`--json` for machine output)                      |
+| `gitzy config` | Display the resolved config as JSON                                            |
 
 ### `gitzy commit` flags
 
@@ -255,7 +255,7 @@ branch: {
 
 ### commitlint integration
 
-gitzy always auto-detects a local commitlint config file and merges its rules as a base. Any values set in your gitzy config take priority. Use `gitzy config --json` to inspect the resolved configuration.
+gitzy always auto-detects a local commitlint config file and merges its rules as a base. Any values set in your gitzy config take priority. Use `gitzy config` to inspect the resolved configuration.
 
 ## Credits
 
