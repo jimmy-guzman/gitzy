@@ -255,16 +255,9 @@ branch: {
 
 **Pattern tokens:** `{type}`, `{scope}`, `{issue}`, `{subject}` — any token that has no value is omitted along with its surrounding separators.
 
-### `useCommitlintConfig`
+### commitlint integration
 
-When set to `true` in the resolved config (via `gitzy config --json`), gitzy automatically maps commitlint rules to gitzy config:
-
-- `type-enum` → `types`
-- `scope-enum` → `scopes`
-- `header-max-length` → `header.max`
-- `header-min-length` → `header.min`
-
-To enable, gitzy auto-detects a local commitlint config file when no gitzy config is found.
+gitzy always auto-detects a local commitlint config file and merges its rules as a base. Any values set in your gitzy config take priority. Use `gitzy config --json` to inspect the resolved configuration.
 
 ## Node API
 

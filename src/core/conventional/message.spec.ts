@@ -3,7 +3,7 @@ import type { ResolvedConfig } from "@/core/config/types";
 import { defaultResolvedConfig } from "@/core/config/defaults";
 import { defaultMessageParts } from "@/core/conventional/types";
 
-import { formatMessage, wrap } from "./message";
+import { formatMessage, formatMessageResult, wrap } from "./message";
 
 const setupFormatCommitMessage = (
   config: Partial<ResolvedConfig> = {},
@@ -573,6 +573,223 @@ describe("formatCommitMessage", () => {
       Co-authored-by: Alice <alice@example.com>
 
       Co-authored-by: Bob <bob@example.com>"
+    `);
+  });
+});
+
+describe("formatMessageResult", () => {
+  it("should split header, body, and footer into structured result", () => {
+    const result = formatMessageResult(
+      defaultResolvedConfig,
+      {
+        body: "this an amazing feature, lots of details",
+        breaking: "breaks everything",
+        coAuthors: [],
+        issues: ["#123"],
+        scope: "*",
+        subject: "a cool new feature",
+        type: "feat",
+      },
+      true,
+    );
+
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "body": "this an amazing feature, lots of details",
+        "footer": "BREAKING CHANGE: 💥 breaks everything
+
+      🏁 Closes #123",
+        "header": "feat(*): ✨ a cool new feature",
+        "message": "feat(*): ✨ a cool new feature
+
+      this an amazing feature, lots of details
+
+      BREAKING CHANGE: 💥 breaks everything
+
+      🏁 Closes #123",
+        "parts": {
+          "body": "this an amazing feature, lots of details",
+          "breaking": "breaks everything",
+          "coAuthors": [],
+          "issues": [
+            "#123",
+          ],
+          "scope": "*",
+          "subject": "a cool new feature",
+          "type": "feat",
+        },
+      }
+    `);
+  });
+
+  it("should return empty body and footer for header-only message", () => {
+    const result = formatMessageResult(
+      defaultResolvedConfig,
+      {
+        body: "",
+        breaking: "",
+        coAuthors: [],
+        issues: [],
+        scope: "",
+        subject: "quick fix",
+        type: "fix",
+      },
+      true,
+    );
+
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "body": "",
+        "footer": "",
+        "header": "fix: 🐛 quick fix",
+        "message": "fix: 🐛 quick fix",
+        "parts": {
+          "body": "",
+          "breaking": "",
+          "coAuthors": [],
+          "issues": [],
+          "scope": "",
+          "subject": "quick fix",
+          "type": "fix",
+        },
+      }
+    `);
+  });
+
+  it("should correctly split when emoji is disabled (footer only when emoji-prefixed)", () => {
+    const result = formatMessageResult(
+      {
+        ...defaultResolvedConfig,
+        emoji: { breaking: "💥", enabled: false, issues: "🏁" },
+      },
+      {
+        body: "a description",
+        breaking: "breaks everything",
+        coAuthors: [],
+        issues: ["#42"],
+        scope: "",
+        subject: "a feature",
+        type: "feat",
+      },
+      false,
+    );
+
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "body": "a description
+
+      BREAKING CHANGE: breaks everything
+
+      Closes #42",
+        "footer": "",
+        "header": "feat: a feature",
+        "message": "feat: a feature
+
+      a description
+
+      BREAKING CHANGE: breaks everything
+
+      Closes #42",
+        "parts": {
+          "body": "a description",
+          "breaking": "breaks everything",
+          "coAuthors": [],
+          "issues": [
+            "#42",
+          ],
+          "scope": "",
+          "subject": "a feature",
+          "type": "feat",
+        },
+      }
+    `);
+  });
+
+  it("should correctly split with custom issues prefix", () => {
+    const result = formatMessageResult(
+      {
+        ...defaultResolvedConfig,
+        issues: { ...defaultResolvedConfig.issues, prefix: "fixes" },
+      },
+      {
+        body: "",
+        breaking: "",
+        coAuthors: [],
+        issues: ["#100", "#200"],
+        scope: "",
+        subject: "fix bugs",
+        type: "fix",
+      },
+      true,
+    );
+
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "body": "",
+        "footer": "🏁 Fixes #100, Fixes #200",
+        "header": "fix: 🐛 fix bugs",
+        "message": "fix: 🐛 fix bugs
+
+      🏁 Fixes #100, Fixes #200",
+        "parts": {
+          "body": "",
+          "breaking": "",
+          "coAuthors": [],
+          "issues": [
+            "#100",
+            "#200",
+          ],
+          "scope": "",
+          "subject": "fix bugs",
+          "type": "fix",
+        },
+      }
+    `);
+  });
+
+  it("should correctly split multi-paragraph body with co-authors", () => {
+    const result = formatMessageResult(
+      defaultResolvedConfig,
+      {
+        body: "first paragraph\n\nsecond paragraph",
+        breaking: "",
+        coAuthors: ["Alice <alice@example.com>"],
+        issues: [],
+        scope: "",
+        subject: "complex commit",
+        type: "chore",
+      },
+      true,
+    );
+
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "body": "first paragraph
+
+      second paragraph",
+        "footer": "Co-authored-by: Alice <alice@example.com>",
+        "header": "chore: 🤖 complex commit",
+        "message": "chore: 🤖 complex commit
+
+      first paragraph
+
+      second paragraph
+
+      Co-authored-by: Alice <alice@example.com>",
+        "parts": {
+          "body": "first paragraph
+
+      second paragraph",
+          "breaking": "",
+          "coAuthors": [
+            "Alice <alice@example.com>",
+          ],
+          "issues": [],
+          "scope": "",
+          "subject": "complex commit",
+          "type": "chore",
+        },
+      }
     `);
   });
 });

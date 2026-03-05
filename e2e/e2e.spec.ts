@@ -1,12 +1,50 @@
 import { execSync } from "node:child_process";
 
-// ESC character — built dynamically to avoid no-control-regex lint errors
+/** ESC character — built dynamically to avoid no-control-regex lint errors */
 const ESC = String.fromCodePoint(0x1b);
 const ANSI_RE = new RegExp(String.raw`${ESC}\[[0-9;]*[mhHlJ]`, "gu");
 const CURSOR_RE = new RegExp(String.raw`${ESC}\[\?25[lh]`, "gu");
 
 const stripAnsi = (s: string) => {
   return s.replaceAll(ANSI_RE, "").replaceAll(CURSOR_RE, "");
+};
+
+interface CommitPayload {
+  body: string;
+  breaking: boolean | string;
+  coAuthors: string[];
+  issues: string[];
+  scope: string;
+  subject: string;
+  type: string;
+}
+
+interface BranchPayload {
+  issue: string;
+  scope: string;
+  subject: string;
+  type: string;
+}
+
+const defaultCommitPayload = (): CommitPayload => {
+  return {
+    body: "",
+    breaking: false,
+    coAuthors: [],
+    issues: [],
+    scope: "",
+    subject: "testing",
+    type: "chore",
+  };
+};
+
+const defaultBranchPayload = (): BranchPayload => {
+  return {
+    issue: "",
+    scope: "",
+    subject: "add dark mode",
+    type: "feat",
+  };
 };
 
 const runCommit = (args: string, stdin?: string) => {
@@ -20,7 +58,6 @@ const runCommit = (args: string, stdin?: string) => {
 
       const clean = stripAnsi(raw);
 
-      // Extract the commit message: everything after "Message..." up to the trailing newlines
       const marker = "Message...\n\n";
       const start = clean.indexOf(marker);
 
@@ -50,7 +87,6 @@ const runBranch = (args: string, stdin?: string) => {
 
       const clean = stripAnsi(raw);
 
-      // Extract branch name: "Branch name: <name>"
       const match = /Branch name: (.+)/.exec(clean);
 
       if (!match) {
@@ -70,13 +106,11 @@ describe("gitzy", () => {
   describe("commit", () => {
     it("should create commit message with all fields", async () => {
       const stdin = JSON.stringify({
+        ...defaultCommitPayload(),
         body: "some longer description",
         breaking: "this broke something",
-        coAuthors: [],
         issues: ["#123"],
         scope: "e2e",
-        subject: "testing",
-        type: "chore",
       });
 
       const result = await runCommit("--stdin", stdin);
@@ -94,13 +128,9 @@ describe("gitzy", () => {
 
     it("should create commit message with type, scope, subject and issues", async () => {
       const stdin = JSON.stringify({
-        body: "",
-        breaking: false,
-        coAuthors: [],
+        ...defaultCommitPayload(),
         issues: ["#123"],
         scope: "e2e",
-        subject: "testing",
-        type: "chore",
       });
 
       const result = await runCommit("--stdin", stdin);
@@ -114,13 +144,9 @@ describe("gitzy", () => {
 
     it("should create commit message with type, scope, subject and body", async () => {
       const stdin = JSON.stringify({
+        ...defaultCommitPayload(),
         body: "some longer description",
-        breaking: false,
-        coAuthors: [],
-        issues: [],
         scope: "e2e",
-        subject: "testing",
-        type: "chore",
       });
 
       const result = await runCommit("--stdin", stdin);
@@ -134,13 +160,8 @@ describe("gitzy", () => {
 
     it("should create commit message with type, scope and subject", async () => {
       const stdin = JSON.stringify({
-        body: "",
-        breaking: false,
-        coAuthors: [],
-        issues: [],
+        ...defaultCommitPayload(),
         scope: "e2e",
-        subject: "testing",
-        type: "chore",
       });
 
       const result = await runCommit("--stdin", stdin);
@@ -149,15 +170,7 @@ describe("gitzy", () => {
     });
 
     it("should create commit message with type and subject only", async () => {
-      const stdin = JSON.stringify({
-        body: "",
-        breaking: false,
-        coAuthors: [],
-        issues: [],
-        scope: "",
-        subject: "testing",
-        type: "chore",
-      });
+      const stdin = JSON.stringify(defaultCommitPayload());
 
       const result = await runCommit("--stdin", stdin);
 
@@ -166,28 +179,18 @@ describe("gitzy", () => {
 
     it("should NOT add '!' when breaking is true and format is footer", async () => {
       const stdin = JSON.stringify({
-        body: "",
+        ...defaultCommitPayload(),
         breaking: true,
-        coAuthors: [],
-        issues: [],
-        scope: "",
-        subject: "testing",
-        type: "chore",
       });
 
       const result = await runCommit("--stdin", stdin);
 
-      // breaking: true with default "footer" format produces no breaking section
       expect(result).toMatchInlineSnapshot(`"chore: 🤖 testing"`);
     });
 
     it("should respect inline flags over stdin", async () => {
       const stdin = JSON.stringify({
-        body: "",
-        breaking: false,
-        coAuthors: [],
-        issues: [],
-        scope: "",
+        ...defaultCommitPayload(),
         subject: "from stdin",
         type: "docs",
       });
@@ -198,15 +201,7 @@ describe("gitzy", () => {
     });
 
     it("should add co-authors to commit message", async () => {
-      const stdin = JSON.stringify({
-        body: "",
-        breaking: false,
-        coAuthors: [],
-        issues: [],
-        scope: "",
-        subject: "testing",
-        type: "chore",
-      });
+      const stdin = JSON.stringify(defaultCommitPayload());
 
       const result = await runCommit(
         '--stdin --co-author "Alice <alice@example.com>"',
@@ -258,10 +253,8 @@ describe("gitzy", () => {
   describe("branch", () => {
     it("should format a branch name with type, scope and subject", async () => {
       const stdin = JSON.stringify({
-        issue: "",
+        ...defaultBranchPayload(),
         scope: "ui",
-        subject: "add dark mode",
-        type: "feat",
       });
 
       const result = await runBranch("--stdin", stdin);
@@ -271,8 +264,7 @@ describe("gitzy", () => {
 
     it("should format a branch name with type and subject only", async () => {
       const stdin = JSON.stringify({
-        issue: "",
-        scope: "",
+        ...defaultBranchPayload(),
         subject: "fix login bug",
         type: "fix",
       });
@@ -284,10 +276,9 @@ describe("gitzy", () => {
 
     it("should include issue reference in branch name", async () => {
       const stdin = JSON.stringify({
+        ...defaultBranchPayload(),
         issue: "PROJ-123",
-        scope: "",
         subject: "add feature",
-        type: "feat",
       });
 
       const result = await runBranch("--stdin", stdin);
@@ -296,12 +287,7 @@ describe("gitzy", () => {
     });
 
     it("should format a branch name with --from flag", async () => {
-      const stdin = JSON.stringify({
-        issue: "",
-        scope: "",
-        subject: "add dark mode",
-        type: "feat",
-      });
+      const stdin = JSON.stringify(defaultBranchPayload());
 
       const result = await runBranch("--stdin --from main", stdin);
 

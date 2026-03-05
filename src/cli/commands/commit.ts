@@ -38,7 +38,7 @@ const promptQuestions = async (
   if (flags.type && flags.subject) {
     return {
       body: flags.body ?? "",
-      breaking: typeof flags.breaking === "string" ? flags.breaking : "",
+      breaking: flags.breaking ?? "",
       coAuthors: flags.coAuthor ?? [],
       issues: flags.issue ?? [],
       scope: flags.scope ?? "",
@@ -198,7 +198,7 @@ export const registerCommitCommand = (program: Command) => {
             emojiEnabled,
           );
 
-          process.stdout.write(`${JSON.stringify(result)}\n`);
+          log(JSON.stringify(result));
         } else {
           const message = formatMessage(
             state.config,

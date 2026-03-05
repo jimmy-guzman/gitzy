@@ -74,6 +74,7 @@ describe("loadConfig", () => {
 
       expect(config?.searchPlaces).toStrictEqual([
         "package.json",
+        ".gitzyrc",
         ".gitzyrc.json",
         ".gitzyrc.js",
         ".gitzyrc.cjs",
@@ -81,6 +82,7 @@ describe("loadConfig", () => {
         "gitzy.config.js",
         "gitzy.config.cjs",
         "gitzy.config.mjs",
+        ".config/.gitzyrc",
         ".config/.gitzyrc.json",
         ".config/.gitzyrc.js",
         ".config/.gitzyrc.cjs",

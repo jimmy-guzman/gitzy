@@ -67,12 +67,12 @@ export const ConfigSchema = object({
   ),
   issues: optional(
     object({
-      hint: optional(string()),
+      hint: optional(string(), defaultIssuesConfig.hint),
       pattern: optional(
         picklist(["github", "jira"] as const),
         defaultIssuesConfig.pattern,
       ),
-      prefix: optional(string()),
+      prefix: optional(string(), defaultIssuesConfig.prefix),
     }),
   ),
   prompts: pipe(optional(array(string()), [...defaultPrompts]), readonly()),

@@ -200,7 +200,11 @@ export const registerBranchCommand = (program: Command) => {
             });
           });
 
-          stdinAnswers = JSON.parse(raw) as Partial<BranchAnswers>;
+          try {
+            stdinAnswers = JSON.parse(raw) as Partial<BranchAnswers>;
+          } catch {
+            throw new Error("Invalid JSON provided to --stdin");
+          }
         }
 
         const flagAnswers: Partial<BranchAnswers> = {};
@@ -242,8 +246,12 @@ export const registerBranchCommand = (program: Command) => {
           }
 
           if (opts.json) {
-            process.stdout.write(
-              `${JSON.stringify({ branchName: result.newName, dryRun: opts.dryRun ?? false, oldName: result.oldName })}\n`,
+            log(
+              JSON.stringify({
+                branchName: result.newName,
+                dryRun: opts.dryRun ?? false,
+                oldName: result.oldName,
+              }),
             );
           } else if (opts.dryRun) {
             log(info(`Branch name: ${result.newName}`));
@@ -259,8 +267,11 @@ export const registerBranchCommand = (program: Command) => {
           );
 
           if (opts.json) {
-            process.stdout.write(
-              `${JSON.stringify({ branchName: result.branchName, dryRun: opts.dryRun ?? false })}\n`,
+            log(
+              JSON.stringify({
+                branchName: result.branchName,
+                dryRun: opts.dryRun ?? false,
+              }),
             );
           } else if (opts.dryRun) {
             log(info(`Branch name: ${result.branchName}`));

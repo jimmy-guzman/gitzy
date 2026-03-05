@@ -61,7 +61,7 @@ describe("resolveConfig", () => {
       );
     });
 
-    it("should merge commitlint rules with gitzy config — commitlint takes precedence", async () => {
+    it("should merge commitlint rules with gitzy config — gitzy takes precedence", async () => {
       const gitzyConfig = {
         header: { max: 50 },
         scopes: ["ui"],
@@ -80,12 +80,9 @@ describe("resolveConfig", () => {
 
       const result = await resolveConfig();
 
-      expect(result.header.max).toBe(72);
+      expect(result.header.max).toBe(50);
       expect(result.scopes.map((s) => s.name)).toStrictEqual(["ui"]);
-      expect(result.types.map((t) => t.name)).toStrictEqual([
-        "feature",
-        "bugfix",
-      ]);
+      expect(result.types.map((t) => t.name)).toStrictEqual(["feat", "fix"]);
     });
 
     it("should use only commitlint rules when no gitzy config exists", async () => {
@@ -118,8 +115,8 @@ describe("resolveConfig", () => {
   });
 
   describe("commitlint header rule merging", () => {
-    it("should merge header.max from commitlint", async () => {
-      const gitzyConfig = { header: { max: 50, min: 3 } };
+    it("should use commitlint header.max when gitzy does not set it", async () => {
+      const gitzyConfig = { header: { min: 3 } };
       const commitlintConfig = {
         rules: { "header-max-length": [2, "always", 72] },
       };
@@ -131,6 +128,22 @@ describe("resolveConfig", () => {
       const result = await resolveConfig();
 
       expect(result.header.max).toBe(72);
+      expect(result.header.min).toBe(3);
+    });
+
+    it("should prefer gitzy header.max over commitlint when both are set", async () => {
+      const gitzyConfig = { header: { max: 50, min: 3 } };
+      const commitlintConfig = {
+        rules: { "header-max-length": [2, "always", 72] },
+      };
+
+      vi.mocked(loadConfig)
+        .mockResolvedValueOnce(gitzyConfig)
+        .mockResolvedValueOnce(commitlintConfig);
+
+      const result = await resolveConfig();
+
+      expect(result.header.max).toBe(50);
       expect(result.header.min).toBe(3);
     });
 

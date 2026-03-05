@@ -48,9 +48,9 @@ export const resolveConfig = async () => {
   );
 
   if (commitlintConfig) {
-    const overrides = extractCommitlintRules(commitlintConfig);
+    const commitlintOverrides = extractCommitlintRules(commitlintConfig);
 
-    return normalizeConfig(mergeConfigs(config, overrides));
+    return normalizeConfig(mergeConfigs(commitlintOverrides, config ?? {}));
   }
 
   return normalizeConfig(config);

@@ -17,7 +17,7 @@ export const registerConfigCommand = (program: Command) => {
         const config = await resolveConfig();
 
         if (opts.json) {
-          process.stdout.write(`${JSON.stringify(config, null, 2)}\n`);
+          log(JSON.stringify(config, null, 2));
         } else {
           log(JSON.stringify(config, null, 2));
         }

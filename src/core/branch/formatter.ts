@@ -13,26 +13,15 @@ import type { BranchParts } from "./types";
  * and collapses consecutive separators
  */
 export const slugify = (value: string, separator = "-") => {
-  const sep = separator;
+  const sep = separator || "-";
+  const escapedSep = sep.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
 
   return value
     .toLowerCase()
     .trim()
     .replaceAll(/[^a-z0-9.]+/g, sep)
-    .replaceAll(
-      new RegExp(
-        `${sep.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`)}+`,
-        "g",
-      ),
-      sep,
-    )
-    .replaceAll(
-      new RegExp(
-        `^${sep.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`)}|${sep.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`)}$`,
-        "g",
-      ),
-      "",
-    );
+    .replaceAll(new RegExp(`${escapedSep}+`, "g"), sep)
+    .replaceAll(new RegExp(`^${escapedSep}|${escapedSep}$`, "g"), "");
 };
 
 /**
@@ -55,19 +44,10 @@ const applyPattern = (
     result = result.replaceAll(`{${token}}`, value);
   }
 
-  // Remove path segments that are empty (e.g. "feat//subject" → "feat/subject")
-  // First collapse consecutive slashes
   result = result.replaceAll(/\/+/g, "/");
-
-  // Remove trailing/leading dashes or slashes from adjacent missing tokens
-  // e.g. "feat/-subject" when issue is empty → "feat/subject"
   result = result.replaceAll(/\/[-_]+/g, "/");
   result = result.replaceAll(/[-_]+\//g, "/");
-
-  // Collapse any remaining double separators
   result = result.replaceAll(/\/+/g, "/");
-
-  // Strip leading/trailing slashes
   result = result.replaceAll(/^\/|\/$/g, "");
 
   return result;
