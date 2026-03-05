@@ -175,7 +175,8 @@ export const registerBranchCommand = (program: Command) => {
 
         if (opts.amend) {
           const currentBranch = await getCurrentBranch().catch(() => "");
-          const segments = currentBranch.split("/");
+          const sep = state.config.branch.separator;
+          const segments = currentBranch.split(sep);
 
           const hasScope = segments.length >= 3;
           const rawSubjectStart = hasScope
@@ -198,7 +199,7 @@ export const registerBranchCommand = (program: Command) => {
           amendInitial = {
             ...(detectedIssue === undefined ? {} : { issue: detectedIssue }),
             ...(hasScope ? { scope: segments[1] } : {}),
-            subject: subjectSegments.join("/"),
+            subject: subjectSegments.join(sep),
             type: segments[0] ?? "",
           };
         }
