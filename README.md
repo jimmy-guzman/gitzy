@@ -67,38 +67,59 @@ gitzy branch -t feat -m "add dark mode" -s ui
 
 ### `gitzy commit` flags
 
-| Flag                        | Alias | Description                                                       |
-| --------------------------- | ----- | ----------------------------------------------------------------- |
-| `--type <type>`             | `-t`  | set type inline (with `--subject`, skips all prompts)             |
-| `--scope <scope>`           | `-s`  | set scope inline                                                  |
-| `--subject <message>`       | `-m`  | set subject inline (with `--type`, skips all prompts)             |
-| `--body <body>`             | `-d`  | set body inline                                                   |
-| `--breaking [breaking]`     | `-b`  | mark as breaking; add message for `footer`/`both` formats         |
-| `--issue <issue...>`        | `-i`  | set issues inline (repeatable: `-i '#123' -i '#456'`)             |
-| `--dry-run`                 | `-D`  | show commit message without committing                            |
-| `--retry`                   | `-r`  | retry last commit and skip prompts                                |
-| `--amend`                   | `-a`  | amend the previous commit (pre-fills prompts from HEAD)           |
-| `--no-verify`               | `-n`  | skip git hooks                                                    |
-| `--json`                    | `-j`  | output structured JSON `{ message, header, body, footer, parts }` |
-| `--no-emoji`                |       | disable emoji in commit message                                   |
-| `--co-author <coAuthor...>` | `-c`  | add co-authors (repeatable: `-c "Name <email>"`)                  |
-| `--hook`                    | `-H`  | enable running inside a git hook (e.g. `prepare-commit-msg`)      |
-| `--stdin`                   |       | read answers from stdin as JSON (CLI flags take priority)         |
-| `--help`                    | `-h`  | display help for command                                          |
+| Flag                        | Alias | Description                                                  |
+| --------------------------- | ----- | ------------------------------------------------------------ |
+| `--type <type>`             | `-t`  | set type inline (with `--subject`, skips all prompts)        |
+| `--scope <scope>`           | `-s`  | set scope inline                                             |
+| `--subject <message>`       | `-m`  | set subject inline (with `--type`, skips all prompts)        |
+| `--body <body>`             | `-d`  | set body inline                                              |
+| `--breaking [breaking]`     | `-b`  | mark as breaking; add message for `footer`/`both` formats    |
+| `--issue <issue...>`        | `-i`  | set issues inline (repeatable: `-i '#123' -i '#456'`)        |
+| `--dry-run`                 | `-D`  | show commit message without committing                       |
+| `--retry`                   | `-r`  | retry last commit and skip prompts                           |
+| `--amend`                   | `-a`  | amend the previous commit (pre-fills prompts from HEAD)      |
+| `--no-verify`               | `-n`  | skip git hooks                                               |
+| `--json`                    | `-j`  | output structured JSON (see shape below)                     |
+| `--no-emoji`                |       | disable emoji in commit message                              |
+| `--co-author <coAuthor...>` | `-c`  | add co-authors (repeatable: `-c "Name <email>"`)             |
+| `--hook`                    | `-H`  | enable running inside a git hook (e.g. `prepare-commit-msg`) |
+| `--stdin`                   |       | read answers from stdin as JSON (CLI flags take priority)    |
+| `--version`                 | `-v`  | display version number                                       |
+| `--help`                    | `-h`  | display help for command                                     |
+
+#### `--json` output shape
+
+```json
+{
+  "header": "feat: ✨ add dark mode",
+  "body": "",
+  "footer": "",
+  "message": "feat: ✨ add dark mode",
+  "parts": {
+    "type": "feat",
+    "scope": "",
+    "subject": "add dark mode",
+    "body": "",
+    "breaking": "",
+    "issues": [],
+    "coAuthors": []
+  }
+}
+```
 
 ### `gitzy branch` flags
 
 | Flag                  | Alias | Description                                               |
 | --------------------- | ----- | --------------------------------------------------------- |
-| `--type <type>`       | `-t`  | set type inline                                           |
+| `--type <type>`       | `-t`  | set type inline (with `--subject`, skips all prompts)     |
 | `--scope <scope>`     | `-s`  | set scope inline                                          |
-| `--subject <subject>` | `-m`  | set subject inline                                        |
+| `--subject <subject>` | `-m`  | set subject inline (with `--type`, skips all prompts)     |
 | `--issue <issue>`     | `-i`  | set issue reference inline (e.g. `#42` or `PROJ-123`)     |
 | `--from <branch>`     | `-f`  | create the branch from a base branch                      |
 | `--amend`             | `-a`  | rename the current branch instead of creating a new one   |
 | `--no-checkout`       |       | do not checkout the new branch after creating it          |
 | `--dry-run`           | `-D`  | show branch name without creating it                      |
-| `--json`              | `-j`  | output result as JSON                                     |
+| `--json`              | `-j`  | output result as JSON `{ branchName, dryRun }`            |
 | `--stdin`             |       | read answers from stdin as JSON (CLI flags take priority) |
 | `--help`              | `-h`  | display help for command                                  |
 
@@ -112,16 +133,7 @@ By default, `gitzy` works out of the box. You can configure it via a `gitzy` key
 > [!NOTE]
 > All of these files can also live under a `.config/` directory. TypeScript config files (`.ts`/`.mts`) require Node >=22.12.0 (built-in TypeScript stripping, no flag needed). Use a `.js`, `.cjs`, or `.mjs` config file if you are on an older Node version.
 
-Use `defineConfig` for editor autocomplete:
-
-```js
-// gitzy.config.js
-import { defineConfig } from "gitzy";
-
-export default defineConfig({
-  // see options below
-});
-```
+Use `gitzy config` to see all available config file locations and the resolved config.
 
 ## Config Options
 
@@ -245,13 +257,22 @@ Controls branch name generation.
 ```js
 branch: {
   pattern: "{type}/{scope}/{issue}-{subject}", // default
-  separator: "/",    // word separator within each segment
+  separator: "-",    // separator used within each slugified segment (type, scope, subject)
   max: 60,           // max branch name length
   checkout: true,    // auto-checkout after creation
 }
 ```
 
 **Pattern tokens:** `{type}`, `{scope}`, `{issue}`, `{subject}` — any token that has no value is omitted along with its surrounding separators.
+
+#### Branch name examples
+
+| type    | scope  | issue    | subject           | output                       |
+| ------- | ------ | -------- | ----------------- | ---------------------------- |
+| `feat`  | `ui`   |          | `add dark mode`   | `feat/ui/add-dark-mode`      |
+| `fix`   |        | `#42`    | `login crash`     | `fix/#42-login-crash`        |
+| `chore` | `deps` |          | `bump typescript` | `chore/deps/bump-typescript` |
+| `feat`  |        | `PROJ-1` | `new dashboard`   | `feat/PROJ-1-new-dashboard`  |
 
 ### commitlint integration
 
