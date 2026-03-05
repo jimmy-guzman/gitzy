@@ -38,6 +38,7 @@
     "postbuild",
     "postpublish",
     "shellcheck",
+    "slugified",
     "socio",
     "streamich",
     "streetsidesoftware",
