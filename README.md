@@ -296,10 +296,10 @@ branch: {
 
 | type    | scope  | issue    | subject           | output                       |
 | ------- | ------ | -------- | ----------------- | ---------------------------- |
-| `feat`  | `ui`   |          | `add dark mode`   | `feat/ui/add-dark-mode`      |
-| `fix`   |        | `#42`    | `login crash`     | `fix/#42-login-crash`        |
-| `chore` | `deps` |          | `bump typescript` | `chore/deps/bump-typescript` |
-| `feat`  |        | `PROJ-1` | `new dashboard`   | `feat/PROJ-1-new-dashboard`  |
+| `feat`  | `ui`   |          | `add dark mode`   | `feat/ui/add/dark/mode`      |
+| `fix`   |        | `#42`    | `login crash`     | `fix/#42-login/crash`        |
+| `chore` | `deps` |          | `bump typescript` | `chore/deps/bump/typescript` |
+| `feat`  |        | `PROJ-1` | `new dashboard`   | `feat/PROJ-1-new/dashboard`  |
 
 ### commitlint integration
 
