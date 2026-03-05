@@ -69,7 +69,7 @@ describe("renameBranch", () => {
     expect(x).toHaveBeenCalledWith(
       "git",
       ["branch", "-m", "old-branch", "new-branch"],
-      { nodeOptions: { stdio: "inherit" } },
+      { nodeOptions: { stdio: "pipe" } },
     );
   });
 
@@ -99,7 +99,7 @@ describe("renameBranch", () => {
       .mockResolvedValueOnce({ exitCode: 128, stderr: "error", stdout: "" });
 
     await expect(renameBranch("new-branch")).rejects.toThrowError(
-      "git branch -m failed with exit code 128",
+      "git branch -m failed with exit code 128: error",
     );
   });
 });
@@ -124,7 +124,7 @@ describe("createBranch", () => {
     expect(x).toHaveBeenCalledWith(
       "git",
       ["checkout", "-b", "feat/my-branch"],
-      { nodeOptions: { stdio: "inherit" } },
+      { nodeOptions: { stdio: "pipe" } },
     );
   });
 
@@ -134,7 +134,7 @@ describe("createBranch", () => {
     await createBranch("feat/my-branch", false);
 
     expect(x).toHaveBeenCalledWith("git", ["branch", "feat/my-branch"], {
-      nodeOptions: { stdio: "inherit" },
+      nodeOptions: { stdio: "pipe" },
     });
   });
 
@@ -146,7 +146,7 @@ describe("createBranch", () => {
     expect(x).toHaveBeenCalledWith(
       "git",
       ["checkout", "-b", "feat/my-branch", "main"],
-      { nodeOptions: { stdio: "inherit" } },
+      { nodeOptions: { stdio: "pipe" } },
     );
   });
 
@@ -158,7 +158,7 @@ describe("createBranch", () => {
     expect(x).toHaveBeenCalledWith(
       "git",
       ["branch", "feat/my-branch", "main"],
-      { nodeOptions: { stdio: "inherit" } },
+      { nodeOptions: { stdio: "pipe" } },
     );
   });
 
@@ -170,7 +170,7 @@ describe("createBranch", () => {
     });
 
     await expect(createBranch("feat/my-branch")).rejects.toThrowError(
-      "git checkout -b failed with exit code 1",
+      "git checkout -b failed with exit code 1: error",
     );
   });
 });

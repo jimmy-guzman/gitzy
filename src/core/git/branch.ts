@@ -62,12 +62,12 @@ export const renameBranch = async (
   }
 
   const result = await x("git", ["branch", "-m", oldName, newName], {
-    nodeOptions: { stdio: "inherit" },
+    nodeOptions: { stdio: "pipe" },
   });
 
   if (result.exitCode !== 0) {
     throw new Error(
-      `git branch -m failed with exit code ${(result.exitCode ?? 1).toString()}`,
+      `git branch -m failed with exit code ${(result.exitCode ?? 1).toString()}${result.stderr ? `: ${result.stderr}` : ""}`,
     );
   }
 
@@ -101,24 +101,24 @@ export const createBranch = async (
       : ["checkout", "-b", branchName];
 
     const result = await x("git", args, {
-      nodeOptions: { stdio: "inherit" },
+      nodeOptions: { stdio: "pipe" },
     });
 
     if (result.exitCode !== 0) {
       throw new Error(
-        `git checkout -b failed with exit code ${(result.exitCode ?? 1).toString()}`,
+        `git checkout -b failed with exit code ${(result.exitCode ?? 1).toString()}${result.stderr ? `: ${result.stderr}` : ""}`,
       );
     }
   } else {
     const args = from ? ["branch", branchName, from] : ["branch", branchName];
 
     const result = await x("git", args, {
-      nodeOptions: { stdio: "inherit" },
+      nodeOptions: { stdio: "pipe" },
     });
 
     if (result.exitCode !== 0) {
       throw new Error(
-        `git branch failed with exit code ${(result.exitCode ?? 1).toString()}`,
+        `git branch failed with exit code ${(result.exitCode ?? 1).toString()}${result.stderr ? `: ${result.stderr}` : ""}`,
       );
     }
   }
