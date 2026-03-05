@@ -57,7 +57,7 @@ gitzy branch -t feat -m "add dark mode" -s ui
 
 ## Subcommands
 
-`gitzy` alone runs the default `commit` subcommand. Explicit subcommands:
+`gitzy` is the same as `gitzy commit`. Explicit subcommands:
 
 | Subcommand     | Description                                                                    |
 | -------------- | ------------------------------------------------------------------------------ |
@@ -71,9 +71,9 @@ gitzy branch -t feat -m "add dark mode" -s ui
 
 | Flag                        | Alias | Description                                                       |
 | --------------------------- | ----- | ----------------------------------------------------------------- |
-| `--type <type>`             | `-t`  | set type inline                                                   |
+| `--type <type>`             | `-t`  | set type inline (with `--subject`, skips all prompts)             |
 | `--scope <scope>`           | `-s`  | set scope inline                                                  |
-| `--subject <message>`       | `-m`  | set subject inline                                                |
+| `--subject <message>`       | `-m`  | set subject inline (with `--type`, skips all prompts)             |
 | `--body <body>`             | `-d`  | set body inline                                                   |
 | `--breaking [breaking]`     | `-b`  | mark as breaking; add message for `footer`/`both` formats         |
 | `--issue <issue...>`        | `-i`  | set issues inline (repeatable: `-i '#123' -i '#456'`)             |
