@@ -66,7 +66,9 @@ export const renameBranch = async (
   });
 
   if (result.exitCode !== 0) {
-    process.exit(result.exitCode);
+    throw new Error(
+      `git branch -m failed with exit code ${(result.exitCode ?? 1).toString()}`,
+    );
   }
 
   return { hasRemote, newName, oldName };
@@ -103,7 +105,9 @@ export const createBranch = async (
     });
 
     if (result.exitCode !== 0) {
-      process.exit(result.exitCode);
+      throw new Error(
+        `git checkout -b failed with exit code ${(result.exitCode ?? 1).toString()}`,
+      );
     }
   } else {
     const args = from ? ["branch", branchName, from] : ["branch", branchName];
@@ -113,7 +117,9 @@ export const createBranch = async (
     });
 
     if (result.exitCode !== 0) {
-      process.exit(result.exitCode);
+      throw new Error(
+        `git branch failed with exit code ${(result.exitCode ?? 1).toString()}`,
+      );
     }
   }
 

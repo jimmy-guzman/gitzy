@@ -98,17 +98,9 @@ describe("renameBranch", () => {
       .mockResolvedValueOnce({ exitCode: 1, stderr: "", stdout: "" })
       .mockResolvedValueOnce({ exitCode: 128, stderr: "error", stdout: "" });
 
-    const exitSpy = vi
-      .spyOn(process, "exit")
-      .mockReturnValue(undefined as never);
-
-    try {
-      await renameBranch("new-branch");
-
-      expect(exitSpy).toHaveBeenCalledWith(128);
-    } finally {
-      exitSpy.mockRestore();
-    }
+    await expect(renameBranch("new-branch")).rejects.toThrowError(
+      "git branch -m failed with exit code 128",
+    );
   });
 });
 
@@ -177,16 +169,8 @@ describe("createBranch", () => {
       stdout: "",
     });
 
-    const exitSpy = vi
-      .spyOn(process, "exit")
-      .mockReturnValue(undefined as never);
-
-    try {
-      await createBranch("feat/my-branch");
-
-      expect(exitSpy).toHaveBeenCalledWith(1);
-    } finally {
-      exitSpy.mockRestore();
-    }
+    await expect(createBranch("feat/my-branch")).rejects.toThrowError(
+      "git checkout -b failed with exit code 1",
+    );
   });
 });
