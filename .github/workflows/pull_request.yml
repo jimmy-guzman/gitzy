@@ -43,7 +43,7 @@ jobs:
       - name: commitlint
         uses: wagoid/commitlint-github-action@v6
         with:
-          configFile: .commitlintrc.yml
+          configFile: .commitlintrc.json
 
   spell_check:
     runs-on: ubuntu-latest
