@@ -13,6 +13,9 @@
   "license": "MIT",
   "author": "jimmy-guzman @jimmy-guzman",
   "type": "module",
+  "exports": {
+    ".": "./dist/api/index.mjs"
+  },
   "bin": "./dist/run.mjs",
   "files": [
     "dist"
