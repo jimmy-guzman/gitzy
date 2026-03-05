@@ -27,8 +27,8 @@ const getSearchPlaces = (configName: string) => {
   return [
     "package.json",
     ...base,
-    ...base.map((path) => `.config/${path}`),
     ...tsBase,
+    ...base.map((path) => `.config/${path}`),
     ...tsBase.map((path) => `.config/${path}`),
   ];
 };

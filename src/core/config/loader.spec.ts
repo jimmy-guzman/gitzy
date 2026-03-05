@@ -82,6 +82,8 @@ describe("loadConfig", () => {
         "gitzy.config.js",
         "gitzy.config.cjs",
         "gitzy.config.mjs",
+        "gitzy.config.ts",
+        "gitzy.config.mts",
         ".config/.gitzyrc",
         ".config/.gitzyrc.json",
         ".config/.gitzyrc.js",
@@ -90,8 +92,6 @@ describe("loadConfig", () => {
         ".config/gitzy.config.js",
         ".config/gitzy.config.cjs",
         ".config/gitzy.config.mjs",
-        "gitzy.config.ts",
-        "gitzy.config.mts",
         ".config/gitzy.config.ts",
         ".config/gitzy.config.mts",
       ]);
