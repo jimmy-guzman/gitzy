@@ -250,7 +250,7 @@ describe("formatCommitMessage", () => {
     `);
   });
 
-  it("should handle issues with excessive whitespace", () => {
+  it("should format multiple issues as array", () => {
     const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
       issues: ["#123", "#456", "#789"],
     });
@@ -282,23 +282,7 @@ describe("formatCommitMessage", () => {
     `);
   });
 
-  it("should handle issues without spaces after commas", () => {
-    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
-      issues: ["#123", "#456", "#789"],
-    });
-
-    expect(formattedMessage).toMatchInlineSnapshot(`
-      "feat(*): ✨ a cool new feature
-
-      this an amazing feature, lots of details
-
-      BREAKING CHANGE: 💥 breaks everything
-
-      🏁 Closes #123, Closes #456, Closes #789"
-    `);
-  });
-
-  it("should handle issues with multiple spaces around commas", () => {
+  it("should format two issues as array", () => {
     const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
       issues: ["#123", "#456"],
     });
@@ -311,22 +295,6 @@ describe("formatCommitMessage", () => {
       BREAKING CHANGE: 💥 breaks everything
 
       🏁 Closes #123, Closes #456"
-    `);
-  });
-
-  it("should handle mixed spacing around commas", () => {
-    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
-      issues: ["#123", "#456", "#789"],
-    });
-
-    expect(formattedMessage).toMatchInlineSnapshot(`
-      "feat(*): ✨ a cool new feature
-
-      this an amazing feature, lots of details
-
-      BREAKING CHANGE: 💥 breaks everything
-
-      🏁 Closes #123, Closes #456, Closes #789"
     `);
   });
 

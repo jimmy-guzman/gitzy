@@ -9,6 +9,10 @@ import { safeParse, summarize } from "valibot";
 const configExts = [".js", ".cjs", ".mjs"] as const;
 const tsExts = [".ts", ".mts"] as const;
 
+/**
+ * Returns the list of file locations lilconfig will search for a config.
+ * The extensionless `.${configName}rc` entry is treated as JSON by lilconfig's default loader.
+ */
 const getSearchPlaces = (configName: string) => {
   const rcExts = [".json", ...configExts];
 
@@ -37,9 +41,7 @@ const loadTs: Loader = async (filepath) => {
 
   if (!supportsNativeTs) {
     throw new TypeError(
-      `TypeScript config files require Node.js >=22.6.0 (--experimental-strip-types). ` +
-        `Current version: ${process.versions.node}. ` +
-        `Use a .js, .cjs, or .mjs config file instead, or upgrade Node.js.`,
+      `TypeScript config files require Node.js >=22.6.0 (--experimental-strip-types). Current version: ${process.versions.node}. Use a .js, .cjs, or .mjs config file instead, or upgrade Node.js.`,
     );
   }
 

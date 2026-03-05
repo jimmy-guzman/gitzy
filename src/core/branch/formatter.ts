@@ -47,7 +47,6 @@ const applyPattern = (
   result = result.replaceAll(/\/+/g, "/");
   result = result.replaceAll(/\/[-_]+/g, "/");
   result = result.replaceAll(/[-_]+\//g, "/");
-  result = result.replaceAll(/\/+/g, "/");
   result = result.replaceAll(/^\/|\/$/g, "");
 
   return result;
@@ -57,6 +56,7 @@ const applyPattern = (
  * Format branch parts into a branch name string
  *
  * @param parts - The branch parts (type, scope, issue, subject)
+ *   Issue refs are kept as-is (e.g. "PROJ-123", "#42") — no slug conversion
  *
  * @param config - Branch configuration (pattern, separator, max)
  *
@@ -69,7 +69,6 @@ export const formatBranchName = (
   const { max, pattern, separator } = config;
 
   const tokens: Record<string, string> = {
-    // Issue refs are kept as-is (e.g. "PROJ-123", "#42") — no slug conversion
     issue: parts.issue?.trim() ?? "",
     scope: parts.scope ? slugify(parts.scope, separator) : "",
     subject: slugify(parts.subject, separator),

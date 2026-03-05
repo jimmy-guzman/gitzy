@@ -50,7 +50,9 @@ const promptQuestions = async (
   const enquirer = new Enquirer(
     {
       autofill: true,
-      cancel: () => null,
+      cancel: () => {
+        throw new Error("Commit cancelled");
+      },
       styles: {
         danger: (value: string) => styleText("red", value),
         submitted: (value: string) => styleText("cyan", value),
@@ -102,20 +104,20 @@ export const registerCommitCommand = (program: Command) => {
         log(info("running in dry mode..."));
       }
 
-      if (
-        typeof flags.breaking === "string" &&
-        flags.breaking &&
-        state.config.breaking.format === "!"
-      ) {
-        log(
-          warn(
-            "--breaking message ignored when using '!' format. Use --breaking (without value) instead.",
-          ),
-        );
-      }
-
       try {
         state.config = await resolveConfig();
+
+        if (
+          typeof flags.breaking === "string" &&
+          flags.breaking &&
+          state.config.breaking.format === "!"
+        ) {
+          log(
+            warn(
+              "--breaking message ignored when using '!' format. Use --breaking (without value) instead.",
+            ),
+          );
+        }
 
         if (
           shouldDoGitChecks({

@@ -124,7 +124,9 @@ const promptBranchQuestions = async (
   const enquirer = new Enquirer(
     {
       autofill: true,
-      cancel: () => null,
+      cancel: () => {
+        throw new Error("Branch creation cancelled");
+      },
       styles: {
         danger: (value: string) => styleText("red", value),
         submitted: (value: string) => styleText("cyan", value),
@@ -175,13 +177,29 @@ export const registerBranchCommand = (program: Command) => {
           const currentBranch = await getCurrentBranch().catch(() => "");
           const segments = currentBranch.split("/");
 
+          const hasScope = segments.length >= 3;
+          const rawSubjectStart = hasScope
+            ? segments.slice(2)
+            : segments.slice(1);
+
+          /** Detect and strip a leading `{issue}-` prefix from the first subject segment */
+          const issuePrefix = /^(#\d+|[A-Z]+-\d+)-(.+)$/.exec(
+            rawSubjectStart[0] ?? "",
+          );
+          const detectedIssue = issuePrefix ? issuePrefix[1] : undefined;
+          const firstSubjectSegment = issuePrefix
+            ? issuePrefix[2]
+            : rawSubjectStart[0];
+          const subjectSegments = [
+            firstSubjectSegment,
+            ...rawSubjectStart.slice(1),
+          ].filter(Boolean);
+
           amendInitial = {
-            subject:
-              segments.length >= 3
-                ? segments.slice(2).join("/")
-                : segments.slice(1).join("/"),
+            ...(detectedIssue === undefined ? {} : { issue: detectedIssue }),
+            ...(hasScope ? { scope: segments[1] } : {}),
+            subject: subjectSegments.join("/"),
             type: segments[0] ?? "",
-            ...(segments.length >= 3 ? { scope: segments[1] } : {}),
           };
         }
 

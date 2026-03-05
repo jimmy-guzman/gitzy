@@ -2,11 +2,14 @@ import { execSync } from "node:child_process";
 
 /** ESC character — built dynamically to avoid no-control-regex lint errors */
 const ESC = String.fromCodePoint(0x1b);
-const ANSI_RE = new RegExp(String.raw`${ESC}\[[0-9;]*[mhHlJ]`, "gu");
+const ANSI_RE = new RegExp(String.raw`${ESC}\[[0-9;?]*[A-Za-z@]`, "gu");
 const CURSOR_RE = new RegExp(String.raw`${ESC}\[\?25[lh]`, "gu");
 
 const stripAnsi = (s: string) => {
-  return s.replaceAll(ANSI_RE, "").replaceAll(CURSOR_RE, "");
+  return s
+    .replaceAll("\r\n", "\n")
+    .replaceAll(ANSI_RE, "")
+    .replaceAll(CURSOR_RE, "");
 };
 
 interface CommitPayload {
@@ -53,8 +56,10 @@ const runCommit = (args: string, stdin?: string) => {
       const input = stdin ? Buffer.from(stdin) : undefined;
 
       const raw = execSync(`node ./dist/run.mjs commit --dry-run ${args}`, {
+        encoding: "utf8",
         input,
-      }).toString("utf8");
+        timeout: 30_000,
+      });
 
       const clean = stripAnsi(raw);
 
@@ -82,8 +87,10 @@ const runBranch = (args: string, stdin?: string) => {
       const input = stdin ? Buffer.from(stdin) : undefined;
 
       const raw = execSync(`node ./dist/run.mjs branch --dry-run ${args}`, {
+        encoding: "utf8",
         input,
-      }).toString("utf8");
+        timeout: 30_000,
+      });
 
       const clean = stripAnsi(raw);
 

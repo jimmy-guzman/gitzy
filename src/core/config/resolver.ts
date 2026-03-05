@@ -41,11 +41,10 @@ const mergeConfigs = (base: Config | null, overrides: Config): Config => {
 };
 
 export const resolveConfig = async () => {
-  const config = await loadConfig("gitzy", ConfigSchema);
-  const commitlintConfig = await loadConfig(
-    "commitlint",
-    CommitlintConfigSchema,
-  );
+  const [config, commitlintConfig] = await Promise.all([
+    loadConfig("gitzy", ConfigSchema),
+    loadConfig("commitlint", CommitlintConfigSchema),
+  ]);
 
   if (commitlintConfig) {
     const commitlintOverrides = extractCommitlintRules(commitlintConfig);
