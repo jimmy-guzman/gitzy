@@ -5,24 +5,24 @@ import { checkIfGitRepo, checkIfStaged, shouldDoGitChecks } from "./checks";
 vi.mock("tinyexec");
 
 describe("shouldDoGitChecks", () => {
-  it.each(["--add", "-a", "--amend"])("should skip git check if %s", (flag) => {
-    expect(shouldDoGitChecks([flag])).toBe(false);
-  });
-
-  it("should perform check if no passthrough flags", () => {
+  it("should perform check if no flags", () => {
     expect(shouldDoGitChecks()).toBe(true);
   });
 
   it("should perform check if no cli flags", () => {
-    expect(shouldDoGitChecks([], { dryRun: false, hook: false })).toBe(true);
+    expect(shouldDoGitChecks({ dryRun: false, hook: false })).toBe(true);
   });
 
   it("should skip git check if dryRun flag is true", () => {
-    expect(shouldDoGitChecks([], { dryRun: true, hook: false })).toBe(false);
+    expect(shouldDoGitChecks({ dryRun: true, hook: false })).toBe(false);
   });
 
   it("should skip git check if hook flag is true", () => {
-    expect(shouldDoGitChecks([], { dryRun: false, hook: true })).toBe(false);
+    expect(shouldDoGitChecks({ dryRun: false, hook: true })).toBe(false);
+  });
+
+  it("should skip git check if amend flag is true", () => {
+    expect(shouldDoGitChecks({ amend: true })).toBe(false);
   });
 });
 

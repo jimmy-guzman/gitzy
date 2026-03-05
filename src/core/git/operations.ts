@@ -9,9 +9,10 @@ import path from "node:path";
 import { x } from "tinyexec";
 
 export interface CommitOptions {
+  amend?: boolean;
   dryRun?: boolean;
   hook?: boolean;
-  passthrough?: string[];
+  noVerify?: boolean;
 }
 
 /**
@@ -21,17 +22,24 @@ export interface CommitOptions {
  *
  * @param options - Commit options
  *
+ * @param options.amend - Amend the previous commit
+ *
  * @param options.dryRun - Show message without committing
  *
  * @param options.hook - Run in git hook mode (writes to COMMIT_EDITMSG)
  *
- * @param options.passthrough - Additional git commit flags
+ * @param options.noVerify - Skip git hooks (--no-verify)
  *
  * @returns Object with the message and whether it was committed
  */
 export const commit = async (
   message: string,
-  { dryRun = false, hook = false, passthrough = [] }: CommitOptions = {},
+  {
+    amend = false,
+    dryRun = false,
+    hook = false,
+    noVerify = false,
+  }: CommitOptions = {},
 ) => {
   if (dryRun) {
     return { committed: false, message };
@@ -46,7 +54,13 @@ export const commit = async (
     return { committed: true, message };
   }
 
-  const result = await x("git", ["commit", "-m", message, ...passthrough], {
+  const extraFlags: string[] = [];
+
+  if (amend) extraFlags.push("--amend");
+
+  if (noVerify) extraFlags.push("--no-verify");
+
+  const result = await x("git", ["commit", "-m", message, ...extraFlags], {
     nodeOptions: { stdio: "inherit" },
   });
 

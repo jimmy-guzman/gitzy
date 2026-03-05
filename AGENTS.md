@@ -8,10 +8,10 @@ An interactive CLI tool for creating [Conventional Commits](https://www.conventi
 - **Runtime:** Node.js `^20.19.0 || >=22.12.0` (`.nvmrc` pins `22`)
 - **Module system:** ESM (`"type": "module"`)
 - **Package manager:** pnpm
-- **Build tool:** `tsdown` (Rollup-based TypeScript bundler, outputs `dist/run.mjs`)
+- **Build tool:** `tsdown` (Rollup-based TypeScript bundler, outputs `dist/run.mjs` and `dist/api/index.mjs`)
 - **CLI framework:** `commander`
 - **Interactive prompts:** `enquirer`
-- **Config loading:** `lilconfig` (cosmiconfig-compatible, supports YAML/JSON/JS)
+- **Config loading:** `lilconfig` (cosmiconfig-compatible, supports JSON/JS — no YAML, no `.ts`)
 - **Config validation:** `valibot` (schema-first, tree-shakeable)
 - **Fuzzy search:** `@leeoniya/ufuzzy`
 - **Git execution:** `tinyexec` (lightweight `child_process` wrapper)
@@ -26,64 +26,86 @@ An interactive CLI tool for creating [Conventional Commits](https://www.conventi
 ```txt
 src/
   run.ts                  # Entrypoint: shebang, calls cli()
-  cli.ts                  # Main CLI wiring: commander setup, prompt orchestration, commit dispatch
+  cli.ts                  # Main CLI wiring: commander setup, registers all subcommands
   lang.ts                 # All user-facing strings (flag descriptions, examples)
   reset.d.ts              # Applies @total-typescript/ts-reset globally
+  api/
+    index.ts              # Public Node API exports (second tsdown entry → dist/api/index.mjs)
   cli/
-    types.ts              # Core TS interfaces: Answers, Flags, GitzyState, EnquirerChoice
-    options.ts            # Commander Option definition for --skip
+    types.ts              # Core TS interfaces: Answers, CommitFlags, BranchFlags, GlobalFlags, GitzyState
     prompts/              # One file per interactive question
       constants.ts        # Shared prompt constants
-      create-prompts.ts   # Assembles the active prompt list from config
+      create-prompts.ts   # Assembles the active prompt list from config.prompts
       type.ts             # Autocomplete prompt with emoji-prefixed choices + fuzzy suggest
       scope.ts            # Autocomplete prompt (only shown when scopes are configured)
       subject.ts          # Input prompt with live char-count indicator & validation
       body.ts             # Multiline text prompt
-      breaking.ts         # Confirm or text prompt depending on breakingChangeFormat
+      breaking.ts         # Confirm or text prompt depending on breaking.format
       issues.ts           # Text prompt for issue references
+    commands/
+      commit.ts           # Default subcommand: full conventional commit flow
+      branch.ts           # Branch name generation flow
+      init.ts             # Generates a starter gitzy.config.js
+      config.ts           # Displays resolved config (--json for machine-readable output)
     utils/
       fuzzy-search.ts     # Generic multi-key fuzzy search via uFuzzy
       logging.ts          # Colored console helpers (info/hint/danger/warn/log)
   core/
     config/
-      types.ts            # Config & TypeDetail interfaces
-      defaults.ts         # defaultConfig, defaultQuestions, valid enums
+      types.ts            # Config, ResolvedConfig, TypeEntry, ScopeEntry, defineConfig() interfaces
+      defaults.ts         # defaultResolvedConfig, builtinTypes, per-section defaults
       schema.ts           # Valibot ConfigSchema (validates + applies defaults)
       loader.ts           # Generic loadConfig() via lilconfig + valibot safeParse
-      resolver.ts         # Orchestrates gitzy config + optional commitlint merge
+      normalizer.ts       # normalizeConfig() — resolves string type names to TypeEntry objects
+      resolver.ts         # resolveConfig() — auto-detects gitzy + commitlint config
       commitlint.ts       # extractCommitlintRules() maps commitlint rules → gitzy config
       commitlint-schema.ts # Valibot schema for parsing commitlint config shape
+    branch/
+      types.ts            # BranchParts interface
+      formatter.ts        # formatBranchName(), slugify()
     conventional/
       types.ts            # MessageParts interface + defaultMessageParts
-      message.ts          # formatMessage(), wrap(), createHead/Scope/Breaking/Issues helpers
+      message.ts          # formatMessage(), wrap(), isEmojiEnabled(), GITZY_NO_EMOJI support
     git/
       checks.ts           # checkIfGitRepo(), checkIfStaged(), shouldDoGitChecks()
       operations.ts       # commit() — runs git commit -m, or writes COMMIT_EDITMSG in hook mode
+      branch.ts           # createBranch(), renameBranch(), getCurrentBranch()
+      amend.ts            # getAmendParts(), parseConventionalCommit() — pre-fill from HEAD
+    init/
+      init.ts             # init() — generates gitzy.config.js in cwd
     store/
       store.ts            # GitzyStore<T> class — JSON file store in OS temp dir (for --retry)
       types.ts            # GitzyStoreError type
       utils.ts            # mkdir, tryUnlink, gitzyStorePath()
 e2e/
-  e2e.spec.ts             # E2E tests: runs the built binary via execSync with --dry-run
+  e2e.spec.ts             # E2E tests: runs the built binary via execSync with --dry-run/--stdin
 ```
 
 ## Architecture
 
 The codebase is split into two layers with a thin orchestration layer connecting them:
 
-- **`src/core/`** — pure business logic with no CLI dependencies: config loading/validation, conventional commit message formatting, git operations, retry state store. All modules are UI-agnostic.
-- **`src/cli/`** — all UI concerns: Commander flags, Enquirer prompt definitions, logging helpers.
-- **`src/cli.ts`** — thin orchestration layer that wires the two together.
+- **`src/core/`** — pure business logic with no CLI dependencies: config loading/validation, conventional commit message formatting, branch name formatting, git operations, retry state store. All modules are UI-agnostic.
+- **`src/cli/`** — all UI concerns: Commander flags, Enquirer prompt definitions, logging helpers, subcommand registrations.
+- **`src/cli.ts`** — thin orchestrator that registers all four Commander subcommands.
 - **`src/run.ts`** — the shebang entrypoint; one-liner that calls `cli()`.
+- **`src/api/index.ts`** — public Node API re-exports from `src/core/` only.
 
 ## Key Patterns
 
 - **Path alias** `@/*` maps to `./src/*`.
-- **Prompt pattern:** Each question is a single exported function (`type`, `scope`, `subject`, `body`, `breaking`, `issues`) returning an Enquirer prompt config object (or `null` to skip). `createPrompts()` composes these based on `config.questions` and `--skip` flags.
+- **Subcommands:** `gitzy` alone runs the default `commit` subcommand. Explicit subcommands: `branch`, `init`, `config`.
+- **Prompt pattern:** Each question is a single exported function (`type`, `scope`, `subject`, `body`, `breaking`, `issues`) returning an Enquirer prompt config object (or `null` to skip). `createPrompts()` composes these based on `config.prompts`.
 - **Config schema:** Every config file is loaded through a valibot schema with `safeParse`. Defaults are applied at the schema level via `optional(field, default)`, not manually in code. Invalid config throws a `TypeError` with a human-readable summary.
+- **Config normalization:** `normalizeConfig()` converts `string` type entries (short form) to full `TypeEntry` objects by looking them up in `builtinTypes`.
 - **Logging:** All console output goes through `src/cli/utils/logging.ts` using Node's built-in `styleText` from `node:util`. No external color library at runtime.
+- **Emoji:** Controlled by `config.emoji.enabled` (config) and the `GITZY_NO_EMOJI` env var. No `--no-emoji` CLI flag.
+- **`--stdin`:** Both `commit` and `branch` commands accept JSON answers piped via stdin, merged with CLI flags (flags take priority over stdin).
+- **`--amend` (commit):** Parses HEAD commit message with `getAmendParts()` to pre-fill prompts (best-effort regex parsing).
+- **`--amend` (branch):** Renames the current branch via `git branch -m`. Warns if a remote tracking ref exists.
 - **Store (retry mode):** Previous answers persisted as JSON in `os.tmpdir()/gitzy/<cwd-basename>-store.json` at mode `0o0600`.
-- **Bundling:** `tsdown` `commander`, `enquirer`, `valibot`, `@leeoniya/ufuzzy`, and `yaml` are inlined into `dist/run.mjs` to keep install size minimal. `lilconfig` and `tinyexec` remain as external runtime `dependencies`.
+- **Bundling:** `tsdown` inlines `ansi-colors`, `commander`, `enquirer`, `valibot`, `@leeoniya/ufuzzy` into `dist/run.mjs`. `lilconfig` and `tinyexec` remain external runtime `dependencies`.
+- **Node API:** `src/api/index.ts` is the second tsdown entry → `dist/api/index.mjs`. The `exports` map in `package.json` points `"."` to this file.
 - Use `satisfies` for type narrowing when possible (e.g., `lang.ts` config objects).
 - Private class fields (`#`) used in `GitzyStore`.
 - `as const` used for tuple/literal types in defaults and schemas.
@@ -92,7 +114,7 @@ The codebase is split into two layers with a thin orchestration layer connecting
 ## Commands
 
 ```txt
-pnpm build        # Bundle src/run.ts → dist/run.mjs (minified)
+pnpm build        # Bundle src/run.ts + src/api/index.ts → dist/ (minified)
 pnpm test         # Run tests in watch mode
 pnpm coverage     # Single-run with V8 coverage report
 pnpm check        # Full suite: knip + lint + format + coverage + typecheck (check builds first)
@@ -102,7 +124,7 @@ pnpm format       # Check formatting (Prettier)
 pnpm format:fix   # Auto-fix formatting
 pnpm typecheck    # Type check (tsc --noEmit)
 pnpm knip         # Detect unused exports/dependencies
-pnpm gitzy        # Run the CLI locally from source (tsx src/run.ts --commitlint)
+pnpm gitzy        # Run the CLI locally from source (tsx src/run.ts)
 ```
 
 ## Verification
@@ -135,10 +157,10 @@ If any step fails, fix the issue and re-run from that step. Do not move on until
 ## Branching & Commits
 
 - **Commits:** Use `pnpm gitzy` to create commits. It enforces Conventional Commits format. Two approaches:
-  - **Interactive mode:** Run `pnpm gitzy` and answer prompts. Use `pnpm gitzy -p -a` to stage all changes first.
-  - **CLI flags (for automation/non-TTY):** Use flags inline. Example: `pnpm gitzy -t feat -m "add dry-run flag" -p -a`. Available flags: `-t/--type`, `-m/--subject`, `-s/--scope`, `-d/--body`, `-b/--breaking`, `-i/--issues`, `-p/--passthrough`, `-D/--dry-run`, `--no-emoji`.
+  - **Interactive mode:** Run `pnpm gitzy` and answer prompts.
+  - **CLI flags (for automation/non-TTY):** Use flags inline. Example: `pnpm gitzy -t feat -m "add dry-run flag" -D`. Available flags: `-t/--type`, `-m/--subject`, `-s/--scope`, `-d/--body`, `-b/--breaking`, `-i/--issues`, `-D/--dry-run`, `--amend`, `--no-verify`, `--co-authors`.
 - **Allowed types:** `test`, `feat`, `fix`, `chore`, `docs`, `refactor`, `style`, `ci`
-- **Allowed scopes:** `deps`, `build`, `*`, `cli`, `release`, `prompts`
+- **Allowed scopes:** `deps`, `build`, `*`, `api`, `branch`, `cli`, `config`, `release`, `prompts`
 - **Header rules:** 5–75 characters, lowercase type and scope, no trailing period on subject.
 - **Pull requests:** Branch off `main`, push, and open a PR with `gh pr create`. Merge commits are disabled — use squash merge.
 - **Working on `main`:** Create a new branch before committing. Do not commit directly to `main`.

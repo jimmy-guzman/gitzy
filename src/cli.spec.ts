@@ -1,7 +1,7 @@
 import Enquirer from "enquirer";
 
 import { cli } from "./cli";
-import { defaultConfig } from "./core/config/defaults";
+import { defaultResolvedConfig } from "./core/config/defaults";
 import * as config from "./core/config/resolver";
 import * as gitChecks from "./core/git/checks";
 import * as gitOperations from "./core/git/operations";
@@ -22,11 +22,13 @@ vi.mock("enquirer", () => ({
 }));
 
 vi.mock("../package.json", () => ({
-  engines: { node: "18" },
+  engines: { node: "20" },
   version: "1.0.0",
 }));
 
 describe("cli", () => {
+  const originalArgv = process.argv;
+
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(Enquirer).mockImplementation(function () {
@@ -40,7 +42,11 @@ describe("cli", () => {
       subject: "test commit",
       type: "feat",
     });
-    process.argv = [];
+    process.argv = ["node", "gitzy"];
+  });
+
+  afterEach(() => {
+    process.argv = originalArgv;
   });
 
   it("should run with defaults", async () => {
@@ -56,7 +62,7 @@ describe("cli", () => {
 
     const getUserConfigSpy = vi
       .spyOn(config, "resolveConfig")
-      .mockResolvedValueOnce(defaultConfig);
+      .mockResolvedValueOnce(defaultResolvedConfig);
 
     await cli();
 
@@ -70,17 +76,18 @@ describe("cli", () => {
           submitted: expect.any(Function),
         },
       },
-      { emoji: true, hook: undefined },
+      expect.objectContaining({ emoji: true }),
     );
     expect(checkIfGitSpy).toHaveBeenCalledExactlyOnceWith();
     expect(checkIfStagedSpy).toHaveBeenCalledExactlyOnceWith();
-    expect(getUserConfigSpy).toHaveBeenNthCalledWith(1, undefined);
+    expect(getUserConfigSpy).toHaveBeenCalledExactlyOnceWith();
     expect(performCommitSpy).toHaveBeenCalledWith(
       expect.stringContaining(""),
       expect.objectContaining({
+        amend: undefined,
         dryRun: undefined,
-        hook: undefined,
-        passthrough: undefined,
+        hook: false,
+        noVerify: undefined,
       }),
     );
   });

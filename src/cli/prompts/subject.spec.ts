@@ -1,19 +1,22 @@
 import type { Answers } from "@/cli/types";
 
-import { defaultConfig } from "@/core/config/defaults";
+import { defaultResolvedConfig } from "@/core/config/defaults";
+import { defaultMessageParts } from "@/core/conventional/types";
 
 import { leadingLabel, subject } from "./subject";
 
-const setupSubject = (config = {}) => {
+const setupSubject = (configOverrides = {}) => {
   return subject({
-    config: { ...defaultConfig, ...config },
+    answers: defaultMessageParts,
+    config: { ...defaultResolvedConfig, ...configOverrides },
+    flags: {},
   });
 };
 
 const answers = {
   body: "this an amazing feature, lots of details",
   breaking: "breaks everything",
-  issues: "#123",
+  issues: ["#123"],
   scope: "*",
   subject: "a cool new feature",
   type: "feat",
@@ -83,7 +86,9 @@ describe("subject", () => {
     });
 
     it("should return return true if emojis are disabled", () => {
-      const { validate } = setupSubject({ disableEmoji: true });
+      const { validate } = setupSubject({
+        emoji: { ...defaultResolvedConfig.emoji, enabled: false },
+      });
 
       expect(validate("#".repeat(55), { answers, input: "" })).toBe(true);
     });
