@@ -15,13 +15,16 @@ export const leadingLabel = (answers?: Answers) => {
 
 export const subject = ({
   config: {
-    emoji: { enabled: emojiEnabled },
+    emoji: { enabled: configEmojiEnabled },
     header: { max: headerMaxLength, min: headerMinLength },
   },
+  flags,
   initial,
 }: CreatedPromptOptions) => {
   const minTitleLengthError = `The subject must have at least ${headerMinLength} characters`;
   const maxTitleLengthError = `The subject must not exceed ${headerMaxLength} characters`;
+  const emojiEnabled =
+    flags.noEmoji === true ? false : (flags.emoji ?? configEmojiEnabled);
   const emojiLength = emojiEnabled ? EMOJI_LENGTH : 0;
 
   const getColor = (inputLen: number, percentRem: number) => {
