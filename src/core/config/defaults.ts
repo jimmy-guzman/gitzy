@@ -1,4 +1,5 @@
 import type {
+  BodyConfig,
   BranchConfig,
   BreakingConfig,
   EmojiConfig,
@@ -50,6 +51,11 @@ export const builtinTypes: readonly TypeEntry[] = [
   { description: "Add or update tests", emoji: "✅", name: "test" },
 ];
 
+export const defaultBodyConfig: BodyConfig = {
+  max: 70,
+  min: 5,
+};
+
 export const defaultHeaderConfig: HeaderConfig = {
   max: 50,
   min: 5,
@@ -79,6 +85,7 @@ export const defaultBranchConfig: BranchConfig = {
 };
 
 export const defaultResolvedConfig: ResolvedConfig = {
+  body: defaultBodyConfig,
   branch: defaultBranchConfig,
   breaking: defaultBreakingConfig,
   emoji: defaultEmojiConfig,

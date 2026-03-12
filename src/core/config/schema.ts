@@ -13,6 +13,7 @@ import {
 
 import {
   builtinTypes,
+  defaultBodyConfig,
   defaultBranchConfig,
   defaultBreakingConfig,
   defaultEmojiConfig,
@@ -36,6 +37,12 @@ const typeSchema = union([string(), typeEntrySchema]);
 const scopeSchema = union([string(), scopeEntrySchema]);
 
 export const ConfigSchema = object({
+  body: optional(
+    object({
+      max: optional(number(), defaultBodyConfig.max),
+      min: optional(number(), defaultBodyConfig.min),
+    }),
+  ),
   branch: optional(
     object({
       checkout: optional(boolean(), defaultBranchConfig.checkout),

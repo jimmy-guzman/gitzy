@@ -5,6 +5,8 @@ describe("extractCommitlintRules", () => {
     expect(
       extractCommitlintRules({
         rules: {
+          "body-max-length": [2, "always", 72],
+          "body-min-length": [2, "always", 3],
           "header-max-length": [2, "always", 10],
           "header-min-length": [2, "always", 1],
           "scope-enum": [2, "always", ["1", "2"]],
@@ -12,6 +14,7 @@ describe("extractCommitlintRules", () => {
         },
       }),
     ).toMatchObject({
+      body: { max: 72, min: 3 },
       header: { max: 10, min: 1 },
       scopes: ["1", "2"],
       types: ["1", "2"],
@@ -87,6 +90,42 @@ describe("extractCommitlintRules", () => {
     ).toStrictEqual({
       scopes: [],
       types: [],
+    });
+  });
+
+  it("should handle partial body rules — only body-max-length", () => {
+    expect(
+      extractCommitlintRules({
+        rules: {
+          "body-max-length": [2, "always", 100],
+        },
+      }),
+    ).toStrictEqual({
+      body: { max: 100 },
+    });
+  });
+
+  it("should handle partial body rules — only body-min-length", () => {
+    expect(
+      extractCommitlintRules({
+        rules: {
+          "body-min-length": [2, "always", 10],
+        },
+      }),
+    ).toStrictEqual({
+      body: { min: 10 },
+    });
+  });
+
+  it("should handle zero as a valid body min length", () => {
+    expect(
+      extractCommitlintRules({
+        rules: {
+          "body-min-length": [2, "always", 0],
+        },
+      }),
+    ).toStrictEqual({
+      body: { min: 0 },
     });
   });
 });

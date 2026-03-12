@@ -1,3 +1,8 @@
+export interface BodyConfig {
+  max: number;
+  min: number;
+}
+
 export interface BranchConfig {
   checkout: boolean;
   max: number;
@@ -38,6 +43,7 @@ export interface TypeEntry {
 }
 
 export interface Config {
+  body?: Partial<BodyConfig>;
   branch?: Partial<BranchConfig>;
   breaking?: Partial<BreakingConfig>;
   emoji?: Partial<EmojiConfig>;
@@ -49,6 +55,7 @@ export interface Config {
 }
 
 export interface ResolvedConfig {
+  body: BodyConfig;
   branch: BranchConfig;
   breaking: BreakingConfig;
   emoji: EmojiConfig;

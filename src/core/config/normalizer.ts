@@ -2,6 +2,7 @@ import type { Config, ResolvedConfig, ScopeEntry, TypeEntry } from "./types";
 
 import {
   builtinTypes,
+  defaultBodyConfig,
   defaultBranchConfig,
   defaultBreakingConfig,
   defaultEmojiConfig,
@@ -43,6 +44,10 @@ export const normalizeConfig = (config: Config | null): ResolvedConfig => {
   const scopes = (config?.scopes ?? []).map(resolveScopeEntry);
 
   return {
+    body: {
+      ...defaultBodyConfig,
+      ...config?.body,
+    },
     branch: {
       ...defaultBranchConfig,
       ...config?.branch,
