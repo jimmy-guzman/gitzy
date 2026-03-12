@@ -202,7 +202,7 @@ describe("gitzy", () => {
         type: "docs",
       });
 
-      const result = await runCommit("-t feat -m override --stdin", stdin);
+      const result = await runCommit("--type feat -m override --stdin", stdin);
 
       expect(result).toMatchInlineSnapshot(`"feat: ✨ override"`);
     });
@@ -223,19 +223,19 @@ describe("gitzy", () => {
     });
 
     it("should skip prompts when --type and --subject are provided as flags", async () => {
-      const result = await runCommit("-t feat -m add-endpoint");
+      const result = await runCommit("--type feat -m add-endpoint");
 
       expect(result).toMatchInlineSnapshot(`"feat: ✨ add-endpoint"`);
     });
 
     it("should skip prompts and include scope when --type, --scope, and --subject are provided", async () => {
-      const result = await runCommit("-t feat -s api -m add-endpoint");
+      const result = await runCommit("--type feat --scope api -m add-endpoint");
 
       expect(result).toMatchInlineSnapshot(`"feat(api): ✨ add-endpoint"`);
     });
 
     it("should skip prompts and include issue when --type, --subject, and --issue are provided", async () => {
-      const result = await runCommit("-t fix -m fix-bug -i '#123'");
+      const result = await runCommit("--type fix -m fix-bug --issue '#123'");
 
       expect(result).toMatchInlineSnapshot(`
         "fix: 🐛 fix-bug
@@ -246,7 +246,7 @@ describe("gitzy", () => {
 
     it("should skip prompts and include co-author when --type, --subject, and --co-author are provided", async () => {
       const result = await runCommit(
-        '-t feat -m add-endpoint -c "Alice <alice@example.com>"',
+        '--type feat -m add-endpoint --co-author "Alice <alice@example.com>"',
       );
 
       expect(result).toMatchInlineSnapshot(`
@@ -302,13 +302,13 @@ describe("gitzy", () => {
     });
 
     it("should skip prompts when --type and --subject are provided as flags", async () => {
-      const result = await runBranch("-t feat -m add-dark-mode");
+      const result = await runBranch("--type feat -m add-dark-mode");
 
       expect(result).toMatchInlineSnapshot(`"feat/add/dark/mode"`);
     });
 
     it("should skip prompts and include scope when --type, --scope, and --subject are provided", async () => {
-      const result = await runBranch("-t feat -s ui -m add-dark-mode");
+      const result = await runBranch("--type feat --scope ui -m add-dark-mode");
 
       expect(result).toMatchInlineSnapshot(`"feat/ui/add/dark/mode"`);
     });

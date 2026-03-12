@@ -158,7 +158,7 @@ If any step fails, fix the issue and re-run from that step. Do not move on until
 
 - **Commits:** Use `pnpm gitzy` to create commits. It enforces Conventional Commits format. Two approaches:
   - **Interactive mode:** Run `pnpm gitzy` and answer prompts.
-  - **CLI flags (for automation/non-TTY):** Use flags inline. Example: `pnpm gitzy -t feat -m "add dry-run flag" -D`. Available flags: `-t/--type`, `-m/--subject`, `-s/--scope`, `-d/--body`, `-b/--breaking`, `-i/--issues`, `-D/--dry-run`, `--amend`, `--no-verify`, `--co-authors`.
+  - **CLI flags (for automation/non-TTY):** Use flags inline. Example: `pnpm gitzy --type feat -m "add dry-run flag" -D`. Available flags: `--type`, `-m/--subject`, `--scope`, `--body`, `--breaking`, `--issue`, `-D/--dry-run`, `-a/--amend`, `-n/--no-verify`, `--co-author`.
 - **Allowed types:** `test`, `feat`, `fix`, `chore`, `docs`, `refactor`, `style`, `ci`
 - **Allowed scopes:** `deps`, `build`, `*`, `api`, `branch`, `cli`, `config`, `release`, `prompts`
 - **Header rules:** 5–75 characters, lowercase type and scope, no trailing period on subject.

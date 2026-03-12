@@ -144,16 +144,16 @@ export const registerBranchCommand = (program: Command) => {
   program
     .command("branch")
     .description(lang.branch.description)
-    .option("-t, --type <type>", lang.branch.flags.type)
-    .option("-s, --scope <scope>", lang.branch.flags.scope)
+    .option("--type <type>", lang.branch.flags.type)
+    .option("--scope <scope>", lang.branch.flags.scope)
     .option("-m, --subject <subject>", lang.branch.flags.subject)
-    .option("-i, --issue <issue>", lang.branch.flags.issue)
-    .option("-f, --from <branch>", lang.branch.flags.from)
+    .option("--issue <issue>", lang.branch.flags.issue)
+    .option("--from <branch>", lang.branch.flags.from)
     .option("-a, --amend", lang.branch.flags.amend)
     .option("--no-checkout", lang.branch.flags.checkout)
     .option("-D, --dry-run", lang.branch.flags.dryRun)
-    .option("-j, --json", lang.branch.flags.json)
-    .option("--stdin", "read answers from stdin as JSON")
+    .option("--json", lang.branch.flags.json)
+    .option("--stdin", lang.branch.flags.stdin)
     .addHelpText("after", `\nExamples:\n      ${lang.branch.examples}\n    `)
     .action(async (opts: BranchFlags, cmd: Command) => {
       const state: GitzyState = {

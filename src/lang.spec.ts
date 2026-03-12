@@ -8,7 +8,7 @@ describe("lang", () => {
           "description": "generate a branch name from a conventional commit prompt",
           "examples": "
         $ gitzy branch
-        $ gitzy branch -t feat -m "add dark mode" -s ui
+        $ gitzy branch --type feat -m "add dark mode" --scope ui
         $ gitzy branch --amend
         $ gitzy branch --dry-run
           ",
@@ -20,6 +20,7 @@ describe("lang", () => {
             "issue": "set issue reference inline (e.g. #42 or PROJ-123)",
             "json": "output result as JSON",
             "scope": "set scope inline",
+            "stdin": "read answers from stdin as JSON",
             "subject": "set subject inline",
             "type": "set type inline",
           },
@@ -29,7 +30,7 @@ describe("lang", () => {
           "examples": "
         $ gitzy
         $ gitzy commit
-        $ gitzy commit -t feat -m "add dark mode"
+        $ gitzy commit --type feat -m "add dark mode"
         $ gitzy commit --amend
         $ gitzy commit --dry-run
           ",
@@ -37,14 +38,16 @@ describe("lang", () => {
             "amend": "amend the previous commit",
             "body": "set body inline",
             "breaking": "mark as breaking; add message for "footer"/"both" formats, or the flag for "!" format",
-            "coAuthor": "add co-authors (repeatable: -c "Name <email>")",
+            "coAuthor": "add co-authors (repeatable: --co-author "Name <email>")",
             "dryRun": "show commit message without committing",
-            "issue": "set issues inline (repeatable: -i '#123' -i '#456')",
+            "hook": "enable running inside a git hook (e.g. pre-commit)",
+            "issue": "set issues inline (repeatable: --issue '#123' --issue '#456')",
             "json": "output result as JSON",
             "noEmoji": "disable emoji in commit message",
             "noVerify": "skip git hooks (--no-verify)",
             "retry": "retry last commit and skip prompts",
             "scope": "set scope inline",
+            "stdin": "read answers from stdin as JSON",
             "subject": "set subject inline",
             "type": "set type inline",
           },

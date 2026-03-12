@@ -49,8 +49,8 @@ npx gitzy
 # or
 npm install -g gitzy
 gitzy
-gitzy commit -t feat -m "add dark mode"
-gitzy branch -t feat -m "add dark mode" -s ui
+gitzy commit --type feat -m "add dark mode"
+gitzy branch --type feat -m "add dark mode" --scope ui
 ```
 
 ## Subcommands
@@ -67,25 +67,25 @@ gitzy branch -t feat -m "add dark mode" -s ui
 
 ### `gitzy commit` flags
 
-| Flag                        | Alias | Description                                               |
-| --------------------------- | ----- | --------------------------------------------------------- |
-| `--type <type>`             | `-t`  | set type inline (with `--subject`, skips all prompts)     |
-| `--scope <scope>`           | `-s`  | set scope inline                                          |
-| `--subject <message>`       | `-m`  | set subject inline (with `--type`, skips all prompts)     |
-| `--body <body>`             | `-d`  | set body inline                                           |
-| `--breaking [breaking]`     | `-b`  | mark as breaking; add message for `footer`/`both` formats |
-| `--issue <issue...>`        | `-i`  | set issues inline (repeatable: `-i '#123' -i '#456'`)     |
-| `--dry-run`                 | `-D`  | show commit message without committing                    |
-| `--retry`                   | `-r`  | retry last commit and skip prompts                        |
-| `--amend`                   | `-a`  | amend the previous commit (pre-fills prompts from HEAD)   |
-| `--no-verify`               | `-n`  | skip git hooks                                            |
-| `--json`                    | `-j`  | output structured JSON (see shape below)                  |
-| `--no-emoji`                |       | disable emoji in commit message                           |
-| `--co-author <coAuthor...>` | `-c`  | add co-authors (repeatable: `-c "Name <email>"`)          |
-| `--hook`                    | `-H`  | enable running inside a git hook (e.g. `pre-commit`)      |
-| `--stdin`                   |       | read answers from stdin as JSON (CLI flags take priority) |
-| `--version`                 | `-v`  | display version number                                    |
-| `--help`                    | `-h`  | display help for command                                  |
+| Flag                        | Alias | Description                                                     |
+| --------------------------- | ----- | --------------------------------------------------------------- |
+| `--type <type>`             |       | set type inline (with `--subject`, skips all prompts)           |
+| `--scope <scope>`           |       | set scope inline                                                |
+| `--subject <subject>`       | `-m`  | set subject inline (with `--type`, skips all prompts)           |
+| `--body <body>`             |       | set body inline                                                 |
+| `--breaking [breaking]`     |       | mark as breaking; add message for `footer`/`both` formats       |
+| `--issue <issue...>`        |       | set issues inline (repeatable: `--issue '#123' --issue '#456'`) |
+| `--dry-run`                 | `-D`  | show commit message without committing                          |
+| `--retry`                   |       | retry last commit and skip prompts                              |
+| `--amend`                   | `-a`  | amend the previous commit (pre-fills prompts from HEAD)         |
+| `--no-verify`               | `-n`  | skip git hooks                                                  |
+| `--json`                    |       | output structured JSON (see shape below)                        |
+| `--no-emoji`                |       | disable emoji in commit message                                 |
+| `--co-author <coAuthor...>` |       | add co-authors (repeatable: `--co-author "Name <email>"`)       |
+| `--hook`                    |       | enable running inside a git hook (e.g. `pre-commit`)            |
+| `--stdin`                   |       | read answers from stdin as JSON (CLI flags take priority)       |
+| `--version`                 | `-v`  | display version number                                          |
+| `--help`                    | `-h`  | display help for command                                        |
 
 #### `--json` output shape
 
@@ -111,15 +111,15 @@ gitzy branch -t feat -m "add dark mode" -s ui
 
 | Flag                  | Alias | Description                                               |
 | --------------------- | ----- | --------------------------------------------------------- |
-| `--type <type>`       | `-t`  | set type inline (with `--subject`, skips all prompts)     |
-| `--scope <scope>`     | `-s`  | set scope inline                                          |
+| `--type <type>`       |       | set type inline (with `--subject`, skips all prompts)     |
+| `--scope <scope>`     |       | set scope inline                                          |
 | `--subject <subject>` | `-m`  | set subject inline (with `--type`, skips all prompts)     |
-| `--issue <issue>`     | `-i`  | set issue reference inline (e.g. `#42` or `PROJ-123`)     |
-| `--from <branch>`     | `-f`  | create the branch from a base branch                      |
+| `--issue <issue>`     |       | set issue reference inline (e.g. `#42` or `PROJ-123`)     |
+| `--from <branch>`     |       | create the branch from a base branch                      |
 | `--amend`             | `-a`  | rename the current branch instead of creating a new one   |
 | `--no-checkout`       |       | do not checkout the new branch after creating it          |
 | `--dry-run`           | `-D`  | show branch name without creating it                      |
-| `--json`              | `-j`  | output result as JSON (see shape below)                   |
+| `--json`              |       | output result as JSON (see shape below)                   |
 | `--stdin`             |       | read answers from stdin as JSON (CLI flags take priority) |
 | `--help`              | `-h`  | display help for command                                  |
 
