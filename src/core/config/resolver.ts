@@ -1,6 +1,13 @@
 /**
  * Config resolution - loads gitzy config, auto-merges commitlint config if present,
  * and normalizes to a fully resolved config
+ *
+ * Merge semantics — gitzy config takes precedence over commitlint:
+ * - Nested sections (branch, breaking, emoji, header, issues) are shallow-merged
+ *   key-by-key so gitzy values win on a per-key basis.
+ * - `types` and `scopes` are replaced wholesale: if the gitzy config defines
+ *   either array it is used as-is and the commitlint value is discarded.
+ *   To inherit commitlint types/scopes, omit them from the gitzy config.
  */
 
 import type { Config } from "./types";

@@ -74,6 +74,18 @@ export const renameBranch = async (
   return { hasRemote, newName, oldName };
 };
 
+const runGit = async (args: string[], errorPrefix: string) => {
+  const result = await x("git", args, {
+    nodeOptions: { stdio: "pipe" },
+  });
+
+  if (result.exitCode !== 0) {
+    throw new Error(
+      `${errorPrefix} failed with exit code ${(result.exitCode ?? 1).toString()}${result.stderr ? `: ${result.stderr}` : ""}`,
+    );
+  }
+};
+
 /**
  * Create a new branch and optionally check it out
  *
@@ -100,27 +112,11 @@ export const createBranch = async (
       ? ["checkout", "-b", branchName, from]
       : ["checkout", "-b", branchName];
 
-    const result = await x("git", args, {
-      nodeOptions: { stdio: "pipe" },
-    });
-
-    if (result.exitCode !== 0) {
-      throw new Error(
-        `git checkout -b failed with exit code ${(result.exitCode ?? 1).toString()}${result.stderr ? `: ${result.stderr}` : ""}`,
-      );
-    }
+    await runGit(args, "git checkout -b");
   } else {
     const args = from ? ["branch", branchName, from] : ["branch", branchName];
 
-    const result = await x("git", args, {
-      nodeOptions: { stdio: "pipe" },
-    });
-
-    if (result.exitCode !== 0) {
-      throw new Error(
-        `git branch failed with exit code ${(result.exitCode ?? 1).toString()}${result.stderr ? `: ${result.stderr}` : ""}`,
-      );
-    }
+    await runGit(args, "git branch");
   }
 
   return { branchName };

@@ -58,7 +58,11 @@ const promptQuestions = async (
         submitted: (value: string) => styleText("cyan", value),
       },
     },
-    { emoji: flags.emoji ?? true, hook: flags.hook, ...autofillAnswers },
+    {
+      emoji: flags.noEmoji === true ? false : (flags.emoji ?? true),
+      hook: flags.hook,
+      ...autofillAnswers,
+    },
   );
   const prompts = createPrompts(state, flags, amendInitial);
 
