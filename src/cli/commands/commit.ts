@@ -51,7 +51,7 @@ const promptQuestions = async (
     {
       autofill: true,
       cancel: () => {
-        throw new Error("Commit cancelled");
+        process.exit(0);
       },
       styles: {
         danger: (value: string) => styleText("red", value),
