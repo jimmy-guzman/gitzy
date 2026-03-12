@@ -51,8 +51,8 @@ export const builtinTypes: readonly TypeEntry[] = [
 ];
 
 export const defaultHeaderConfig: HeaderConfig = {
-  max: 64,
-  min: 3,
+  max: 50,
+  min: 5,
 };
 
 export const defaultEmojiConfig: EmojiConfig = {
@@ -73,7 +73,7 @@ export const defaultIssuesConfig: IssuesConfig = {
 
 export const defaultBranchConfig: BranchConfig = {
   checkout: true,
-  max: 60,
+  max: 72,
   pattern: "{type}/{scope}/{issue}-{subject}",
   separator: "/",
 };

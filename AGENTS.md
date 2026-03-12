@@ -161,7 +161,7 @@ If any step fails, fix the issue and re-run from that step. Do not move on until
   - **CLI flags (for automation/non-TTY):** Use flags inline. Example: `pnpm gitzy --type feat -m "add dry-run flag" -D`. Available flags: `--type`, `-m/--subject`, `--scope`, `--body`, `--breaking`, `--issue`, `-D/--dry-run`, `-a/--amend`, `-n/--no-verify`, `--co-author`.
 - **Allowed types:** `test`, `feat`, `fix`, `chore`, `docs`, `refactor`, `style`, `ci`
 - **Allowed scopes:** `deps`, `build`, `*`, `api`, `branch`, `cli`, `config`, `release`, `prompts`
-- **Header rules:** 5–75 characters, lowercase type and scope, no trailing period on subject.
+- **Header rules:** 5–50 characters, lowercase type and scope, no trailing period on subject.
 - **Pull requests:** Branch off `main`, push, and open a PR with `gh pr create`. Merge commits are disabled — use squash merge.
 - **Working on `main`:** Create a new branch before committing. Do not commit directly to `main`.
 

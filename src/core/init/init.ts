@@ -11,7 +11,7 @@ const CONFIG_TEMPLATE = `${JSON.stringify(
   {
     branch: {
       checkout: true,
-      max: 60,
+      max: 72,
       pattern: "{type}/{scope}/{issue}-{subject}",
       separator: "/",
     },
@@ -22,8 +22,8 @@ const CONFIG_TEMPLATE = `${JSON.stringify(
       enabled: true,
     },
     header: {
-      max: 64,
-      min: 3,
+      max: 50,
+      min: 5,
     },
     issues: {
       pattern: "github",

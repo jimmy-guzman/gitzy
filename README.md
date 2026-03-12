@@ -211,8 +211,8 @@ Controls the commit header length validation.
 
 ```js
 header: {
-  max: 64, // default
-  min: 3,  // default
+  max: 50, // default
+  min: 5,  // default
 }
 ```
 
@@ -285,7 +285,7 @@ Controls branch name generation.
 branch: {
   pattern: "{type}/{scope}/{issue}-{subject}", // default
   separator: "/",    // separator used within each slugified segment (type, scope, subject)
-  max: 60,           // max branch name length
+  max: 72,           // max branch name length
   checkout: true,    // auto-checkout after creation
 }
 ```
