@@ -1,6 +1,4 @@
-import type { Questions } from "@/core/config/types";
-
-import { defaultConfig } from "@/core/config/defaults";
+import { defaultResolvedConfig } from "@/core/config/defaults";
 
 import { createPrompts } from "./create-prompts";
 
@@ -9,55 +7,49 @@ interface PromptResult {
 }
 
 const setupCreatePrompts = (
-  flags = {},
-  questions: Questions = defaultConfig.questions,
+  prompts: readonly string[] = defaultResolvedConfig.prompts,
 ): string[] => {
-  const prompts = createPrompts(
+  const results = createPrompts(
     {
       answers: {
         body: "",
         breaking: "",
-        issues: "",
+        issues: [],
         scope: "",
         subject: "",
         type: "",
       },
-      config: { ...defaultConfig, questions },
+      config: { ...defaultResolvedConfig, prompts },
     },
-    flags,
+    {},
   );
 
-  return prompts.map((prompt) => (prompt as PromptResult).name);
+  return results.map((prompt) => (prompt as PromptResult).name);
 };
 
 describe("createPrompts", () => {
   it("should create default questions", () => {
-    const prompts = setupCreatePrompts();
+    const results = setupCreatePrompts();
 
-    expect(prompts).toStrictEqual([
+    expect(results).toStrictEqual([
       "type",
       "subject",
       "body",
       "breaking",
       "issues",
+      "coAuthors",
     ]);
   });
 
-  it("should not create skipped questions", () => {
-    const prompts = setupCreatePrompts({ skip: ["type"] });
-
-    expect(prompts).toStrictEqual(["subject", "body", "breaking", "issues"]);
-  });
-
-  it("should not create multiple skipped questions", () => {
-    const prompts = setupCreatePrompts({ skip: ["type", "body"] });
-
-    expect(prompts).toStrictEqual(["subject", "breaking", "issues"]);
-  });
-
   it("should only create user defined questions", () => {
-    const prompts = setupCreatePrompts({}, ["type"]);
+    const results = setupCreatePrompts(["type"]);
 
-    expect(prompts).toStrictEqual(["type"]);
+    expect(results).toStrictEqual(["type"]);
+  });
+
+  it("should skip unknown question names", () => {
+    const results = setupCreatePrompts(["type", "unknown-prompt"]);
+
+    expect(results).toStrictEqual(["type"]);
   });
 });

@@ -1,66 +1,14 @@
-import type { CommanderError } from "commander";
-
-import { styleText } from "node:util";
-
 import { program } from "commander";
-import Enquirer from "enquirer";
 import { version } from "package.json" assert { type: "json" };
 
-import type { Answers, Flags, GitzyState } from "./cli/types";
-
-import { skipOption } from "./cli/options";
-import { createPrompts } from "./cli/prompts/create-prompts";
-import { danger, hint, info, log, warn } from "./cli/utils/logging";
-import { defaultConfig } from "./core/config/defaults";
-import { resolveConfig } from "./core/config/resolver";
-import { formatMessage } from "./core/conventional/message";
-import { defaultMessageParts } from "./core/conventional/types";
-import {
-  checkIfGitRepo,
-  checkIfStaged,
-  shouldDoGitChecks,
-} from "./core/git/checks";
-import { commit } from "./core/git/operations";
-import { GitzyStore } from "./core/store/store";
-import { lang } from "./lang";
+import { registerBranchCommand } from "@/cli/commands/branch";
+import { registerCommitCommand } from "@/cli/commands/commit";
+import { registerConfigCommand } from "@/cli/commands/config";
+import { registerInitCommand } from "@/cli/commands/init";
+import { danger } from "@/cli/utils/logging";
+import { lang } from "@/lang";
 
 export const cli = async () => {
-  const state: GitzyState = {
-    answers: defaultMessageParts,
-    config: defaultConfig,
-  };
-  const store = new GitzyStore<Answers>();
-
-  const init = async ({ commitlint, dryRun, hook, passthrough }: Flags) => {
-    const loadedUserConfig = await resolveConfig(commitlint);
-
-    if (loadedUserConfig) {
-      state.config = { ...state.config, ...loadedUserConfig };
-    }
-
-    if (shouldDoGitChecks(passthrough, { dryRun, hook })) {
-      await checkIfGitRepo();
-      await checkIfStaged();
-    }
-  };
-
-  const promptQuestions = async (flags: Answers) => {
-    const enquirer = new Enquirer(
-      {
-        autofill: true,
-        cancel: () => null,
-        styles: {
-          danger: (value: string) => styleText("red", value),
-          submitted: (value: string) => styleText("cyan", value),
-        },
-      },
-      flags,
-    );
-    const prompts = createPrompts(state, flags);
-
-    return enquirer.prompt(prompts);
-  };
-
   program
     .configureOutput({
       outputError: (error, write) => {
@@ -70,90 +18,12 @@ export const cli = async () => {
     })
     .version(version, "-v, --version")
     .description(lang.description)
-    .option("-d, --body <body>", lang.flags.body)
-    .option("-b, --breaking [breaking]", lang.flags.breaking)
-    .option("-D, --dry-run", lang.flags.dryRun)
-    .option("-i, --issues <body>", lang.flags.issues)
-    .option("-p, --passthrough <flags...>", lang.flags.passthrough)
-    .option("-s, --scope <scope>", lang.flags.scope)
-    .option("-m, --subject <message>", lang.flags.subject)
-    .option("-t, --type <type>", lang.flags.type)
-    .option("-l, --commitlint", lang.flags.commitlint)
-    .option("-r, --retry", lang.flags.retry)
-    .option("--no-emoji", lang.flags.noEmoji)
-    .option("-H, --hook", lang.flags.hook)
-    .addOption(skipOption)
-    .addHelpText(
-      "after",
-      `
-Examples:
-      ${lang.examples}
-    `,
-    )
-    .name("gitzy")
-    .action(async () => {
-      const opts = program.opts<Flags>();
+    .name("gitzy");
 
-      const flags = {
-        ...opts,
-        hook: process.env.GIT_DIR !== undefined || opts.hook,
-      };
-
-      if (flags.dryRun) {
-        log(info("running in dry mode..."));
-      }
-
-      if (
-        typeof flags.breaking === "string" &&
-        flags.breaking &&
-        state.config.breakingChangeFormat === "!"
-      ) {
-        log(
-          warn(
-            "--breaking message ignored when using '!' format. Use --breaking (without value) instead.",
-          ),
-        );
-      }
-
-      try {
-        await init(flags);
-        const previousAnswers = flags.retry ? store.load() : {};
-
-        if (flags.retry && Object.keys(previousAnswers).length === 0) {
-          log(hint(`there is no previous gitzy commit to retry...`));
-        }
-
-        const answers = await promptQuestions({
-          ...(flags as Answers),
-          ...previousAnswers,
-        });
-
-        store.save(answers);
-
-        state.answers = { ...state.answers, ...answers };
-
-        const message = formatMessage(
-          state.config,
-          state.answers,
-          flags.emoji ?? true,
-        );
-
-        if (flags.dryRun) {
-          log(info(`Message...`));
-          log(`\n${message}\n`);
-        } else {
-          await commit(message, {
-            dryRun: flags.dryRun,
-            hook: flags.hook,
-            passthrough: flags.passthrough,
-          });
-        }
-      } catch (error: unknown) {
-        log(`\n${danger((error as CommanderError).message)}\n`);
-
-        process.exit(1);
-      }
-    });
+  registerCommitCommand(program);
+  registerBranchCommand(program);
+  registerInitCommand(program);
+  registerConfigCommand(program);
 
   await program.parseAsync(process.argv);
 };

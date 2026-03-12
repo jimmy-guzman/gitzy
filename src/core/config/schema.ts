@@ -7,46 +7,88 @@ import {
   picklist,
   pipe,
   readonly,
-  record,
   string,
+  union,
 } from "valibot";
 
 import {
-  defaultConfig,
-  defaultQuestions,
-  validBreakingChangeFormats,
-  validIssuesPrefixes,
+  builtinTypes,
+  defaultBodyConfig,
+  defaultBranchConfig,
+  defaultBreakingConfig,
+  defaultEmojiConfig,
+  defaultHeaderConfig,
+  defaultIssuesConfig,
+  defaultPrompts,
 } from "./defaults";
 
-const detailsSchema = record(
-  string(),
-  object({
-    description: string(),
-    emoji: string(),
-  }),
-);
+const typeEntrySchema = object({
+  description: optional(string()),
+  emoji: optional(string()),
+  name: string(),
+});
+
+const scopeEntrySchema = object({
+  description: optional(string()),
+  name: string(),
+});
+
+const typeSchema = union([string(), typeEntrySchema]);
+const scopeSchema = union([string(), scopeEntrySchema]);
 
 export const ConfigSchema = object({
-  breakingChangeEmoji: optional(string(), defaultConfig.breakingChangeEmoji),
-  breakingChangeFormat: optional(
-    picklist(validBreakingChangeFormats),
-    defaultConfig.breakingChangeFormat,
+  body: optional(
+    object({
+      max: optional(number(), defaultBodyConfig.max),
+      min: optional(number(), defaultBodyConfig.min),
+    }),
   ),
-  closedIssueEmoji: optional(string(), defaultConfig.closedIssueEmoji),
-  details: optional(detailsSchema, defaultConfig.details),
-  disableEmoji: optional(boolean(), defaultConfig.disableEmoji),
-  headerMaxLength: optional(number(), defaultConfig.headerMaxLength),
-  headerMinLength: optional(number(), defaultConfig.headerMinLength),
-  issuesHint: optional(string(), defaultConfig.issuesHint),
-  issuesPrefix: optional(
-    picklist(validIssuesPrefixes),
-    defaultConfig.issuesPrefix,
+  branch: optional(
+    object({
+      checkout: optional(boolean(), defaultBranchConfig.checkout),
+      max: optional(number(), defaultBranchConfig.max),
+      pattern: optional(string(), defaultBranchConfig.pattern),
+      separator: optional(string(), defaultBranchConfig.separator),
+    }),
   ),
-  questions: pipe(
-    optional(array(picklist(defaultQuestions)), defaultConfig.questions),
+  breaking: optional(
+    object({
+      format: optional(
+        picklist(["!", "both", "footer"] as const),
+        defaultBreakingConfig.format,
+      ),
+    }),
+  ),
+  emoji: optional(
+    object({
+      breaking: optional(string(), defaultEmojiConfig.breaking),
+      enabled: optional(boolean(), defaultEmojiConfig.enabled),
+      issues: optional(string(), defaultEmojiConfig.issues),
+    }),
+  ),
+  header: optional(
+    object({
+      max: optional(number(), defaultHeaderConfig.max),
+      min: optional(number(), defaultHeaderConfig.min),
+    }),
+  ),
+  issues: optional(
+    object({
+      hint: optional(string(), defaultIssuesConfig.hint),
+      pattern: optional(
+        picklist(["github", "jira"] as const),
+        defaultIssuesConfig.pattern,
+      ),
+      prefix: optional(string(), defaultIssuesConfig.prefix),
+    }),
+  ),
+  prompts: pipe(optional(array(string()), [...defaultPrompts]), readonly()),
+  scopes: pipe(optional(array(scopeSchema), []), readonly()),
+  types: pipe(
+    optional(
+      array(typeSchema),
+      builtinTypes.map((t) => t.name),
+    ),
     readonly(),
   ),
-  scopes: pipe(optional(array(string()), defaultConfig.scopes), readonly()),
-  types: pipe(optional(array(string()), defaultConfig.types), readonly()),
-  useCommitlintConfig: optional(boolean(), defaultConfig.useCommitlintConfig),
 });

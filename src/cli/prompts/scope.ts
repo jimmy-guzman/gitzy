@@ -1,4 +1,4 @@
-import type { Scopes } from "@/core/config/types";
+import type { CreatedPromptOptions } from "@/cli/types";
 
 import { fuzzySearch } from "@/cli/utils/fuzzy-search";
 
@@ -6,14 +6,16 @@ import { AUTOCOMPLETE_HINT } from "./constants";
 
 export const scope = ({
   config: { scopes },
-}: {
-  config: { scopes: Scopes };
-}) => {
-  const choices = scopes.map((choice) => {
+  initial,
+}: CreatedPromptOptions) => {
+  const choices = scopes.map((scopeEntry) => {
     return {
+      hint: scopeEntry.description?.toLowerCase() ?? "",
       indent: " ",
-      title: choice,
-      value: choice,
+      message: scopeEntry.name,
+      name: scopeEntry.name,
+      title: scopeEntry.name,
+      value: scopeEntry.name,
     };
   });
 
@@ -22,6 +24,7 @@ export const scope = ({
     ? {
         choices,
         hint: AUTOCOMPLETE_HINT,
+        ...(initial?.scope === undefined ? {} : { initial: initial.scope }),
         limit: 10,
         message: "Choose the scope",
         name: "scope",

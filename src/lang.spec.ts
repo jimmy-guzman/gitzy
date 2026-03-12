@@ -4,27 +4,57 @@ describe("lang", () => {
   it("should create lang", () => {
     expect(lang).toMatchInlineSnapshot(`
       {
-        "description": "interactive conventional commits cli",
-        "examples": "
+        "branch": {
+          "description": "generate a branch name from a conventional commit prompt",
+          "examples": "
+        $ gitzy branch
+        $ gitzy branch --type feat -m "add dark mode" --scope ui
+        $ gitzy branch --amend
+        $ gitzy branch --dry-run
+          ",
+          "flags": {
+            "amend": "rename the current branch instead of creating a new one",
+            "checkout": "checkout the new branch after creating it",
+            "dryRun": "show branch name without creating it",
+            "from": "create the branch from a base branch",
+            "issue": "set issue reference inline (e.g. #42 or PROJ-123)",
+            "json": "output result as JSON",
+            "scope": "set scope inline",
+            "stdin": "read answers from stdin as JSON",
+            "subject": "set subject inline",
+            "type": "set type inline",
+          },
+        },
+        "commit": {
+          "description": "create a conventional commit (default command)",
+          "examples": "
         $ gitzy
-        $ gitzy -p -a
-        $ gitzy -m "add cool new feature" -t feat -s amazing
-        $ gitzy -lD --no-emoji
-        ",
-        "flags": {
-          "body": "set body inline",
-          "breaking": "mark as breaking; add message for "footer"/"both" formats, or the flag for "!" format",
-          "commitlint": "leverage local commitlint config",
-          "dryRun": "show commit message without committing",
-          "hook": "enable running inside a git hook (e.g. pre-commit)",
-          "issues": "set issues inline",
-          "noEmoji": "disable all emojis",
-          "passthrough": "pass remaining arguments to git (e.g. after \`--\`)",
-          "retry": "retry last commit and skip prompts",
-          "scope": "set scope inline",
-          "skip": "skip prompts",
-          "subject": "set subject inline",
-          "type": "set type inline",
+        $ gitzy commit
+        $ gitzy commit --type feat -m "add dark mode"
+        $ gitzy commit --amend
+        $ gitzy commit --dry-run
+          ",
+          "flags": {
+            "amend": "amend the previous commit",
+            "body": "set body inline",
+            "breaking": "mark as breaking; add message for "footer"/"both" formats, or the flag for "!" format",
+            "coAuthor": "add co-authors (repeatable: --co-author "Name <email>")",
+            "dryRun": "show commit message without committing",
+            "hook": "enable running inside a git hook (e.g. pre-commit)",
+            "issue": "set issues inline (repeatable: --issue '#123' --issue '#456')",
+            "json": "output result as JSON",
+            "noEmoji": "disable emoji in commit message",
+            "noVerify": "skip git hooks (--no-verify)",
+            "retry": "retry last commit and skip prompts",
+            "scope": "set scope inline",
+            "stdin": "read answers from stdin as JSON",
+            "subject": "set subject inline",
+            "type": "set type inline",
+          },
+        },
+        "description": "interactive conventional commits cli",
+        "globalFlags": {
+          "json": "output result as JSON",
         },
       }
     `);

@@ -1,14 +1,13 @@
 import { defineConfig } from "tsdown";
 
 export default defineConfig({
-  entry: "src/run.ts",
+  entry: ["src/run.ts", "src/api/index.ts"],
   inlineOnly: [
-    "commander",
     "ansi-colors",
+    "commander",
     "enquirer",
     "valibot",
     "@leeoniya/ufuzzy",
-    "yaml",
   ],
   minify: true,
   publint: true,

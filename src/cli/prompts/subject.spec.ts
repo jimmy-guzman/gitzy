@@ -1,19 +1,22 @@
 import type { Answers } from "@/cli/types";
 
-import { defaultConfig } from "@/core/config/defaults";
+import { defaultResolvedConfig } from "@/core/config/defaults";
+import { defaultMessageParts } from "@/core/conventional/types";
 
 import { leadingLabel, subject } from "./subject";
 
-const setupSubject = (config = {}) => {
+const setupSubject = (configOverrides = {}) => {
   return subject({
-    config: { ...defaultConfig, ...config },
+    answers: defaultMessageParts,
+    config: { ...defaultResolvedConfig, ...configOverrides },
+    flags: {},
   });
 };
 
 const answers = {
   body: "this an amazing feature, lots of details",
   breaking: "breaks everything",
-  issues: "#123",
+  issues: ["#123"],
   scope: "*",
   subject: "a cool new feature",
   type: "feat",
@@ -53,7 +56,7 @@ describe("subject", () => {
       const { validate } = setupSubject();
 
       expect(validate("#".repeat(2))).toBe(
-        "The subject must have at least 3 characters",
+        "The subject must have at least 5 characters",
       );
     });
 
@@ -67,7 +70,7 @@ describe("subject", () => {
           answers: { ...answers, scope: "*", type: "fix" },
           input,
         }),
-      ).toBe("The subject must not exceed 64 characters");
+      ).toBe("The subject must not exceed 50 characters");
     });
 
     it("should return true when the length is valid", () => {
@@ -79,13 +82,15 @@ describe("subject", () => {
     it("should return return true adjusted per user scope", () => {
       const { validate } = setupSubject();
 
-      expect(validate("#".repeat(52), { answers, input: "" })).toBe(true);
+      expect(validate("#".repeat(38), { answers, input: "" })).toBe(true);
     });
 
     it("should return return true if emojis are disabled", () => {
-      const { validate } = setupSubject({ disableEmoji: true });
+      const { validate } = setupSubject({
+        emoji: { ...defaultResolvedConfig.emoji, enabled: false },
+      });
 
-      expect(validate("#".repeat(55), { answers, input: "" })).toBe(true);
+      expect(validate("#".repeat(41), { answers, input: "" })).toBe(true);
     });
   });
 
@@ -94,7 +99,7 @@ describe("subject", () => {
       const { message } = setupSubject();
 
       expect(message({ answers, input: "" })).toBe(
-        `Add a short description(52/64)`,
+        `Add a short description(38/50)`,
       );
     });
 
@@ -102,7 +107,7 @@ describe("subject", () => {
       const { message } = setupSubject();
 
       expect(message({ answers, input: "#".repeat(5) })).toBe(
-        `Add a short description(47/64)`,
+        `Add a short description(33/50)`,
       );
     });
 
@@ -110,7 +115,7 @@ describe("subject", () => {
       const { message } = setupSubject();
 
       expect(message({ answers, input: "#".repeat(65) })).toBe(
-        `Add a short description(-13/64)`,
+        `Add a short description(-27/50)`,
       );
     });
 
@@ -118,14 +123,14 @@ describe("subject", () => {
       const { message } = setupSubject();
 
       expect(message({ answers, input: "#".repeat(52) })).toBe(
-        `Add a short description(0/64)`,
+        `Add a short description(-14/50)`,
       );
     });
 
     it("should return indicator when no state", () => {
       const { message } = setupSubject();
 
-      expect(message()).toBe(`Add a short description(61/64)`);
+      expect(message()).toBe(`Add a short description(47/50)`);
     });
   });
 });

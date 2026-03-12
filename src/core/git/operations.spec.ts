@@ -72,14 +72,38 @@ describe("commit", () => {
     });
   });
 
-  it("should pass through additional git flags", async () => {
+  it("should pass --no-verify when noVerify is true", async () => {
     vi.mocked(x).mockResolvedValue({ exitCode: 0, stderr: "", stdout: "" });
 
-    await commit("feat: add feature", { passthrough: ["--no-verify"] });
+    await commit("feat: add feature", { noVerify: true });
 
     expect(x).toHaveBeenCalledWith(
       "git",
       ["commit", "-m", "feat: add feature", "--no-verify"],
+      { nodeOptions: { stdio: "inherit" } },
+    );
+  });
+
+  it("should pass --amend when amend is true", async () => {
+    vi.mocked(x).mockResolvedValue({ exitCode: 0, stderr: "", stdout: "" });
+
+    await commit("feat: update feature", { amend: true });
+
+    expect(x).toHaveBeenCalledWith(
+      "git",
+      ["commit", "-m", "feat: update feature", "--amend"],
+      { nodeOptions: { stdio: "inherit" } },
+    );
+  });
+
+  it("should pass --amend and --no-verify when both options are true", async () => {
+    vi.mocked(x).mockResolvedValue({ exitCode: 0, stderr: "", stdout: "" });
+
+    await commit("feat: update feature", { amend: true, noVerify: true });
+
+    expect(x).toHaveBeenCalledWith(
+      "git",
+      ["commit", "-m", "feat: update feature", "--amend", "--no-verify"],
       { nodeOptions: { stdio: "inherit" } },
     );
   });

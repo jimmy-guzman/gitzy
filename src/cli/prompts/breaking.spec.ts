@@ -1,4 +1,4 @@
-import { defaultConfig } from "@/core/config/defaults";
+import { defaultResolvedConfig } from "@/core/config/defaults";
 
 import { breaking } from "./breaking";
 
@@ -8,12 +8,12 @@ describe("breaking", () => {
       answers: {
         body: "",
         breaking: "",
-        issues: "",
+        issues: [],
         scope: "",
         subject: "",
         type: "",
       },
-      config: defaultConfig,
+      config: defaultResolvedConfig,
       flags: {},
     });
 
@@ -33,12 +33,15 @@ describe("breaking", () => {
       answers: {
         body: "",
         breaking: "",
-        issues: "",
+        issues: [],
         scope: "",
         subject: "",
         type: "",
       },
-      config: { ...defaultConfig, breakingChangeFormat: "!" },
+      config: {
+        ...defaultResolvedConfig,
+        breaking: { format: "!" },
+      },
       flags: {},
     });
 
