@@ -1,20 +1,24 @@
 import type { EnquirerChoice } from "@/cli/types";
 
-import { defaultConfig } from "@/core/config/defaults";
+import { defaultResolvedConfig } from "@/core/config/defaults";
+import { defaultMessageParts } from "@/core/conventional/types";
 
 import { choice, type } from "./type";
 
-const setupType = (config = {}) => {
+const setupType = (configOverrides = {}) => {
   return type({
-    config: { ...defaultConfig, ...config },
+    answers: defaultMessageParts,
+    config: { ...defaultResolvedConfig, ...configOverrides },
+    flags: {},
   });
 };
+
 const setupChoice = (
-  config = {},
+  configOverrides = {},
   flags = {},
   currentType = "feat",
 ): EnquirerChoice => {
-  return choice({ ...defaultConfig, ...config }, currentType, {
+  return choice({ ...defaultResolvedConfig, ...configOverrides }, currentType, {
     emoji: true,
     ...flags,
   });
@@ -25,13 +29,17 @@ describe("choice", () => {
     expect(setupChoice()).toStrictEqual({
       hint: "a new feature",
       indent: " ",
+      message: "✨ feat:",
+      name: "feat",
       title: "✨ feat:",
       value: "feat",
     });
   });
 
-  it("should not have an emoji when disableEmoji", () => {
-    const { title } = setupChoice({ disableEmoji: true });
+  it("should not have an emoji when emoji.enabled is false", () => {
+    const { title } = setupChoice({
+      emoji: { ...defaultResolvedConfig.emoji, enabled: false },
+    });
 
     expect(title).toBe("feat:");
   });
@@ -48,10 +56,12 @@ describe("choice", () => {
     expect(title).toBe("🔄 refactor:");
   });
 
-  it("should not crash when type is not in config.details", () => {
+  it("should not crash when type is not in config.types", () => {
     expect(setupChoice({}, {}, "unknown-type")).toStrictEqual({
       hint: "",
       indent: " ",
+      message: "unknown-type:",
+      name: "unknown-type",
       title: "unknown-type:",
       value: "unknown-type",
     });
@@ -59,75 +69,97 @@ describe("choice", () => {
 });
 
 describe("type", () => {
-  it("should return scope prompt if there is a scope", () => {
-    expect(setupType({ scopes: ["build"] })).toMatchInlineSnapshot(`
+  it("should return type prompt with default types", () => {
+    expect(setupType({ scopes: [{ name: "build" }] })).toMatchInlineSnapshot(`
       {
         "choices": [
           {
             "hint": "other changes that don't modify src or test files",
             "indent": " ",
+            "message": "🤖 chore:",
+            "name": "chore",
             "title": "🤖 chore:",
             "value": "chore",
           },
           {
+            "hint": "changes to ci configuration files and scripts",
+            "indent": " ",
+            "message": "👷 ci:",
+            "name": "ci",
+            "title": "👷 ci:",
+            "value": "ci",
+          },
+          {
             "hint": "add or update documentation",
             "indent": " ",
+            "message": "📝 docs:",
+            "name": "docs",
             "title": "📝 docs:",
             "value": "docs",
           },
           {
             "hint": "a new feature",
             "indent": " ",
+            "message": "✨ feat:",
+            "name": "feat",
             "title": "✨ feat:",
             "value": "feat",
           },
           {
             "hint": "fix a bug",
             "indent": " ",
+            "message": "🐛 fix:",
+            "name": "fix",
             "title": "🐛 fix:",
             "value": "fix",
           },
           {
-            "hint": "refactor code",
-            "indent": " ",
-            "title": "🔄 refactor:",
-            "value": "refactor",
-          },
-          {
-            "hint": "add or update tests",
-            "indent": " ",
-            "title": "✅ test:",
-            "value": "test",
-          },
-          {
-            "hint": "improve structure / format of the code",
-            "indent": " ",
-            "title": "🎨 style:",
-            "value": "style",
-          },
-          {
-            "hint": "changes to ci configuration files and scripts",
-            "indent": " ",
-            "title": "👷 ci:",
-            "value": "ci",
-          },
-          {
             "hint": "improve performance",
             "indent": " ",
+            "message": "⚡️ perf:",
+            "name": "perf",
             "title": "⚡️ perf:",
             "value": "perf",
           },
           {
-            "hint": "revert changes",
+            "hint": "refactor code",
             "indent": " ",
-            "title": "⏪ revert:",
-            "value": "revert",
+            "message": "🔄 refactor:",
+            "name": "refactor",
+            "title": "🔄 refactor:",
+            "value": "refactor",
           },
           {
             "hint": "deploy stuff",
             "indent": " ",
+            "message": "🚀 release:",
+            "name": "release",
             "title": "🚀 release:",
             "value": "release",
+          },
+          {
+            "hint": "revert changes",
+            "indent": " ",
+            "message": "⏪ revert:",
+            "name": "revert",
+            "title": "⏪ revert:",
+            "value": "revert",
+          },
+          {
+            "hint": "improve structure / format of the code",
+            "indent": " ",
+            "message": "🎨 style:",
+            "name": "style",
+            "title": "🎨 style:",
+            "value": "style",
+          },
+          {
+            "hint": "add or update tests",
+            "indent": " ",
+            "message": "✅ test:",
+            "name": "test",
+            "title": "✅ test:",
+            "value": "test",
           },
         ],
         "hint": "...type or use arrow keys",
@@ -149,6 +181,8 @@ describe("type", () => {
       {
         hint: "refactor code",
         indent: " ",
+        message: "🔄 refactor:",
+        name: "refactor",
         title: "🔄 refactor:",
         value: "refactor",
       },

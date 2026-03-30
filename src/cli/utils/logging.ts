@@ -1,7 +1,7 @@
 import { styleText } from "node:util";
 
 export const info = (message: string) => {
-  return styleText("blue", `❯ ${message}`);
+  return styleText("cyan", `❯ ${message}`);
 };
 
 export const hint = (message: string) => {

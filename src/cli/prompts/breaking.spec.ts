@@ -1,21 +1,27 @@
-import { defaultConfig } from "@/core/config/defaults";
+import type { ResolvedConfig } from "@/core/config/types";
+
+import { defaultResolvedConfig } from "@/core/config/defaults";
 
 import { breaking } from "./breaking";
 
+const setupBreaking = (configOverrides: Partial<ResolvedConfig> = {}) => {
+  return breaking({
+    answers: {
+      body: "",
+      breaking: "",
+      issues: [],
+      scope: "",
+      subject: "",
+      type: "",
+    },
+    config: { ...defaultResolvedConfig, ...configOverrides },
+    flags: {},
+  });
+};
+
 describe("breaking", () => {
   it("should create text breaking prompt", () => {
-    const breakingPrompt = breaking({
-      answers: {
-        body: "",
-        breaking: "",
-        issues: "",
-        scope: "",
-        subject: "",
-        type: "",
-      },
-      config: defaultConfig,
-      flags: {},
-    });
+    const breakingPrompt = setupBreaking();
 
     expect(breakingPrompt).toMatchInlineSnapshot(`
       {
@@ -29,18 +35,7 @@ describe("breaking", () => {
   });
 
   it("should create confirm breaking prompt", () => {
-    const breakingPrompt = breaking({
-      answers: {
-        body: "",
-        breaking: "",
-        issues: "",
-        scope: "",
-        subject: "",
-        type: "",
-      },
-      config: { ...defaultConfig, breakingChangeFormat: "!" },
-      flags: {},
-    });
+    const breakingPrompt = setupBreaking({ breaking: { format: "!" } });
 
     expect(breakingPrompt).toMatchInlineSnapshot(`
       {

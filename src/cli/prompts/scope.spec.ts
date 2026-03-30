@@ -1,10 +1,13 @@
-import { defaultConfig } from "@/core/config/defaults";
+import { defaultResolvedConfig } from "@/core/config/defaults";
+import { defaultMessageParts } from "@/core/conventional/types";
 
 import { scope } from "./scope";
 
-const setupScope = (config = {}) => {
+const setupScope = (configOverrides = {}) => {
   return scope({
-    config: { ...defaultConfig, ...config },
+    answers: defaultMessageParts,
+    config: { ...defaultResolvedConfig, ...configOverrides },
+    flags: {},
   });
 };
 
@@ -14,21 +17,33 @@ describe("scope", () => {
   });
 
   it("should suggest needle in the haystack", () => {
-    const scope = setupScope({ scopes: ["build"] });
+    const scopePrompt = setupScope({
+      scopes: [{ name: "build" }],
+    });
 
-    const needle = scope?.suggest("ui");
+    const needle = scopePrompt?.suggest("ui");
 
     expect(needle).toStrictEqual([
-      { indent: " ", title: "build", value: "build" },
+      {
+        hint: "",
+        indent: " ",
+        message: "build",
+        name: "build",
+        title: "build",
+        value: "build",
+      },
     ]);
   });
 
   it("should return scope prompt if there is a scope", () => {
-    expect(setupScope({ scopes: ["build"] })).toMatchInlineSnapshot(`
+    expect(setupScope({ scopes: [{ name: "build" }] })).toMatchInlineSnapshot(`
       {
         "choices": [
           {
+            "hint": "",
             "indent": " ",
+            "message": "build",
+            "name": "build",
             "title": "build",
             "value": "build",
           },

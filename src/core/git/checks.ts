@@ -14,7 +14,7 @@ export const checkIfStaged = async () => {
 
   if (result.exitCode === 0) {
     throw new Error(
-      'No files staged \nYou can use "gitzy -p -a" to replicate git -am',
+      'No files staged \nYou can use "git add" to stage files before committing',
     );
   }
 
@@ -44,18 +44,13 @@ export const checkIfGitRepo = async () => {
 
 /**
  * Determines whether or not to perform git checks based on flags
- *
- * @param passthroughFlags flags
  */
 export const shouldDoGitChecks = (
-  passthroughFlags: string[] = [],
-  cliFlags: { dryRun?: boolean; hook?: boolean } = {},
+  cliFlags: { amend?: boolean; dryRun?: boolean; hook?: boolean } = {},
 ) => {
-  if (cliFlags.dryRun || cliFlags.hook) {
+  if (cliFlags.dryRun || cliFlags.hook || cliFlags.amend) {
     return false;
   }
 
-  return !["--add", "-a", "--amend"].some((flag) => {
-    return passthroughFlags.includes(flag);
-  });
+  return true;
 };
