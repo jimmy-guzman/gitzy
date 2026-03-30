@@ -1,4 +1,5 @@
 import type { ResolvedConfig } from "@/core/config/types";
+import type { MessageParts } from "@/core/conventional/types";
 
 import { defaultResolvedConfig } from "@/core/config/defaults";
 import { defaultMessageParts } from "@/core/conventional/types";
@@ -21,6 +22,18 @@ const setupFormatCommitMessage = (
       ...answers,
     },
     true,
+  );
+};
+
+const setupFormatMessageResult = (
+  configOverrides: Partial<ResolvedConfig> = {},
+  partsOverrides: Partial<MessageParts> = {},
+  emoji = true,
+) => {
+  return formatMessageResult(
+    { ...defaultResolvedConfig, ...configOverrides },
+    { ...defaultMessageParts, breaking: "", coAuthors: [], ...partsOverrides },
+    emoji,
   );
 };
 
@@ -531,18 +544,16 @@ describe("formatCommitMessage", () => {
 
 describe("formatMessageResult", () => {
   it("should split header, body, and footer into structured result", () => {
-    const result = formatMessageResult(
-      defaultResolvedConfig,
+    const result = setupFormatMessageResult(
+      {},
       {
         body: "this an amazing feature, lots of details",
         breaking: "breaks everything",
-        coAuthors: [],
         issues: ["#123"],
         scope: "*",
         subject: "a cool new feature",
         type: "feat",
       },
-      true,
     );
 
     expect(result).toMatchInlineSnapshot(`
@@ -575,18 +586,12 @@ describe("formatMessageResult", () => {
   });
 
   it("should return empty body and footer for header-only message", () => {
-    const result = formatMessageResult(
-      defaultResolvedConfig,
+    const result = setupFormatMessageResult(
+      {},
       {
-        body: "",
-        breaking: "",
-        coAuthors: [],
-        issues: [],
-        scope: "",
         subject: "quick fix",
         type: "fix",
       },
-      true,
     );
 
     expect(result).toMatchInlineSnapshot(`
@@ -608,18 +613,13 @@ describe("formatMessageResult", () => {
     `);
   });
 
-  it("should correctly split when emoji is disabled (footer only when emoji-prefixed)", () => {
-    const result = formatMessageResult(
-      {
-        ...defaultResolvedConfig,
-        emoji: { breaking: "💥", enabled: false, issues: "🏁" },
-      },
+  it("should correctly split when emoji is disabled", () => {
+    const result = setupFormatMessageResult(
+      { emoji: { breaking: "💥", enabled: false, issues: "🏁" } },
       {
         body: "a description",
         breaking: "breaks everything",
-        coAuthors: [],
         issues: ["#42"],
-        scope: "",
         subject: "a feature",
         type: "feat",
       },
@@ -628,12 +628,10 @@ describe("formatMessageResult", () => {
 
     expect(result).toMatchInlineSnapshot(`
       {
-        "body": "a description
-
-      BREAKING CHANGE: breaks everything
+        "body": "a description",
+        "footer": "BREAKING CHANGE: breaks everything
 
       Closes #42",
-        "footer": "",
         "header": "feat: a feature",
         "message": "feat: a feature
 
@@ -658,21 +656,13 @@ describe("formatMessageResult", () => {
   });
 
   it("should correctly split with custom issues prefix", () => {
-    const result = formatMessageResult(
+    const result = setupFormatMessageResult(
+      { issues: { ...defaultResolvedConfig.issues, prefix: "fixes" } },
       {
-        ...defaultResolvedConfig,
-        issues: { ...defaultResolvedConfig.issues, prefix: "fixes" },
-      },
-      {
-        body: "",
-        breaking: "",
-        coAuthors: [],
         issues: ["#100", "#200"],
-        scope: "",
         subject: "fix bugs",
         type: "fix",
       },
-      true,
     );
 
     expect(result).toMatchInlineSnapshot(`
@@ -700,18 +690,14 @@ describe("formatMessageResult", () => {
   });
 
   it("should correctly split multi-paragraph body with co-authors", () => {
-    const result = formatMessageResult(
-      defaultResolvedConfig,
+    const result = setupFormatMessageResult(
+      {},
       {
         body: "first paragraph\n\nsecond paragraph",
-        breaking: "",
         coAuthors: ["Alice <alice@example.com>"],
-        issues: [],
-        scope: "",
         subject: "complex commit",
         type: "chore",
       },
-      true,
     );
 
     expect(result).toMatchInlineSnapshot(`

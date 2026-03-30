@@ -170,7 +170,28 @@ interface CommitResult {
   parts: MessageParts;
 }
 
-const FOOTER_START_REGEX = /^(?:BREAKING CHANGE:|Co-authored-by:|🏁|💥)/i;
+const escapeRegex = (value: string) => {
+  return value.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+};
+
+const getFooterStartRegex = (config: ResolvedConfig) => {
+  const configValues = [
+    ...GITHUB_PREFIXES.map(capitalize),
+    config.emoji.breaking,
+    config.emoji.issues,
+    config.issues.prefix ? capitalize(config.issues.prefix) : "",
+  ]
+    .filter(Boolean)
+    .map(escapeRegex);
+
+  const patterns = [
+    "BREAKING[ -]CHANGE:",
+    "Co-authored-by:",
+    ...new Set(configValues),
+  ];
+
+  return new RegExp(`^(?:${patterns.join("|")})`, "i");
+};
 
 /**
  * Format message parts into a structured commit result
@@ -191,6 +212,7 @@ export const formatMessageResult = (
   const message = formatMessage(config, parts, emoji);
   const sections = message.split(/\n\n/);
   const header = sections[0] ?? "";
+  const footerStartRegex = getFooterStartRegex(config);
 
   let body = "";
   let footer = "";
@@ -204,7 +226,7 @@ export const formatMessageResult = (
     for (let i = sections.length - 1; i >= 1; i--) {
       const section = sections[i] ?? "";
 
-      if (FOOTER_START_REGEX.test(section)) {
+      if (footerStartRegex.test(section)) {
         footerStart = i;
       } else {
         break;

@@ -6,11 +6,10 @@ import type { Command } from "commander";
 
 import { styleText } from "node:util";
 
-import Enquirer from "enquirer";
-
 import type { BranchFlags, GitzyState } from "@/cli/types";
 import type { BranchParts } from "@/core/branch/types";
 
+import { createEnquirer } from "@/cli/utils/enquirer";
 import { danger, info, log, warn } from "@/cli/utils/logging";
 import { formatBranchName } from "@/core/branch/formatter";
 import { defaultResolvedConfig } from "@/core/config/defaults";
@@ -59,18 +58,7 @@ const promptBranchQuestions = async (
     return { indent: " ", message: s.name, name: s.name, value: s.name };
   });
 
-  interface RawPrompt {
-    choices?: unknown[];
-    hint?: string;
-    initial?: string;
-    limit?: number;
-    message: string;
-    name: string;
-    type: string;
-    validate?: (input: string) => boolean | string;
-  }
-
-  const prompts: RawPrompt[] = [
+  const prompts = [
     {
       choices: typeChoices,
       hint: "...type or use arrow keys",
@@ -82,23 +70,21 @@ const promptBranchQuestions = async (
       name: "type",
       type: "autocomplete",
     },
-  ];
-
-  if (config.scopes.length > 0) {
-    prompts.push({
-      choices: scopeChoices,
-      hint: "...type or use arrow keys",
-      ...(amendInitial?.scope === undefined
-        ? {}
-        : { initial: amendInitial.scope }),
-      limit: 10,
-      message: "Choose the scope",
-      name: "scope",
-      type: "autocomplete",
-    });
-  }
-
-  prompts.push(
+    ...(config.scopes.length > 0
+      ? [
+          {
+            choices: scopeChoices,
+            hint: "...type or use arrow keys",
+            ...(amendInitial?.scope === undefined
+              ? {}
+              : { initial: amendInitial.scope }),
+            limit: 10,
+            message: "Choose the scope",
+            name: "scope",
+            type: "autocomplete",
+          },
+        ]
+      : []),
     {
       ...(amendInitial?.subject === undefined
         ? {}
@@ -119,9 +105,9 @@ const promptBranchQuestions = async (
       name: "issue",
       type: "input",
     },
-  );
+  ];
 
-  const enquirer = new Enquirer(
+  const enquirer = createEnquirer<BranchAnswers>(
     {
       autofill: true,
       cancel: () => {
@@ -135,9 +121,7 @@ const promptBranchQuestions = async (
     autofill,
   );
 
-  return enquirer.prompt(
-    prompts as Parameters<typeof enquirer.prompt>[0],
-  ) as Promise<BranchAnswers>;
+  return enquirer.prompt(prompts);
 };
 
 export const registerBranchCommand = (program: Command) => {
@@ -178,7 +162,8 @@ export const registerBranchCommand = (program: Command) => {
           const sep = state.config.branch.separator;
           const segments = currentBranch.split(sep);
 
-          const hasScope = segments.length >= 3;
+          const knownScopes = new Set(state.config.scopes.map((s) => s.name));
+          const hasScope = knownScopes.has(segments.at(1) ?? "");
           const rawSubjectStart = hasScope
             ? segments.slice(2)
             : segments.slice(1);

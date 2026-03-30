@@ -4,6 +4,18 @@ import { createBranch, getCurrentBranch, renameBranch } from "./branch";
 
 vi.mock("tinyexec");
 
+interface MockResult {
+  exitCode: number;
+  stderr: string;
+  stdout: string;
+}
+
+const mockX = (...results: MockResult[]) => {
+  for (const result of results) {
+    vi.mocked(x).mockResolvedValueOnce(result);
+  }
+};
+
 describe("getCurrentBranch", () => {
   beforeEach(() => {
     vi.resetAllMocks();
@@ -31,13 +43,10 @@ describe("renameBranch", () => {
   });
 
   it("should return dry-run result without executing git branch -m", async () => {
-    vi.mocked(x)
-      .mockResolvedValueOnce({
-        exitCode: 0,
-        stderr: "",
-        stdout: "old-branch\n",
-      })
-      .mockResolvedValueOnce({ exitCode: 1, stderr: "", stdout: "" });
+    mockX(
+      { exitCode: 0, stderr: "", stdout: "old-branch\n" },
+      { exitCode: 1, stderr: "", stdout: "" },
+    );
 
     const result = await renameBranch("new-branch", { dryRun: true });
 
@@ -50,14 +59,11 @@ describe("renameBranch", () => {
   });
 
   it("should rename branch and return result", async () => {
-    vi.mocked(x)
-      .mockResolvedValueOnce({
-        exitCode: 0,
-        stderr: "",
-        stdout: "old-branch\n",
-      })
-      .mockResolvedValueOnce({ exitCode: 1, stderr: "", stdout: "" })
-      .mockResolvedValueOnce({ exitCode: 0, stderr: "", stdout: "" });
+    mockX(
+      { exitCode: 0, stderr: "", stdout: "old-branch\n" },
+      { exitCode: 1, stderr: "", stdout: "" },
+      { exitCode: 0, stderr: "", stdout: "" },
+    );
 
     const result = await renameBranch("new-branch");
 
@@ -74,14 +80,11 @@ describe("renameBranch", () => {
   });
 
   it("should detect remote tracking ref", async () => {
-    vi.mocked(x)
-      .mockResolvedValueOnce({
-        exitCode: 0,
-        stderr: "",
-        stdout: "old-branch\n",
-      })
-      .mockResolvedValueOnce({ exitCode: 0, stderr: "", stdout: "origin\n" })
-      .mockResolvedValueOnce({ exitCode: 0, stderr: "", stdout: "" });
+    mockX(
+      { exitCode: 0, stderr: "", stdout: "old-branch\n" },
+      { exitCode: 0, stderr: "", stdout: "origin\n" },
+      { exitCode: 0, stderr: "", stdout: "" },
+    );
 
     const result = await renameBranch("new-branch");
 
@@ -89,14 +92,11 @@ describe("renameBranch", () => {
   });
 
   it("should exit on git branch -m failure", async () => {
-    vi.mocked(x)
-      .mockResolvedValueOnce({
-        exitCode: 0,
-        stderr: "",
-        stdout: "old-branch\n",
-      })
-      .mockResolvedValueOnce({ exitCode: 1, stderr: "", stdout: "" })
-      .mockResolvedValueOnce({ exitCode: 128, stderr: "error", stdout: "" });
+    mockX(
+      { exitCode: 0, stderr: "", stdout: "old-branch\n" },
+      { exitCode: 1, stderr: "", stdout: "" },
+      { exitCode: 128, stderr: "error", stdout: "" },
+    );
 
     await expect(renameBranch("new-branch")).rejects.toThrowError(
       "git branch -m failed with exit code 128: error",

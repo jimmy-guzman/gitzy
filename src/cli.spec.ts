@@ -76,7 +76,7 @@ describe("cli", () => {
           submitted: expect.any(Function),
         },
       },
-      expect.objectContaining({ emoji: true }),
+      {},
     );
     expect(checkIfGitSpy).toHaveBeenCalledExactlyOnceWith();
     expect(checkIfStagedSpy).toHaveBeenCalledExactlyOnceWith();

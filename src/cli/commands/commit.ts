@@ -6,11 +6,10 @@ import type { Command } from "commander";
 
 import { styleText } from "node:util";
 
-import Enquirer from "enquirer";
-
 import type { Answers, CommitFlags, GitzyState } from "@/cli/types";
 
 import { createPrompts } from "@/cli/prompts/create-prompts";
+import { createEnquirer } from "@/cli/utils/enquirer";
 import { danger, hint, info, log, warn } from "@/cli/utils/logging";
 import { defaultResolvedConfig } from "@/core/config/defaults";
 import { resolveConfig } from "@/core/config/resolver";
@@ -47,7 +46,7 @@ const promptQuestions = async (
     };
   }
 
-  const enquirer = new Enquirer(
+  const enquirer = createEnquirer<Answers>(
     {
       autofill: true,
       cancel: () => {
@@ -58,17 +57,11 @@ const promptQuestions = async (
         submitted: (value: string) => styleText("cyan", value),
       },
     },
-    {
-      emoji: flags.noEmoji === true ? false : (flags.emoji ?? true),
-      hook: flags.hook,
-      ...autofillAnswers,
-    },
+    autofillAnswers,
   );
   const prompts = createPrompts(state, flags, amendInitial);
 
-  return enquirer.prompt(
-    prompts as Parameters<typeof enquirer.prompt>[0],
-  ) as Promise<Answers>;
+  return enquirer.prompt(prompts);
 };
 
 export const registerCommitCommand = (program: Command) => {
@@ -175,14 +168,22 @@ export const registerCommitCommand = (program: Command) => {
           }
         }
 
+        const flagAnswers = {
+          ...(flags.body === undefined ? {} : { body: flags.body }),
+          ...(flags.breaking === undefined ? {} : { breaking: flags.breaking }),
+          ...(flags.coAuthor === undefined
+            ? {}
+            : { coAuthors: flags.coAuthor }),
+          ...(flags.issue === undefined ? {} : { issues: flags.issue }),
+          ...(flags.scope === undefined ? {} : { scope: flags.scope }),
+          ...(flags.subject === undefined ? {} : { subject: flags.subject }),
+          ...(flags.type === undefined ? {} : { type: flags.type }),
+        };
+
         const answers = await promptQuestions(
           state,
           flags,
-          {
-            ...autofillAnswers,
-            ...(flags as Partial<Answers>),
-            ...(flags.issue === undefined ? {} : { issues: flags.issue }),
-          },
+          { ...autofillAnswers, ...flagAnswers },
           amendInitial,
         );
 
