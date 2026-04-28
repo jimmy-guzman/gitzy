@@ -216,6 +216,17 @@ header: {
 }
 ```
 
+### `body`
+
+Controls the commit body length validation.
+
+```js
+body: {
+  max: 70, // default
+  min: 5,  // default
+}
+```
+
 ### `breaking`
 
 Controls the breaking change prompt behavior.

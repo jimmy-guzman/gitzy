@@ -78,6 +78,32 @@ describe("body", () => {
 
       expect(validate("")).toBe(true);
     });
+
+    it("should return true when input is only a newline (multiline skip)", () => {
+      const { validate } = setupBody();
+
+      expect(validate("\n")).toBe(true);
+    });
+
+    it("should return true when input is only whitespace", () => {
+      const { validate } = setupBody();
+
+      expect(validate("   \n\n  ")).toBe(true);
+    });
+
+    it("should return min error when trimmed input is below min", () => {
+      const { validate } = setupBody();
+
+      expect(validate("  ##  ")).toBe(
+        "The body must have at least 5 characters",
+      );
+    });
+
+    it("should return true when input has trailing whitespace within max", () => {
+      const { validate } = setupBody();
+
+      expect(validate(`${"#".repeat(70)}\n\n`)).toBe(true);
+    });
   });
 
   describe("message", () => {

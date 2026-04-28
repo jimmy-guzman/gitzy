@@ -217,10 +217,7 @@ export const formatMessageResult = (
   let body = "";
   let footer = "";
 
-  if (sections.length === 1) {
-    // header only — nothing to do
-  } else {
-    // Scan from the end to find the contiguous footer block
+  if (sections.length > 1) {
     let footerStart = sections.length;
 
     for (let i = sections.length - 1; i >= 1; i--) {
@@ -234,10 +231,8 @@ export const formatMessageResult = (
     }
 
     if (footerStart === 1) {
-      // Everything after header is footer (no body)
       footer = sections.slice(1).join("\n\n");
     } else {
-      // sections[1..footerStart-1] are body, sections[footerStart..] are footer
       body = sections.slice(1, footerStart).join("\n\n");
       footer = sections.slice(footerStart).join("\n\n");
     }

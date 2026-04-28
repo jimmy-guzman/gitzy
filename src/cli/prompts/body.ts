@@ -41,11 +41,13 @@ export const body = ({
     result: (value: string) => value.trim(),
     type: "text" as const,
     validate: (input: string) => {
-      if (input.length > 0 && input.length < bodyMinLength) {
+      const trimmedLength = input.trim().length;
+
+      if (trimmedLength > 0 && trimmedLength < bodyMinLength) {
         return minBodyLengthError;
       }
 
-      if (input.length > bodyMaxLength) {
+      if (trimmedLength > bodyMaxLength) {
         return maxBodyLengthError;
       }
 
