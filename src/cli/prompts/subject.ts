@@ -25,7 +25,8 @@ export const subject = ({
   const emojiLength = emojiEnabled ? EMOJI_LENGTH : 0;
 
   return (context: { results: Partial<Answers> }) => {
-    if (autofill?.subject) return Promise.resolve(autofill.subject);
+    if (autofill?.subject !== undefined)
+      return Promise.resolve(autofill.subject);
 
     return text({
       initialValue: initial?.subject,

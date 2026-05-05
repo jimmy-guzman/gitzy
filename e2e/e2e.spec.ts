@@ -1,4 +1,18 @@
 import { execSync } from "node:child_process";
+import { mkdirSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
+
+/** Absolute path to the built binary — resolved once relative to this file */
+const BIN = resolve(import.meta.dirname, "../dist/run.mjs");
+
+/**
+ * Isolated working directory for all e2e runs — lives outside the repo so
+ * lilconfig cannot walk up and find the project's own gitzy.config.js.
+ */
+const E2E_CWD = join(tmpdir(), "gitzy-e2e");
+
+mkdirSync(E2E_CWD, { recursive: true });
 
 /** ESC character — built dynamically to avoid no-control-regex lint errors */
 const ESC = String.fromCodePoint(0x1b);
@@ -55,7 +69,8 @@ const runCommit = (args: string, stdin?: string) => {
     try {
       const input = stdin ? Buffer.from(stdin) : undefined;
 
-      const raw = execSync(`node ./dist/run.mjs commit --dry-run ${args}`, {
+      const raw = execSync(`node "${BIN}" commit --dry-run ${args}`, {
+        cwd: E2E_CWD,
         encoding: "utf8",
         input,
         timeout: 30_000,
@@ -91,7 +106,8 @@ const runBranch = (args: string, stdin?: string) => {
     try {
       const input = stdin ? Buffer.from(stdin) : undefined;
 
-      const raw = execSync(`node ./dist/run.mjs branch --dry-run ${args}`, {
+      const raw = execSync(`node "${BIN}" branch --dry-run ${args}`, {
+        cwd: E2E_CWD,
         encoding: "utf8",
         input,
         timeout: 30_000,

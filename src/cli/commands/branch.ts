@@ -81,7 +81,8 @@ const promptBranchQuestions = async (
       scope: () => {
         if (config.scopes.length === 0) return Promise.resolve("");
 
-        if (autofill.scope) return Promise.resolve(autofill.scope);
+        if (autofill.scope !== undefined)
+          return Promise.resolve(autofill.scope);
 
         return autocomplete({
           filter: createFuzzyFilter(scopeOptions),
@@ -92,7 +93,8 @@ const promptBranchQuestions = async (
         });
       },
       subject: () => {
-        if (autofill.subject) return Promise.resolve(autofill.subject);
+        if (autofill.subject !== undefined)
+          return Promise.resolve(autofill.subject);
 
         return text({
           initialValue: amendInitial?.subject,
@@ -107,7 +109,7 @@ const promptBranchQuestions = async (
         });
       },
       type: () => {
-        if (autofill.type) return Promise.resolve(autofill.type);
+        if (autofill.type !== undefined) return Promise.resolve(autofill.type);
 
         return autocomplete({
           filter: createFuzzyFilter(typeOptions),

@@ -10,7 +10,7 @@ export const scope = ({
   initial,
 }: CreatedPromptOptions) => {
   return () => {
-    if (autofill?.scope) return Promise.resolve(autofill.scope);
+    if (autofill?.scope !== undefined) return Promise.resolve(autofill.scope);
 
     if (scopes.length === 0) return undefined;
 

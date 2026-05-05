@@ -29,7 +29,7 @@ export const type = ({
   initial,
 }: CreatedPromptOptions) => {
   return () => {
-    if (autofill?.type) return Promise.resolve(autofill.type);
+    if (autofill?.type !== undefined) return Promise.resolve(autofill.type);
 
     const options = createTypeOptions(config, flags);
 
