@@ -183,7 +183,7 @@ describe("resolveConfig", () => {
     it("should propagate errors from loadConfig", async () => {
       vi.mocked(loadConfig).mockRejectedValue(new Error("Config load failed"));
 
-      await expect(resolveConfig()).rejects.toThrowError("Config load failed");
+      await expect(resolveConfig()).rejects.toThrow("Config load failed");
     });
   });
 

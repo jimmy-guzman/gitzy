@@ -1,5 +1,5 @@
 import { program } from "commander";
-import { version } from "package.json" assert { type: "json" };
+import { version } from "package.json" with { type: "json" };
 
 import { registerBranchCommand } from "@/cli/commands/branch";
 import { registerCommitCommand } from "@/cli/commands/commit";

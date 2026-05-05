@@ -1,10 +1,8 @@
-import type { BranchFlags, CommitFlags, GlobalFlags } from "@/cli/types";
+import type { BranchFlags, CommitFlags } from "@/cli/types";
 
 type CommitFlagDescriptions = Record<keyof Omit<CommitFlags, "emoji">, string>;
 
 type BranchFlagDescriptions = Record<keyof BranchFlags, string>;
-
-type GlobalFlagDescriptions = Record<keyof GlobalFlags, string>;
 
 interface Lang {
   branch: {
@@ -18,7 +16,6 @@ interface Lang {
     flags: CommitFlagDescriptions;
   };
   description: string;
-  globalFlags: GlobalFlagDescriptions;
 }
 
 export const lang = {
@@ -72,7 +69,4 @@ export const lang = {
     },
   },
   description: "interactive conventional commits cli",
-  globalFlags: {
-    json: "output result as JSON",
-  },
 } satisfies Lang;

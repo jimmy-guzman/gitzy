@@ -98,7 +98,7 @@ describe("renameBranch", () => {
       { exitCode: 128, stderr: "error", stdout: "" },
     );
 
-    await expect(renameBranch("new-branch")).rejects.toThrowError(
+    await expect(renameBranch("new-branch")).rejects.toThrow(
       "git branch -m failed with exit code 128: error",
     );
   });
@@ -169,7 +169,7 @@ describe("createBranch", () => {
       stdout: "",
     });
 
-    await expect(createBranch("feat/my-branch")).rejects.toThrowError(
+    await expect(createBranch("feat/my-branch")).rejects.toThrow(
       "git checkout -b failed with exit code 1: error",
     );
   });

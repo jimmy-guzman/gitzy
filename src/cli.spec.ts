@@ -31,9 +31,9 @@ describe("cli", () => {
 
   beforeEach(() => {
     vi.resetAllMocks();
-    vi.mocked(Enquirer).mockImplementation(function () {
-      return { prompt: mockPrompt };
-    } as unknown as typeof Enquirer);
+    // @ts-expect-error - Mocking Enquirer's default export
+    vi.mocked(Enquirer).mockReturnValue({ prompt: mockPrompt });
+
     mockPrompt.mockResolvedValue({
       body: "",
       breaking: false,
@@ -42,6 +42,7 @@ describe("cli", () => {
       subject: "test commit",
       type: "feat",
     });
+
     process.argv = ["node", "gitzy"];
   });
 
