@@ -18,7 +18,11 @@ const mockPrompt = vi.hoisted(() => {
 });
 
 vi.mock("enquirer", () => ({
-  default: vi.fn(() => ({ prompt: mockPrompt })),
+  default: vi.fn(
+    class {
+      prompt = mockPrompt;
+    },
+  ),
 }));
 
 vi.mock("../package.json", () => ({
@@ -31,8 +35,12 @@ describe("cli", () => {
 
   beforeEach(() => {
     vi.resetAllMocks();
-    // @ts-expect-error - Mocking Enquirer's default export
-    vi.mocked(Enquirer).mockReturnValue({ prompt: mockPrompt });
+    vi.mocked(Enquirer).mockImplementation(
+      // @ts-expect-error - Mocking Enquirer's default export
+      class {
+        prompt = mockPrompt;
+      },
+    );
 
     mockPrompt.mockResolvedValue({
       body: "",

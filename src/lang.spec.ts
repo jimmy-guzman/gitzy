@@ -53,9 +53,6 @@ describe("lang", () => {
           },
         },
         "description": "interactive conventional commits cli",
-        "globalFlags": {
-          "json": "output result as JSON",
-        },
       }
     `);
   });

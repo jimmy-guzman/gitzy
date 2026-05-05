@@ -56,10 +56,6 @@ export interface BranchFlags {
   type?: string;
 }
 
-export interface GlobalFlags {
-  json?: boolean;
-}
-
 export interface GitzyState {
   answers: Answers;
   config: ResolvedConfig;
