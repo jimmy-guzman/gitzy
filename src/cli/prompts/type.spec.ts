@@ -14,12 +14,13 @@ const setupTypeOptions = (configOverrides = {}, flags = {}) => {
   );
 };
 
-const setupType = (configOverrides = {}, autofill = {}) => {
+const setupType = (configOverrides = {}, autofill = {}, initial = {}) => {
   return type({
     answers: defaultMessageParts,
     autofill,
     config: { ...defaultResolvedConfig, ...configOverrides },
     flags: {},
+    initial,
   });
 };
 

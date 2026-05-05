@@ -34,7 +34,7 @@ const BREAKING_FOOTER_REGEX =
  * Matches: Closes/Fixes/Resolves <ref> — with optional leading emoji (e.g. "🏁 Closes #123")
  */
 const ISSUES_FOOTER_REGEX =
-  /^(?:\p{Emoji_Presentation} )?(?:Closes|Fixes|Resolves) (?<ref>\S.*)$/gimu;
+  /^(?:\p{Emoji_Presentation}\s)?(?:Closes|Fixes|Resolves) (?<ref>\S.*)$/gimu;
 
 /**
  * Get the HEAD commit message

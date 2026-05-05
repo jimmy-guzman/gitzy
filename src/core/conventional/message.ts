@@ -174,6 +174,9 @@ const escapeRegex = (value: string) => {
   return value.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
 };
 
+// ReDoS is mitigated: all user-controlled inputs (config.emoji.breaking,
+// config.emoji.issues, config.issues.prefix) are escaped via escapeRegex, and
+// the pattern is anchored (^) with simple alternation and bounded input.
 const getFooterStartRegex = (config: ResolvedConfig) => {
   const configValues = [
     ...GITHUB_PREFIXES.map(capitalize),
