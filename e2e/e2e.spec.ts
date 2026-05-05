@@ -63,7 +63,7 @@ const runCommit = (args: string, stdin?: string) => {
 
       const clean = stripAnsi(raw);
 
-      const marker = "Message...\n\n";
+      const marker = "Message...";
       const start = clean.indexOf(marker);
 
       if (start === -1) {
@@ -72,7 +72,12 @@ const runCommit = (args: string, stdin?: string) => {
         return;
       }
 
-      const message = clean.slice(start + marker.length).trim();
+      const afterMarker = clean.slice(start + marker.length);
+      const message = afterMarker
+        .split("\n")
+        .map((line) => line.replace(/^[│|]\s{0,2}/, ""))
+        .join("\n")
+        .trim();
 
       resolve(message);
     } catch (error: unknown) {

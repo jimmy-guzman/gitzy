@@ -1,3 +1,4 @@
+import { log } from "@clack/prompts";
 import { program } from "commander";
 import { version } from "package.json" with { type: "json" };
 
@@ -5,14 +6,13 @@ import { registerBranchCommand } from "@/cli/commands/branch";
 import { registerCommitCommand } from "@/cli/commands/commit";
 import { registerConfigCommand } from "@/cli/commands/config";
 import { registerInitCommand } from "@/cli/commands/init";
-import { danger } from "@/cli/utils/logging";
 import { lang } from "@/lang";
 
 export const cli = async () => {
   program
     .configureOutput({
-      outputError: (error, write) => {
-        write(`\n${danger(error)}\n`);
+      outputError: (error) => {
+        log.error(error.replace("error: ", "").trim());
       },
       writeErr: (str) => process.stdout.write(str.replace("error: ", "")),
     })

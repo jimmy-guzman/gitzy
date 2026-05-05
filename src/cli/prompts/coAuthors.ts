@@ -1,25 +1,20 @@
-import { styleText } from "node:util";
+import { text } from "@clack/prompts";
 
 import type { CreatedPromptOptions } from "@/cli/types";
 
-export const coAuthors = (_options: CreatedPromptOptions) => {
-  return {
-    hint: styleText(
-      "dim",
-      '...skip when none, e.g. "Name <email@example.com>"',
-    ),
-    message: "Add co-authors",
-    name: "coAuthors",
-    result: (value: string) => {
-      const trimmed = value.trim();
+export const coAuthors = ({ autofill }: CreatedPromptOptions) => {
+  return () => {
+    if (autofill?.coAuthors !== undefined) {
+      return Promise.resolve(
+        Array.isArray(autofill.coAuthors)
+          ? autofill.coAuthors.join(", ")
+          : autofill.coAuthors,
+      );
+    }
 
-      return trimmed
-        ? trimmed
-            .split(",")
-            .map((a) => a.trim())
-            .filter(Boolean)
-        : [];
-    },
-    type: "text" as const,
+    return text({
+      message: "Add co-authors",
+      placeholder: 'skip when none, e.g. "Name <email@example.com>"',
+    });
   };
 };

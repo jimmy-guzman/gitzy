@@ -1,12 +1,10 @@
-import { styleText } from "node:util";
+import { text } from "@clack/prompts";
 
-import type { Answers, CreatedPromptOptions, EnquirerState } from "@/cli/types";
+import type { Answers, CreatedPromptOptions } from "@/cli/types";
 
 const EMOJI_LENGTH = 3;
-const PERCENT = 100;
-const PERCENT_THRESHOLD = 25;
 
-export const leadingLabel = (answers?: Answers) => {
+export const leadingLabel = (answers?: Partial<Answers>) => {
   const scope =
     answers?.scope && answers.scope !== "none" ? `(${answers.scope})` : "";
 
@@ -14,6 +12,7 @@ export const leadingLabel = (answers?: Answers) => {
 };
 
 export const subject = ({
+  autofill,
   config: {
     emoji: { enabled: configEmojiEnabled },
     header: { max: headerMaxLength, min: headerMinLength },
@@ -21,49 +20,32 @@ export const subject = ({
   flags,
   initial,
 }: CreatedPromptOptions) => {
-  const minTitleLengthError = `The subject must have at least ${headerMinLength} characters`;
-  const maxTitleLengthError = `The subject must not exceed ${headerMaxLength} characters`;
   const emojiEnabled =
     flags.noEmoji === true ? false : (flags.emoji ?? configEmojiEnabled);
   const emojiLength = emojiEnabled ? EMOJI_LENGTH : 0;
 
-  const getColor = (inputLen: number, percentRem: number) => {
-    if (inputLen < headerMinLength || percentRem < 0) return "red";
+  return (context: { results: Partial<Answers> }) => {
+    if (autofill?.subject) return Promise.resolve(autofill.subject);
 
-    if (percentRem > PERCENT_THRESHOLD) return "green";
+    return text({
+      initialValue: initial?.subject,
+      message: "Add a short description",
+      placeholder: `${headerMinLength}-${headerMaxLength} characters`,
+      validate: (value = "") => {
+        const label = leadingLabel(context.results);
+        const isOverMaxLength =
+          value.length + label.length + emojiLength > headerMaxLength;
 
-    return "yellow";
-  };
+        if (value.length < headerMinLength) {
+          return `The subject must have at least ${headerMinLength} characters`;
+        }
 
-  return {
-    ...(initial?.subject === undefined ? {} : { initial: initial.subject }),
-    message: (state?: EnquirerState) => {
-      const inputLength = state?.input.length ?? 0;
-      const label = leadingLabel(state?.answers);
-      const remainingChar =
-        headerMaxLength - inputLength - label.length - emojiLength;
-      const percentRemaining = (remainingChar / headerMaxLength) * PERCENT;
-      const charsLeftIndicator = `${remainingChar}/${headerMaxLength}`;
-      const message = `Add a short description(${styleText(getColor(inputLength, percentRemaining), charsLeftIndicator)})`;
+        if (isOverMaxLength) {
+          return `The subject must not exceed ${headerMaxLength} characters`;
+        }
 
-      return styleText("bold", message);
-    },
-    name: "subject",
-    type: "input" as const,
-    validate: (input: string, state?: EnquirerState) => {
-      const label = leadingLabel(state?.answers);
-      const isOverMaxLength =
-        input.length + label.length + emojiLength > headerMaxLength;
-
-      if (input.length < headerMinLength) {
-        return minTitleLengthError;
-      }
-
-      if (isOverMaxLength) {
-        return maxTitleLengthError;
-      }
-
-      return true;
-    },
+        return undefined;
+      },
+    });
   };
 };

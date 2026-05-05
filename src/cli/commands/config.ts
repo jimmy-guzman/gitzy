@@ -4,7 +4,8 @@
 
 import type { Command } from "commander";
 
-import { danger, log } from "@/cli/utils/logging";
+import { log } from "@clack/prompts";
+
 import { resolveConfig } from "@/core/config/resolver";
 
 export const registerConfigCommand = (program: Command) => {
@@ -15,11 +16,9 @@ export const registerConfigCommand = (program: Command) => {
       try {
         const config = await resolveConfig();
 
-        log(JSON.stringify(config, null, 2));
+        log.message(JSON.stringify(config, null, 2));
       } catch (error: unknown) {
-        log(
-          `\n${danger(error instanceof Error ? error.message : String(error))}\n`,
-        );
+        log.error(error instanceof Error ? error.message : String(error));
         process.exit(1);
       }
     });

@@ -38,6 +38,7 @@
     "postbuild",
     "postpublish",
     "shellcheck",
+    "sisteransi",
     "slugified",
     "socio",
     "streamich",

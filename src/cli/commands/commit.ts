@@ -4,13 +4,11 @@
 
 import type { Command } from "commander";
 
-import { styleText } from "node:util";
+import { log } from "@clack/prompts";
 
 import type { Answers, CommitFlags, GitzyState } from "@/cli/types";
 
 import { createPrompts } from "@/cli/prompts/create-prompts";
-import { createEnquirer } from "@/cli/utils/enquirer";
-import { danger, hint, info, log, warn } from "@/cli/utils/logging";
 import { defaultResolvedConfig } from "@/core/config/defaults";
 import { resolveConfig } from "@/core/config/resolver";
 import {
@@ -33,7 +31,7 @@ const promptQuestions = async (
   flags: CommitFlags,
   autofillAnswers: Partial<Answers>,
   amendInitial?: Partial<Answers>,
-): Promise<Answers> => {
+) => {
   if (flags.type && flags.subject) {
     return {
       body: flags.body ?? "",
@@ -46,22 +44,7 @@ const promptQuestions = async (
     };
   }
 
-  const enquirer = createEnquirer<Answers>(
-    {
-      autofill: true,
-      cancel: () => {
-        process.exit(0);
-      },
-      styles: {
-        danger: (value: string) => styleText("red", value),
-        submitted: (value: string) => styleText("cyan", value),
-      },
-    },
-    autofillAnswers,
-  );
-  const prompts = createPrompts(state, flags, amendInitial);
-
-  return enquirer.prompt(prompts);
+  return createPrompts(state, flags, autofillAnswers, amendInitial);
 };
 
 export const registerCommitCommand = (program: Command) => {
@@ -92,13 +75,13 @@ export const registerCommitCommand = (program: Command) => {
         hook: process.env.GIT_DIR !== undefined || Boolean(opts.hook),
       };
 
-      const state: GitzyState = {
+      const state = {
         answers: defaultMessageParts,
         config: defaultResolvedConfig,
       };
 
       if (flags.dryRun) {
-        log(info("running in dry mode..."));
+        log.info("running in dry mode...");
       }
 
       try {
@@ -109,10 +92,8 @@ export const registerCommitCommand = (program: Command) => {
           flags.breaking &&
           state.config.breaking.format === "!"
         ) {
-          log(
-            warn(
-              "--breaking message ignored when using '!' format. Use --breaking (without value) instead.",
-            ),
+          log.warn(
+            "--breaking message ignored when using '!' format. Use --breaking (without value) instead.",
           );
         }
 
@@ -139,7 +120,7 @@ export const registerCommitCommand = (program: Command) => {
           const previousAnswers = store.load();
 
           if (Object.keys(previousAnswers).length === 0) {
-            log(hint(`there is no previous gitzy commit to retry...`));
+            log.success(`there is no previous gitzy commit to retry...`);
           }
 
           autofillAnswers = { ...autofillAnswers, ...previousAnswers };
@@ -205,7 +186,7 @@ export const registerCommitCommand = (program: Command) => {
             emojiEnabled,
           );
 
-          log(JSON.stringify(result));
+          log.message(JSON.stringify(result));
         } else {
           const message = formatMessage(
             state.config,
@@ -214,8 +195,8 @@ export const registerCommitCommand = (program: Command) => {
           );
 
           if (flags.dryRun) {
-            log(info(`Message...`));
-            log(`\n${message}\n`);
+            log.info(`Message...`);
+            log.message(`\n${message}\n`);
           } else {
             await commit(message, {
               amend: flags.amend,
@@ -226,9 +207,7 @@ export const registerCommitCommand = (program: Command) => {
           }
         }
       } catch (error: unknown) {
-        log(
-          `\n${danger(error instanceof Error ? error.message : String(error))}\n`,
-        );
+        log.error(error instanceof Error ? error.message : String(error));
         process.exit(1);
       }
     });

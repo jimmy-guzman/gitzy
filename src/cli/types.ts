@@ -5,23 +5,10 @@ export type Answers = MessageParts;
 
 export interface CreatedPromptOptions {
   answers: Answers;
+  autofill?: Partial<Answers>;
   config: ResolvedConfig;
   flags: CommitFlags;
   initial?: Partial<Answers>;
-}
-
-export interface EnquirerChoice {
-  hint?: string;
-  indent?: string;
-  message: string;
-  name: string;
-  title: string;
-  value: string;
-}
-
-export interface EnquirerState {
-  answers: Answers;
-  input: string;
 }
 
 export interface CommitFlags {

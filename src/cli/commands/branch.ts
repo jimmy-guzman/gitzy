@@ -4,13 +4,19 @@
 
 import type { Command } from "commander";
 
-import { styleText } from "node:util";
+import {
+  autocomplete,
+  cancel,
+  group,
+  isCancel,
+  log,
+  text,
+} from "@clack/prompts";
 
 import type { BranchFlags, GitzyState } from "@/cli/types";
 import type { BranchParts } from "@/core/branch/types";
 
-import { createEnquirer } from "@/cli/utils/enquirer";
-import { danger, info, log, warn } from "@/cli/utils/logging";
+import { createFuzzyFilter } from "@/cli/utils/fuzzy-search";
 import { formatBranchName } from "@/core/branch/formatter";
 import { defaultResolvedConfig } from "@/core/config/defaults";
 import { resolveConfig } from "@/core/config/resolver";
@@ -44,84 +50,93 @@ const promptBranchQuestions = async (
 
   const { config } = state;
 
-  const typeChoices = config.types.map((t) => {
+  const typeOptions = config.types.map((t) => {
     return {
-      hint: t.description?.toLowerCase() ?? "",
-      indent: " ",
-      message: t.name,
-      name: t.name,
+      hint: t.description?.toLowerCase(),
+      label: t.name,
       value: t.name,
     };
   });
 
-  const scopeChoices = config.scopes.map((s) => {
-    return { indent: " ", message: s.name, name: s.name, value: s.name };
+  const scopeOptions = config.scopes.map((s) => {
+    return {
+      hint: s.description?.toLowerCase(),
+      label: s.name,
+      value: s.name,
+    };
   });
 
-  const prompts = [
+  const result = await group(
     {
-      choices: typeChoices,
-      hint: "...type or use arrow keys",
-      ...(amendInitial?.type === undefined
-        ? {}
-        : { initial: amendInitial.type }),
-      limit: 10,
-      message: "Choose the type",
-      name: "type",
-      type: "autocomplete",
-    },
-    ...(config.scopes.length > 0
-      ? [
-          {
-            choices: scopeChoices,
-            hint: "...type or use arrow keys",
-            ...(amendInitial?.scope === undefined
-              ? {}
-              : { initial: amendInitial.scope }),
-            limit: 10,
-            message: "Choose the scope",
-            name: "scope",
-            type: "autocomplete",
+      issue: () => {
+        if (autofill.issue !== undefined)
+          return Promise.resolve(autofill.issue);
+
+        return text({
+          initialValue: amendInitial?.issue,
+          message: "Add an issue reference",
+          placeholder: "skip when none",
+        });
+      },
+      scope: () => {
+        if (config.scopes.length === 0) return Promise.resolve("");
+
+        if (autofill.scope) return Promise.resolve(autofill.scope);
+
+        return autocomplete({
+          filter: createFuzzyFilter(scopeOptions),
+          initialValue: amendInitial?.scope,
+          maxItems: 10,
+          message: "Choose the scope",
+          options: scopeOptions,
+        });
+      },
+      subject: () => {
+        if (autofill.subject) return Promise.resolve(autofill.subject);
+
+        return text({
+          initialValue: amendInitial?.subject,
+          message: "Add a short description",
+          validate: (input) => {
+            if ((input ?? "").trim().length === 0) {
+              return "Subject is required";
+            }
+
+            return undefined;
           },
-        ]
-      : []),
-    {
-      ...(amendInitial?.subject === undefined
-        ? {}
-        : { initial: amendInitial.subject }),
-      message: "Add a short description",
-      name: "subject",
-      type: "input",
-      validate: (input: string) => {
-        return input.trim().length > 0 ? true : "Subject is required";
+        });
+      },
+      type: () => {
+        if (autofill.type) return Promise.resolve(autofill.type);
+
+        return autocomplete({
+          filter: createFuzzyFilter(typeOptions),
+          initialValue: amendInitial?.type,
+          maxItems: 10,
+          message: "Choose the type",
+          options: typeOptions,
+        });
       },
     },
     {
-      hint: styleText("dim", "...skip when none"),
-      ...(amendInitial?.issue === undefined
-        ? {}
-        : { initial: amendInitial.issue }),
-      message: "Add an issue reference",
-      name: "issue",
-      type: "input",
-    },
-  ];
-
-  const enquirer = createEnquirer<BranchAnswers>(
-    {
-      autofill: true,
-      cancel: () => {
+      onCancel: () => {
+        cancel("Cancelled.");
         process.exit(0);
       },
-      styles: {
-        danger: (value: string) => styleText("red", value),
-        submitted: (value: string) => styleText("cyan", value),
-      },
     },
-    autofill,
   );
 
-  return enquirer.prompt(prompts);
+  if (isCancel(result)) {
+    cancel("Cancelled.");
+    process.exit(0);
+  }
+
+  return {
+    issue: result.issue,
+    scope: result.scope,
+    subject: result.subject,
+    type: result.type,
+  };
 };
 
 export const registerBranchCommand = (program: Command) => {
@@ -242,15 +257,13 @@ export const registerBranchCommand = (program: Command) => {
           });
 
           if (result.hasRemote) {
-            log(
-              warn(
-                `Remote tracking ref exists for "${result.oldName}". You must manually push and delete the remote branch.`,
-              ),
+            log.warn(
+              `Remote tracking ref exists for "${result.oldName}". You must manually push and delete the remote branch.`,
             );
           }
 
           if (opts.json) {
-            log(
+            log.message(
               JSON.stringify({
                 branchName: result.newName,
                 dryRun: opts.dryRun ?? false,
@@ -258,7 +271,7 @@ export const registerBranchCommand = (program: Command) => {
               }),
             );
           } else if (opts.dryRun) {
-            log(info(`Branch name: ${result.newName}`));
+            log.info(`Branch name: ${result.newName}`);
           }
         } else {
           const result = await createBranch(
@@ -271,20 +284,18 @@ export const registerBranchCommand = (program: Command) => {
           );
 
           if (opts.json) {
-            log(
+            log.message(
               JSON.stringify({
                 branchName: result.branchName,
                 dryRun: opts.dryRun ?? false,
               }),
             );
           } else if (opts.dryRun) {
-            log(info(`Branch name: ${result.branchName}`));
+            log.info(`Branch name: ${result.branchName}`);
           }
         }
       } catch (error: unknown) {
-        log(
-          `\n${danger(error instanceof Error ? error.message : String(error))}\n`,
-        );
+        log.error(error instanceof Error ? error.message : String(error));
         process.exit(1);
       }
     });

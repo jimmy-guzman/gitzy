@@ -1,23 +1,32 @@
-import { styleText } from "node:util";
+import { text } from "@clack/prompts";
 
 import type { CreatedPromptOptions } from "@/cli/types";
 
 export const issues = ({
+  autofill,
   config: {
     issues: { hint: issuesHint, prefix: issuesPrefix },
   },
   initial,
 }: CreatedPromptOptions) => {
-  const initialIssues =
-    initial?.issues && initial.issues.length > 0
-      ? initial.issues.join(", ")
-      : undefined;
+  return () => {
+    if (autofill?.issues !== undefined) {
+      return Promise.resolve(
+        Array.isArray(autofill.issues)
+          ? autofill.issues.join(", ")
+          : autofill.issues,
+      );
+    }
 
-  return {
-    hint: issuesHint,
-    ...(initialIssues === undefined ? {} : { initial: initialIssues }),
-    message: `${styleText("bold", `Add issues this commit closes`)}\n  ${issuesPrefix}:`,
-    name: "issues",
-    type: "text" as const,
+    const initialIssues =
+      initial?.issues && initial.issues.length > 0
+        ? initial.issues.join(", ")
+        : undefined;
+
+    return text({
+      initialValue: initialIssues,
+      message: `Add issues this commit closes (${issuesPrefix}:)`,
+      placeholder: issuesHint,
+    });
   };
 };

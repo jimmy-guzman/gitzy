@@ -4,7 +4,21 @@ import { defaultResolvedConfig } from "@/core/config/defaults";
 
 import { breaking } from "./breaking";
 
-const setupBreaking = (configOverrides: Partial<ResolvedConfig> = {}) => {
+vi.mock("@clack/prompts", () => {
+  return {
+    confirm: vi.fn().mockResolvedValue(false),
+    text: vi.fn().mockResolvedValue(""),
+  };
+});
+
+beforeEach(() => {
+  vi.clearAllMocks();
+});
+
+const setupBreaking = (
+  configOverrides: Partial<ResolvedConfig> = {},
+  autofill = {},
+) => {
   return breaking({
     answers: {
       body: "",
@@ -14,35 +28,97 @@ const setupBreaking = (configOverrides: Partial<ResolvedConfig> = {}) => {
       subject: "",
       type: "",
     },
+    autofill,
     config: { ...defaultResolvedConfig, ...configOverrides },
     flags: {},
   });
 };
 
 describe("breaking", () => {
-  it("should create text breaking prompt", () => {
-    const breakingPrompt = setupBreaking();
+  it("should return a factory function", () => {
+    const factory = setupBreaking();
 
-    expect(breakingPrompt).toMatchInlineSnapshot(`
-      {
-        "hint": "...skip when none",
-        "message": "Add any breaking changes
-        BREAKING CHANGE:",
-        "name": "breaking",
-        "type": "text",
-      }
-    `);
+    expect(factory).toBeTypeOf("function");
   });
 
-  it("should create confirm breaking prompt", () => {
-    const breakingPrompt = setupBreaking({ breaking: { format: "!" } });
+  it("should skip prompt and return autofill value when provided", async () => {
+    const factory = setupBreaking({}, { breaking: "my breaking change" });
 
-    expect(breakingPrompt).toMatchInlineSnapshot(`
-      {
-        "message": "Is this a breaking change?",
-        "name": "breaking",
-        "type": "confirm",
-      }
-    `);
+    const result = await factory();
+
+    expect(result).toBe("my breaking change");
+  });
+
+  it("should skip prompt with boolean autofill", async () => {
+    const factory = setupBreaking(
+      { breaking: { format: "!" } },
+      { breaking: true },
+    );
+
+    const result = await factory();
+
+    expect(result).toBe(true);
+  });
+
+  it("should call confirm when format is '!'", async () => {
+    const { confirm } = await import("@clack/prompts");
+
+    const factory = setupBreaking({ breaking: { format: "!" } });
+
+    await factory();
+
+    expect(confirm).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: "Is this a breaking change?",
+      }),
+    );
+  });
+
+  it("should call text when format is not '!'", async () => {
+    const { text } = await import("@clack/prompts");
+
+    const factory = setupBreaking();
+
+    await factory();
+
+    expect(text).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: "Add any breaking changes",
+        placeholder: "skip when none",
+      }),
+    );
+  });
+
+  it("should pass initialValue from amend for confirm", async () => {
+    const { confirm } = await import("@clack/prompts");
+
+    const factory = breaking({
+      answers: {
+        body: "",
+        breaking: "",
+        issues: [],
+        scope: "",
+        subject: "",
+        type: "",
+      },
+      config: { ...defaultResolvedConfig, breaking: { format: "!" } },
+      flags: {},
+      initial: {
+        body: "",
+        breaking: true,
+        issues: [],
+        scope: "",
+        subject: "",
+        type: "",
+      },
+    });
+
+    await factory();
+
+    expect(confirm).toHaveBeenCalledWith(
+      expect.objectContaining({
+        initialValue: true,
+      }),
+    );
   });
 });

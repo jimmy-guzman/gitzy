@@ -4,7 +4,8 @@
 
 import type { Command } from "commander";
 
-import { danger, info, log, warn } from "@/cli/utils/logging";
+import { log } from "@clack/prompts";
+
 import { init } from "@/core/init/init";
 
 export const registerInitCommand = (program: Command) => {
@@ -17,14 +18,12 @@ export const registerInitCommand = (program: Command) => {
         const result = init(process.cwd(), { force: opts.force });
 
         if (result.exists && !opts.force) {
-          log(warn(`Config file already exists: ${result.filePath}`));
+          log.warn(`Config file already exists: ${result.filePath}`);
         } else {
-          log(info(`Created config file: ${result.filePath}`));
+          log.success(`Created config file: ${result.filePath}`);
         }
       } catch (error: unknown) {
-        log(
-          `\n${danger(error instanceof Error ? error.message : String(error))}\n`,
-        );
+        log.error(error instanceof Error ? error.message : String(error));
         process.exit(1);
       }
     });

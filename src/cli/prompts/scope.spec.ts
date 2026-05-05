@@ -3,58 +3,80 @@ import { defaultMessageParts } from "@/core/conventional/types";
 
 import { scope } from "./scope";
 
-const setupScope = (configOverrides = {}) => {
+vi.mock("@clack/prompts", () => {
+  return { autocomplete: vi.fn().mockResolvedValue("build") };
+});
+
+beforeEach(() => {
+  vi.clearAllMocks();
+});
+
+const setupScope = (configOverrides = {}, autofill = {}) => {
   return scope({
     answers: defaultMessageParts,
+    autofill,
     config: { ...defaultResolvedConfig, ...configOverrides },
     flags: {},
   });
 };
 
 describe("scope", () => {
-  it("should return null if no scope", () => {
-    expect(setupScope()).toBeNull();
+  it("should return undefined from factory if no scopes", () => {
+    const factory = setupScope();
+
+    expect(factory()).toBeUndefined();
   });
 
-  it("should suggest needle in the haystack", () => {
-    const scopePrompt = setupScope({
-      scopes: [{ name: "build" }],
+  it("should skip prompt and return autofill value when provided", async () => {
+    const factory = setupScope(
+      { scopes: [{ name: "build" }] },
+      { scope: "build" },
+    );
+
+    const result = await factory();
+
+    expect(result).toBe("build");
+  });
+
+  it("should call autocomplete when scopes are configured", async () => {
+    const { autocomplete } = await import("@clack/prompts");
+
+    const factory = setupScope({ scopes: [{ name: "build" }] });
+
+    await factory();
+
+    expect(autocomplete).toHaveBeenCalledWith(
+      expect.objectContaining({
+        maxItems: 10,
+        message: "Choose the scope",
+        options: [{ hint: undefined, label: "build", value: "build" }],
+      }),
+    );
+  });
+
+  it("should pass initialValue from amend initial", async () => {
+    const { autocomplete } = await import("@clack/prompts");
+
+    const factory = scope({
+      answers: defaultMessageParts,
+      config: { ...defaultResolvedConfig, scopes: [{ name: "build" }] },
+      flags: {},
+      initial: {
+        body: "",
+        breaking: "",
+        issues: [],
+        scope: "build",
+        subject: "",
+        type: "",
+      },
     });
 
-    const needle = scopePrompt?.suggest("ui");
+    await factory();
 
-    expect(needle).toStrictEqual([
-      {
-        hint: "",
-        indent: " ",
-        message: "build",
-        name: "build",
-        title: "build",
-        value: "build",
-      },
-    ]);
-  });
-
-  it("should return scope prompt if there is a scope", () => {
-    expect(setupScope({ scopes: [{ name: "build" }] })).toMatchInlineSnapshot(`
-      {
-        "choices": [
-          {
-            "hint": "",
-            "indent": " ",
-            "message": "build",
-            "name": "build",
-            "title": "build",
-            "value": "build",
-          },
-        ],
-        "hint": "...type or use arrow keys",
-        "limit": 10,
-        "message": "Choose the scope",
-        "name": "scope",
-        "suggest": [Function],
-        "type": "autocomplete",
-      }
-    `);
+    expect(autocomplete).toHaveBeenCalledWith(
+      expect.objectContaining({
+        initialValue: "build",
+      }),
+    );
   });
 });

@@ -1,3 +1,5 @@
+import type { Option } from "@clack/prompts";
+
 import uFuzzy from "@leeoniya/ufuzzy";
 
 const uf = new uFuzzy({
@@ -8,42 +10,52 @@ const uf = new uFuzzy({
   intraTrn: 1,
 });
 
-type Boundary = Record<string, number | string>;
-
 /**
- * Performs fuzzy search on an array of objects
+ * Creates a fuzzy filter function compatible with `@clack/prompts` autocomplete.
  *
- * @param items - Array of objects to search through
- *
- * @param keys - Object keys to search in
- *
- * @param needle - Search query string
- *
- * @returns Array of matching objects, sorted by relevance score
+ * Because Clack's `filter` is called per-option, we use a cached search that
+ * runs once per unique needle and returns a Set of matching values.
  */
-export const fuzzySearch = <T extends Boundary>(
-  items: T[],
-  keys: Extract<keyof T, string>[],
-  needle: string,
-) => {
-  if (needle.trim() === "") {
-    return items;
-  }
+export const createFuzzyFilter = <Value>(
+  options: Option<Value>[],
+): ((search: string, option: Option<Value>) => boolean) => {
+  let lastNeedle = "";
+  let matchingValues = new Set<Value>();
 
-  const haystack = items.map((item) => keys.map((key) => item[key]).join("|"));
+  return (search: string, option: Option<Value>) => {
+    if (search.trim() === "") return true;
 
-  const [indexes, info, order] = uf.search(
-    uFuzzy.latinize(haystack),
-    uFuzzy.latinize(needle),
-  );
+    if (search !== lastNeedle) {
+      lastNeedle = search;
+      matchingValues = new Set();
 
-  if (!indexes || !info || indexes.length === 0) {
-    return haystack.flatMap((item, idx) => {
-      return item.toLowerCase().includes(needle.toLowerCase())
-        ? [items[idx]]
-        : [];
-    });
-  }
+      const haystack = options.map((opt) => {
+        const label = opt.label ?? String(opt.value);
+        const hint = opt.hint ?? "";
 
-  return order.map((orderIdx) => items[indexes[orderIdx]]);
+        return `${label}|${hint}`;
+      });
+
+      const [indexes, _info, order] = uf.search(
+        uFuzzy.latinize(haystack),
+        uFuzzy.latinize(search),
+      );
+
+      if (indexes && order && indexes.length > 0) {
+        for (const orderIdx of order) {
+          matchingValues.add(options[indexes[orderIdx]].value);
+        }
+      } else {
+        const lowerNeedle = search.toLowerCase();
+
+        for (const [idx, item] of haystack.entries()) {
+          if (item.toLowerCase().includes(lowerNeedle)) {
+            matchingValues.add(options[idx].value);
+          }
+        }
+      }
+    }
+
+    return matchingValues.has(option.value);
+  };
 };
