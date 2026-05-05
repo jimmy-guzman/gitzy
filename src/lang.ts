@@ -23,9 +23,12 @@ export const lang = {
     description: "generate a branch name from a conventional commit prompt",
     examples: `
   $ gitzy branch
-  $ gitzy branch --type feat -m "add dark mode" --scope ui
+  $ gitzy branch --type feat -m "add dark mode"
+  $ gitzy branch --type feat --scope ui -m "add dark mode"
+  $ gitzy branch --type feat -m "add dark mode" --issue "PROJ-123"
+  $ gitzy branch --type feat -m "add dark mode" --dry-run
   $ gitzy branch --amend
-  $ gitzy branch --dry-run
+  $ gitzy branch --from main --type feat -m "add dark mode"
     `,
     flags: {
       amend: "rename the current branch instead of creating a new one",
@@ -46,8 +49,15 @@ export const lang = {
   $ gitzy
   $ gitzy commit
   $ gitzy commit --type feat -m "add dark mode"
+  $ gitzy commit --type feat --scope ui -m "add dark mode"
+  $ gitzy commit --type feat -m "add dark mode" --body "implemented via css variables"
+  $ gitzy commit --type feat -m "add dark mode" --breaking "dark mode is now default"
+  $ gitzy commit --type feat -m "add dark mode" --issue '#123' --issue '#456'
+  $ gitzy commit --type feat -m "add dark mode" --co-author "Jane Doe <jane@example.com>"
+  $ gitzy commit --type feat -m "add dark mode" --dry-run
+  $ gitzy commit --type feat -m "add dark mode" --no-emoji
   $ gitzy commit --amend
-  $ gitzy commit --dry-run
+  $ gitzy commit --retry
     `,
     flags: {
       amend: "amend the previous commit",
