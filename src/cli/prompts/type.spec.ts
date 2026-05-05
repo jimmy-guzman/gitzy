@@ -30,7 +30,7 @@ describe("createTypeOptions", () => {
     const featOption = options.find((o) => o.value === "feat");
 
     expect(featOption).toStrictEqual({
-      hint: "a new feature",
+      hint: "A new feature",
       label: "✨ feat",
       value: "feat",
     });

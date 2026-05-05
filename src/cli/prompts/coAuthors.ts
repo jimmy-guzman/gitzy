@@ -2,7 +2,7 @@ import { text } from "@clack/prompts";
 
 import type { CreatedPromptOptions } from "@/cli/types";
 
-export const coAuthors = ({ autofill }: CreatedPromptOptions) => {
+export const coAuthors = ({ autofill, initial }: CreatedPromptOptions) => {
   return () => {
     if (autofill?.coAuthors !== undefined) {
       return Promise.resolve(
@@ -12,7 +12,12 @@ export const coAuthors = ({ autofill }: CreatedPromptOptions) => {
       );
     }
 
+    const initialValue = Array.isArray(initial?.coAuthors)
+      ? initial.coAuthors.join(", ")
+      : "";
+
     return text({
+      initialValue,
       message: "Add co-authors",
       placeholder: 'skip when none, e.g. "Name <email@example.com>"',
     });

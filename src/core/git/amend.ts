@@ -34,7 +34,7 @@ const BREAKING_FOOTER_REGEX =
  * Matches: Closes/Fixes/Resolves <ref> — with optional leading emoji (e.g. "🏁 Closes #123")
  */
 const ISSUES_FOOTER_REGEX =
-  /^(?:\p{Emoji_Presentation} )?(?:Closes|Fixes|Resolves) (?<ref>\S.*)$/gmu;
+  /^(?:\p{Emoji_Presentation} )?(?:Closes|Fixes|Resolves) (?<ref>\S.*)$/gimu;
 
 /**
  * Get the HEAD commit message
@@ -71,7 +71,7 @@ export const parseConventionalCommit = (message: string): ParsedCommit => {
   if (scope) result.scope = scope;
 
   const footerStart = rest.search(
-    /^(?:\p{Emoji_Presentation}\s)?(?:BREAKING[ -]CHANGE|Co-authored-by|Closes|Fixes|Resolves)/mu,
+    /^(?:\p{Emoji_Presentation}\s)?(?:BREAKING[ -]CHANGE|Co-authored-by|Closes|Fixes|Resolves)/imu,
   );
   const bodyText =
     footerStart === -1 ? rest : rest.slice(0, footerStart).trim();

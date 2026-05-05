@@ -16,7 +16,7 @@ export const scope = ({
 
     const options = scopes.map((scopeEntry) => {
       return {
-        hint: scopeEntry.description?.toLowerCase(),
+        hint: scopeEntry.description,
         label: scopeEntry.name,
         value: scopeEntry.name,
       };

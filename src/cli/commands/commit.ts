@@ -33,16 +33,21 @@ const promptQuestions = async (
   amendInitial?: Partial<Answers>,
 ) => {
   if (flags.type && flags.subject) {
-    return {
-      body: "",
-      breaking: "",
-      coAuthors: [],
-      issues: [],
-      scope: "",
-      ...autofillAnswers,
-      subject: flags.subject,
-      type: flags.type,
-    };
+    const trimmedSubject = flags.subject.trim();
+    const validType = state.config.types.some((t) => t.name === flags.type);
+
+    if (trimmedSubject && validType) {
+      return {
+        body: "",
+        breaking: "",
+        coAuthors: [],
+        issues: [],
+        scope: "",
+        ...autofillAnswers,
+        subject: trimmedSubject,
+        type: flags.type,
+      };
+    }
   }
 
   return createPrompts(state, flags, autofillAnswers, amendInitial);

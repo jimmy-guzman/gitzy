@@ -26,29 +26,34 @@ export const subject = ({
       : (flags.emoji ?? configEmojiEnabled);
   const emojiLength = emojiEnabled ? EMOJI_LENGTH : 0;
 
-  return (context: { results: Partial<Answers> }) => {
-    if (autofill?.subject !== undefined)
-      return Promise.resolve(autofill.subject);
+  return (context?: { results: Partial<Answers> }) => {
+    const validate = (value = "") => {
+      const label = leadingLabel(context?.results);
+      const isOverMaxLength =
+        value.length + label.length + emojiLength > headerMaxLength;
+
+      if (value.length < headerMinLength) {
+        return `The subject must have at least ${headerMinLength} characters`;
+      }
+
+      if (isOverMaxLength) {
+        return `The subject must not exceed ${headerMaxLength} characters`;
+      }
+
+      return undefined;
+    };
+
+    if (autofill?.subject !== undefined) {
+      const trimmed = autofill.subject.trim();
+
+      if (!validate(trimmed)) return Promise.resolve(trimmed);
+    }
 
     return text({
       initialValue: initial?.subject,
       message: "Add a short description",
       placeholder: `${headerMinLength}-${headerMaxLength} characters`,
-      validate: (value = "") => {
-        const label = leadingLabel(context.results);
-        const isOverMaxLength =
-          value.length + label.length + emojiLength > headerMaxLength;
-
-        if (value.length < headerMinLength) {
-          return `The subject must have at least ${headerMinLength} characters`;
-        }
-
-        if (isOverMaxLength) {
-          return `The subject must not exceed ${headerMaxLength} characters`;
-        }
-
-        return undefined;
-      },
+      validate: (value = "") => validate(value.trim()),
     });
   };
 };

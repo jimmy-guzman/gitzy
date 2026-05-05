@@ -24,6 +24,10 @@ const mergeConfigs = (base: Config | null, overrides: Config): Config => {
   return {
     ...base,
     ...overrides,
+    body:
+      (base.body ?? overrides.body)
+        ? { ...base.body, ...overrides.body }
+        : undefined,
     branch:
       (base.branch ?? overrides.branch)
         ? { ...base.branch, ...overrides.branch }

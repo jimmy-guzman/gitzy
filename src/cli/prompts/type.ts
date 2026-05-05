@@ -15,7 +15,7 @@ export const createTypeOptions = (
     const prefix = hasEmoji ? `${typeEntry.emoji} ` : "";
 
     return {
-      hint: typeEntry.description?.toLowerCase(),
+      hint: typeEntry.description,
       label: `${prefix}${typeEntry.name}`,
       value: typeEntry.name,
     };

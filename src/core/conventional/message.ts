@@ -94,7 +94,7 @@ const createIssues = (
 const createCoAuthors = (coAuthors: string[] | undefined) => {
   if (!coAuthors || coAuthors.length === 0) return "";
 
-  return coAuthors.map((author) => `\n\nCo-authored-by: ${author}`).join("");
+  return `\n\n${coAuthors.map((author) => `Co-authored-by: ${author}`).join("\n")}`;
 };
 
 const createScope = (scope: string) => {

@@ -33,19 +33,24 @@ const promptBranchQuestions = async (
   amendInitial?: Partial<BranchAnswers>,
 ): Promise<BranchAnswers> => {
   if (autofill.type && autofill.subject) {
-    return {
-      issue: autofill.issue,
-      scope: autofill.scope,
-      subject: autofill.subject,
-      type: autofill.type,
-    };
+    const trimmedSubject = autofill.subject.trim();
+    const validType = state.config.types.some((t) => t.name === autofill.type);
+
+    if (trimmedSubject && validType) {
+      return {
+        issue: autofill.issue,
+        scope: autofill.scope,
+        subject: trimmedSubject,
+        type: autofill.type,
+      };
+    }
   }
 
   const { config } = state;
 
   const typeOptions = config.types.map((t) => {
     return {
-      hint: t.description?.toLowerCase(),
+      hint: t.description,
       label: t.name,
       value: t.name,
     };
@@ -53,7 +58,7 @@ const promptBranchQuestions = async (
 
   const scopeOptions = config.scopes.map((s) => {
     return {
-      hint: s.description?.toLowerCase(),
+      hint: s.description,
       label: s.name,
       value: s.name,
     };

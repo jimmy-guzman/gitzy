@@ -1,5 +1,5 @@
 import { execSync } from "node:child_process";
-import { mkdirSync } from "node:fs";
+import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
@@ -7,12 +7,11 @@ import { join, resolve } from "node:path";
 const BIN = resolve(import.meta.dirname, "../dist/run.mjs");
 
 /**
- * Isolated working directory for all e2e runs — lives outside the repo so
+ * Isolated working directory for this e2e run — unique per process so
+ * parallel test runs don't share state, and lives outside the repo so
  * lilconfig cannot walk up and find the project's own gitzy.config.js.
  */
-const E2E_CWD = join(tmpdir(), "gitzy-e2e");
-
-mkdirSync(E2E_CWD, { recursive: true });
+const E2E_CWD = mkdtempSync(join(tmpdir(), "gitzy-e2e-"));
 
 /** ESC character — built dynamically to avoid no-control-regex lint errors */
 const ESC = String.fromCodePoint(0x1b);

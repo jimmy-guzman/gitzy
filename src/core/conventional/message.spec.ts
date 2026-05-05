@@ -536,7 +536,6 @@ describe("formatCommitMessage", () => {
       🏁 Closes #123
 
       Co-authored-by: Alice <alice@example.com>
-
       Co-authored-by: Bob <bob@example.com>"
     `);
   });
