@@ -16,7 +16,7 @@ export const registerConfigCommand = (program: Command) => {
       try {
         const config = await resolveConfig();
 
-        log.message(JSON.stringify(config, null, 2));
+        process.stdout.write(`${JSON.stringify(config, null, 2)}\n`);
       } catch (error: unknown) {
         log.error(error instanceof Error ? error.message : String(error));
         process.exit(1);

@@ -34,11 +34,12 @@ const promptQuestions = async (
 ) => {
   if (flags.type && flags.subject) {
     return {
-      body: flags.body ?? "",
-      breaking: flags.breaking ?? "",
-      coAuthors: flags.coAuthor ?? [],
-      issues: flags.issue ?? [],
-      scope: flags.scope ?? "",
+      body: "",
+      breaking: "",
+      coAuthors: [],
+      issues: [],
+      scope: "",
+      ...autofillAnswers,
       subject: flags.subject,
       type: flags.type,
     };
@@ -186,7 +187,7 @@ export const registerCommitCommand = (program: Command) => {
             emojiEnabled,
           );
 
-          log.message(JSON.stringify(result));
+          process.stdout.write(`${JSON.stringify(result)}\n`);
         } else {
           const message = formatMessage(
             state.config,

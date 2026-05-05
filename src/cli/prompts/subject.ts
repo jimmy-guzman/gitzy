@@ -21,7 +21,9 @@ export const subject = ({
   initial,
 }: CreatedPromptOptions) => {
   const emojiEnabled =
-    flags.noEmoji === true ? false : (flags.emoji ?? configEmojiEnabled);
+    flags.noEmoji === true || process.env.GITZY_NO_EMOJI === "1"
+      ? false
+      : (flags.emoji ?? configEmojiEnabled);
   const emojiLength = emojiEnabled ? EMOJI_LENGTH : 0;
 
   return (context: { results: Partial<Answers> }) => {

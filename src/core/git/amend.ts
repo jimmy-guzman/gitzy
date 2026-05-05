@@ -71,7 +71,7 @@ export const parseConventionalCommit = (message: string): ParsedCommit => {
   if (scope) result.scope = scope;
 
   const footerStart = rest.search(
-    /^(?:\p{Emoji_Presentation}\s)?(?:BREAKING CHANGE|Co-authored-by|Closes|Fixes|Resolves)/mu,
+    /^(?:\p{Emoji_Presentation}\s)?(?:BREAKING[ -]CHANGE|Co-authored-by|Closes|Fixes|Resolves)/mu,
   );
   const bodyText =
     footerStart === -1 ? rest : rest.slice(0, footerStart).trim();

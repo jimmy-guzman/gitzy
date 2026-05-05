@@ -4,14 +4,7 @@
 
 import type { Command } from "commander";
 
-import {
-  autocomplete,
-  cancel,
-  group,
-  isCancel,
-  log,
-  text,
-} from "@clack/prompts";
+import { autocomplete, cancel, group, log, text } from "@clack/prompts";
 
 import type { BranchFlags, GitzyState } from "@/cli/types";
 import type { BranchParts } from "@/core/branch/types";
@@ -127,11 +120,6 @@ const promptBranchQuestions = async (
       },
     },
   );
-
-  if (isCancel(result)) {
-    cancel("Cancelled.");
-    process.exit(0);
-  }
 
   return {
     issue: result.issue,
@@ -265,12 +253,12 @@ export const registerBranchCommand = (program: Command) => {
           }
 
           if (opts.json) {
-            log.message(
-              JSON.stringify({
+            process.stdout.write(
+              `${JSON.stringify({
                 branchName: result.newName,
                 dryRun: opts.dryRun ?? false,
                 oldName: result.oldName,
-              }),
+              })}\n`,
             );
           } else if (opts.dryRun) {
             log.info(`Branch name: ${result.newName}`);
@@ -286,11 +274,11 @@ export const registerBranchCommand = (program: Command) => {
           );
 
           if (opts.json) {
-            log.message(
-              JSON.stringify({
+            process.stdout.write(
+              `${JSON.stringify({
                 branchName: result.branchName,
                 dryRun: opts.dryRun ?? false,
-              }),
+              })}\n`,
             );
           } else if (opts.dryRun) {
             log.info(`Branch name: ${result.branchName}`);

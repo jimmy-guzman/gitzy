@@ -97,4 +97,22 @@ describe("type", () => {
       }),
     );
   });
+
+  it("should forward initialValue to autocomplete", async () => {
+    const { autocomplete } = await import("@clack/prompts");
+
+    const factory = type({
+      answers: defaultMessageParts,
+      autofill: {},
+      config: defaultResolvedConfig,
+      flags: {},
+      initial: { type: "fix" },
+    });
+
+    await factory();
+
+    expect(autocomplete).toHaveBeenCalledWith(
+      expect.objectContaining({ initialValue: "fix" }),
+    );
+  });
 });
