@@ -67,8 +67,8 @@ export const tryUnlink = (filepath: string) => {
  *
  * @example
  * const path = gitzyStorePath()
- * console.log(path) // /var/folders/17/{tmpdir}/T/gitzy/gitzy-store.json
+ * console.log(path) // /var/folders/17/{tmpdir}/T/gitzy/v7/gitzy-store.json
  */
 export const gitzyStorePath = () => {
-  return `${os.tmpdir()}/gitzy/${path.basename(process.cwd())}-store.json`;
+  return `${os.tmpdir()}/gitzy/v7/${path.basename(process.cwd())}-store.json`;
 };

@@ -1,103 +1,97 @@
-import type { Config } from "./types";
+import type {
+  BodyConfig,
+  BranchConfig,
+  BreakingConfig,
+  EmojiConfig,
+  HeaderConfig,
+  IssuesConfig,
+  ResolvedConfig,
+  TypeEntry,
+} from "./types";
 
-/**
- * Default emojis for each type based on https://gitmoji.dev/
- * - except for refactor due to its narrower rendering in most terminals
- */
-const defaultTypeDetails = {
-  chore: {
-    description: "Other changes that don't modify src or test files",
-    emoji: "🤖",
-  },
-  ci: {
-    description: "Changes to CI configuration files and scripts",
-    emoji: "👷",
-  },
-  docs: {
-    description: "Add or update documentation",
-    emoji: "📝",
-  },
-  feat: {
-    description: "A new feature",
-    emoji: "✨",
-  },
-  fix: {
-    description: "Fix a bug",
-    emoji: "🐛",
-  },
-  perf: {
-    description: "Improve performance",
-    emoji: "⚡️",
-  },
-  refactor: {
-    description: "Refactor code",
-    emoji: "🔄",
-  },
-  release: {
-    description: "Deploy stuff",
-    emoji: "🚀",
-  },
-  revert: {
-    description: "Revert changes",
-    emoji: "⏪",
-  },
-  style: {
-    description: "Improve structure / format of the code",
-    emoji: "🎨",
-  },
-  test: {
-    description: "Add or update tests",
-    emoji: "✅",
-  },
-} as const;
-
-export const defaultQuestions = [
+export const defaultPrompts = [
   "type",
   "scope",
   "subject",
   "body",
   "breaking",
   "issues",
+  "coAuthors",
 ] as const;
 
-export const validIssuesPrefixes = [
-  "close",
-  "closes",
-  "closed",
-  "fix",
-  "fixes",
-  "fixed",
-  "resolve",
-  "resolves",
-  "resolved",
-] as const;
+export type PromptName = (typeof defaultPrompts)[number];
 
-export const validBreakingChangeFormats = ["!", "footer", "both"] as const;
+/**
+ * Built-in type defaults based on https://gitmoji.dev/
+ * - except for refactor due to its narrower rendering in most terminals
+ */
+export const builtinTypes: readonly TypeEntry[] = [
+  {
+    description: "Other changes that don't modify src or test files",
+    emoji: "🤖",
+    name: "chore",
+  },
+  {
+    description: "Changes to CI configuration files and scripts",
+    emoji: "👷",
+    name: "ci",
+  },
+  { description: "Add or update documentation", emoji: "📝", name: "docs" },
+  { description: "A new feature", emoji: "✨", name: "feat" },
+  { description: "Fix a bug", emoji: "🐛", name: "fix" },
+  { description: "Improve performance", emoji: "⚡️", name: "perf" },
+  { description: "Refactor code", emoji: "🔄", name: "refactor" },
+  { description: "Deploy stuff", emoji: "🚀", name: "release" },
+  { description: "Revert changes", emoji: "⏪", name: "revert" },
+  {
+    description: "Improve structure / format of the code",
+    emoji: "🎨",
+    name: "style",
+  },
+  { description: "Add or update tests", emoji: "✅", name: "test" },
+];
 
-export const defaultConfig: Config = {
-  breakingChangeEmoji: "💥",
-  breakingChangeFormat: "footer",
-  closedIssueEmoji: "🏁",
-  details: defaultTypeDetails,
-  disableEmoji: false,
-  headerMaxLength: 64,
-  headerMinLength: 3,
-  issuesHint: "#123, #456, resolves #789, org/repo#100",
-  issuesPrefix: "closes",
-  questions: defaultQuestions,
+export const defaultBodyConfig: BodyConfig = {
+  max: 70,
+  min: 5,
+};
+
+export const defaultHeaderConfig: HeaderConfig = {
+  max: 50,
+  min: 5,
+};
+
+export const defaultEmojiConfig: EmojiConfig = {
+  breaking: "💥",
+  enabled: true,
+  issues: "🏁",
+};
+
+export const defaultBreakingConfig: BreakingConfig = {
+  format: "footer",
+};
+
+export const defaultIssuesConfig: IssuesConfig = {
+  hint: "#123, #456, resolves #789, org/repo#100",
+  pattern: "github",
+  prefix: "closes",
+};
+
+export const defaultBranchConfig: BranchConfig = {
+  checkout: true,
+  max: 72,
+  pattern: "{type}/{scope}/{issue}-{subject}",
+  separator: "/",
+};
+
+export const defaultResolvedConfig: ResolvedConfig = {
+  body: defaultBodyConfig,
+  branch: defaultBranchConfig,
+  breaking: defaultBreakingConfig,
+  emoji: defaultEmojiConfig,
+  header: defaultHeaderConfig,
+  issues: defaultIssuesConfig,
+  prompts: defaultPrompts,
   scopes: [],
-  types: [
-    "chore",
-    "docs",
-    "feat",
-    "fix",
-    "refactor",
-    "test",
-    "style",
-    "ci",
-    "perf",
-    "revert",
-    "release",
-  ],
-  useCommitlintConfig: false,
+  types: builtinTypes,
 };

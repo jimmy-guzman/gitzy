@@ -1,46 +1,80 @@
-import Enquirer from "enquirer";
-
 import { cli } from "./cli";
-import { defaultConfig } from "./core/config/defaults";
+import { defaultResolvedConfig } from "./core/config/defaults";
 import * as config from "./core/config/resolver";
 import * as gitChecks from "./core/git/checks";
 import * as gitOperations from "./core/git/operations";
 
-const mockPrompt = vi.hoisted(() => {
-  return vi.fn().mockResolvedValue({
-    body: "",
-    breaking: false,
-    issues: "",
-    scope: "",
-    subject: "test commit",
-    type: "feat",
-  });
+vi.mock("@clack/prompts", () => {
+  return {
+    autocomplete: vi.fn().mockResolvedValue("feat"),
+    cancel: vi.fn(),
+    confirm: vi.fn().mockResolvedValue(false),
+    group: vi.fn(async (prompts: Record<string, () => unknown>) => {
+      const result: Record<string, unknown> = {};
+
+      for (const [key, fn] of Object.entries(prompts)) {
+        const value = await fn();
+
+        if (value !== undefined) {
+          result[key] = value;
+        }
+      }
+
+      return result;
+    }),
+    isCancel: vi.fn().mockReturnValue(false),
+    log: {
+      error: vi.fn(),
+      info: vi.fn(),
+      message: vi.fn(),
+      step: vi.fn(),
+      success: vi.fn(),
+      warn: vi.fn(),
+    },
+    multiline: vi.fn().mockResolvedValue(""),
+    text: vi.fn().mockResolvedValue("test commit"),
+  };
 });
 
-vi.mock("enquirer", () => ({
-  default: vi.fn(() => ({ prompt: mockPrompt })),
-}));
-
 vi.mock("../package.json", () => ({
-  engines: { node: "18" },
+  engines: { node: "20" },
   version: "1.0.0",
 }));
 
 describe("cli", () => {
-  beforeEach(() => {
+  const originalArgv = process.argv;
+
+  beforeEach(async () => {
     vi.resetAllMocks();
-    vi.mocked(Enquirer).mockImplementation(function () {
-      return { prompt: mockPrompt };
-    } as unknown as typeof Enquirer);
-    mockPrompt.mockResolvedValue({
-      body: "",
-      breaking: false,
-      issues: "",
-      scope: "",
-      subject: "test commit",
-      type: "feat",
-    });
-    process.argv = [];
+
+    const clack = vi.mocked(await import("@clack/prompts"));
+
+    clack.group.mockImplementation(
+      async (prompts: Record<string, () => unknown>) => {
+        const result: Record<string, unknown> = {};
+
+        for (const [key, fn] of Object.entries(prompts)) {
+          const value = await fn();
+
+          if (value !== undefined) {
+            result[key] = value;
+          }
+        }
+
+        return result;
+      },
+    );
+    clack.autocomplete.mockResolvedValue("feat");
+    clack.text.mockResolvedValue("test commit");
+    clack.confirm.mockResolvedValue(false);
+    clack.multiline.mockResolvedValue("");
+    clack.isCancel.mockReturnValue(false);
+
+    process.argv = ["node", "gitzy"];
+  });
+
+  afterEach(() => {
+    process.argv = originalArgv;
   });
 
   it("should run with defaults", async () => {
@@ -56,31 +90,20 @@ describe("cli", () => {
 
     const getUserConfigSpy = vi
       .spyOn(config, "resolveConfig")
-      .mockResolvedValueOnce(defaultConfig);
+      .mockResolvedValueOnce(defaultResolvedConfig);
 
     await cli();
 
-    expect(Enquirer).toHaveBeenNthCalledWith(
-      1,
-      {
-        autofill: true,
-        cancel: expect.any(Function),
-        styles: {
-          danger: expect.any(Function),
-          submitted: expect.any(Function),
-        },
-      },
-      { emoji: true, hook: undefined },
-    );
     expect(checkIfGitSpy).toHaveBeenCalledExactlyOnceWith();
     expect(checkIfStagedSpy).toHaveBeenCalledExactlyOnceWith();
-    expect(getUserConfigSpy).toHaveBeenNthCalledWith(1, undefined);
+    expect(getUserConfigSpy).toHaveBeenCalledExactlyOnceWith();
     expect(performCommitSpy).toHaveBeenCalledWith(
       expect.stringContaining(""),
       expect.objectContaining({
+        amend: undefined,
         dryRun: undefined,
-        hook: undefined,
-        passthrough: undefined,
+        hook: false,
+        noVerify: undefined,
       }),
     );
   });

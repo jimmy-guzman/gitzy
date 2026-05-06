@@ -1,32 +1,33 @@
-import type { Scopes } from "@/core/config/types";
+import { autocomplete } from "@clack/prompts";
 
-import { fuzzySearch } from "@/cli/utils/fuzzy-search";
+import type { CreatedPromptOptions } from "@/cli/types";
 
-import { AUTOCOMPLETE_HINT } from "./constants";
+import { createFuzzyFilter } from "@/cli/utils/fuzzy-search";
 
 export const scope = ({
+  autofill,
   config: { scopes },
-}: {
-  config: { scopes: Scopes };
-}) => {
-  const choices = scopes.map((choice) => {
-    return {
-      indent: " ",
-      title: choice,
-      value: choice,
-    };
-  });
+  initial,
+}: CreatedPromptOptions) => {
+  return () => {
+    if (autofill?.scope !== undefined) return Promise.resolve(autofill.scope);
 
-  // TODO: use skip once https://github.com/enquirer/enquirer/issues/128 is resolved
-  return scopes.length > 0
-    ? {
-        choices,
-        hint: AUTOCOMPLETE_HINT,
-        limit: 10,
-        message: "Choose the scope",
-        name: "scope",
-        suggest: (input: string) => fuzzySearch(choices, ["title"], input),
-        type: "autocomplete" as const,
-      }
-    : null;
+    if (scopes.length === 0) return undefined;
+
+    const options = scopes.map((scopeEntry) => {
+      return {
+        hint: scopeEntry.description,
+        label: scopeEntry.name,
+        value: scopeEntry.name,
+      };
+    });
+
+    return autocomplete({
+      filter: createFuzzyFilter(options),
+      initialValue: initial?.scope,
+      maxItems: 10,
+      message: "Choose the scope",
+      options,
+    });
+  };
 };

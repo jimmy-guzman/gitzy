@@ -1,63 +1,183 @@
-import type { Questions } from "@/core/config/types";
-
-import { defaultConfig } from "@/core/config/defaults";
+import { defaultResolvedConfig } from "@/core/config/defaults";
 
 import { createPrompts } from "./create-prompts";
 
-interface PromptResult {
-  name: string;
-}
+vi.mock("@clack/prompts", () => {
+  return {
+    autocomplete: vi.fn().mockResolvedValue("feat"),
+    cancel: vi.fn(),
+    confirm: vi.fn().mockResolvedValue(false),
+    group: vi.fn(async (prompts: Record<string, () => unknown>) => {
+      const result: Record<string, unknown> = {};
 
-const setupCreatePrompts = (
-  flags = {},
-  questions: Questions = defaultConfig.questions,
-): string[] => {
-  const prompts = createPrompts(
-    {
-      answers: {
-        body: "",
-        breaking: "",
-        issues: "",
-        scope: "",
-        subject: "",
-        type: "",
-      },
-      config: { ...defaultConfig, questions },
+      for (const [key, fn] of Object.entries(prompts)) {
+        const value = await fn();
+
+        if (value !== undefined) {
+          result[key] = value;
+        }
+      }
+
+      return result;
+    }),
+    isCancel: vi.fn().mockReturnValue(false),
+    log: {
+      error: vi.fn(),
+      info: vi.fn(),
+      message: vi.fn(),
+      step: vi.fn(),
+      success: vi.fn(),
+      warn: vi.fn(),
     },
-    flags,
-  );
+    multiline: vi.fn().mockResolvedValue(""),
+    text: vi.fn().mockResolvedValue(""),
+  };
+});
 
-  return prompts.map((prompt) => (prompt as PromptResult).name);
-};
+beforeEach(async () => {
+  vi.clearAllMocks();
+
+  const clack = vi.mocked(await import("@clack/prompts"));
+
+  clack.group.mockImplementation(
+    async (prompts: Record<string, () => unknown>) => {
+      const result: Record<string, unknown> = {};
+
+      for (const [key, fn] of Object.entries(prompts)) {
+        const value = await fn();
+
+        if (value !== undefined) {
+          result[key] = value;
+        }
+      }
+
+      return result;
+    },
+  );
+  clack.autocomplete.mockResolvedValue("feat");
+  clack.text.mockResolvedValue("");
+  clack.confirm.mockResolvedValue(false);
+  clack.multiline.mockResolvedValue("");
+  clack.isCancel.mockReturnValue(false);
+});
 
 describe("createPrompts", () => {
-  it("should create default questions", () => {
-    const prompts = setupCreatePrompts();
+  it("should return answers with default prompts", async () => {
+    const result = await createPrompts(
+      {
+        answers: {
+          body: "",
+          breaking: "",
+          issues: [],
+          scope: "",
+          subject: "",
+          type: "",
+        },
+        config: defaultResolvedConfig,
+      },
+      {},
+    );
 
-    expect(prompts).toStrictEqual([
-      "type",
-      "subject",
-      "body",
-      "breaking",
-      "issues",
-    ]);
+    expect(result).toStrictEqual({
+      body: "",
+      breaking: "",
+      coAuthors: [],
+      issues: [],
+      scope: "",
+      subject: "",
+      type: "feat",
+    });
   });
 
-  it("should not create skipped questions", () => {
-    const prompts = setupCreatePrompts({ skip: ["type"] });
+  it("should only include configured prompts", async () => {
+    const { group } = await import("@clack/prompts");
 
-    expect(prompts).toStrictEqual(["subject", "body", "breaking", "issues"]);
+    await createPrompts(
+      {
+        answers: {
+          body: "",
+          breaking: "",
+          issues: [],
+          scope: "",
+          subject: "",
+          type: "",
+        },
+        config: { ...defaultResolvedConfig, prompts: ["type"] },
+      },
+      {},
+    );
+
+    const groupCall = vi.mocked(group).mock.calls[0][0] as Record<
+      string,
+      unknown
+    >;
+    const keys = Object.keys(groupCall);
+
+    expect(keys).toStrictEqual(["type"]);
   });
 
-  it("should not create multiple skipped questions", () => {
-    const prompts = setupCreatePrompts({ skip: ["type", "body"] });
+  it("should skip unknown prompt names", async () => {
+    const { group } = await import("@clack/prompts");
 
-    expect(prompts).toStrictEqual(["subject", "breaking", "issues"]);
+    await createPrompts(
+      {
+        answers: {
+          body: "",
+          breaking: "",
+          issues: [],
+          scope: "",
+          subject: "",
+          type: "",
+        },
+        config: {
+          ...defaultResolvedConfig,
+          prompts: ["type", "unknown-prompt"],
+        },
+      },
+      {},
+    );
+
+    const groupCall = vi.mocked(group).mock.calls[0][0] as Record<
+      string,
+      unknown
+    >;
+    const keys = Object.keys(groupCall);
+
+    expect(keys).toStrictEqual(["type"]);
   });
 
-  it("should only create user defined questions", () => {
-    const prompts = setupCreatePrompts({}, ["type"]);
+  it("should use autofill values to skip prompts", async () => {
+    const result = await createPrompts(
+      {
+        answers: {
+          body: "",
+          breaking: "",
+          issues: [],
+          scope: "",
+          subject: "",
+          type: "",
+        },
+        config: defaultResolvedConfig,
+      },
+      {},
+      {
+        body: "my body",
+        breaking: false,
+        issues: ["#123"],
+        scope: "",
+        subject: "my subject",
+        type: "fix",
+      },
+    );
 
-    expect(prompts).toStrictEqual(["type"]);
+    expect(result).toStrictEqual({
+      body: "my body",
+      breaking: false,
+      coAuthors: [],
+      issues: ["#123"],
+      scope: "",
+      subject: "my subject",
+      type: "fix",
+    });
   });
 });

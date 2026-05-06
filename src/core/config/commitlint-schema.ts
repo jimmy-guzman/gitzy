@@ -13,6 +13,8 @@ const TypeEnumRuleSchema = tuple([number(), string(), array(string())]);
 export const CommitlintConfigSchema = object({
   rules: optional(
     object({
+      "body-max-length": optional(HeaderLengthRuleSchema),
+      "body-min-length": optional(HeaderLengthRuleSchema),
       "header-max-length": optional(HeaderLengthRuleSchema),
       "header-min-length": optional(HeaderLengthRuleSchema),
       "scope-case": optional(ScopeCaseRuleSchema),

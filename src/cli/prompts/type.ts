@@ -1,38 +1,44 @@
-import type { Flags } from "@/cli/types";
-import type { Config } from "@/core/config/types";
+import { autocomplete } from "@clack/prompts";
 
-import { fuzzySearch } from "@/cli/utils/fuzzy-search";
+import type { CommitFlags, CreatedPromptOptions } from "@/cli/types";
+import type { ResolvedConfig } from "@/core/config/types";
 
-import { AUTOCOMPLETE_HINT } from "./constants";
+import { createFuzzyFilter } from "@/cli/utils/fuzzy-search";
 
-export const choice = (config: Config, type: string, flags?: Flags) => {
-  const typeDetails = Object.hasOwn(config.details, type)
-    ? config.details[type]
-    : undefined;
-  const hasEmoji =
-    typeDetails?.emoji && !config.disableEmoji && (flags?.emoji ?? true);
-  const prefix = hasEmoji ? `${typeDetails.emoji} ` : "";
+export const createTypeOptions = (
+  config: ResolvedConfig,
+  flags?: CommitFlags,
+) => {
+  return config.types.map((typeEntry) => {
+    const hasEmoji =
+      typeEntry.emoji && config.emoji.enabled && (flags?.emoji ?? true);
+    const prefix = hasEmoji ? `${typeEntry.emoji} ` : "";
 
-  return {
-    hint: typeDetails?.description.toLowerCase() ?? "",
-    indent: " ",
-    title: `${prefix}${type}:`,
-    value: type,
-  };
+    return {
+      hint: typeEntry.description,
+      label: `${prefix}${typeEntry.name}`,
+      value: typeEntry.name,
+    };
+  });
 };
 
-export const type = ({ config, flags }: { config: Config; flags?: Flags }) => {
-  const choices = config.types.map((configType) => {
-    return choice(config, configType, flags);
-  });
+export const type = ({
+  autofill,
+  config,
+  flags,
+  initial,
+}: CreatedPromptOptions) => {
+  return () => {
+    if (autofill?.type !== undefined) return Promise.resolve(autofill.type);
 
-  return {
-    choices,
-    hint: AUTOCOMPLETE_HINT,
-    limit: 10,
-    message: "Choose the type",
-    name: "type",
-    suggest: (input: string) => fuzzySearch(choices, ["title", "hint"], input),
-    type: "autocomplete" as const,
+    const options = createTypeOptions(config, flags);
+
+    return autocomplete({
+      filter: createFuzzyFilter(options),
+      initialValue: initial?.type,
+      maxItems: 10,
+      message: "Choose the type",
+      options,
+    });
   };
 };

@@ -21,9 +21,9 @@
 
     "skipLibCheck": true,
 
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"],
+      "package.json": ["./package.json"]
     }
   },
   "include": ["src/**/*", "*.config.ts", "e2e"],

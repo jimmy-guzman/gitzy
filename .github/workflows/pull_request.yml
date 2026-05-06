@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: ["20", "22", "24"]
+        node: ["22.13.0", "24"]
 
     steps:
       - uses: actions/checkout@v6
@@ -43,7 +43,7 @@ jobs:
       - name: commitlint
         uses: wagoid/commitlint-github-action@v6
         with:
-          configFile: .commitlintrc.yml
+          configFile: .commitlintrc.json
 
   spell_check:
     runs-on: ubuntu-latest

@@ -1,9 +1,13 @@
-import type { Flags, GitzyState } from "@/cli/types";
+import { cancel, group, isCancel } from "@clack/prompts";
 
-import { defaultConfig } from "@/core/config/defaults";
+import type { Answers, CommitFlags, GitzyState } from "@/cli/types";
+import type { PromptName } from "@/core/config/defaults";
+
+import { defaultPrompts } from "@/core/config/defaults";
 
 import { body } from "./body";
 import { breaking } from "./breaking";
+import { coAuthors } from "./coAuthors";
 import { issues } from "./issues";
 import { scope } from "./scope";
 import { subject } from "./subject";
@@ -12,27 +16,91 @@ import { type } from "./type";
 const prompts = {
   body,
   breaking,
+  coAuthors,
   issues,
   scope,
   subject,
   type,
 } as const;
 
-export const createPrompts = (
+interface RawGroupResult {
+  body?: string;
+  breaking?: boolean | string;
+  coAuthors?: string;
+  issues?: string;
+  scope?: string;
+  subject?: string;
+  type?: string;
+}
+
+const parseIssues = (raw: string | undefined): string[] => {
+  if (!raw || raw.trim() === "") return [];
+
+  return raw
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+};
+
+const parseCoAuthors = (raw: string | undefined) => {
+  if (!raw || raw.trim() === "") return [];
+
+  return raw
+    .split(",")
+    .map((a) => a.trim())
+    .filter(Boolean);
+};
+
+export const createPrompts = async (
   { answers, config }: GitzyState,
-  flags: Flags,
+  flags: CommitFlags,
+  autofill?: Partial<Answers>,
+  initial?: Partial<Answers>,
 ) => {
-  return config.questions.flatMap((question) => {
-    if (
-      !defaultConfig.questions.includes(question) ||
-      flags.skip?.includes(question)
-    ) {
-      return [];
+  const activePrompts: Record<
+    string,
+    ReturnType<(typeof prompts)[PromptName]>
+  > = {};
+
+  for (const question of config.prompts) {
+    if (!(defaultPrompts as readonly string[]).includes(question)) {
+      continue;
     }
 
-    const promptFn = prompts[question];
-    const prompt = promptFn({ answers, config, flags });
+    const promptFn = prompts[question as PromptName];
 
-    return prompt ? [prompt] : [];
-  });
+    activePrompts[question] = promptFn({
+      answers,
+      autofill,
+      config,
+      flags,
+      initial,
+    });
+  }
+
+  const result = (await group(activePrompts, {
+    onCancel: () => {
+      cancel("Cancelled.");
+      process.exit(0);
+    },
+  })) as RawGroupResult;
+
+  if (isCancel(result)) {
+    cancel("Cancelled.");
+    process.exit(0);
+  }
+
+  return {
+    body: (result.body ?? "").trim(),
+    breaking: result.breaking ?? "",
+    coAuthors: parseCoAuthors(
+      typeof result.coAuthors === "string" ? result.coAuthors : undefined,
+    ),
+    issues: parseIssues(
+      typeof result.issues === "string" ? result.issues : undefined,
+    ),
+    scope: result.scope ?? "",
+    subject: result.subject ?? "",
+    type: result.type ?? "",
+  };
 };

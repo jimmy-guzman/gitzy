@@ -1,46 +1,74 @@
-/**
- * Core configuration types for gitzy
- *
- * This represents the v6 config schema that will be kept for compatibility.
- * The config structure remains the same as v6 - just reorganized.
- */
+export interface BodyConfig {
+  max: number;
+  min: number;
+}
 
-export interface TypeDetail {
-  description: string;
-  emoji: string;
+export interface BranchConfig {
+  checkout: boolean;
+  max: number;
+  pattern: string;
+  separator: string;
+}
+
+export interface BreakingConfig {
+  format: "!" | "both" | "footer";
+}
+
+export interface EmojiConfig {
+  breaking: string;
+  enabled: boolean;
+  issues: string;
+}
+
+export interface HeaderConfig {
+  max: number;
+  min: number;
+}
+
+export interface IssuesConfig {
+  hint?: string;
+  pattern: "github" | "jira";
+  prefix?: string;
+}
+
+export interface ScopeEntry {
+  description?: string;
+  name: string;
+}
+
+export interface TypeEntry {
+  description?: string;
+  emoji?: string;
+  name: string;
 }
 
 export interface Config {
-  breakingChangeEmoji: string;
-  breakingChangeFormat: "!" | "both" | "footer";
-  closedIssueEmoji: string;
-  details: Record<string, TypeDetail>;
-  disableEmoji: boolean;
-  headerMaxLength: number;
-  headerMinLength: number;
-  issuesHint: string;
-  issuesPrefix:
-    | "close"
-    | "closed"
-    | "closes"
-    | "fix"
-    | "fixed"
-    | "fixes"
-    | "resolve"
-    | "resolved"
-    | "resolves";
-  questions: readonly (
-    | "body"
-    | "breaking"
-    | "issues"
-    | "scope"
-    | "subject"
-    | "type"
-  )[];
-  scopes: readonly string[];
-  types: readonly string[];
-  useCommitlintConfig: boolean;
+  body?: Partial<BodyConfig>;
+  branch?: Partial<BranchConfig>;
+  breaking?: Partial<BreakingConfig>;
+  emoji?: Partial<EmojiConfig>;
+  header?: Partial<HeaderConfig>;
+  issues?: Partial<IssuesConfig>;
+  prompts?: readonly string[];
+  scopes?: readonly (ScopeEntry | string)[];
+  types?: readonly (string | TypeEntry)[];
 }
 
-export type Questions = Config["questions"];
-export type Scopes = Config["scopes"];
+export interface ResolvedConfig {
+  body: BodyConfig;
+  branch: BranchConfig;
+  breaking: BreakingConfig;
+  emoji: EmojiConfig;
+  header: HeaderConfig;
+  issues: IssuesConfig;
+  prompts: readonly string[];
+  scopes: readonly ScopeEntry[];
+  types: readonly TypeEntry[];
+}
+
+/**
+ * Helper for typed config with editor autocomplete
+ */
+export const defineConfig = (config: Config) => {
+  return config;
+};

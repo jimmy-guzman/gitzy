@@ -1,52 +1,49 @@
-import type { Config } from "@/core/config/types";
+import type { ResolvedConfig } from "@/core/config/types";
+import type { MessageParts } from "@/core/conventional/types";
 
-export interface Answers {
-  body: string;
-  breaking: boolean | string;
-  issues: string;
-  scope: string;
-  subject: string;
-  type: string;
-}
+export type Answers = MessageParts;
 
 export interface CreatedPromptOptions {
   answers: Answers;
-  config: Config;
-  flags: Flags;
+  autofill?: Partial<Answers>;
+  config: ResolvedConfig;
+  flags: CommitFlags;
+  initial?: Partial<Answers>;
 }
 
-export interface EnquirerChoice {
-  hint?: string;
-  indent?: string;
-  title: string;
-  value: string;
-}
-
-export interface EnquirerState {
-  answers: Answers;
-  input: string;
-}
-
-export interface Flags {
+export interface CommitFlags {
+  amend?: boolean;
   body?: string;
   breaking?: boolean | string;
-  commitlint?: boolean;
+  coAuthor?: string[];
   dryRun?: boolean;
   emoji?: boolean;
-  help?: boolean;
   hook?: boolean;
-  issues?: string;
+  issue?: string[];
+  json?: boolean;
   noEmoji?: boolean;
-  passthrough?: string[];
+  noVerify?: boolean;
   retry?: boolean;
   scope?: string;
-  skip?: string[];
+  stdin?: boolean;
   subject?: string;
   type?: string;
-  version?: boolean;
+}
+
+export interface BranchFlags {
+  amend?: boolean;
+  checkout?: boolean;
+  dryRun?: boolean;
+  from?: string;
+  issue?: string;
+  json?: boolean;
+  scope?: string;
+  stdin?: boolean;
+  subject?: string;
+  type?: string;
 }
 
 export interface GitzyState {
   answers: Answers;
-  config: Required<Config>;
+  config: ResolvedConfig;
 }

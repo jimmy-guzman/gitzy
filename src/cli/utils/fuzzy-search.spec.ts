@@ -1,322 +1,130 @@
-import { fuzzySearch } from "@/cli/utils/fuzzy-search";
+import type { Option } from "@clack/prompts";
 
-describe("fuzzySearch", () => {
-  it("should return the needle in the haystack", () => {
-    const needle = fuzzySearch(
-      [{ name: "joe" }, { name: "jane" }],
-      ["name"],
-      "ne",
-    );
+import { createFuzzyFilter } from "@/cli/utils/fuzzy-search";
 
-    expect(needle).toStrictEqual([{ name: "jane" }]);
-  });
-
-  it("should return the haystack when search term is empty", () => {
-    const needle = fuzzySearch(
-      [{ name: "joe" }, { name: "jane" }],
-      ["name"],
-      "",
-    );
-
-    expect(needle).toStrictEqual([{ name: "joe" }, { name: "jane" }]);
-  });
-
-  it("should sort by strict equality", () => {
-    const needle = fuzzySearch(
-      [{ name: "jimmy" }, { name: "jim" }],
-      ["name"],
-      "jim",
-    );
-
-    expect(needle).toStrictEqual([{ name: "jim" }, { name: "jimmy" }]);
-  });
-
-  it("should handle empty haystack", () => {
-    const result = fuzzySearch([], ["name"], "test");
-
-    expect(result).toStrictEqual([]);
-  });
-
-  it("should handle whitespace-only search term", () => {
-    const haystack = [{ name: "joe" }, { name: "jane" }];
-
-    expect(fuzzySearch(haystack, ["name"], "   ")).toStrictEqual(haystack);
-  });
-
-  it("should return empty array when no matches found", () => {
-    const result = fuzzySearch(
-      [{ name: "apple" }, { name: "banana" }],
-      ["name"],
-      "xyz123",
-    );
-
-    expect(result).toStrictEqual([]);
-  });
-
-  it("should search across multiple keys", () => {
-    const haystack = [
-      { email: "john@test.com", name: "john" },
-      { email: "jane@example.com", name: "jane" },
-      { email: "bob@test.com", name: "bob" },
+describe("createFuzzyFilter", () => {
+  it("should return true for all options when search is empty", () => {
+    const options: Option<string>[] = [
+      { label: "joe", value: "joe" },
+      { label: "jane", value: "jane" },
     ];
+    const filter = createFuzzyFilter(options);
 
-    const result = fuzzySearch(haystack, ["name", "email"], "test");
-
-    expect(result).toHaveLength(2);
-    expect(result).toContainEqual({ email: "john@test.com", name: "john" });
-    expect(result).toContainEqual({ email: "bob@test.com", name: "bob" });
+    expect(filter("", options[0])).toBe(true);
+    expect(filter("", options[1])).toBe(true);
   });
 
-  it("should prioritize matches in first key over second key", () => {
-    const haystack = [
-      { email: "other@example.com", name: "test" },
-      { email: "test@example.com", name: "other" },
+  it("should return true for all options when search is whitespace", () => {
+    const options: Option<string>[] = [
+      { label: "joe", value: "joe" },
+      { label: "jane", value: "jane" },
     ];
+    const filter = createFuzzyFilter(options);
 
-    const result = fuzzySearch(haystack, ["name", "email"], "test");
-
-    expect(result[0]).toStrictEqual({
-      email: "other@example.com",
-      name: "test",
-    });
+    expect(filter("   ", options[0])).toBe(true);
+    expect(filter("   ", options[1])).toBe(true);
   });
 
-  it("should handle case insensitive matching", () => {
-    const result = fuzzySearch(
-      [{ name: "John" }, { name: "jane" }],
-      ["name"],
-      "JOHN",
-    );
-
-    expect(result).toContainEqual({ name: "John" });
-  });
-
-  it("should handle mixed case in search term and data", () => {
-    const result = fuzzySearch(
-      [
-        { name: "McDonald" },
-        {
-          // cspell:disable-next-line
-          name: "mcdonalds",
-        },
-      ],
-      ["name"],
-      "mcd",
-    );
-
-    expect(result).toHaveLength(2);
-  });
-
-  it("should handle objects with additional properties", () => {
-    const haystack = [
-      { category: "fruit", id: 1, name: "apple", price: 1.99 },
-      { category: "fruit", id: 2, name: "banana", price: 0.99 },
-      { category: "vegetable", id: 3, name: "carrot", price: 0.79 },
+  it("should filter by label match", () => {
+    const options: Option<string>[] = [
+      { label: "apple", value: "apple" },
+      { label: "banana", value: "banana" },
     ];
+    const filter = createFuzzyFilter(options);
 
-    const result = fuzzySearch(haystack, ["name"], "app");
-
-    expect(result).toStrictEqual([
-      { category: "fruit", id: 1, name: "apple", price: 1.99 },
-    ]);
+    expect(filter("app", options[0])).toBe(true);
+    expect(filter("app", options[1])).toBe(false);
   });
 
-  it("should handle numeric values in search keys", () => {
-    const haystack = [
-      { code: 12_345, name: "item1" },
-      { code: 67_890, name: "item2" },
-      { code: 12_300, name: "item3" },
+  it("should filter by hint match", () => {
+    const options: Option<string>[] = [
+      { hint: "a new feature", label: "feat", value: "feat" },
+      { hint: "fix a bug", label: "fix", value: "fix" },
     ];
+    const filter = createFuzzyFilter(options);
 
-    const result = fuzzySearch(haystack, ["code"], "123");
-
-    expect(result).toHaveLength(2);
+    expect(filter("feature", options[0])).toBe(true);
+    expect(filter("feature", options[1])).toBe(false);
   });
 
-  it("should maintain consistent ordering for identical scores", () => {
-    const haystack = [{ name: "test1" }, { name: "test2" }, { name: "test3" }];
-
-    const result1 = fuzzySearch(haystack, ["name"], "test");
-    const result2 = fuzzySearch(haystack, ["name"], "test");
-
-    expect(result1).toStrictEqual(result2);
-  });
-
-  it("should handle large datasets efficiently", () => {
-    const largeHaystack = Array.from({ length: 1000 }, (_, i) => {
-      return {
-        description: `description for item ${i}`,
-        name: `item${i}`,
-      };
-    });
-
-    const startTime = performance.now();
-    const result = fuzzySearch(largeHaystack, ["name", "description"], "item5");
-    const endTime = performance.now();
-
-    expect(result.length).toBeGreaterThan(0);
-    expect(endTime - startTime).toBeLessThan(100);
-  });
-
-  it("should handle special characters", () => {
-    const haystack = [
-      { name: "café" },
-      { name: "naïve" },
-      {
-        // cspell:disable-next-line
-        name: "résumé",
-      },
+  it("should handle fuzzy matching", () => {
+    const options: Option<string>[] = [
+      { hint: "refactor code", label: "refactor", value: "refactor" },
+      { hint: "a new feature", label: "feat", value: "feat" },
     ];
+    const filter = createFuzzyFilter(options);
 
-    const result = fuzzySearch(haystack, ["name"], "cafe");
-
-    expect(result).toContainEqual({ name: "café" });
+    expect(filter("actor", options[0])).toBe(true);
   });
 
-  it("should handle symbols and punctuation", () => {
-    const haystack = [
-      { name: "user@example.com" },
-      { name: "test-user" },
-      { name: "user_name" },
+  it("should fall back to case-insensitive substring match", () => {
+    const options: Option<string>[] = [
+      { label: "John", value: "john" },
+      { label: "jane", value: "jane" },
     ];
+    const filter = createFuzzyFilter(options);
 
-    const result = fuzzySearch(haystack, ["name"], "user");
-
-    expect(result).toHaveLength(3);
+    expect(filter("JOHN", options[0])).toBe(true);
+    expect(filter("JOHN", options[1])).toBe(false);
   });
 
-  it("should respect fuzzy matching threshold", () => {
-    const result = fuzzySearch(
-      [{ name: "completely different" }],
-      ["name"],
-      "xyz",
-    );
-
-    expect(result).toStrictEqual([]);
-  });
-
-  it("should find close matches within threshold", () => {
-    const result = fuzzySearch(
-      [{ name: "javascript" }, { name: "typescript" }],
-      ["name"],
-      // cspell:disable-next-line
-      "javscript",
-    );
-
-    expect(result).toContainEqual({ name: "javascript" });
-  });
-
-  it("should return references to original objects, not copies", () => {
-    const originalObject = { id: 1, name: "test" };
-    const haystack = [originalObject];
-
-    const result = fuzzySearch(haystack, ["name"], "test");
-
-    expect(result[0]).toBe(originalObject);
-  });
-
-  it("should not mutate the original haystack", () => {
-    const originalHaystack = [{ name: "apple" }, { name: "banana" }];
-    const haystackCopy = [...originalHaystack];
-
-    fuzzySearch(originalHaystack, ["name"], "app");
-
-    expect(originalHaystack).toStrictEqual(haystackCopy);
-  });
-
-  it("should only match meaningful subsequences, not weak character overlaps", () => {
-    const haystack = [
-      { value: "refactor" },
-      { value: "ci" },
-      { value: "docs" },
-      { value: "chore" },
-      { value: "actor" },
+  it("should return false for all options when no matches", () => {
+    const options: Option<string>[] = [
+      { label: "apple", value: "apple" },
+      { label: "banana", value: "banana" },
     ];
+    const filter = createFuzzyFilter(options);
 
-    const result = fuzzySearch(haystack, ["value"], "actor");
-
-    expect(result).toHaveLength(2);
-    expect(result).toContainEqual({ value: "actor" });
-    expect(result).toContainEqual({ value: "refactor" });
-
-    expect(result[0]).toStrictEqual({ value: "actor" });
-    expect(result[1]).toStrictEqual({ value: "refactor" });
+    expect(filter("xyz123", options[0])).toBe(false);
+    expect(filter("xyz123", options[1])).toBe(false);
   });
 
-  it("should handle null or undefined values in search keys", () => {
-    const haystack = [
-      { email: null as unknown as string, name: "john" },
-      { email: "test@example.com", name: null as unknown as string },
-      { email: "jane@example.com", name: "jane" },
+  it("should cache results for the same needle", () => {
+    const options: Option<string>[] = [
+      { label: "apple", value: "apple" },
+      { label: "banana", value: "banana" },
     ];
+    const filter = createFuzzyFilter(options);
 
-    const result = fuzzySearch(haystack, ["name", "email"], "john");
+    const result1 = filter("app", options[0]);
+    const result2 = filter("app", options[0]);
 
-    expect(result).toContainEqual({ email: null, name: "john" });
+    expect(result1).toBe(result2);
   });
 
-  it("should handle undefined values gracefully", () => {
-    const haystack = [
-      { email: undefined as unknown as string, name: "test" },
-      { email: "email@test.com", name: "other" },
+  it("should handle options without labels (uses value as string)", () => {
+    const options: Option<string>[] = [{ value: "apple" }, { value: "banana" }];
+    const filter = createFuzzyFilter(options);
+
+    expect(filter("app", options[0])).toBe(true);
+    expect(filter("app", options[1])).toBe(false);
+  });
+
+  it("should handle special characters in search", () => {
+    const options: Option<string>[] = [
+      { label: "café", value: "cafe" },
+      { label: "naïve", value: "naive" },
     ];
+    const filter = createFuzzyFilter(options);
 
-    const result = fuzzySearch(haystack, ["name", "email"], "test");
-
-    expect(result.length).toBeGreaterThan(0);
+    expect(filter("cafe", options[0])).toBe(true);
   });
 
-  it("should handle non-string searchable values", () => {
-    const haystack = [
-      { id: 123, name: "item1" },
-      { id: 456, name: "item2" },
-      { id: null as unknown as string, name: "item3" },
+  it("should handle empty options array", () => {
+    const options: Option<string>[] = [];
+    const filter = createFuzzyFilter(options);
+
+    expect(filter("test", { label: "test", value: "test" })).toBe(false);
+  });
+
+  it("should handle options with undefined hints", () => {
+    const options: Option<string>[] = [
+      { label: "feat", value: "feat" },
+      { hint: "fix bugs", label: "fix", value: "fix" },
     ];
+    const filter = createFuzzyFilter(options);
 
-    const result = fuzzySearch(haystack, ["id", "name"], "123");
-
-    expect(result).toContainEqual({ id: 123, name: "item1" });
-  });
-
-  it("should handle search with only special characters", () => {
-    const haystack = [
-      { name: "test@example.com" },
-      { name: "user#123" },
-      { name: "item-1" },
-    ];
-
-    const result = fuzzySearch(haystack, ["name"], "@#$");
-
-    // Should either return empty or handle gracefully
-    expect(Array.isArray(result)).toBe(true);
-  });
-
-  it("should handle very long search terms", () => {
-    const haystack = [{ name: "short" }, { name: "medium length text" }];
-
-    const result = fuzzySearch(
-      haystack,
-      ["name"],
-      "this is a very long search term that exceeds reasonable length",
-    );
-
-    expect(Array.isArray(result)).toBe(true);
-  });
-
-  it("should handle edge case where search returns partial results", () => {
-    const haystack = [{ name: "test" }];
-
-    // Test with search terms that might cause uFuzzy to return unexpected results
-    const result = fuzzySearch(haystack, ["name"], "zzz");
-
-    expect(result).toStrictEqual([]);
-  });
-
-  it("should handle edge case where search term is '*'", () => {
-    const haystack = [{ name: "*" }];
-
-    const result = fuzzySearch(haystack, ["name"], "*");
-
-    expect(result).toStrictEqual([{ name: "*" }]);
+    expect(filter("bug", options[1])).toBe(true);
+    expect(filter("bug", options[0])).toBe(false);
   });
 });

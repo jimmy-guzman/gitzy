@@ -1,20 +1,29 @@
-import { styleText } from "node:util";
+import { confirm, text } from "@clack/prompts";
 
 import type { CreatedPromptOptions } from "@/cli/types";
 
-export const breaking = (options: CreatedPromptOptions) => {
-  if (options.config.breakingChangeFormat === "!") {
-    return {
-      message: "Is this a breaking change?",
-      name: "breaking",
-      type: "confirm" as const,
-    };
-  }
+export const breaking = ({
+  autofill,
+  config,
+  initial,
+}: CreatedPromptOptions) => {
+  return () => {
+    if (autofill?.breaking !== undefined) {
+      return Promise.resolve(autofill.breaking);
+    }
 
-  return {
-    hint: styleText("dim", "...skip when none"),
-    message: `${styleText("bold", "Add any breaking changes")}\n  ${styleText("red", "BREAKING CHANGE:")}`,
-    name: "breaking",
-    type: "text" as const,
+    if (config.breaking.format === "!") {
+      return confirm({
+        initialValue: initial?.breaking ? Boolean(initial.breaking) : false,
+        message: "Is this a breaking change?",
+      });
+    }
+
+    return text({
+      initialValue:
+        typeof initial?.breaking === "string" ? initial.breaking : undefined,
+      message: "Add any breaking changes",
+      placeholder: "skip when none",
+    });
   };
 };
