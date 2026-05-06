@@ -1,3 +1,10 @@
+## [7.0.3](https://github.com/jimmy-guzman/gitzy/compare/v7.0.2...v7.0.3) (2026-05-06)
+
+
+### Bug Fixes
+
+* **cli:** 🐛 respect commitlint scopes ([#665](https://github.com/jimmy-guzman/gitzy/issues/665)) ([ca0d0c1](https://github.com/jimmy-guzman/gitzy/commit/ca0d0c1db95982ed786e59a2813bdf2c895f26b1))
+
 ## [7.0.2](https://github.com/jimmy-guzman/gitzy/compare/v7.0.1...v7.0.2) (2026-05-06)
 
 
