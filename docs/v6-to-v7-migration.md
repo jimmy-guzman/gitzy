@@ -78,15 +78,7 @@ config file, you'll need to update it.
   "issues": {
     "prefix": "closes"
   },
-  "prompts": [
-    "type",
-    "scope",
-    "subject",
-    "body",
-    "breaking",
-    "issues",
-    "coAuthors"
-  ],
+  "prompts": ["type", "scope", "subject", "body", "breaking", "issues"],
   "types": ["feat", "fix", "chore"],
   "scopes": ["api", "cli"]
 }
