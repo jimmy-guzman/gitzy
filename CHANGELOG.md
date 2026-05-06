@@ -1,3 +1,10 @@
+## [7.0.4](https://github.com/jimmy-guzman/gitzy/compare/v7.0.3...v7.0.4) (2026-05-06)
+
+
+### Bug Fixes
+
+* **cli:** 🐛 merge commitlint & gitzy types/scopes ([#666](https://github.com/jimmy-guzman/gitzy/issues/666)) ([234ecd5](https://github.com/jimmy-guzman/gitzy/commit/234ecd5d93105fe6e5f5d84f6c92a25dd0657299))
+
 ## [7.0.3](https://github.com/jimmy-guzman/gitzy/compare/v7.0.2...v7.0.3) (2026-05-06)
 
 
