@@ -7,7 +7,6 @@ export interface BranchConfig {
   checkout: boolean;
   max: number;
   pattern: string;
-  separator: string;
 }
 
 export interface BreakingConfig {

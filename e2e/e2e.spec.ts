@@ -286,7 +286,7 @@ describe("gitzy", () => {
 
       const result = await runBranch("--stdin", stdin);
 
-      expect(result).toMatchInlineSnapshot(`"feat/ui/add/dark/mode"`);
+      expect(result).toMatchInlineSnapshot(`"feat/ui/add-dark-mode"`);
     });
 
     it("should format a branch name with type and subject only", async () => {
@@ -298,7 +298,7 @@ describe("gitzy", () => {
 
       const result = await runBranch("--stdin", stdin);
 
-      expect(result).toMatchInlineSnapshot(`"fix/fix/login/bug"`);
+      expect(result).toMatchInlineSnapshot(`"fix/fix-login-bug"`);
     });
 
     it("should include issue reference in branch name", async () => {
@@ -310,7 +310,7 @@ describe("gitzy", () => {
 
       const result = await runBranch("--stdin", stdin);
 
-      expect(result).toMatchInlineSnapshot(`"feat/PROJ-123-add/feature"`);
+      expect(result).toMatchInlineSnapshot(`"feat/PROJ-123-add-feature"`);
     });
 
     it("should format a branch name with --from flag", async () => {
@@ -318,19 +318,19 @@ describe("gitzy", () => {
 
       const result = await runBranch("--stdin --from main", stdin);
 
-      expect(result).toMatchInlineSnapshot(`"feat/add/dark/mode"`);
+      expect(result).toMatchInlineSnapshot(`"feat/add-dark-mode"`);
     });
 
     it("should skip prompts when --type and --subject are provided as flags", async () => {
       const result = await runBranch("--type feat -m add-dark-mode");
 
-      expect(result).toMatchInlineSnapshot(`"feat/add/dark/mode"`);
+      expect(result).toMatchInlineSnapshot(`"feat/add-dark-mode"`);
     });
 
     it("should skip prompts and include scope when --type, --scope, and --subject are provided", async () => {
       const result = await runBranch("--type feat --scope ui -m add-dark-mode");
 
-      expect(result).toMatchInlineSnapshot(`"feat/ui/add/dark/mode"`);
+      expect(result).toMatchInlineSnapshot(`"feat/ui/add-dark-mode"`);
     });
   });
 });
