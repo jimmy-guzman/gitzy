@@ -1,3 +1,10 @@
+## [7.0.2](https://github.com/jimmy-guzman/gitzy/compare/v7.0.1...v7.0.2) (2026-05-06)
+
+
+### Bug Fixes
+
+* 🐛 remove co author prompt from defaults ([#664](https://github.com/jimmy-guzman/gitzy/issues/664)) ([83e3e45](https://github.com/jimmy-guzman/gitzy/commit/83e3e4592528cbd7cc3b59de5c1c9fe74bd397e6))
+
 ## [7.0.1](https://github.com/jimmy-guzman/gitzy/compare/v7.0.0...v7.0.1) (2026-05-06)
 
 
