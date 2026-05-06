@@ -2,6 +2,8 @@ import { text } from "@clack/prompts";
 
 import type { Answers, CreatedPromptOptions } from "@/cli/types";
 
+import { pluralize } from "./utils/pluralize";
+
 const EMOJI_LENGTH = 3;
 
 export const leadingLabel = (answers?: Partial<Answers>) => {
@@ -11,33 +13,42 @@ export const leadingLabel = (answers?: Partial<Answers>) => {
   return answers?.type ? `${answers.type}${scope}: ` : "";
 };
 
+const resolveEmojiEnabled = (
+  flags: CreatedPromptOptions["flags"],
+  configEnabled: boolean,
+) => {
+  if (flags.noEmoji === true || process.env.GITZY_NO_EMOJI === "1") {
+    return false;
+  }
+
+  return flags.emoji ?? configEnabled;
+};
+
 export const subject = ({
   autofill,
   config: {
     emoji: { enabled: configEmojiEnabled },
-    header: { max: headerMaxLength, min: headerMinLength },
+    header: { max, min },
   },
   flags,
   initial,
 }: CreatedPromptOptions) => {
-  const emojiEnabled =
-    flags.noEmoji === true || process.env.GITZY_NO_EMOJI === "1"
-      ? false
-      : (flags.emoji ?? configEmojiEnabled);
+  const emojiEnabled = resolveEmojiEnabled(flags, configEmojiEnabled);
   const emojiLength = emojiEnabled ? EMOJI_LENGTH : 0;
 
   return (context?: { results: Partial<Answers> }) => {
     const validate = (value = "") => {
       const label = leadingLabel(context?.results);
-      const isOverMaxLength =
-        value.length + label.length + emojiLength > headerMaxLength;
 
-      if (value.length < headerMinLength) {
-        return `The subject must have at least ${headerMinLength} characters`;
+      if (value.length < min) {
+        return `Add ${pluralize(min - value.length, "more character")} (minimum ${min})`;
       }
 
-      if (isOverMaxLength) {
-        return `The subject must not exceed ${headerMaxLength} characters`;
+      const remaining = max - label.length - emojiLength;
+      const overBy = value.length - remaining;
+
+      if (overBy > 0) {
+        return `Remove ${pluralize(overBy, "character")} (${remaining} available)`;
       }
 
       return undefined;
@@ -52,7 +63,7 @@ export const subject = ({
     return text({
       initialValue: initial?.subject,
       message: "Add a short description",
-      placeholder: `${headerMinLength}-${headerMaxLength} characters`,
+      placeholder: `${min}-${max} characters`,
       validate: (value = "") => validate(value.trim()),
     });
   };

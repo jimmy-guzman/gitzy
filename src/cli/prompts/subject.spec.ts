@@ -91,20 +91,35 @@ describe("subject", () => {
   });
 
   describe("validate", () => {
-    it("should return min error message when the length is not valid", async () => {
+    it("should return actionable min error with characters needed", async () => {
       const validate = await getValidate();
 
-      expect(validate("#".repeat(2))).toBe(
-        "The subject must have at least 5 characters",
-      );
+      expect(validate("#".repeat(2))).toBe("Add 3 more characters (minimum 5)");
     });
 
-    it("should return max error message when the length is not valid", async () => {
+    it("should singularize when one character is needed", async () => {
+      const validate = await getValidate();
+
+      expect(validate("#".repeat(4))).toBe("Add 1 more character (minimum 5)");
+    });
+
+    it("should return actionable max error with characters to remove and remaining budget", async () => {
       const validate = await getValidate({}, { scope: "*", type: "fix" });
 
+      // leadingLabel("fix(*): ") = 8 chars, emoji = 3, max = 50
+      // remaining = 50 - 8 - 3 = 39, input = 54, overBy = 15
       const input = "testing the short description character counter!!!!!!!";
 
-      expect(validate(input)).toBe("The subject must not exceed 50 characters");
+      expect(validate(input)).toBe("Remove 15 characters (39 available)");
+    });
+
+    it("should singularize when one character is over", async () => {
+      const validate = await getValidate({}, { scope: "*", type: "feat" });
+
+      // remaining = 50 - 9 - 3 = 38, input = 39, overBy = 1
+      expect(validate("#".repeat(39))).toBe(
+        "Remove 1 character (38 available)",
+      );
     });
 
     it("should return undefined when the length is valid", async () => {
@@ -126,10 +141,10 @@ describe("subject", () => {
       );
 
       // leadingLabel("feat(*): ") = 9 chars, emoji = 3, max = 50
-      // max input = 50 - 9 - 3 = 38
+      // remaining = 50 - 9 - 3 = 38
       expect(validate("#".repeat(38))).toBeUndefined();
       expect(validate("#".repeat(39))).toBe(
-        "The subject must not exceed 50 characters",
+        "Remove 1 character (38 available)",
       );
     });
 
