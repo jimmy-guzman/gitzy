@@ -2,10 +2,12 @@ import { multiline } from "@clack/prompts";
 
 import type { CreatedPromptOptions } from "@/cli/types";
 
+import { pluralize } from "./utils/pluralize";
+
 export const body = ({
   autofill,
   config: {
-    body: { max: bodyMaxLength, min: bodyMinLength },
+    body: { max, min },
   },
   initial,
 }: CreatedPromptOptions) => {
@@ -19,12 +21,12 @@ export const body = ({
       validate: (value) => {
         const trimmedLength = (value ?? "").trim().length;
 
-        if (trimmedLength > 0 && trimmedLength < bodyMinLength) {
-          return `The body must have at least ${bodyMinLength} characters`;
+        if (trimmedLength > 0 && trimmedLength < min) {
+          return `Add ${pluralize(min - trimmedLength, "more character")} (minimum ${min})`;
         }
 
-        if (trimmedLength > bodyMaxLength) {
-          return `The body must not exceed ${bodyMaxLength} characters`;
+        if (trimmedLength > max) {
+          return `Remove ${pluralize(trimmedLength - max, "character")} (${max} available)`;
         }
 
         return undefined;

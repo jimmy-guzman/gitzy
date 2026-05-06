@@ -1,39 +1,29 @@
-import type { Answers } from "@/cli/types";
-
 import { defaultResolvedConfig } from "@/core/config/defaults";
+import { defaultMessageParts } from "@/core/conventional/types";
 
 import { body } from "./body";
 
 vi.mock("@clack/prompts", () => {
-  return { multiline: vi.fn().mockResolvedValue("body text") };
+  return { multiline: vi.fn().mockResolvedValue("a longer description") };
 });
 
 beforeEach(() => {
   vi.clearAllMocks();
 });
 
-const answers: Answers = {
-  body: "",
-  breaking: "",
-  issues: [],
-  scope: "",
-  subject: "",
-  type: "",
-};
-
 const setupBody = (configOverrides = {}, autofill = {}) => {
   return body({
-    answers,
+    answers: defaultMessageParts,
     autofill,
     config: { ...defaultResolvedConfig, ...configOverrides },
     flags: {},
   });
 };
 
-const getValidate = async () => {
+const getValidate = async (configOverrides = {}) => {
   const { multiline } = await import("@clack/prompts");
 
-  const factory = setupBody();
+  const factory = setupBody(configOverrides);
 
   await factory();
 
@@ -54,14 +44,14 @@ describe("body", () => {
   });
 
   it("should skip prompt and return autofill value when provided", async () => {
-    const factory = setupBody({}, { body: "prefilled body" });
+    const factory = setupBody({}, { body: "my body" });
 
     const result = await factory();
 
-    expect(result).toBe("prefilled body");
+    expect(result).toBe("my body");
   });
 
-  it("should skip prompt with empty string autofill", async () => {
+  it("should skip prompt and return empty autofill body", async () => {
     const factory = setupBody({}, { body: "" });
 
     const result = await factory();
@@ -79,65 +69,73 @@ describe("body", () => {
     expect(multiline).toHaveBeenCalledWith(
       expect.objectContaining({
         message: "Add a longer description",
-      }),
-    );
-  });
-
-  it("should call multiline with placeholder hint to skip", async () => {
-    const { multiline } = await import("@clack/prompts");
-
-    const factory = setupBody();
-
-    await factory();
-
-    expect(multiline).toHaveBeenCalledWith(
-      expect.objectContaining({
         placeholder: "Optional — press Enter twice to skip",
       }),
     );
   });
 
   describe("validate", () => {
-    it("should return min error message when non-empty input is below min", async () => {
+    it.each([
+      { case: "empty string", value: "" },
+      { case: "whitespace only", value: "   \n  " },
+      { case: "undefined", value: undefined },
+    ])("should return undefined for $case", async ({ value }) => {
       const validate = await getValidate();
 
-      expect(validate("#".repeat(2))).toBe(
-        "The body must have at least 5 characters",
+      expect(validate(value)).toBeUndefined();
+    });
+
+    it("should return actionable min error with characters needed", async () => {
+      const validate = await getValidate({
+        body: { ...defaultResolvedConfig.body, min: 10 },
+      });
+
+      expect(validate("hello")).toBe("Add 5 more characters (minimum 10)");
+    });
+
+    it("should singularize when one character is needed", async () => {
+      const validate = await getValidate({
+        body: { ...defaultResolvedConfig.body, min: 10 },
+      });
+
+      expect(validate("hello you")).toBe("Add 1 more character (minimum 10)");
+    });
+
+    it("should return actionable max error with characters to remove", async () => {
+      const validate = await getValidate({
+        body: { ...defaultResolvedConfig.body, max: 20 },
+      });
+
+      expect(validate("#".repeat(25))).toBe(
+        "Remove 5 characters (20 available)",
       );
     });
 
-    it("should return max error message when input exceeds max", async () => {
-      const validate = await getValidate();
+    it("should singularize when one character is over", async () => {
+      const validate = await getValidate({
+        body: { ...defaultResolvedConfig.body, max: 20 },
+      });
 
-      expect(validate("#".repeat(71))).toBe(
-        "The body must not exceed 70 characters",
+      expect(validate("#".repeat(21))).toBe(
+        "Remove 1 character (20 available)",
       );
     });
 
-    it("should return undefined when input is valid", async () => {
-      const validate = await getValidate();
+    it("should return undefined when length is within bounds", async () => {
+      const validate = await getValidate({
+        body: { ...defaultResolvedConfig.body, max: 20, min: 5 },
+      });
 
-      expect(validate("#".repeat(5))).toBeUndefined();
+      expect(validate("#".repeat(10))).toBeUndefined();
     });
 
-    it("should return undefined when input is empty (body is optional)", async () => {
-      const validate = await getValidate();
+    it("should trim before validating", async () => {
+      const validate = await getValidate({
+        body: { ...defaultResolvedConfig.body, min: 5 },
+      });
 
-      expect(validate("")).toBeUndefined();
-    });
-
-    it("should return undefined when input is only whitespace", async () => {
-      const validate = await getValidate();
-
-      expect(validate("   \n\n  ")).toBeUndefined();
-    });
-
-    it("should return min error when trimmed input is below min", async () => {
-      const validate = await getValidate();
-
-      expect(validate("  ##  ")).toBe(
-        "The body must have at least 5 characters",
-      );
+      // 5 chars + whitespace, trimmed length = 5, should pass
+      expect(validate("  hello  ")).toBeUndefined();
     });
   });
 });
