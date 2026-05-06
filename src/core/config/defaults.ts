@@ -81,7 +81,6 @@ export const defaultBranchConfig: BranchConfig = {
   checkout: true,
   max: 72,
   pattern: "{type}/{scope}/{issue}-{subject}",
-  separator: "/",
 };
 
 export const defaultResolvedConfig: ResolvedConfig = {

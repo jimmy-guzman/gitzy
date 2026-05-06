@@ -48,7 +48,6 @@ export const ConfigSchema = object({
       checkout: optional(boolean(), defaultBranchConfig.checkout),
       max: optional(number(), defaultBranchConfig.max),
       pattern: optional(string(), defaultBranchConfig.pattern),
-      separator: optional(string(), defaultBranchConfig.separator),
     }),
   ),
   breaking: optional(

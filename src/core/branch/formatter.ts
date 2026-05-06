@@ -8,20 +8,17 @@ import type { BranchConfig } from "@/core/config/types";
 import type { BranchParts } from "./types";
 
 /**
- * Slugify a string segment using the given separator
- * Lowercases, replaces non-alphanumeric chars (except dash/dot) with the separator,
- * and collapses consecutive separators
+ * Slugify a string segment for use in branch names
+ * Lowercases, replaces non-alphanumeric chars (except dash/dot) with a dash,
+ * and collapses consecutive dashes
  */
-export const slugify = (value: string, separator = "-") => {
-  const sep = separator || "-";
-  const escapedSep = sep.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
-
+export const slugify = (value: string) => {
   return value
     .toLowerCase()
     .trim()
-    .replaceAll(/[^a-z0-9.]+/g, sep)
-    .replaceAll(new RegExp(`${escapedSep}+`, "g"), sep)
-    .replaceAll(new RegExp(`^${escapedSep}|${escapedSep}$`, "g"), "");
+    .replaceAll(/[^a-z0-9.]+/g, "-")
+    .replaceAll(/-+/g, "-")
+    .replaceAll(/^-|-$/g, "");
 };
 
 /**
@@ -62,17 +59,14 @@ const applyPattern = (
  *
  * @returns Formatted branch name, truncated to config.max characters
  */
-export const formatBranchName = (
-  parts: BranchParts,
-  config: BranchConfig,
-): string => {
-  const { max, pattern, separator } = config;
+export const formatBranchName = (parts: BranchParts, config: BranchConfig) => {
+  const { max, pattern } = config;
 
   const tokens: Record<string, string> = {
     issue: parts.issue?.trim() ?? "",
-    scope: parts.scope ? slugify(parts.scope, separator) : "",
-    subject: slugify(parts.subject, separator),
-    type: slugify(parts.type, separator),
+    scope: parts.scope ? slugify(parts.scope) : "",
+    subject: slugify(parts.subject),
+    type: slugify(parts.type),
   };
 
   const formatted = applyPattern(pattern, tokens);

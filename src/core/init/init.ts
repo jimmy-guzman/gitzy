@@ -13,7 +13,6 @@ const CONFIG_TEMPLATE = `${JSON.stringify(
       checkout: true,
       max: 72,
       pattern: "{type}/{scope}/{issue}-{subject}",
-      separator: "/",
     },
     breaking: {
       format: "footer",
