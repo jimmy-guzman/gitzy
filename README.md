@@ -222,7 +222,7 @@ header: {
 
 ### `body`
 
-Controls the commit body length validation.
+Controls the commit body length validation. The body prompt is optional — press **Enter** twice (submit an empty line) to skip it.
 
 ```js
 body: {

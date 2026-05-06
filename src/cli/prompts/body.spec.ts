@@ -83,6 +83,20 @@ describe("body", () => {
     );
   });
 
+  it("should call multiline with placeholder hint to skip", async () => {
+    const { multiline } = await import("@clack/prompts");
+
+    const factory = setupBody();
+
+    await factory();
+
+    expect(multiline).toHaveBeenCalledWith(
+      expect.objectContaining({
+        placeholder: "Optional — press Enter twice to skip",
+      }),
+    );
+  });
+
   describe("validate", () => {
     it("should return min error message when non-empty input is below min", async () => {
       const validate = await getValidate();

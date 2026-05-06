@@ -15,6 +15,7 @@ export const body = ({
     return multiline({
       initialValue: initial?.body,
       message: "Add a longer description",
+      placeholder: "Optional — press Enter twice to skip",
       validate: (value) => {
         const trimmedLength = (value ?? "").trim().length;
 
