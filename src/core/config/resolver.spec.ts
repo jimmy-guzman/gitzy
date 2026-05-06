@@ -81,6 +81,7 @@ describe("resolveConfig", () => {
 
       expect(result.scopes).toStrictEqual([
         { description: "dependency updates", name: "deps" },
+        { name: "build" },
       ]);
     });
 
@@ -141,7 +142,12 @@ describe("resolveConfig", () => {
 
       expect(result.header.max).toBe(50);
       expect(result.scopes.map((s) => s.name)).toStrictEqual(["ui"]);
-      expect(result.types.map((t) => t.name)).toStrictEqual(["feat", "fix"]);
+      expect(result.types.map((t) => t.name)).toStrictEqual([
+        "feat",
+        "fix",
+        "feature",
+        "bugfix",
+      ]);
     });
 
     it("should use commitlint scopes when gitzy config exists but does not define scopes", async () => {
@@ -256,6 +262,132 @@ describe("resolveConfig", () => {
 
       expect(result.header.max).toBe(100);
       expect(result.header.min).toBe(5);
+    });
+  });
+
+  describe("scope and type union merging", () => {
+    it("should union-merge scopes — gitzy order first, commitlint extras appended", async () => {
+      const gitzyConfig = {
+        scopes: [{ description: "Purchase Plan", name: "pp" }],
+      };
+      const commitlintConfig = {
+        rules: {
+          "scope-enum": [2, "always", ["deps", "home", "pp", "alerts"]],
+        },
+      };
+
+      vi.mocked(loadConfig)
+        .mockResolvedValueOnce(gitzyConfig)
+        .mockResolvedValueOnce(commitlintConfig);
+
+      const result = await resolveConfig();
+
+      expect(result.scopes).toStrictEqual([
+        { description: "Purchase Plan", name: "pp" },
+        { name: "deps" },
+        { name: "home" },
+        { name: "alerts" },
+      ]);
+    });
+
+    it("should keep gitzy scope description when name matches commitlint entry", async () => {
+      const gitzyConfig = {
+        scopes: [{ description: "Purchase Plan", name: "pp" }],
+      };
+      const commitlintConfig = {
+        rules: {
+          "scope-enum": [2, "always", ["pp"]],
+        },
+      };
+
+      vi.mocked(loadConfig)
+        .mockResolvedValueOnce(gitzyConfig)
+        .mockResolvedValueOnce(commitlintConfig);
+
+      const result = await resolveConfig();
+
+      expect(result.scopes).toStrictEqual([
+        { description: "Purchase Plan", name: "pp" },
+      ]);
+    });
+
+    it("should append commitlint scopes not present in gitzy", async () => {
+      const gitzyConfig = {
+        scopes: [{ name: "build" }],
+      };
+      const commitlintConfig = {
+        rules: {
+          "scope-enum": [2, "always", ["api", "ui"]],
+        },
+      };
+
+      vi.mocked(loadConfig)
+        .mockResolvedValueOnce(gitzyConfig)
+        .mockResolvedValueOnce(commitlintConfig);
+
+      const result = await resolveConfig();
+
+      expect(result.scopes.map((s) => s.name)).toStrictEqual([
+        "build",
+        "api",
+        "ui",
+      ]);
+    });
+
+    it("should union-merge types — gitzy order first, commitlint extras appended", async () => {
+      const gitzyConfig = {
+        types: ["feat", "fix"],
+      };
+      const commitlintConfig = {
+        rules: {
+          "type-enum": [2, "always", ["feat", "perf", "fix", "chore"]],
+        },
+      };
+
+      vi.mocked(loadConfig)
+        .mockResolvedValueOnce(gitzyConfig)
+        .mockResolvedValueOnce(commitlintConfig);
+
+      const result = await resolveConfig();
+
+      expect(result.types.map((t) => t.name)).toStrictEqual([
+        "feat",
+        "fix",
+        "perf",
+        "chore",
+      ]);
+    });
+
+    it("should keep gitzy type entry when name matches commitlint entry", async () => {
+      const gitzyConfig = {
+        types: [{ description: "New feature", emoji: "✨", name: "feat" }],
+      };
+      const commitlintConfig = {
+        rules: {
+          "type-enum": [2, "always", ["feat", "fix"]],
+        },
+      };
+
+      vi.mocked(loadConfig)
+        .mockResolvedValueOnce(gitzyConfig)
+        .mockResolvedValueOnce(commitlintConfig);
+
+      const result = await resolveConfig();
+
+      expect(result.types).toStrictEqual([
+        { description: "New feature", emoji: "✨", name: "feat" },
+        { description: "Fix a bug", emoji: "🐛", name: "fix" },
+      ]);
+    });
+
+    it("should return undefined scopes when neither gitzy nor commitlint defines them", async () => {
+      vi.mocked(loadConfig)
+        .mockResolvedValueOnce({})
+        .mockResolvedValueOnce({ rules: {} });
+
+      const result = await resolveConfig();
+
+      expect(result.scopes).toStrictEqual([]);
     });
   });
 

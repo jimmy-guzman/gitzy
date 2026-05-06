@@ -5,18 +5,32 @@
  * Merge semantics — gitzy config takes precedence over commitlint:
  * - Nested sections (branch, breaking, emoji, header, issues) are shallow-merged
  *   key-by-key so gitzy values win on a per-key basis.
- * - `types` and `scopes` are replaced wholesale: if the gitzy config defines
- *   either array it is used as-is and the commitlint value is discarded.
- *   To inherit commitlint types/scopes, omit them from the gitzy config.
+ * - `types` and `scopes` are union-merged by name: gitzy entries appear first (in
+ *   gitzy order), with gitzy winning for any name that appears in both. Commitlint
+ *   entries whose names are not present in gitzy are appended at the end.
  */
 
-import type { Config } from "./types";
+import type { Config, ScopeEntry, TypeEntry } from "./types";
 
 import { extractCommitlintRules } from "./commitlint";
 import { CommitlintConfigSchema } from "./commitlint-schema";
 import { loadConfig } from "./loader";
 import { normalizeConfig } from "./normalizer";
 import { ConfigSchema } from "./schema";
+
+const toName = (entry: ScopeEntry | string | TypeEntry) => {
+  return typeof entry === "string" ? entry : entry.name;
+};
+
+const mergeByName = <T extends ScopeEntry | string | TypeEntry>(
+  gitzy: readonly T[],
+  commitlint: readonly T[],
+): readonly T[] => {
+  const gitzyNames = new Set(gitzy.map(toName));
+  const extras = commitlint.filter((e) => !gitzyNames.has(toName(e)));
+
+  return [...gitzy, ...extras];
+};
 
 const mergeConfigs = (base: Config | null, overrides: Config): Config => {
   if (!base) return overrides;
@@ -47,6 +61,14 @@ const mergeConfigs = (base: Config | null, overrides: Config): Config => {
     issues:
       (base.issues ?? overrides.issues)
         ? { ...base.issues, ...overrides.issues }
+        : undefined,
+    scopes:
+      (base.scopes ?? overrides.scopes)
+        ? mergeByName(overrides.scopes ?? [], base.scopes ?? [])
+        : undefined,
+    types:
+      (base.types ?? overrides.types)
+        ? mergeByName(overrides.types ?? [], base.types ?? [])
         : undefined,
   };
 };
