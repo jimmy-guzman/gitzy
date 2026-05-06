@@ -54,6 +54,28 @@ describe("scope", () => {
     );
   });
 
+  it("should pass description as hint in autocomplete options", async () => {
+    const { autocomplete } = await import("@clack/prompts");
+
+    const factory = setupScope({
+      scopes: [
+        { description: "dependency updates", name: "deps" },
+        { name: "build" },
+      ],
+    });
+
+    await factory();
+
+    expect(autocomplete).toHaveBeenCalledWith(
+      expect.objectContaining({
+        options: [
+          { hint: "dependency updates", label: "deps", value: "deps" },
+          { hint: undefined, label: "build", value: "build" },
+        ],
+      }),
+    );
+  });
+
   it("should pass initialValue from amend initial", async () => {
     const { autocomplete } = await import("@clack/prompts");
 

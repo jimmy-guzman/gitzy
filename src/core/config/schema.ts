@@ -12,7 +12,6 @@ import {
 } from "valibot";
 
 import {
-  builtinTypes,
   defaultBodyConfig,
   defaultBranchConfig,
   defaultBreakingConfig,
@@ -82,12 +81,6 @@ export const ConfigSchema = object({
     }),
   ),
   prompts: pipe(optional(array(string()), [...defaultPrompts]), readonly()),
-  scopes: pipe(optional(array(scopeSchema), []), readonly()),
-  types: pipe(
-    optional(
-      array(typeSchema),
-      builtinTypes.map((t) => t.name),
-    ),
-    readonly(),
-  ),
+  scopes: pipe(optional(array(scopeSchema)), readonly()),
+  types: pipe(optional(array(typeSchema)), readonly()),
 });

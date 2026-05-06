@@ -42,6 +42,65 @@ describe("resolveConfig", () => {
     });
   });
 
+  describe("scope object entries with descriptions", () => {
+    it("should preserve scope descriptions defined in gitzy config", async () => {
+      const gitzyConfig = {
+        scopes: [
+          { description: "dependency updates", name: "deps" },
+          { name: "build" },
+        ],
+      };
+
+      vi.mocked(loadConfig)
+        .mockResolvedValueOnce(gitzyConfig)
+        .mockResolvedValueOnce(null);
+
+      const result = await resolveConfig();
+
+      expect(result.scopes).toStrictEqual([
+        { description: "dependency updates", name: "deps" },
+        { name: "build" },
+      ]);
+    });
+
+    it("should prefer gitzy scopes with descriptions over commitlint string scopes", async () => {
+      const gitzyConfig = {
+        scopes: [{ description: "dependency updates", name: "deps" }],
+      };
+      const commitlintConfig = {
+        rules: {
+          "scope-enum": [2, "always", ["deps", "build"]],
+        },
+      };
+
+      vi.mocked(loadConfig)
+        .mockResolvedValueOnce(gitzyConfig)
+        .mockResolvedValueOnce(commitlintConfig);
+
+      const result = await resolveConfig();
+
+      expect(result.scopes).toStrictEqual([
+        { description: "dependency updates", name: "deps" },
+      ]);
+    });
+
+    it("should normalize commitlint string scopes to ScopeEntry objects", async () => {
+      const commitlintConfig = {
+        rules: {
+          "scope-enum": [2, "always", ["api", "ui"]],
+        },
+      };
+
+      vi.mocked(loadConfig)
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(commitlintConfig);
+
+      const result = await resolveConfig();
+
+      expect(result.scopes).toStrictEqual([{ name: "api" }, { name: "ui" }]);
+    });
+  });
+
   describe("commitlint auto-detection", () => {
     it("should always attempt to load commitlint config", async () => {
       vi.mocked(loadConfig).mockResolvedValue(null);
@@ -82,6 +141,40 @@ describe("resolveConfig", () => {
 
       expect(result.header.max).toBe(50);
       expect(result.scopes.map((s) => s.name)).toStrictEqual(["ui"]);
+      expect(result.types.map((t) => t.name)).toStrictEqual(["feat", "fix"]);
+    });
+
+    it("should use commitlint scopes when gitzy config exists but does not define scopes", async () => {
+      const gitzyConfig = { header: { max: 50 } };
+      const commitlintConfig = {
+        rules: {
+          "scope-enum": [2, "always", ["api", "ui"]],
+        },
+      };
+
+      vi.mocked(loadConfig)
+        .mockResolvedValueOnce(gitzyConfig)
+        .mockResolvedValueOnce(commitlintConfig);
+
+      const result = await resolveConfig();
+
+      expect(result.scopes.map((s) => s.name)).toStrictEqual(["api", "ui"]);
+    });
+
+    it("should use commitlint types when gitzy config exists but does not define types", async () => {
+      const gitzyConfig = { header: { max: 50 } };
+      const commitlintConfig = {
+        rules: {
+          "type-enum": [2, "always", ["feat", "fix"]],
+        },
+      };
+
+      vi.mocked(loadConfig)
+        .mockResolvedValueOnce(gitzyConfig)
+        .mockResolvedValueOnce(commitlintConfig);
+
+      const result = await resolveConfig();
+
       expect(result.types.map((t) => t.name)).toStrictEqual(["feat", "fix"]);
     });
 
