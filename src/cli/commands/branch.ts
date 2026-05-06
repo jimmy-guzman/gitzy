@@ -64,16 +64,18 @@ const promptBranchQuestions = async (
     };
   });
 
+  /* eslint-disable perfectionist/sort-objects -- insertion order controls prompt sequence */
   const result = await group(
     {
-      issue: () => {
-        if (autofill.issue !== undefined)
-          return Promise.resolve(autofill.issue);
+      type: () => {
+        if (autofill.type !== undefined) return Promise.resolve(autofill.type);
 
-        return text({
-          initialValue: amendInitial?.issue,
-          message: "Add an issue reference",
-          placeholder: "skip when none",
+        return autocomplete({
+          filter: createFuzzyFilter(typeOptions),
+          initialValue: amendInitial?.type,
+          maxItems: 10,
+          message: "Choose the type",
+          options: typeOptions,
         });
       },
       scope: () => {
@@ -106,18 +108,18 @@ const promptBranchQuestions = async (
           },
         });
       },
-      type: () => {
-        if (autofill.type !== undefined) return Promise.resolve(autofill.type);
+      issue: () => {
+        if (autofill.issue !== undefined)
+          return Promise.resolve(autofill.issue);
 
-        return autocomplete({
-          filter: createFuzzyFilter(typeOptions),
-          initialValue: amendInitial?.type,
-          maxItems: 10,
-          message: "Choose the type",
-          options: typeOptions,
+        return text({
+          initialValue: amendInitial?.issue,
+          message: "Add an issue reference",
+          placeholder: "skip when none",
         });
       },
     },
+    /* eslint-enable perfectionist/sort-objects -- end prompt sequence block */
     {
       onCancel: () => {
         cancel("Cancelled.");
