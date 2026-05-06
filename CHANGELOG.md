@@ -1,3 +1,10 @@
+## [7.0.5](https://github.com/jimmy-guzman/gitzy/compare/v7.0.4...v7.0.5) (2026-05-06)
+
+
+### Bug Fixes
+
+* **prompts:** 🐛 add skip hint for long desc prompt ([#668](https://github.com/jimmy-guzman/gitzy/issues/668)) ([4359b5a](https://github.com/jimmy-guzman/gitzy/commit/4359b5ac5f1ae91e7e2d3b2e8b0fe67d6776a293)), closes [#667](https://github.com/jimmy-guzman/gitzy/issues/667)
+
 ## [7.0.4](https://github.com/jimmy-guzman/gitzy/compare/v7.0.3...v7.0.4) (2026-05-06)
 
 
