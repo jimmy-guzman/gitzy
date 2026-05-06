@@ -1,3 +1,15 @@
+# [7.0.0](https://github.com/jimmy-guzman/gitzy/compare/v6.5.9...v7.0.0) (2026-05-06)
+
+
+### Features
+
+* ✨ v7 CLI overhaul ([#655](https://github.com/jimmy-guzman/gitzy/issues/655)) ([68f6554](https://github.com/jimmy-guzman/gitzy/commit/68f6554796fcddcb907f3ac2948d9982da018730))
+
+
+### BREAKING CHANGES
+
+* 💥 drop Node 20 (require ^22.13.0), restructure config shape (flat keys → nested objects), remove YAML config support, remove --skip/--passthrough/--commitlint flags and most short aliases, tighten header limits (max 64→50, min 3→5)
+
 ## [6.5.9](https://github.com/jimmy-guzman/gitzy/compare/v6.5.8...v6.5.9) (2026-03-03)
 
 
