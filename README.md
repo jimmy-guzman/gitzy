@@ -194,6 +194,10 @@ scopes: [{ name: "api", description: "Public API surface" }, { name: "ui" }];
 Controls which prompts are shown and in what order.
 
 ```js
+// Default:
+prompts: ["type", "scope", "subject", "body", "breaking", "issues"];
+
+// All available prompts (add "coAuthors" to enable co-author prompt):
 prompts: [
   "type",
   "scope",

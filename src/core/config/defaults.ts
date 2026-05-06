@@ -9,6 +9,18 @@ import type {
   TypeEntry,
 } from "./types";
 
+export const availablePrompts = [
+  "body",
+  "breaking",
+  "coAuthors",
+  "issues",
+  "scope",
+  "subject",
+  "type",
+] as const;
+
+export type PromptName = (typeof availablePrompts)[number];
+
 export const defaultPrompts = [
   "type",
   "scope",
@@ -16,10 +28,7 @@ export const defaultPrompts = [
   "body",
   "breaking",
   "issues",
-  "coAuthors",
 ] as const;
-
-export type PromptName = (typeof defaultPrompts)[number];
 
 /**
  * Built-in type defaults based on https://gitmoji.dev/

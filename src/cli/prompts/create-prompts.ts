@@ -3,7 +3,7 @@ import { cancel, group, isCancel } from "@clack/prompts";
 import type { Answers, CommitFlags, GitzyState } from "@/cli/types";
 import type { PromptName } from "@/core/config/defaults";
 
-import { defaultPrompts } from "@/core/config/defaults";
+import { availablePrompts } from "@/core/config/defaults";
 
 import { body } from "./body";
 import { breaking } from "./breaking";
@@ -63,7 +63,7 @@ export const createPrompts = async (
   > = {};
 
   for (const question of config.prompts) {
-    if (!(defaultPrompts as readonly string[]).includes(question)) {
+    if (!(availablePrompts as readonly string[]).includes(question)) {
       continue;
     }
 
