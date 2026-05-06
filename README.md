@@ -40,7 +40,7 @@
 - JSON output (`--json`) for scripting and CI
 - `--no-emoji` flag (precedence: `--no-emoji` > `GITZY_NO_EMOJI` env > `emoji.enabled` config)
 - `--stdin` for piping answers as JSON (both `commit` and `branch`)
-- ⚡ [Lightweight (~300 kB install)][packagephobia]
+- ⚡ [Lightweight (~170 kB install)][packagephobia]
 
 ## Usage
 
@@ -87,7 +87,7 @@ gitzy branch --type feat -m "add dark mode" --scope ui
 | `--version`                 | `-v`  | display version number                                          |
 | `--help`                    | `-h`  | display help for command                                        |
 
-#### `--json` output shape
+#### `commit --json` output shape
 
 ```json
 {
@@ -123,7 +123,7 @@ gitzy branch --type feat -m "add dark mode" --scope ui
 | `--stdin`             |       | read answers from stdin as JSON (CLI flags take priority) |
 | `--help`              | `-h`  | display help for command                                  |
 
-#### `--json` output shape
+#### `branch --json` output shape
 
 ```json
 { "branchName": "feat/add-dark-mode", "dryRun": false }
@@ -322,7 +322,7 @@ gitzy always auto-detects a local commitlint config file and merges its rules as
 
 [actions-badge]: https://img.shields.io/github/actions/workflow/status/jimmy-guzman/gitzy/release.yml?branch=main&style=flat-square&logo=github
 [version-badge]: https://img.shields.io/npm/v/gitzy?style=flat-square&logo=npm
-[package]: https://www.npmjs.com/package/gitzy
+[package]: https://npmx.dev/package/gitzy
 [downloads-badge]: https://img.shields.io/npm/dm/gitzy?style=flat-square&logo=npm
 [npmtrends]: https://www.npmtrends.com/gitzy
 [license]: https://github.com/jimmy-guzman/gitzy/blob/master/LICENSE

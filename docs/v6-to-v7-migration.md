@@ -2,7 +2,7 @@
 
 ## Node.js
 
-**Minimum version is now `>=22.13.0`.** Node.js 20 is no longer supported.
+**Minimum version is now `^22.13.0 || >=24.0.0`.** Node.js 20 is no longer supported.
 
 ## Config
 
