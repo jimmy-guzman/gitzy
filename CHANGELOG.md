@@ -1,3 +1,11 @@
+## [7.0.1](https://github.com/jimmy-guzman/gitzy/compare/v7.0.0...v7.0.1) (2026-05-06)
+
+
+### Bug Fixes
+
+* 🐛 branch should have same order as commit ([c438764](https://github.com/jimmy-guzman/gitzy/commit/c438764faba9a9b0e9fcdd0a1ee7f9fe55ccb5db))
+* 🐛 drop broken seperator branch option ([45f100e](https://github.com/jimmy-guzman/gitzy/commit/45f100edad32dc50ef137dc8404da8b1179e9731))
+
 # [7.0.0](https://github.com/jimmy-guzman/gitzy/compare/v6.5.9...v7.0.0) (2026-05-06)
 
 

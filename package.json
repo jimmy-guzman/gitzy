@@ -1,6 +1,6 @@
 {
   "name": "gitzy",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "description": "interactive conventional commits cli",
   "keywords": [
     "conventional commits",
