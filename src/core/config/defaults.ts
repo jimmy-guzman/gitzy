@@ -66,7 +66,7 @@ export const defaultBodyConfig: BodyConfig = {
 };
 
 export const defaultHeaderConfig: HeaderConfig = {
-  max: 50,
+  max: 64,
   min: 5,
 };
 

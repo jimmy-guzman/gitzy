@@ -21,7 +21,7 @@ const CONFIG_TEMPLATE = `${JSON.stringify(
       enabled: true,
     },
     header: {
-      max: 50,
+      max: 64,
       min: 5,
     },
     issues: {
