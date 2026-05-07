@@ -1,3 +1,12 @@
+## [7.0.8](https://github.com/jimmy-guzman/gitzy/compare/v7.0.7...v7.0.8) (2026-05-07)
+
+
+### Bug Fixes
+
+* **config:** 🐛 bump default header max to 64 ([d0c3293](https://github.com/jimmy-guzman/gitzy/commit/d0c32936cbe57f1b7ef599a43389447167706b35))
+* **config:** 🐛 expose types in package exports ([1983a32](https://github.com/jimmy-guzman/gitzy/commit/1983a327ce6eaee685a2d19679e4cb4f2bdc0c0c))
+* **config:** 🐛 filter types/scopes by commitlint ([8e2dcf2](https://github.com/jimmy-guzman/gitzy/commit/8e2dcf28a037ffca569d8156284157d649e697b9))
+
 ## [7.0.7](https://github.com/jimmy-guzman/gitzy/compare/v7.0.6...v7.0.7) (2026-05-07)
 
 
