@@ -1,3 +1,11 @@
+## [7.0.6](https://github.com/jimmy-guzman/gitzy/compare/v7.0.5...v7.0.6) (2026-05-07)
+
+
+### Bug Fixes
+
+* **cli:** 🐛 body validate messages are actionable ([b22f2e1](https://github.com/jimmy-guzman/gitzy/commit/b22f2e1af08a96351c29388ebc2e79a2375d6f35))
+* **cli:** 🐛 make subject messages more actionable ([0a23578](https://github.com/jimmy-guzman/gitzy/commit/0a235786cf8ca5ef6f06b1bf5b6dfce78f2d589d))
+
 ## [7.0.5](https://github.com/jimmy-guzman/gitzy/compare/v7.0.4...v7.0.5) (2026-05-06)
 
 
