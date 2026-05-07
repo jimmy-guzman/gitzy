@@ -14,7 +14,10 @@
   "author": "jimmy-guzman @jimmy-guzman",
   "type": "module",
   "exports": {
-    ".": "./dist/index.mjs"
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
   },
   "bin": "./dist/run.mjs",
   "files": [
