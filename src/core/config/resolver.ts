@@ -5,9 +5,11 @@
  * Merge semantics — gitzy config takes precedence over commitlint:
  * - Nested sections (branch, breaking, emoji, header, issues) are shallow-merged
  *   key-by-key so gitzy values win on a per-key basis.
- * - `types` and `scopes` are union-merged by name: gitzy entries appear first (in
- *   gitzy order), with gitzy winning for any name that appears in both. Commitlint
- *   entries whose names are not present in gitzy are appended at the end.
+ * - `types` and `scopes` are constrained by commitlint when both configs define them:
+ *   commitlint's enum is the authoritative allowed set. Gitzy entries whose names
+ *   appear in the commitlint enum are kept first (in gitzy order, preserving gitzy
+ *   metadata). Commitlint entries not present in gitzy are appended at the end.
+ *   Gitzy entries NOT in the commitlint enum are excluded.
  */
 
 import type { Config, ScopeEntry, TypeEntry } from "./types";
@@ -22,14 +24,16 @@ const toName = (entry: ScopeEntry | string | TypeEntry) => {
   return typeof entry === "string" ? entry : entry.name;
 };
 
-const mergeByName = <T extends ScopeEntry | string | TypeEntry>(
+const constrainByName = <T extends ScopeEntry | string | TypeEntry>(
   gitzy: readonly T[],
   commitlint: readonly T[],
 ): readonly T[] => {
+  const commitlintNames = new Set(commitlint.map(toName));
   const gitzyNames = new Set(gitzy.map(toName));
+  const allowed = gitzy.filter((e) => commitlintNames.has(toName(e)));
   const extras = commitlint.filter((e) => !gitzyNames.has(toName(e)));
 
-  return [...gitzy, ...extras];
+  return [...allowed, ...extras];
 };
 
 const mergeConfigs = (base: Config | null, overrides: Config): Config => {
@@ -63,13 +67,13 @@ const mergeConfigs = (base: Config | null, overrides: Config): Config => {
         ? { ...base.issues, ...overrides.issues }
         : undefined,
     scopes:
-      (base.scopes ?? overrides.scopes)
-        ? mergeByName(overrides.scopes ?? [], base.scopes ?? [])
-        : undefined,
+      base.scopes && overrides.scopes
+        ? constrainByName(overrides.scopes, base.scopes)
+        : (overrides.scopes ?? base.scopes),
     types:
-      (base.types ?? overrides.types)
-        ? mergeByName(overrides.types ?? [], base.types ?? [])
-        : undefined,
+      base.types && overrides.types
+        ? constrainByName(overrides.types, base.types)
+        : (overrides.types ?? base.types),
   };
 };
 
