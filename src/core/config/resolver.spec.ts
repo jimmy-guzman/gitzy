@@ -121,7 +121,7 @@ describe("resolveConfig", () => {
       );
     });
 
-    it("should merge commitlint rules with gitzy config — gitzy takes precedence", async () => {
+    it("should merge commitlint rules with gitzy config — commitlint constrains types", async () => {
       const gitzyConfig = {
         header: { max: 50 },
         scopes: ["ui"],
@@ -143,8 +143,6 @@ describe("resolveConfig", () => {
       expect(result.header.max).toBe(50);
       expect(result.scopes.map((s) => s.name)).toStrictEqual(["ui"]);
       expect(result.types.map((t) => t.name)).toStrictEqual([
-        "feat",
-        "fix",
         "feature",
         "bugfix",
       ]);
@@ -265,8 +263,8 @@ describe("resolveConfig", () => {
     });
   });
 
-  describe("scope and type union merging", () => {
-    it("should union-merge scopes — gitzy order first, commitlint extras appended", async () => {
+  describe("scope and type constrained merging", () => {
+    it("should constrain scopes — gitzy entries in commitlint first, commitlint extras appended", async () => {
       const gitzyConfig = {
         scopes: [{ description: "Purchase Plan", name: "pp" }],
       };
@@ -311,7 +309,7 @@ describe("resolveConfig", () => {
       ]);
     });
 
-    it("should append commitlint scopes not present in gitzy", async () => {
+    it("should exclude gitzy scopes not in commitlint and append commitlint extras", async () => {
       const gitzyConfig = {
         scopes: [{ name: "build" }],
       };
@@ -327,14 +325,10 @@ describe("resolveConfig", () => {
 
       const result = await resolveConfig();
 
-      expect(result.scopes.map((s) => s.name)).toStrictEqual([
-        "build",
-        "api",
-        "ui",
-      ]);
+      expect(result.scopes.map((s) => s.name)).toStrictEqual(["api", "ui"]);
     });
 
-    it("should union-merge types — gitzy order first, commitlint extras appended", async () => {
+    it("should constrain types — gitzy entries in commitlint first, commitlint extras appended", async () => {
       const gitzyConfig = {
         types: ["feat", "fix"],
       };
@@ -378,6 +372,44 @@ describe("resolveConfig", () => {
         { description: "New feature", emoji: "✨", name: "feat" },
         { description: "Fix a bug", emoji: "🐛", name: "fix" },
       ]);
+    });
+
+    it("should exclude gitzy types not in commitlint enum", async () => {
+      const gitzyConfig = {
+        types: ["feat", "fix", "chore", "docs"],
+      };
+      const commitlintConfig = {
+        rules: {
+          "type-enum": [2, "always", ["feat", "fix"]],
+        },
+      };
+
+      vi.mocked(loadConfig)
+        .mockResolvedValueOnce(gitzyConfig)
+        .mockResolvedValueOnce(commitlintConfig);
+
+      const result = await resolveConfig();
+
+      expect(result.types.map((t) => t.name)).toStrictEqual(["feat", "fix"]);
+    });
+
+    it("should exclude gitzy scopes not in commitlint enum", async () => {
+      const gitzyConfig = {
+        scopes: ["api", "ui", "internal"],
+      };
+      const commitlintConfig = {
+        rules: {
+          "scope-enum": [2, "always", ["api", "ui"]],
+        },
+      };
+
+      vi.mocked(loadConfig)
+        .mockResolvedValueOnce(gitzyConfig)
+        .mockResolvedValueOnce(commitlintConfig);
+
+      const result = await resolveConfig();
+
+      expect(result.scopes.map((s) => s.name)).toStrictEqual(["api", "ui"]);
     });
 
     it("should return undefined scopes when neither gitzy nor commitlint defines them", async () => {
