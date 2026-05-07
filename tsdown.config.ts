@@ -12,9 +12,11 @@ export default defineConfig({
       "fast-wrap-ansi",
       "sisteransi",
       "fast-string-truncated-width",
+      "lilconfig",
+      "tinyexec",
     ],
   },
-  entry: ["src/run.ts", "src/api/index.ts"],
+  entry: ["src/run.ts", "src/index.ts"],
   minify: true,
   publint: true,
 });
