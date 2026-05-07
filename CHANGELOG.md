@@ -1,3 +1,10 @@
+## [7.0.7](https://github.com/jimmy-guzman/gitzy/compare/v7.0.6...v7.0.7) (2026-05-07)
+
+
+### Performance Improvements
+
+* **cli:** ⚡️ reduce install size ([#670](https://github.com/jimmy-guzman/gitzy/issues/670)) ([3e81bae](https://github.com/jimmy-guzman/gitzy/commit/3e81bae509c712c7784613f3cd21a4ddba3523db))
+
 ## [7.0.6](https://github.com/jimmy-guzman/gitzy/compare/v7.0.5...v7.0.6) (2026-05-07)
 
 
