@@ -85,7 +85,7 @@ describe("subject", () => {
     expect(text).toHaveBeenCalledWith(
       expect.objectContaining({
         message: "Add a short description",
-        placeholder: "5-50 characters",
+        placeholder: "5-64 characters",
       }),
     );
   });
@@ -106,19 +106,20 @@ describe("subject", () => {
     it("should return actionable max error with characters to remove and remaining budget", async () => {
       const validate = await getValidate({}, { scope: "*", type: "fix" });
 
-      // leadingLabel("fix(*): ") = 8 chars, emoji = 3, max = 50
-      // remaining = 50 - 8 - 3 = 39, input = 54, overBy = 15
-      const input = "testing the short description character counter!!!!!!!";
+      // leadingLabel("fix(*): ") = 8 chars, emoji = 3, max = 64
+      // remaining = 64 - 8 - 3 = 53, input = 68, overBy = 15
+      const input =
+        "testing the short description character counter that is way too long";
 
-      expect(validate(input)).toBe("Remove 15 characters (39 available)");
+      expect(validate(input)).toBe("Remove 15 characters (53 available)");
     });
 
     it("should singularize when one character is over", async () => {
       const validate = await getValidate({}, { scope: "*", type: "feat" });
 
-      // remaining = 50 - 9 - 3 = 38, input = 39, overBy = 1
-      expect(validate("#".repeat(39))).toBe(
-        "Remove 1 character (38 available)",
+      // remaining = 64 - 9 - 3 = 52, input = 53, overBy = 1
+      expect(validate("#".repeat(53))).toBe(
+        "Remove 1 character (52 available)",
       );
     });
 
@@ -140,11 +141,11 @@ describe("subject", () => {
         { scope: "*", type: "feat" },
       );
 
-      // leadingLabel("feat(*): ") = 9 chars, emoji = 3, max = 50
-      // remaining = 50 - 9 - 3 = 38
-      expect(validate("#".repeat(38))).toBeUndefined();
-      expect(validate("#".repeat(39))).toBe(
-        "Remove 1 character (38 available)",
+      // leadingLabel("feat(*): ") = 9 chars, emoji = 3, max = 64
+      // remaining = 64 - 9 - 3 = 52
+      expect(validate("#".repeat(52))).toBeUndefined();
+      expect(validate("#".repeat(53))).toBe(
+        "Remove 1 character (52 available)",
       );
     });
 
