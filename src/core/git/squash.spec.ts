@@ -85,6 +85,18 @@ describe("getCommitsAheadCount", () => {
     );
   });
 
+  it("should throw when stdout is not a valid number", async () => {
+    vi.mocked(x).mockResolvedValue({
+      exitCode: 0,
+      stderr: "",
+      stdout: "foo\n",
+    });
+
+    await expect(getCommitsAheadCount("origin/main")).rejects.toThrow(
+      'Unable to determine commits ahead of "origin/main". Use --count to specify manually.',
+    );
+  });
+
   it("should call git with correct arguments", async () => {
     const mockX = vi.mocked(x).mockResolvedValue({
       exitCode: 0,
@@ -135,5 +147,23 @@ describe("softReset", () => {
     });
 
     await expect(softReset(3)).rejects.toThrow("git reset failed (exit 128)");
+  });
+
+  it("should use stdout in error message when stderr is empty", async () => {
+    vi.mocked(x).mockResolvedValue({
+      exitCode: 128,
+      stderr: "",
+      stdout: "fatal: something\n",
+    });
+
+    await expect(softReset(3)).rejects.toThrow(
+      "git reset failed (exit 128): fatal: something",
+    );
+  });
+
+  it("should throw on invalid count", async () => {
+    await expect(softReset(0)).rejects.toThrow(
+      "softReset count must be a positive integer, got 0",
+    );
   });
 });

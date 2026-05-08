@@ -52,6 +52,12 @@ export const softReset = async (count: number, dryRun = false) => {
     return;
   }
 
+  if (!Number.isInteger(count) || count < 1) {
+    throw new TypeError(
+      `softReset count must be a positive integer, got ${String(count)}`,
+    );
+  }
+
   const result = await x("git", ["reset", "--soft", `HEAD~${String(count)}`]);
 
   if (result.exitCode !== 0) {
