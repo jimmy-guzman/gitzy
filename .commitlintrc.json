@@ -19,7 +19,8 @@
         "cli",
         "config",
         "release",
-        "prompts"
+        "prompts",
+        "squash"
       ]
     ],
     "subject-case": [

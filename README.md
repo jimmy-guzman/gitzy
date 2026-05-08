@@ -28,6 +28,7 @@
 
 - Interactive conventional commit flow (`type`, `scope`, `subject`, `body`, `breaking`, `issues`)
 - Branch name generation from conventional commit prompts
+- Squash last N commits into a single conventional commit (`gitzy squash`)
 - Partial commitlint configuration support
 - Config validation via schema
 - Multiple breaking-change formats (`!`, `footer`, `both`)
@@ -39,7 +40,7 @@
 - Retry (`--retry`), dry-run (`--dry-run`), amend (`--amend`), and hook (`--hook`) modes
 - JSON output (`--json`) for scripting and CI
 - `--no-emoji` flag (precedence: `--no-emoji` > `GITZY_NO_EMOJI` env > `emoji.enabled` config)
-- `--stdin` for piping answers as JSON (both `commit` and `branch`)
+- `--stdin` for piping answers as JSON (`commit`, `branch`, and `squash`)
 - ⚡ [Lightweight (~170 kB install)][packagephobia]
 
 ## Usage
@@ -51,6 +52,7 @@ npm install -g gitzy
 gitzy
 gitzy commit --type feat -m "add dark mode"
 gitzy branch --type feat -m "add dark mode" --scope ui
+gitzy squash --count 3
 ```
 
 ## Subcommands
@@ -62,6 +64,7 @@ gitzy branch --type feat -m "add dark mode" --scope ui
 | `gitzy`        | Alias for `gitzy commit`                                                       |
 | `gitzy commit` | Interactive conventional commit flow (default)                                 |
 | `gitzy branch` | Generate a branch name from a conventional commit prompt                       |
+| `gitzy squash` | Squash the last N commits into a single conventional commit                    |
 | `gitzy init`   | Generate a starter `.gitzyrc.json` in the current dir (`--force` to overwrite) |
 | `gitzy config` | Display the resolved config as JSON                                            |
 
@@ -136,6 +139,50 @@ When used with `--amend`, also includes the previous branch name:
   "branchName": "feat/add-dark-mode",
   "dryRun": false,
   "oldName": "feat/dark-mode"
+}
+```
+
+### `gitzy squash` flags
+
+Squashes the last N commits via `git reset --soft HEAD~N` then opens the same interactive prompt flow to create a single conventional commit. Pre-fills prompts from the HEAD commit message.
+
+| Flag                        | Alias | Description                                                            |
+| --------------------------- | ----- | ---------------------------------------------------------------------- |
+| `--count <n>`               |       | number of commits to squash (default: commits ahead of remote default) |
+| `--type <type>`             |       | set type inline (with `--subject`, skips all prompts)                  |
+| `--scope <scope>`           |       | set scope inline                                                       |
+| `--subject <subject>`       | `-m`  | set subject inline (with `--type`, skips all prompts)                  |
+| `--body <body>`             |       | set body inline                                                        |
+| `--breaking [breaking]`     |       | mark as breaking; add message for `footer`/`both` formats              |
+| `--issue <issue...>`        |       | set issues inline (repeatable: `--issue '#123' --issue '#456'`)        |
+| `--dry-run`                 | `-D`  | show what would happen without touching git                            |
+| `--no-verify`               | `-n`  | skip git hooks                                                         |
+| `--json`                    |       | output structured JSON (see shape below)                               |
+| `--no-emoji`                |       | disable emoji in commit message                                        |
+| `--co-author <coAuthor...>` |       | add co-authors (repeatable: `--co-author "Name <email>"`)              |
+| `--stdin`                   |       | read answers from stdin as JSON (CLI flags take priority)              |
+| `--help`                    | `-h`  | display help for command                                               |
+
+#### `squash --json` output shape
+
+Extends the commit JSON shape with a `count` field:
+
+```json
+{
+  "count": 3,
+  "header": "feat: ✨ add dark mode",
+  "body": "",
+  "footer": "",
+  "message": "feat: ✨ add dark mode",
+  "parts": {
+    "type": "feat",
+    "scope": "",
+    "subject": "add dark mode",
+    "body": "",
+    "breaking": "",
+    "issues": [],
+    "coAuthors": []
+  }
 }
 ```
 

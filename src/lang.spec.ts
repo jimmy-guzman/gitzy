@@ -63,6 +63,33 @@ describe("lang", () => {
           },
         },
         "description": "Interactive conventional commits CLI",
+        "squash": {
+          "description": "Squash the last N commits into a single conventional commit",
+          "examples": "
+        $ gitzy squash
+        $ gitzy squash --count 3
+        $ gitzy squash --count 3 --type feat -m "add dark mode"
+        $ gitzy squash --count 3 --type feat --scope ui -m "add dark mode"
+        $ gitzy squash --count 3 --dry-run
+        $ gitzy squash --count 3 --type feat -m "add dark mode" --no-emoji
+        $ gitzy squash --count 3 --type feat -m "add dark mode" --no-verify
+          ",
+          "flags": {
+            "body": "Set body inline",
+            "breaking": "Mark as breaking; add message for "footer"/"both" formats, or the flag for "!" format",
+            "coAuthor": "Add co-authors (repeatable: --co-author "Name <email>")",
+            "count": "Number of commits to squash (default: commits ahead of origin)",
+            "dryRun": "Show commit message without squashing",
+            "issue": "Set issues inline (repeatable: --issue '#123' --issue '#456')",
+            "json": "Output result as JSON",
+            "noEmoji": "Disable emoji in commit message",
+            "noVerify": "Skip git hooks (--no-verify)",
+            "scope": "Set scope inline",
+            "stdin": "Read answers from stdin as JSON",
+            "subject": "Set subject inline",
+            "type": "Set type inline",
+          },
+        },
       }
     `);
   });

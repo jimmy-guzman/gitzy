@@ -6,6 +6,7 @@ import { registerBranchCommand } from "@/cli/commands/branch";
 import { registerCommitCommand } from "@/cli/commands/commit";
 import { registerConfigCommand } from "@/cli/commands/config";
 import { registerInitCommand } from "@/cli/commands/init";
+import { registerSquashCommand } from "@/cli/commands/squash";
 import { lang } from "@/lang";
 
 export const cli = async () => {
@@ -24,6 +25,7 @@ export const cli = async () => {
 
   registerCommitCommand(program);
   registerBranchCommand(program);
+  registerSquashCommand(program);
   registerInitCommand(program);
   registerConfigCommand(program);
 
