@@ -13,12 +13,12 @@ jobs:
           fetch-depth: 0
 
       - name: setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: setup cache
         uses: actions/setup-node@v6
         with:
-          node-version: 22.13.0
+          node-version-file: ".nvmrc"
           cache: pnpm
 
       - name: install
@@ -28,10 +28,10 @@ jobs:
         run: pnpm check
 
       - name: codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
 
       - name: Publish to NPM
-        uses: cycjimmy/semantic-release-action@v4
+        uses: cycjimmy/semantic-release-action@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

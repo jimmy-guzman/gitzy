@@ -55,7 +55,8 @@
     "venv",
     "vitest",
     "wagoid",
-    "yalc"
+    "yalc",
+    "unrun"
   ],
   "ignorePaths": [
     "node_modules", // this will ignore anything the node_modules directory
