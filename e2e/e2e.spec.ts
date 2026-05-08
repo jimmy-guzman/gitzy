@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process";
+import { execFileSync, execSync } from "node:child_process";
 import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -129,12 +129,12 @@ const runBranch = (args: string, stdin?: string) => {
   });
 };
 
-const runSquash = (args: string, stdin?: string) => {
+const runSquash = (args: string[], stdin?: string) => {
   return new Promise<string>((resolve, reject) => {
     try {
       const input = stdin ? Buffer.from(stdin) : undefined;
 
-      const raw = execSync(`node "${BIN}" squash --dry-run ${args}`, {
+      const raw = execFileSync("node", [BIN, "squash", "--dry-run", ...args], {
         cwd: E2E_CWD,
         encoding: "utf8",
         input,
@@ -390,7 +390,7 @@ describe("gitzy", () => {
         scope: "e2e",
       });
 
-      const result = await runSquash("--count 3 --stdin", stdin);
+      const result = await runSquash(["--count", "3", "--stdin"], stdin);
 
       expect(result).toMatchInlineSnapshot(`
         "chore(e2e): 🤖 testing
@@ -406,7 +406,7 @@ describe("gitzy", () => {
     it("should create squash message with type and subject only", async () => {
       const stdin = JSON.stringify(defaultCommitPayload());
 
-      const result = await runSquash("--count 3 --stdin", stdin);
+      const result = await runSquash(["--count", "3", "--stdin"], stdin);
 
       expect(result).toMatchInlineSnapshot(`"chore: 🤖 testing"`);
     });
@@ -419,7 +419,7 @@ describe("gitzy", () => {
       });
 
       const result = await runSquash(
-        "--count 3 --type feat -m override --stdin",
+        ["--count", "3", "--type", "feat", "-m", "override", "--stdin"],
         stdin,
       );
 
@@ -427,23 +427,44 @@ describe("gitzy", () => {
     });
 
     it("should skip prompts when --type and --subject are provided as flags", async () => {
-      const result = await runSquash("--count 3 --type feat -m add-endpoint");
+      const result = await runSquash([
+        "--count",
+        "3",
+        "--type",
+        "feat",
+        "-m",
+        "add-endpoint",
+      ]);
 
       expect(result).toMatchInlineSnapshot(`"feat: ✨ add-endpoint"`);
     });
 
     it("should skip prompts and include scope when --type, --scope, and --subject are provided", async () => {
-      const result = await runSquash(
-        "--count 3 --type feat --scope api -m add-endpoint",
-      );
+      const result = await runSquash([
+        "--count",
+        "3",
+        "--type",
+        "feat",
+        "--scope",
+        "api",
+        "-m",
+        "add-endpoint",
+      ]);
 
       expect(result).toMatchInlineSnapshot(`"feat(api): ✨ add-endpoint"`);
     });
 
     it("should skip prompts and include issue when --type, --subject, and --issue are provided", async () => {
-      const result = await runSquash(
-        "--count 3 --type fix -m fix-bug --issue '#123'",
-      );
+      const result = await runSquash([
+        "--count",
+        "3",
+        "--type",
+        "fix",
+        "-m",
+        "fix-bug",
+        "--issue",
+        "#123",
+      ]);
 
       expect(result).toMatchInlineSnapshot(`
         "fix: 🐛 fix-bug
@@ -453,17 +474,30 @@ describe("gitzy", () => {
     });
 
     it("should disable emoji with --no-emoji", async () => {
-      const result = await runSquash(
-        "--count 3 --type feat -m add-endpoint --no-emoji",
-      );
+      const result = await runSquash([
+        "--count",
+        "3",
+        "--type",
+        "feat",
+        "-m",
+        "add-endpoint",
+        "--no-emoji",
+      ]);
 
       expect(result).toMatchInlineSnapshot(`"feat: add-endpoint"`);
     });
 
     it("should add co-authors to squash message", async () => {
-      const result = await runSquash(
-        '--count 3 --type feat -m add-endpoint --co-author "Alice <alice@example.com>"',
-      );
+      const result = await runSquash([
+        "--count",
+        "3",
+        "--type",
+        "feat",
+        "-m",
+        "add-endpoint",
+        "--co-author",
+        "Alice <alice@example.com>",
+      ]);
 
       expect(result).toMatchInlineSnapshot(`
         "feat: ✨ add-endpoint

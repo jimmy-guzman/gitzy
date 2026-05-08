@@ -127,21 +127,13 @@ describe("softReset", () => {
     expect(mockX).not.toHaveBeenCalled();
   });
 
-  it("should call process.exit on non-zero exit code", async () => {
+  it("should throw on non-zero exit code", async () => {
     vi.mocked(x).mockResolvedValue({
       exitCode: 128,
       stderr: "fatal: error",
       stdout: "",
     });
 
-    const mockExit = vi
-      .spyOn(process, "exit")
-      .mockReturnValue(undefined as never);
-
-    await softReset(3);
-
-    expect(mockExit).toHaveBeenCalledWith(128);
-
-    mockExit.mockRestore();
+    await expect(softReset(3)).rejects.toThrow("git reset failed (exit 128)");
   });
 });

@@ -11,15 +11,15 @@
       2,
       "always",
       [
-        "deps",
-        "build",
         "*",
         "api",
         "branch",
+        "build",
         "cli",
         "config",
-        "release",
+        "deps",
         "prompts",
+        "release",
         "squash"
       ]
     ],

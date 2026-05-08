@@ -27,7 +27,15 @@ export const getCommitsAheadCount = async (base: string): Promise<number> => {
       throwOnError: true,
     });
 
-    return Number.parseInt(result.stdout.trim(), 10);
+    const count = Number.parseInt(result.stdout.trim(), 10);
+
+    if (Number.isNaN(count)) {
+      throw new TypeError(
+        `Unable to determine commits ahead of "${base}". Use --count to specify manually.`,
+      );
+    }
+
+    return count;
   } catch {
     throw new Error(
       `Unable to determine commits ahead of "${base}". Use --count to specify manually.`,
@@ -47,6 +55,8 @@ export const softReset = async (count: number, dryRun = false) => {
   const result = await x("git", ["reset", "--soft", `HEAD~${String(count)}`]);
 
   if (result.exitCode !== 0) {
-    process.exit(result.exitCode);
+    throw new Error(
+      `git reset failed (exit ${String(result.exitCode)}): ${result.stderr || result.stdout}`,
+    );
   }
 };

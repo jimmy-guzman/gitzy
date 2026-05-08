@@ -115,18 +115,18 @@ export const registerSquashCommand = (program: Command) => {
         }
 
         let { count } = flags;
+        let base: string | undefined;
 
         if (count === undefined) {
-          const base = await getDefaultBranch();
-
+          base = await getDefaultBranch();
           count = await getCommitsAheadCount(base);
         }
 
         if (count < 2) {
-          const base = await getDefaultBranch();
+          const resolvedBase = base ?? (await getDefaultBranch());
 
           throw new Error(
-            `Nothing to squash — only ${String(count)} commit ahead of ${base}`,
+            `Nothing to squash — only ${String(count)} commit ahead of ${resolvedBase}`,
           );
         }
 
