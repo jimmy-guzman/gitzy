@@ -4,9 +4,6 @@ allowBuilds:
 
 autoInstallPeers: false
 
-onlyBuiltDependencies:
-  - esbuild
-  - oxc-resolver
-  - unrs-resolver
-
 savePrefix: ""
+
+saveExact: true
