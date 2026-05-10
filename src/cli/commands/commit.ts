@@ -134,7 +134,7 @@ export const registerCommitCommand = (program: Command) => {
           const previousAnswers = store.load();
 
           if (Object.keys(previousAnswers).length === 0) {
-            log.success(`There is no previous gitzy commit to retry...`);
+            log.warn(`There is no previous gitzy commit to retry...`);
           }
 
           autofillAnswers = { ...autofillAnswers, ...previousAnswers };
