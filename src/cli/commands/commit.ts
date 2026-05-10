@@ -95,7 +95,7 @@ export const registerCommitCommand = (program: Command) => {
       };
 
       if (flags.dryRun) {
-        log.info("running in dry mode...");
+        log.info("Running in dry mode...");
       }
 
       try {
@@ -134,7 +134,7 @@ export const registerCommitCommand = (program: Command) => {
           const previousAnswers = store.load();
 
           if (Object.keys(previousAnswers).length === 0) {
-            log.success(`there is no previous gitzy commit to retry...`);
+            log.warn(`There is no previous gitzy commit to retry...`);
           }
 
           autofillAnswers = { ...autofillAnswers, ...previousAnswers };

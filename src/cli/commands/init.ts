@@ -11,8 +11,8 @@ import { init } from "@/core/init/init";
 export const registerInitCommand = (program: Command) => {
   program
     .command("init")
-    .description("generate a starter .gitzyrc.json in the current directory")
-    .option("-f, --force", "overwrite existing config file")
+    .description("Generate a starter .gitzyrc.json in the current directory")
+    .option("-f, --force", "Overwrite existing config file")
     .action((opts: { force?: boolean }) => {
       try {
         const result = init(process.cwd(), { force: opts.force });

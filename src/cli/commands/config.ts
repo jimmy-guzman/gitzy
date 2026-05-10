@@ -11,7 +11,7 @@ import { resolveConfig } from "@/core/config/resolver";
 export const registerConfigCommand = (program: Command) => {
   program
     .command("config")
-    .description("display the resolved gitzy configuration")
+    .description("Display the resolved gitzy configuration")
     .action(async () => {
       try {
         const config = await resolveConfig();

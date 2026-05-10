@@ -20,7 +20,7 @@ interface Lang {
 
 export const lang = {
   branch: {
-    description: "generate a branch name from a conventional commit prompt",
+    description: "Generate a branch name from a conventional commit prompt",
     examples: `
   $ gitzy branch
   $ gitzy branch --type feat -m "add dark mode"
@@ -31,20 +31,20 @@ export const lang = {
   $ gitzy branch --from main --type feat -m "add dark mode"
     `,
     flags: {
-      amend: "rename the current branch instead of creating a new one",
-      checkout: "checkout the new branch after creating it",
-      dryRun: "show branch name without creating it",
-      from: "create the branch from a base branch",
-      issue: "set issue reference inline (e.g. #42 or PROJ-123)",
-      json: "output result as JSON",
-      scope: "set scope inline",
-      stdin: "read answers from stdin as JSON",
-      subject: "set subject inline",
-      type: "set type inline",
+      amend: "Rename the current branch instead of creating a new one",
+      checkout: "Checkout the new branch after creating it",
+      dryRun: "Show branch name without creating it",
+      from: "Create the branch from a base branch",
+      issue: "Set issue reference inline (e.g. #42 or PROJ-123)",
+      json: "Output result as JSON",
+      scope: "Set scope inline",
+      stdin: "Read answers from stdin as JSON",
+      subject: "Set subject inline",
+      type: "Set type inline",
     },
   },
   commit: {
-    description: "create a conventional commit (default command)",
+    description: "Create a conventional commit (default command)",
     examples: `
   $ gitzy
   $ gitzy commit
@@ -60,23 +60,23 @@ export const lang = {
   $ gitzy commit --retry
     `,
     flags: {
-      amend: "amend the previous commit",
-      body: "set body inline",
+      amend: "Amend the previous commit",
+      body: "Set body inline",
       breaking:
-        'mark as breaking; add message for "footer"/"both" formats, or the flag for "!" format',
-      coAuthor: 'add co-authors (repeatable: --co-author "Name <email>")',
-      dryRun: "show commit message without committing",
-      hook: "enable running inside a git hook (e.g. pre-commit)",
-      issue: "set issues inline (repeatable: --issue '#123' --issue '#456')",
-      json: "output result as JSON",
-      noEmoji: "disable emoji in commit message",
-      noVerify: "skip git hooks (--no-verify)",
-      retry: "retry last commit and skip prompts",
-      scope: "set scope inline",
-      stdin: "read answers from stdin as JSON",
-      subject: "set subject inline",
-      type: "set type inline",
+        'Mark as breaking; add message for "footer"/"both" formats, or the flag for "!" format',
+      coAuthor: 'Add co-authors (repeatable: --co-author "Name <email>")',
+      dryRun: "Show commit message without committing",
+      hook: "Enable running inside a git hook (e.g. pre-commit)",
+      issue: "Set issues inline (repeatable: --issue '#123' --issue '#456')",
+      json: "Output result as JSON",
+      noEmoji: "Disable emoji in commit message",
+      noVerify: "Skip git hooks (--no-verify)",
+      retry: "Retry last commit and skip prompts",
+      scope: "Set scope inline",
+      stdin: "Read answers from stdin as JSON",
+      subject: "Set subject inline",
+      type: "Set type inline",
     },
   },
-  description: "interactive conventional commits cli",
+  description: "Interactive conventional commits CLI",
 } satisfies Lang;
