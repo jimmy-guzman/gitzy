@@ -1,3 +1,10 @@
+## [7.0.9](https://github.com/jimmy-guzman/gitzy/compare/v7.0.8...v7.0.9) (2026-05-10)
+
+
+### Bug Fixes
+
+* **cli:** 🐛 sentence case user-facing text ([#681](https://github.com/jimmy-guzman/gitzy/issues/681)) ([2b6268d](https://github.com/jimmy-guzman/gitzy/commit/2b6268d6620f2650a72afca9bc806c81bdbf4cf1))
+
 ## [7.0.8](https://github.com/jimmy-guzman/gitzy/compare/v7.0.7...v7.0.8) (2026-05-07)
 
 
