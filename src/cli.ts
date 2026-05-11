@@ -1,5 +1,5 @@
 import { log } from "@clack/prompts";
-import { program } from "commander";
+import { Command } from "commander";
 import { version } from "package.json" with { type: "json" };
 
 import { registerBranchCommand } from "@/cli/commands/branch";
@@ -9,6 +9,8 @@ import { registerInitCommand } from "@/cli/commands/init";
 import { lang } from "@/lang";
 
 export const cli = async () => {
+  const program = new Command();
+
   program
     .configureOutput({
       outputError: (error) => {

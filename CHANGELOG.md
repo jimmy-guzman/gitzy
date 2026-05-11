@@ -56,7 +56,7 @@
 ### Bug Fixes
 
 * 🐛 branch should have same order as commit ([c438764](https://github.com/jimmy-guzman/gitzy/commit/c438764faba9a9b0e9fcdd0a1ee7f9fe55ccb5db))
-* 🐛 drop broken seperator branch option ([45f100e](https://github.com/jimmy-guzman/gitzy/commit/45f100edad32dc50ef137dc8404da8b1179e9731))
+* 🐛 drop broken separator branch option ([45f100e](https://github.com/jimmy-guzman/gitzy/commit/45f100edad32dc50ef137dc8404da8b1179e9731))
 
 # [7.0.0](https://github.com/jimmy-guzman/gitzy/compare/v6.5.9...v7.0.0) (2026-05-06)
 
@@ -132,7 +132,7 @@
 
 ### Bug Fixes
 
-* 🐛 cursor within body prompt is nolonger lost ([1bb3494](https://github.com/jimmy-guzman/gitzy/commit/1bb349426d815e913fd2c665d53355ded459ba4e))
+* 🐛 cursor within body prompt is no longer lost ([1bb3494](https://github.com/jimmy-guzman/gitzy/commit/1bb349426d815e913fd2c665d53355ded459ba4e))
 * **cli:** 🐛 use 🔄 as default refactor emoji for consistent rendering ([d22d915](https://github.com/jimmy-guzman/gitzy/commit/d22d9154f9c809c54b8ceb237488dd4020b36cd4))
 
 # [6.5.0](https://github.com/jimmy-guzman/gitzy/compare/v6.4.1...v6.5.0) (2025-10-28)
