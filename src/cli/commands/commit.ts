@@ -5,6 +5,7 @@
 import type { Command } from "commander";
 
 import { log } from "@clack/prompts";
+import { Option } from "commander";
 
 import type { Answers, CommitFlags, GitzyState } from "@/cli/types";
 
@@ -62,6 +63,13 @@ const promptQuestions = async (
 };
 
 export const registerCommitCommand = (program: Command) => {
+  const noVerifyOption = new Option(
+    "-n, --no-verify",
+    lang.commit.flags.noVerify,
+  );
+
+  noVerifyOption.negate = false;
+
   program
     .command("commit", { isDefault: true })
     .description(lang.commit.description)
@@ -77,7 +85,7 @@ export const registerCommitCommand = (program: Command) => {
     .option("--retry", lang.commit.flags.retry)
     .option("--hook", lang.commit.flags.hook)
     .option("-a, --amend", lang.commit.flags.amend)
-    .option("-n, --no-verify", lang.commit.flags.noVerify)
+    .addOption(noVerifyOption)
     .option("--co-author <coAuthor...>", lang.commit.flags.coAuthor)
     .option("--stdin", lang.commit.flags.stdin)
     .addHelpText("after", `\nExamples:\n      ${lang.commit.examples}\n    `)

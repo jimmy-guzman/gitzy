@@ -77,6 +77,27 @@ describe("cli", () => {
     process.argv = originalArgv;
   });
 
+  it("should pass noVerify when -n flag is used", async () => {
+    const performCommitSpy = vi
+      .spyOn(gitOperations, "commit")
+      .mockResolvedValueOnce({ committed: true, message: "" });
+
+    vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce("");
+    vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce("");
+    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
+      defaultResolvedConfig,
+    );
+
+    process.argv = ["node", "gitzy", "-n"];
+
+    await cli();
+
+    expect(performCommitSpy).toHaveBeenCalledWith(
+      expect.stringContaining(""),
+      expect.objectContaining({ noVerify: true }),
+    );
+  });
+
   it("should run with defaults", async () => {
     const performCommitSpy = vi
       .spyOn(gitOperations, "commit")
