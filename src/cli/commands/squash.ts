@@ -5,6 +5,7 @@
 import type { Command } from "commander";
 
 import { log } from "@clack/prompts";
+import { Option } from "commander";
 
 import type { Answers, GitzyState, SquashFlags } from "@/cli/types";
 
@@ -72,6 +73,13 @@ const parseCount = (value: string): number => {
 };
 
 export const registerSquashCommand = (program: Command) => {
+  const noVerifyOption = new Option(
+    "-n, --no-verify",
+    lang.squash.flags.noVerify,
+  );
+
+  noVerifyOption.negate = false;
+
   program
     .command("squash")
     .description(lang.squash.description)
@@ -85,7 +93,7 @@ export const registerSquashCommand = (program: Command) => {
     .option("--scope <scope>", lang.squash.flags.scope)
     .option("-m, --subject <subject>", lang.squash.flags.subject)
     .option("--type <type>", lang.squash.flags.type)
-    .option("-n, --no-verify", lang.squash.flags.noVerify)
+    .addOption(noVerifyOption)
     .option("--co-author <coAuthor...>", lang.squash.flags.coAuthor)
     .option("--stdin", lang.squash.flags.stdin)
     .addHelpText("after", `\nExamples:\n      ${lang.squash.examples}\n    `)

@@ -3,6 +3,7 @@ import { defaultResolvedConfig } from "./core/config/defaults";
 import * as config from "./core/config/resolver";
 import * as gitChecks from "./core/git/checks";
 import * as gitOperations from "./core/git/operations";
+import * as gitSquash from "./core/git/squash";
 
 vi.mock("@clack/prompts", () => {
   return {
@@ -89,6 +90,29 @@ describe("cli", () => {
     );
 
     process.argv = ["node", "gitzy", "-n"];
+
+    await cli();
+
+    expect(performCommitSpy).toHaveBeenCalledWith(
+      expect.stringContaining(""),
+      expect.objectContaining({ noVerify: true }),
+    );
+  });
+
+  it("should pass noVerify when -n flag is used for squash", async () => {
+    const performCommitSpy = vi
+      .spyOn(gitOperations, "commit")
+      .mockResolvedValueOnce({ committed: true, message: "" });
+
+    vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce("");
+    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
+      defaultResolvedConfig,
+    );
+    vi.spyOn(gitSquash, "getDefaultBranch").mockResolvedValueOnce("main");
+    vi.spyOn(gitSquash, "getCommitsAheadCount").mockResolvedValueOnce(3);
+    vi.spyOn(gitSquash, "softReset").mockResolvedValueOnce(undefined);
+
+    process.argv = ["node", "gitzy", "squash", "-n"];
 
     await cli();
 
