@@ -1,3 +1,10 @@
+## [7.0.10](https://github.com/jimmy-guzman/gitzy/compare/v7.0.9...v7.0.10) (2026-05-11)
+
+
+### Bug Fixes
+
+* **cli:** 🐛 pass --no-verify to git command ([#682](https://github.com/jimmy-guzman/gitzy/issues/682)) ([5e92a62](https://github.com/jimmy-guzman/gitzy/commit/5e92a62a25f4aef0c43eb29c58c74c73ebdecf68))
+
 ## [7.0.9](https://github.com/jimmy-guzman/gitzy/compare/v7.0.8...v7.0.9) (2026-05-10)
 
 
