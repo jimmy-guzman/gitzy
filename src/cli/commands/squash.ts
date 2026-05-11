@@ -134,7 +134,7 @@ export const registerSquashCommand = (program: Command) => {
           const resolvedBase = base ?? (await getDefaultBranch());
 
           throw new Error(
-            `Nothing to squash — only ${String(count)} commit ahead of ${resolvedBase}`,
+            `Nothing to squash — only ${String(count)} ${count === 1 ? "commit" : "commits"} ahead of ${resolvedBase}`,
           );
         }
 
@@ -189,10 +189,6 @@ export const registerSquashCommand = (program: Command) => {
         );
 
         state.answers = { ...state.answers, ...answers };
-
-        if (flags.coAuthor) {
-          state.answers.coAuthors = flags.coAuthor;
-        }
 
         const emojiEnabled =
           flags.noEmoji === true ? false : (flags.emoji ?? true);
