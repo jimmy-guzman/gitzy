@@ -68,7 +68,7 @@
     "lint-staged": "17.0.4",
     "npm-run-all2": "8.0.4",
     "prettier": "3.8.3",
-    "publint": "0.3.20",
+    "publint": "0.3.21",
     "tinyexec": "1.1.2",
     "tsdown": "0.22.0",
     "tsx": "4.21.0",
