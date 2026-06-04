@@ -1,3 +1,10 @@
+## [7.0.11](https://github.com/jimmy-guzman/gitzy/compare/v7.0.10...v7.0.11) (2026-06-04)
+
+
+### Bug Fixes
+
+* **deps:** 🐛 bump `@clack/prompts` to v1.5.1 ([#689](https://github.com/jimmy-guzman/gitzy/issues/689)) ([f674b19](https://github.com/jimmy-guzman/gitzy/commit/f674b19bfd01610432f07fc775674fec1d0ec2ff))
+
 ## [7.0.10](https://github.com/jimmy-guzman/gitzy/compare/v7.0.9...v7.0.10) (2026-05-11)
 
 
