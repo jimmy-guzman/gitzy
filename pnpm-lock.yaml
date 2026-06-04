@@ -33,8 +33,8 @@ importers:
         specifier: 1.4.2
         version: 1.4.2
       commander:
-        specifier: 15.0.0-0
-        version: 15.0.0-0
+        specifier: 15.0.0
+        version: 15.0.0
       commitlint:
         specifier: 21.0.0
         version: 21.0.0(@types/node@24.12.3)(conventional-commits-parser@6.4.0)(typescript@5.9.3)
@@ -1639,8 +1639,8 @@ packages:
   color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
 
-  commander@15.0.0-0:
-    resolution: {integrity: sha512-R2Kbbun8cjOe1aTbX4elymOwNvIdWenwSZl++AeuCu8nBGvJO5qCEwZ8Wa/8GMg5TXj/dBcPiQm/l1T9DO+Ryg==}
+  commander@15.0.0:
+    resolution: {integrity: sha512-z67u4ZhzCL/Tydu1lJARtEZYWbWaN7oYLHbsuzocr6y4N6WZAagG3RQ4FW61V1/0+jImpj293XfrcYnd1qxtPg==}
     engines: {node: '>=22.12.0'}
 
   comment-parser@1.4.6:
@@ -5162,7 +5162,7 @@ snapshots:
 
   color-name@1.1.4: {}
 
-  commander@15.0.0-0: {}
+  commander@15.0.0: {}
 
   comment-parser@1.4.6: {}
 
