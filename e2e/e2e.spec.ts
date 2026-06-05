@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process";
+import { execFileSync, execSync } from "node:child_process";
 import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -123,6 +123,52 @@ const runBranch = (args: string, stdin?: string) => {
       }
 
       resolve(match[1].trim());
+    } catch (error: unknown) {
+      reject(error instanceof Error ? error : new Error(String(error)));
+    }
+  });
+};
+
+const runSquash = (args: string[], stdin?: string) => {
+  return new Promise<string>((resolve, reject) => {
+    try {
+      const input = stdin ? Buffer.from(stdin) : undefined;
+
+      const raw = execFileSync("node", [BIN, "squash", "--dry-run", ...args], {
+        cwd: E2E_CWD,
+        encoding: "utf8",
+        input,
+        timeout: 30_000,
+      });
+
+      const clean = stripAnsi(raw);
+
+      const marker = "Would squash";
+      const start = clean.indexOf(marker);
+
+      if (start === -1) {
+        reject(new Error(`Could not find squash marker in output:\n${clean}`));
+
+        return;
+      }
+
+      const afterMarker = clean.slice(start);
+      const lines = afterMarker.split("\n");
+      const messageLine = lines.findIndex((line) => line.includes("into:"));
+
+      if (messageLine === -1) {
+        reject(new Error(`Could not find "into:" in output:\n${clean}`));
+
+        return;
+      }
+
+      const message = lines
+        .slice(messageLine + 1)
+        .map((line) => line.replace(/^[│|]\s{0,2}/, ""))
+        .join("\n")
+        .trim();
+
+      resolve(message);
     } catch (error: unknown) {
       reject(error instanceof Error ? error : new Error(String(error)));
     }
@@ -331,6 +377,133 @@ describe("gitzy", () => {
       const result = await runBranch("--type feat --scope ui -m add-dark-mode");
 
       expect(result).toMatchInlineSnapshot(`"feat/ui/add-dark-mode"`);
+    });
+  });
+
+  describe("squash", () => {
+    it("should create squash message with all fields via stdin", async () => {
+      const stdin = JSON.stringify({
+        ...defaultCommitPayload(),
+        body: "some longer description",
+        breaking: "this broke something",
+        issues: ["#123"],
+        scope: "e2e",
+      });
+
+      const result = await runSquash(["--count", "3", "--stdin"], stdin);
+
+      expect(result).toMatchInlineSnapshot(`
+        "chore(e2e): 🤖 testing
+
+        some longer description
+
+        BREAKING CHANGE: 💥 this broke something
+
+        🏁 Closes #123"
+      `);
+    });
+
+    it("should create squash message with type and subject only", async () => {
+      const stdin = JSON.stringify(defaultCommitPayload());
+
+      const result = await runSquash(["--count", "3", "--stdin"], stdin);
+
+      expect(result).toMatchInlineSnapshot(`"chore: 🤖 testing"`);
+    });
+
+    it("should respect inline flags over stdin", async () => {
+      const stdin = JSON.stringify({
+        ...defaultCommitPayload(),
+        subject: "from stdin",
+        type: "docs",
+      });
+
+      const result = await runSquash(
+        ["--count", "3", "--type", "feat", "-m", "override", "--stdin"],
+        stdin,
+      );
+
+      expect(result).toMatchInlineSnapshot(`"feat: ✨ override"`);
+    });
+
+    it("should skip prompts when --type and --subject are provided as flags", async () => {
+      const result = await runSquash([
+        "--count",
+        "3",
+        "--type",
+        "feat",
+        "-m",
+        "add-endpoint",
+      ]);
+
+      expect(result).toMatchInlineSnapshot(`"feat: ✨ add-endpoint"`);
+    });
+
+    it("should skip prompts and include scope when --type, --scope, and --subject are provided", async () => {
+      const result = await runSquash([
+        "--count",
+        "3",
+        "--type",
+        "feat",
+        "--scope",
+        "api",
+        "-m",
+        "add-endpoint",
+      ]);
+
+      expect(result).toMatchInlineSnapshot(`"feat(api): ✨ add-endpoint"`);
+    });
+
+    it("should skip prompts and include issue when --type, --subject, and --issue are provided", async () => {
+      const result = await runSquash([
+        "--count",
+        "3",
+        "--type",
+        "fix",
+        "-m",
+        "fix-bug",
+        "--issue",
+        "#123",
+      ]);
+
+      expect(result).toMatchInlineSnapshot(`
+        "fix: 🐛 fix-bug
+
+        🏁 Closes #123"
+      `);
+    });
+
+    it("should disable emoji with --no-emoji", async () => {
+      const result = await runSquash([
+        "--count",
+        "3",
+        "--type",
+        "feat",
+        "-m",
+        "add-endpoint",
+        "--no-emoji",
+      ]);
+
+      expect(result).toMatchInlineSnapshot(`"feat: add-endpoint"`);
+    });
+
+    it("should add co-authors to squash message", async () => {
+      const result = await runSquash([
+        "--count",
+        "3",
+        "--type",
+        "feat",
+        "-m",
+        "add-endpoint",
+        "--co-author",
+        "Alice <alice@example.com>",
+      ]);
+
+      expect(result).toMatchInlineSnapshot(`
+        "feat: ✨ add-endpoint
+
+        Co-authored-by: Alice <alice@example.com>"
+      `);
     });
   });
 });

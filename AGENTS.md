@@ -94,7 +94,7 @@ The codebase is split into two layers with a thin orchestration layer connecting
 ## Key Patterns
 
 - **Path alias** `@/*` maps to `./src/*`.
-- **Subcommands:** `gitzy` alone runs the default `commit` subcommand. Explicit subcommands: `branch`, `init`, `config`.
+- **Subcommands:** `gitzy` alone runs the default `commit` subcommand. Explicit subcommands: `branch`, `squash`, `init`, `config`.
 - **Prompt pattern:** Each question is a single exported function (`type`, `scope`, `subject`, `body`, `breaking`, `issues`) returning an Enquirer prompt config object (or `null` to skip). `createPrompts()` composes these based on `config.prompts`.
 - **Config schema:** Every config file is loaded through a valibot schema with `safeParse`. Defaults are applied at the schema level via `optional(field, default)`, not manually in code. Invalid config throws a `TypeError` with a human-readable summary.
 - **Config normalization:** `normalizeConfig()` converts `string` type entries (short form) to full `TypeEntry` objects by looking them up in `builtinTypes`.
@@ -160,7 +160,7 @@ If any step fails, fix the issue and re-run from that step. Do not move on until
   - **Interactive mode:** Run `pnpm gitzy` and answer prompts.
   - **CLI flags (for automation/non-TTY):** Use flags inline. Example: `pnpm gitzy --type feat -m "add dry-run flag" -D`. Available flags: `--type`, `-m/--subject`, `--scope`, `--body`, `--breaking`, `--issue`, `-D/--dry-run`, `-a/--amend`, `-n/--no-verify`, `--co-author`.
 - **Allowed types:** `test`, `feat`, `fix`, `chore`, `docs`, `refactor`, `style`, `ci`
-- **Allowed scopes:** `deps`, `build`, `*`, `api`, `branch`, `cli`, `config`, `release`, `prompts`
+- **Allowed scopes:** `deps`, `build`, `*`, `api`, `branch`, `cli`, `config`, `release`, `prompts`, `squash`
 - **Header rules:** 5–50 characters, lowercase type and scope, no trailing period on subject.
 - **Pull requests:** Branch off `main`, push, and open a PR with `gh pr create`. Merge commits are disabled — use squash merge.
 - **Working on `main`:** Create a new branch before committing. Do not commit directly to `main`.

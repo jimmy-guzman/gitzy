@@ -43,6 +43,23 @@ export interface BranchFlags {
   type?: string;
 }
 
+export interface SquashFlags {
+  body?: string;
+  breaking?: boolean | string;
+  coAuthor?: string[];
+  count?: number;
+  dryRun?: boolean;
+  emoji?: boolean;
+  issue?: string[];
+  json?: boolean;
+  noEmoji?: boolean;
+  noVerify?: boolean;
+  scope?: string;
+  stdin?: boolean;
+  subject?: string;
+  type?: string;
+}
+
 export interface GitzyState {
   answers: Answers;
   config: ResolvedConfig;

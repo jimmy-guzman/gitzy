@@ -11,15 +11,16 @@
       2,
       "always",
       [
-        "deps",
-        "build",
         "*",
         "api",
         "branch",
+        "build",
         "cli",
         "config",
+        "deps",
+        "prompts",
         "release",
-        "prompts"
+        "squash"
       ]
     ],
     "subject-case": [
