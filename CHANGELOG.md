@@ -1,3 +1,10 @@
+# [7.1.0](https://github.com/jimmy-guzman/gitzy/compare/v7.0.11...v7.1.0) (2026-06-09)
+
+
+### Features
+
+* ✨ add signoff flag and prompt ([#695](https://github.com/jimmy-guzman/gitzy/issues/695)) ([a5d3cce](https://github.com/jimmy-guzman/gitzy/commit/a5d3cce51ad2008cc97413176f54bb36364aefcc))
+
 ## [7.0.11](https://github.com/jimmy-guzman/gitzy/compare/v7.0.10...v7.0.11) (2026-06-04)
 
 
