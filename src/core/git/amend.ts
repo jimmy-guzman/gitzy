@@ -94,7 +94,7 @@ export const parseConventionalCommit = (message: string): ParsedCommit => {
       .filter(Boolean);
   }
 
-  const signoffMatch = /^Signed-off-by:(?<signoff>.+)$/m.exec(rest);
+  const signoffMatch = /^Signed-off-by:(?<signoff>.+)$/im.exec(rest);
   const signoff = signoffMatch?.groups?.signoff.trim();
 
   if (signoff) {

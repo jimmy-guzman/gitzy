@@ -98,9 +98,13 @@ const createCoAuthors = (coAuthors: string[] | undefined) => {
 };
 
 const createSignoff = (signoff: MessageParts["signoff"]) => {
-  if (typeof signoff !== "string" || !signoff.trim()) return "";
+  if (typeof signoff !== "string") return "";
 
-  return `\n\nSigned-off-by: ${signoff}`;
+  const trimmed = signoff.trim();
+
+  if (!trimmed) return "";
+
+  return `\n\nSigned-off-by: ${trimmed}`;
 };
 
 const createScope = (scope: string) => {
