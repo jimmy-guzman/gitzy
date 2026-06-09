@@ -12,6 +12,11 @@ export interface MessageParts {
   coAuthors?: string[];
   issues: string[];
   scope: string;
+  /**
+   * Signed-off-by trailer. `true` means derive the identity from git (resolved
+   * to a "Name <email>" string before formatting); a string is used verbatim.
+   */
+  signoff?: boolean | string;
   subject: string;
   type: string;
 }

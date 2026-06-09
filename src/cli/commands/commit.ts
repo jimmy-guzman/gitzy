@@ -24,6 +24,7 @@ import {
   shouldDoGitChecks,
 } from "@/core/git/checks";
 import { commit } from "@/core/git/operations";
+import { getSignoffTrailer } from "@/core/git/signoff";
 import { GitzyStore } from "@/core/store/store";
 import { lang } from "@/lang";
 
@@ -86,6 +87,7 @@ export const registerCommitCommand = (program: Command) => {
     .option("--hook", lang.commit.flags.hook)
     .option("-a, --amend", lang.commit.flags.amend)
     .addOption(noVerifyOption)
+    .option("-s, --signoff [signoff]", lang.commit.flags.signoff)
     .option("--co-author <coAuthor...>", lang.commit.flags.coAuthor)
     .option("--stdin", lang.commit.flags.stdin)
     .addHelpText("after", `\nExamples:\n      ${lang.commit.examples}\n    `)
@@ -179,6 +181,7 @@ export const registerCommitCommand = (program: Command) => {
             : { coAuthors: flags.coAuthor }),
           ...(flags.issue === undefined ? {} : { issues: flags.issue }),
           ...(flags.scope === undefined ? {} : { scope: flags.scope }),
+          ...(flags.signoff === undefined ? {} : { signoff: flags.signoff }),
           ...(flags.subject === undefined ? {} : { subject: flags.subject }),
           ...(flags.type === undefined ? {} : { type: flags.type }),
         };
@@ -196,6 +199,14 @@ export const registerCommitCommand = (program: Command) => {
 
         if (flags.coAuthor) {
           state.answers.coAuthors = flags.coAuthor;
+        }
+
+        if (flags.signoff) {
+          state.answers.signoff = flags.signoff;
+        }
+
+        if (state.answers.signoff === true) {
+          state.answers.signoff = await getSignoffTrailer();
         }
 
         const emojiEnabled =

@@ -275,6 +275,18 @@ describe("gitzy", () => {
         Co-authored-by: Alice <alice@example.com>"
       `);
     });
+
+    it("should add an explicit Signed-off-by override via --signoff", async () => {
+      const result = await runCommit(
+        '--type feat -m add-endpoint --signoff "Bot <bot@example.com>"',
+      );
+
+      expect(result).toMatchInlineSnapshot(`
+        "feat: ✨ add-endpoint
+
+        Signed-off-by: Bot <bot@example.com>"
+      `);
+    });
   });
 
   describe("branch", () => {

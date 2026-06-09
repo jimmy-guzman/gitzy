@@ -3,6 +3,7 @@ import { defaultResolvedConfig } from "./core/config/defaults";
 import * as config from "./core/config/resolver";
 import * as gitChecks from "./core/git/checks";
 import * as gitOperations from "./core/git/operations";
+import * as gitSignoff from "./core/git/signoff";
 
 vi.mock("@clack/prompts", () => {
   return {
@@ -95,6 +96,51 @@ describe("cli", () => {
     expect(performCommitSpy).toHaveBeenCalledWith(
       expect.stringContaining(""),
       expect.objectContaining({ noVerify: true }),
+    );
+  });
+
+  it("should derive the Signed-off-by trailer when -s is used", async () => {
+    const performCommitSpy = vi
+      .spyOn(gitOperations, "commit")
+      .mockResolvedValueOnce({ committed: true, message: "" });
+
+    vi.spyOn(gitSignoff, "getSignoffTrailer").mockResolvedValueOnce(
+      "Test User <test@example.com>",
+    );
+    vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce("");
+    vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce("");
+    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
+      defaultResolvedConfig,
+    );
+
+    process.argv = ["node", "gitzy", "-s"];
+
+    await cli();
+
+    expect(performCommitSpy).toHaveBeenCalledWith(
+      expect.stringContaining("Signed-off-by: Test User <test@example.com>"),
+      expect.any(Object),
+    );
+  });
+
+  it("should use an explicit Signed-off-by override verbatim", async () => {
+    const performCommitSpy = vi
+      .spyOn(gitOperations, "commit")
+      .mockResolvedValueOnce({ committed: true, message: "" });
+
+    vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce("");
+    vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce("");
+    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
+      defaultResolvedConfig,
+    );
+
+    process.argv = ["node", "gitzy", "--signoff", "Bot <bot@example.com>"];
+
+    await cli();
+
+    expect(performCommitSpy).toHaveBeenCalledWith(
+      expect.stringContaining("Signed-off-by: Bot <bot@example.com>"),
+      expect.any(Object),
     );
   });
 

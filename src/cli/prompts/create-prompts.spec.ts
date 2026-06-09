@@ -2,6 +2,12 @@ import { defaultResolvedConfig } from "@/core/config/defaults";
 
 import { createPrompts } from "./create-prompts";
 
+vi.mock("@/core/git/signoff", () => {
+  return {
+    getSignoffTrailer: vi.fn().mockResolvedValue("Jane Doe <jane@example.com>"),
+  };
+});
+
 vi.mock("@clack/prompts", () => {
   return {
     autocomplete: vi.fn().mockResolvedValue("feat"),
@@ -84,6 +90,7 @@ describe("createPrompts", () => {
       coAuthors: [],
       issues: [],
       scope: "",
+      signoff: false,
       subject: "",
       type: "feat",
     });
@@ -176,8 +183,58 @@ describe("createPrompts", () => {
       coAuthors: [],
       issues: ["#123"],
       scope: "",
+      signoff: false,
       subject: "my subject",
       type: "fix",
     });
+  });
+
+  it("should include the signoff prompt only when configured", async () => {
+    const { group } = await import("@clack/prompts");
+
+    await createPrompts(
+      {
+        answers: {
+          body: "",
+          breaking: "",
+          issues: [],
+          scope: "",
+          subject: "",
+          type: "",
+        },
+        config: { ...defaultResolvedConfig, prompts: ["type", "signoff"] },
+      },
+      {},
+    );
+
+    const groupCall = vi.mocked(group).mock.calls[0][0] as Record<
+      string,
+      unknown
+    >;
+
+    expect(Object.keys(groupCall)).toStrictEqual(["type", "signoff"]);
+  });
+
+  it("should pass through the signoff signature from the text prompt", async () => {
+    const clack = vi.mocked(await import("@clack/prompts"));
+
+    clack.text.mockResolvedValue("Jane Doe <jane@example.com>");
+
+    const result = await createPrompts(
+      {
+        answers: {
+          body: "",
+          breaking: "",
+          issues: [],
+          scope: "",
+          subject: "",
+          type: "",
+        },
+        config: { ...defaultResolvedConfig, prompts: ["signoff"] },
+      },
+      {},
+    );
+
+    expect(result.signoff).toBe("Jane Doe <jane@example.com>");
   });
 });

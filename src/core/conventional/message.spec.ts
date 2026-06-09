@@ -539,6 +539,54 @@ describe("formatCommitMessage", () => {
       Co-authored-by: Bob <bob@example.com>"
     `);
   });
+
+  it("should include Signed-off-by footer when signoff is a string", () => {
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
+      signoff: "Jane Doe <jane@example.com>",
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*): ✨ a cool new feature
+
+      this an amazing feature, lots of details
+
+      BREAKING CHANGE: 💥 breaks everything
+
+      🏁 Closes #123
+
+      Signed-off-by: Jane Doe <jane@example.com>"
+    `);
+  });
+
+  it("should NOT include Signed-off-by footer when signoff is an unresolved boolean", () => {
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
+      signoff: true,
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*): ✨ a cool new feature
+
+      this an amazing feature, lots of details
+
+      BREAKING CHANGE: 💥 breaks everything
+
+      🏁 Closes #123"
+    `);
+  });
+
+  it("should NOT include Signed-off-by footer when signoff is omitted", () => {
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
+      breaking: "",
+      issues: [],
+      signoff: false,
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*): ✨ a cool new feature
+
+      this an amazing feature, lots of details"
+    `);
+  });
 });
 
 describe("formatMessageResult", () => {
@@ -728,6 +776,23 @@ describe("formatMessageResult", () => {
         },
       }
     `);
+  });
+
+  it("should classify Signed-off-by as footer", () => {
+    const result = setupFormatMessageResult(
+      {},
+      {
+        body: "a description",
+        signoff: "Jane Doe <jane@example.com>",
+        subject: "a feature",
+        type: "feat",
+      },
+    );
+
+    expect(result.body).toMatchInlineSnapshot(`"a description"`);
+    expect(result.footer).toMatchInlineSnapshot(
+      `"Signed-off-by: Jane Doe <jane@example.com>"`,
+    );
   });
 });
 

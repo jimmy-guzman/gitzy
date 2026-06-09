@@ -15,6 +15,7 @@ export const availablePrompts = [
   "coAuthors",
   "issues",
   "scope",
+  "signoff",
   "subject",
   "type",
 ] as const;

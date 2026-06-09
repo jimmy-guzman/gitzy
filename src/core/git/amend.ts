@@ -13,7 +13,7 @@ import type { MessageParts } from "@/core/conventional/types";
 type ParsedCommit = Partial<
   Pick<
     MessageParts,
-    "body" | "breaking" | "issues" | "scope" | "subject" | "type"
+    "body" | "breaking" | "issues" | "scope" | "signoff" | "subject" | "type"
   >
 >;
 
@@ -71,7 +71,7 @@ export const parseConventionalCommit = (message: string): ParsedCommit => {
   if (scope) result.scope = scope;
 
   const footerStart = rest.search(
-    /^(?:\p{Emoji_Presentation}\s)?(?:BREAKING[ -]CHANGE|Co-authored-by|Closes|Fixes|Resolves)/imu,
+    /^(?:\p{Emoji_Presentation}\s)?(?:BREAKING[ -]CHANGE|Co-authored-by|Signed-off-by|Closes|Fixes|Resolves)/imu,
   );
   const bodyText =
     footerStart === -1 ? rest : rest.slice(0, footerStart).trim();
@@ -92,6 +92,13 @@ export const parseConventionalCommit = (message: string): ParsedCommit => {
     result.issues = issueMatches
       .map((m) => m.groups?.ref ?? "")
       .filter(Boolean);
+  }
+
+  const signoffMatch = /^Signed-off-by:(?<signoff>.+)$/m.exec(rest);
+  const signoff = signoffMatch?.groups?.signoff.trim();
+
+  if (signoff) {
+    result.signoff = signoff;
   }
 
   return result;
