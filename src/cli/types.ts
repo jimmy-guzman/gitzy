@@ -25,6 +25,7 @@ export interface CommitFlags {
   noVerify?: boolean;
   retry?: boolean;
   scope?: string;
+  signoff?: boolean | string;
   stdin?: boolean;
   subject?: string;
   type?: string;

@@ -56,6 +56,7 @@ export const lang = {
   $ gitzy commit --type feat -m "add dark mode" --co-author "Jane Doe <jane@example.com>"
   $ gitzy commit --type feat -m "add dark mode" --dry-run
   $ gitzy commit --type feat -m "add dark mode" --no-emoji
+  $ gitzy commit --type feat -m "add dark mode" --signoff
   $ gitzy commit --amend
   $ gitzy commit --retry
     `,
@@ -73,6 +74,8 @@ export const lang = {
       noVerify: "Skip git hooks (--no-verify)",
       retry: "Retry last commit and skip prompts",
       scope: "Set scope inline",
+      signoff:
+        'Add a Signed-off-by trailer; pass a "Name <email>" to override your git identity',
       stdin: "Read answers from stdin as JSON",
       subject: "Set subject inline",
       type: "Set type inline",

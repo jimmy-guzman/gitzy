@@ -97,6 +97,16 @@ const createCoAuthors = (coAuthors: string[] | undefined) => {
   return `\n\n${coAuthors.map((author) => `Co-authored-by: ${author}`).join("\n")}`;
 };
 
+const createSignoff = (signoff: MessageParts["signoff"]) => {
+  if (typeof signoff !== "string") return "";
+
+  const trimmed = signoff.trim();
+
+  if (!trimmed) return "";
+
+  return `\n\nSigned-off-by: ${trimmed}`;
+};
+
 const createScope = (scope: string) => {
   return scope && scope !== "none" ? `(${scope})` : "";
 };
@@ -154,9 +164,13 @@ export const formatMessage = (
   const breaking = createBreaking(parts.breaking, config, emojiEnabled);
   const issues = createIssues(parts.issues, config, emojiEnabled);
   const coAuthors = createCoAuthors(parts.coAuthors);
+  const signoff = createSignoff(parts.signoff);
   const maxWidth = Math.max(config.header.max, MAX_WIDTH);
 
-  return wrap(`${head}${body}${breaking}${issues}${coAuthors}`, maxWidth);
+  return wrap(
+    `${head}${body}${breaking}${issues}${coAuthors}${signoff}`,
+    maxWidth,
+  );
 };
 
 /**
@@ -190,6 +204,7 @@ const getFooterStartRegex = (config: ResolvedConfig) => {
   const patterns = [
     "BREAKING[ -]CHANGE:",
     "Co-authored-by:",
+    "Signed-off-by:",
     ...new Set(configValues),
   ];
 

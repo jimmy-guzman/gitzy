@@ -36,6 +36,7 @@
 - Dynamic scopes and types (string shorthand or full `{ name, description }` objects)
 - Jira and GitHub issue reference patterns
 - Co-author support via `--co-author`
+- Sign-off (DCO) support via `--signoff` / `-s` (derives your git identity, or pass an override)
 - Retry (`--retry`), dry-run (`--dry-run`), amend (`--amend`), and hook (`--hook`) modes
 - JSON output (`--json`) for scripting and CI
 - `--no-emoji` flag (precedence: `--no-emoji` > `GITZY_NO_EMOJI` env > `emoji.enabled` config)
@@ -67,25 +68,26 @@ gitzy branch --type feat -m "add dark mode" --scope ui
 
 ### `gitzy commit` flags
 
-| Flag                        | Alias | Description                                                     |
-| --------------------------- | ----- | --------------------------------------------------------------- |
-| `--type <type>`             |       | set type inline (with `--subject`, skips all prompts)           |
-| `--scope <scope>`           |       | set scope inline                                                |
-| `--subject <subject>`       | `-m`  | set subject inline (with `--type`, skips all prompts)           |
-| `--body <body>`             |       | set body inline                                                 |
-| `--breaking [breaking]`     |       | mark as breaking; add message for `footer`/`both` formats       |
-| `--issue <issue...>`        |       | set issues inline (repeatable: `--issue '#123' --issue '#456'`) |
-| `--dry-run`                 | `-D`  | show commit message without committing                          |
-| `--retry`                   |       | retry last commit and skip prompts                              |
-| `--amend`                   | `-a`  | amend the previous commit (pre-fills prompts from HEAD)         |
-| `--no-verify`               | `-n`  | skip git hooks                                                  |
-| `--json`                    |       | output structured JSON (see shape below)                        |
-| `--no-emoji`                |       | disable emoji in commit message                                 |
-| `--co-author <coAuthor...>` |       | add co-authors (repeatable: `--co-author "Name <email>"`)       |
-| `--hook`                    |       | enable running inside a git hook (e.g. `pre-commit`)            |
-| `--stdin`                   |       | read answers from stdin as JSON (CLI flags take priority)       |
-| `--version`                 | `-v`  | display version number                                          |
-| `--help`                    | `-h`  | display help for command                                        |
+| Flag                        | Alias | Description                                                                                |
+| --------------------------- | ----- | ------------------------------------------------------------------------------------------ |
+| `--type <type>`             |       | set type inline (with `--subject`, skips all prompts)                                      |
+| `--scope <scope>`           |       | set scope inline                                                                           |
+| `--subject <subject>`       | `-m`  | set subject inline (with `--type`, skips all prompts)                                      |
+| `--body <body>`             |       | set body inline                                                                            |
+| `--breaking [breaking]`     |       | mark as breaking; add message for `footer`/`both` formats                                  |
+| `--issue <issue...>`        |       | set issues inline (repeatable: `--issue '#123' --issue '#456'`)                            |
+| `--dry-run`                 | `-D`  | show commit message without committing                                                     |
+| `--retry`                   |       | retry last commit and skip prompts                                                         |
+| `--amend`                   | `-a`  | amend the previous commit (pre-fills prompts from HEAD)                                    |
+| `--no-verify`               | `-n`  | skip git hooks                                                                             |
+| `--json`                    |       | output structured JSON (see shape below)                                                   |
+| `--no-emoji`                |       | disable emoji in commit message                                                            |
+| `--co-author <coAuthor...>` |       | add co-authors (repeatable: `--co-author "Name <email>"`)                                  |
+| `--signoff [signoff]`       | `-s`  | add a Signed-off-by trailer (derives your git identity; pass `"Name <email>"` to override) |
+| `--hook`                    |       | enable running inside a git hook (e.g. `pre-commit`)                                       |
+| `--stdin`                   |       | read answers from stdin as JSON (CLI flags take priority)                                  |
+| `--version`                 | `-v`  | display version number                                                                     |
+| `--help`                    | `-h`  | display help for command                                                                   |
 
 #### `commit --json` output shape
 
@@ -102,7 +104,8 @@ gitzy branch --type feat -m "add dark mode" --scope ui
     "body": "",
     "breaking": "",
     "issues": [],
-    "coAuthors": []
+    "coAuthors": [],
+    "signoff": false
   }
 }
 ```
@@ -197,7 +200,7 @@ Controls which prompts are shown and in what order.
 // Default:
 prompts: ["type", "scope", "subject", "body", "breaking", "issues"];
 
-// All available prompts (add "coAuthors" to enable co-author prompt):
+// All available prompts (add "coAuthors"/"signoff" to enable those prompts):
 prompts: [
   "type",
   "scope",
@@ -206,8 +209,16 @@ prompts: [
   "breaking",
   "issues",
   "coAuthors",
+  "signoff",
 ];
 ```
+
+> [!NOTE]
+> The `signoff` prompt is a text input prefilled with your git identity (edit to
+> customize, clear to skip) that adds a `Signed-off-by` trailer. It is opt-in
+> (not in the default `prompts`). The `--signoff` / `-s` flag works regardless
+> of this config, and accepts an optional `"Name <email>"` to override the
+> derived identity.
 
 ### `header`
 

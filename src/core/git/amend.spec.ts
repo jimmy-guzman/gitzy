@@ -128,6 +128,19 @@ describe("parseConventionalCommit", () => {
     });
   });
 
+  it("should capture the Signed-off-by signature and keep it out of the body", () => {
+    const result = parseConventionalCommit(
+      "feat: add feature\n\nThis is the body.\n\nSigned-off-by: Jane Doe <jane@example.com>",
+    );
+
+    expect(result).toStrictEqual({
+      body: "This is the body.",
+      signoff: "Jane Doe <jane@example.com>",
+      subject: "add feature",
+      type: "feat",
+    });
+  });
+
   it("should handle scope with breaking ! indicator", () => {
     const result = parseConventionalCommit(
       "refactor(core)!: rewrite internals\n\nBREAKING CHANGE: new API shape",

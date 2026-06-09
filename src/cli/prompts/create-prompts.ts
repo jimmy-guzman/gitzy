@@ -10,6 +10,7 @@ import { breaking } from "./breaking";
 import { coAuthors } from "./coAuthors";
 import { issues } from "./issues";
 import { scope } from "./scope";
+import { signoff } from "./signoff";
 import { subject } from "./subject";
 import { type } from "./type";
 
@@ -19,6 +20,7 @@ const prompts = {
   coAuthors,
   issues,
   scope,
+  signoff,
   subject,
   type,
 } as const;
@@ -29,6 +31,7 @@ interface RawGroupResult {
   coAuthors?: string;
   issues?: string;
   scope?: string;
+  signoff?: boolean | string;
   subject?: string;
   type?: string;
 }
@@ -100,6 +103,7 @@ export const createPrompts = async (
       typeof result.issues === "string" ? result.issues : undefined,
     ),
     scope: result.scope ?? "",
+    signoff: result.signoff ?? false,
     subject: result.subject ?? "",
     type: result.type ?? "",
   };
