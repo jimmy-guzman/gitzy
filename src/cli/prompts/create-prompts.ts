@@ -41,7 +41,9 @@ const parseIssues = (raw: string | undefined): string[] => {
 
   return raw
     .split(",")
-    .map((s) => s.trim())
+    .map((s) => {
+      return s.trim();
+    })
     .filter(Boolean);
 };
 
@@ -50,7 +52,9 @@ const parseCoAuthors = (raw: string | undefined) => {
 
   return raw
     .split(",")
-    .map((a) => a.trim())
+    .map((a) => {
+      return a.trim();
+    })
     .filter(Boolean);
 };
 

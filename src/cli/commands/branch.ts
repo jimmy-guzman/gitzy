@@ -34,7 +34,9 @@ const promptBranchQuestions = async (
 ): Promise<BranchAnswers> => {
   if (autofill.type && autofill.subject) {
     const trimmedSubject = autofill.subject.trim();
-    const validType = state.config.types.some((t) => t.name === autofill.type);
+    const validType = state.config.types.some((t) => {
+      return t.name === autofill.type;
+    });
 
     if (trimmedSubject && validType) {
       return {
@@ -170,10 +172,16 @@ export const registerBranchCommand = (program: Command) => {
         let amendInitial: Partial<BranchAnswers> | undefined;
 
         if (opts.amend) {
-          const currentBranch = await getCurrentBranch().catch(() => "");
+          const currentBranch = await getCurrentBranch().catch(() => {
+            return "";
+          });
           const segments = currentBranch.split("/");
 
-          const knownScopes = new Set(state.config.scopes.map((s) => s.name));
+          const knownScopes = new Set(
+            state.config.scopes.map((s) => {
+              return s.name;
+            }),
+          );
           const hasScope = knownScopes.has(segments.at(1) ?? "");
           const rawSubjectStart = hasScope
             ? segments.slice(2)

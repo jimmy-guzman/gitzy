@@ -90,7 +90,9 @@ export const parseConventionalCommit = (message: string): ParsedCommit => {
 
   if (issueMatches.length > 0) {
     result.issues = issueMatches
-      .map((m) => m.groups?.ref ?? "")
+      .map((m) => {
+        return m.groups?.ref ?? "";
+      })
       .filter(Boolean);
   }
 

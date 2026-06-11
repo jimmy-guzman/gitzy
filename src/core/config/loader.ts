@@ -18,18 +18,28 @@ const getSearchPlaces = (configName: string) => {
 
   const base = [
     `.${configName}rc`,
-    ...rcExts.map((ext) => `.${configName}rc${ext}`),
-    ...configExts.map((ext) => `${configName}.config${ext}`),
+    ...rcExts.map((ext) => {
+      return `.${configName}rc${ext}`;
+    }),
+    ...configExts.map((ext) => {
+      return `${configName}.config${ext}`;
+    }),
   ];
 
-  const tsBase = tsExts.map((ext) => `${configName}.config${ext}`);
+  const tsBase = tsExts.map((ext) => {
+    return `${configName}.config${ext}`;
+  });
 
   return [
     "package.json",
     ...base,
     ...tsBase,
-    ...base.map((path) => `.config/${path}`),
-    ...tsBase.map((path) => `.config/${path}`),
+    ...base.map((path) => {
+      return `.config/${path}`;
+    }),
+    ...tsBase.map((path) => {
+      return `.config/${path}`;
+    }),
   ];
 };
 

@@ -64,7 +64,9 @@ export const subject = ({
       initialValue: initial?.subject,
       message: "Add a short description",
       placeholder: `${min}-${max} characters`,
-      validate: (value = "") => validate(value.trim()),
+      validate: (value = "") => {
+        return validate(value.trim());
+      },
     });
   };
 };

@@ -89,7 +89,9 @@ const runCommit = (args: string, stdin?: string) => {
       const afterMarker = clean.slice(start + marker.length);
       const message = afterMarker
         .split("\n")
-        .map((line) => line.replace(/^[│|]\s{0,2}/, ""))
+        .map((line) => {
+          return line.replace(/^[│|]\s{0,2}/, "");
+        })
         .join("\n")
         .trim();
 

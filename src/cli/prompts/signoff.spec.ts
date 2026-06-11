@@ -4,9 +4,11 @@ import { defaultResolvedConfig } from "@/core/config/defaults";
 
 import { signoff } from "./signoff";
 
-vi.mock("@clack/prompts", () => ({
-  text: vi.fn().mockResolvedValue(""),
-}));
+vi.mock("@clack/prompts", () => {
+  return {
+    text: vi.fn().mockResolvedValue(""),
+  };
+});
 
 vi.mock("@/core/git/signoff", () => {
   return {

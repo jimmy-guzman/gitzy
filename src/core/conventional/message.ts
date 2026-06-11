@@ -26,7 +26,9 @@ const hasPrefixRegex = new RegExp(
   "i",
 );
 
-const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+const capitalize = (str: string) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
 
 const parseGithubIssue = (issue: string, defaultPrefix: string) => {
   const trimmed = issue.trim();
@@ -94,7 +96,11 @@ const createIssues = (
 const createCoAuthors = (coAuthors: string[] | undefined) => {
   if (!coAuthors || coAuthors.length === 0) return "";
 
-  return `\n\n${coAuthors.map((author) => `Co-authored-by: ${author}`).join("\n")}`;
+  return `\n\n${coAuthors
+    .map((author) => {
+      return `Co-authored-by: ${author}`;
+    })
+    .join("\n")}`;
 };
 
 const createSignoff = (signoff: MessageParts["signoff"]) => {
@@ -154,7 +160,9 @@ export const formatMessage = (
   parts: MessageParts,
   emoji: boolean,
 ) => {
-  const typeEntry = config.types.find((t) => t.name === parts.type);
+  const typeEntry = config.types.find((t) => {
+    return t.name === parts.type;
+  });
   const emojiEnabled = isEmojiEnabled(config, emoji);
   const emojiPrefix =
     emojiEnabled && typeEntry?.emoji ? `${typeEntry.emoji} ` : "";

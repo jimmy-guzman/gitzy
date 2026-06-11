@@ -28,7 +28,9 @@ describe("createTypeOptions", () => {
   it("should create options with emoji when enabled", () => {
     const options = setupTypeOptions();
 
-    const featOption = options.find((o) => o.value === "feat");
+    const featOption = options.find((o) => {
+      return o.value === "feat";
+    });
 
     expect(featOption).toStrictEqual({
       hint: "A new feature",
@@ -42,7 +44,9 @@ describe("createTypeOptions", () => {
       emoji: { ...defaultResolvedConfig.emoji, enabled: false },
     });
 
-    const featOption = options.find((o) => o.value === "feat");
+    const featOption = options.find((o) => {
+      return o.value === "feat";
+    });
 
     expect(featOption?.label).toBe("feat");
   });
@@ -50,7 +54,9 @@ describe("createTypeOptions", () => {
   it("should not have an emoji when --no-emoji", () => {
     const options = setupTypeOptions({}, { emoji: false });
 
-    const featOption = options.find((o) => o.value === "feat");
+    const featOption = options.find((o) => {
+      return o.value === "feat";
+    });
 
     expect(featOption?.label).toBe("feat");
   });
