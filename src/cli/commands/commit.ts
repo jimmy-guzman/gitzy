@@ -36,10 +36,16 @@ const promptQuestions = async (
 ) => {
   if (flags.type && flags.subject) {
     const trimmedSubject = flags.subject.trim();
-    const validType = state.config.types.some((t) => t.name === flags.type);
+    const validType = state.config.types.some((t) => {
+      return t.name === flags.type;
+    });
 
     if (!validType) {
-      const allowed = state.config.types.map((t) => t.name).join(", ");
+      const allowed = state.config.types
+        .map((t) => {
+          return t.name;
+        })
+        .join(", ");
 
       throw new Error(
         `Invalid --type "${flags.type}". Allowed types: ${allowed}`,

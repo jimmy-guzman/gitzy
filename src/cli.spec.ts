@@ -37,10 +37,12 @@ vi.mock("@clack/prompts", () => {
   };
 });
 
-vi.mock("../package.json", () => ({
-  engines: { node: "20" },
-  version: "1.0.0",
-}));
+vi.mock("../package.json", () => {
+  return {
+    engines: { node: "20" },
+    version: "1.0.0",
+  };
+});
 
 describe("cli", () => {
   const originalArgv = process.argv;

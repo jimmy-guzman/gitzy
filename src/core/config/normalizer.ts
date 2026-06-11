@@ -11,7 +11,11 @@ import {
   defaultPrompts,
 } from "./defaults";
 
-const builtinTypeMap = new Map(builtinTypes.map((t) => [t.name, t]));
+const builtinTypeMap = new Map(
+  builtinTypes.map((t) => {
+    return [t.name, t];
+  }),
+);
 
 const resolveTypeEntry = (entry: string | TypeEntry): TypeEntry => {
   if (typeof entry === "string") {
@@ -38,9 +42,12 @@ const resolveScopeEntry = (entry: ScopeEntry | string): ScopeEntry => {
 };
 
 export const normalizeConfig = (config: Config | null): ResolvedConfig => {
-  const types = (config?.types ?? builtinTypes.map((t) => t.name)).map(
-    resolveTypeEntry,
-  );
+  const types = (
+    config?.types ??
+    builtinTypes.map((t) => {
+      return t.name;
+    })
+  ).map(resolveTypeEntry);
   const scopes = (config?.scopes ?? []).map(resolveScopeEntry);
 
   return {

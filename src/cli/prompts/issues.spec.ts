@@ -2,9 +2,11 @@ import { defaultResolvedConfig } from "@/core/config/defaults";
 
 import { issues } from "./issues";
 
-vi.mock("@clack/prompts", () => ({
-  text: vi.fn().mockResolvedValue(""),
-}));
+vi.mock("@clack/prompts", () => {
+  return {
+    text: vi.fn().mockResolvedValue(""),
+  };
+});
 
 beforeEach(() => {
   vi.clearAllMocks();

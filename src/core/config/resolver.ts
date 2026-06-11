@@ -30,8 +30,12 @@ const constrainByName = <T extends ScopeEntry | string | TypeEntry>(
 ): readonly T[] => {
   const commitlintNames = new Set(commitlint.map(toName));
   const gitzyNames = new Set(gitzy.map(toName));
-  const allowed = gitzy.filter((e) => commitlintNames.has(toName(e)));
-  const extras = commitlint.filter((e) => !gitzyNames.has(toName(e)));
+  const allowed = gitzy.filter((e) => {
+    return commitlintNames.has(toName(e));
+  });
+  const extras = commitlint.filter((e) => {
+    return !gitzyNames.has(toName(e));
+  });
 
   return [...allowed, ...extras];
 };

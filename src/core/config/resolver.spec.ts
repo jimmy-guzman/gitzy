@@ -141,11 +141,16 @@ describe("resolveConfig", () => {
       const result = await resolveConfig();
 
       expect(result.header.max).toBe(50);
-      expect(result.scopes.map((s) => s.name)).toStrictEqual(["ui"]);
-      expect(result.types.map((t) => t.name)).toStrictEqual([
-        "feature",
-        "bugfix",
-      ]);
+      expect(
+        result.scopes.map((s) => {
+          return s.name;
+        }),
+      ).toStrictEqual(["ui"]);
+      expect(
+        result.types.map((t) => {
+          return t.name;
+        }),
+      ).toStrictEqual(["feature", "bugfix"]);
     });
 
     it("should use commitlint scopes when gitzy config exists but does not define scopes", async () => {
@@ -162,7 +167,11 @@ describe("resolveConfig", () => {
 
       const result = await resolveConfig();
 
-      expect(result.scopes.map((s) => s.name)).toStrictEqual(["api", "ui"]);
+      expect(
+        result.scopes.map((s) => {
+          return s.name;
+        }),
+      ).toStrictEqual(["api", "ui"]);
     });
 
     it("should use commitlint types when gitzy config exists but does not define types", async () => {
@@ -179,7 +188,11 @@ describe("resolveConfig", () => {
 
       const result = await resolveConfig();
 
-      expect(result.types.map((t) => t.name)).toStrictEqual(["feat", "fix"]);
+      expect(
+        result.types.map((t) => {
+          return t.name;
+        }),
+      ).toStrictEqual(["feat", "fix"]);
     });
 
     it("should use only commitlint rules when no gitzy config exists", async () => {
@@ -195,7 +208,11 @@ describe("resolveConfig", () => {
 
       const result = await resolveConfig();
 
-      expect(result.types.map((t) => t.name)).toStrictEqual(["feat", "fix"]);
+      expect(
+        result.types.map((t) => {
+          return t.name;
+        }),
+      ).toStrictEqual(["feat", "fix"]);
     });
 
     it("should return normalized gitzy config when commitlint is not present", async () => {
@@ -325,7 +342,11 @@ describe("resolveConfig", () => {
 
       const result = await resolveConfig();
 
-      expect(result.scopes.map((s) => s.name)).toStrictEqual(["api", "ui"]);
+      expect(
+        result.scopes.map((s) => {
+          return s.name;
+        }),
+      ).toStrictEqual(["api", "ui"]);
     });
 
     it("should constrain types — gitzy entries in commitlint first, commitlint extras appended", async () => {
@@ -344,12 +365,11 @@ describe("resolveConfig", () => {
 
       const result = await resolveConfig();
 
-      expect(result.types.map((t) => t.name)).toStrictEqual([
-        "feat",
-        "fix",
-        "perf",
-        "chore",
-      ]);
+      expect(
+        result.types.map((t) => {
+          return t.name;
+        }),
+      ).toStrictEqual(["feat", "fix", "perf", "chore"]);
     });
 
     it("should keep gitzy type entry when name matches commitlint entry", async () => {
@@ -390,7 +410,11 @@ describe("resolveConfig", () => {
 
       const result = await resolveConfig();
 
-      expect(result.types.map((t) => t.name)).toStrictEqual(["feat", "fix"]);
+      expect(
+        result.types.map((t) => {
+          return t.name;
+        }),
+      ).toStrictEqual(["feat", "fix"]);
     });
 
     it("should exclude gitzy scopes not in commitlint enum", async () => {
@@ -409,7 +433,11 @@ describe("resolveConfig", () => {
 
       const result = await resolveConfig();
 
-      expect(result.scopes.map((s) => s.name)).toStrictEqual(["api", "ui"]);
+      expect(
+        result.scopes.map((s) => {
+          return s.name;
+        }),
+      ).toStrictEqual(["api", "ui"]);
     });
 
     it("should return undefined scopes when neither gitzy nor commitlint defines them", async () => {
@@ -434,7 +462,11 @@ describe("resolveConfig", () => {
 
       const result = await resolveConfig();
 
-      expect(result.types.map((t) => t.name)).toStrictEqual(["feat"]);
+      expect(
+        result.types.map((t) => {
+          return t.name;
+        }),
+      ).toStrictEqual(["feat"]);
     });
 
     it("should propagate errors from loadConfig", async () => {
