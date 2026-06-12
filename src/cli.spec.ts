@@ -49,6 +49,10 @@ describe("cli", () => {
 
   beforeEach(async () => {
     vi.resetAllMocks();
+    Object.defineProperty(process.stdout, "isTTY", {
+      configurable: true,
+      value: true,
+    });
 
     const clack = vi.mocked(await import("@clack/prompts"));
 
@@ -77,6 +81,10 @@ describe("cli", () => {
   });
 
   afterEach(() => {
+    Object.defineProperty(process.stdout, "isTTY", {
+      configurable: true,
+      value: undefined,
+    });
     process.argv = originalArgv;
   });
 
