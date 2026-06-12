@@ -97,7 +97,7 @@ export const registerCommitCommand = (program: Command) => {
     .option("--co-author <coAuthor...>", lang.commit.flags.coAuthor)
     .option("--stdin", lang.commit.flags.stdin)
     .addHelpText("after", `\nExamples:\n      ${lang.commit.examples}\n    `)
-    .action(async (opts: CommitFlags) => {
+    .action(async (opts: CommitFlags, command: Command) => {
       const store = new GitzyStore<Answers>();
 
       const flags: CommitFlags = {
@@ -193,12 +193,12 @@ export const registerCommitCommand = (program: Command) => {
         };
 
         if (
-          !process.stdout.isTTY &&
+          !process.stdin.isTTY &&
           (!flags.type || !flags.subject) &&
           !flags.retry &&
           !flags.stdin
         ) {
-          throw new Error(
+          command.error(
             "No TTY detected. Run gitzy commit --help for non-interactive usage.",
           );
         }

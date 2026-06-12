@@ -49,7 +49,7 @@ describe("cli", () => {
 
   beforeEach(async () => {
     vi.resetAllMocks();
-    Object.defineProperty(process.stdout, "isTTY", {
+    Object.defineProperty(process.stdin, "isTTY", {
       configurable: true,
       value: true,
     });
@@ -81,7 +81,7 @@ describe("cli", () => {
   });
 
   afterEach(() => {
-    Object.defineProperty(process.stdout, "isTTY", {
+    Object.defineProperty(process.stdin, "isTTY", {
       configurable: true,
       value: undefined,
     });

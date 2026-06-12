@@ -241,11 +241,11 @@ export const registerBranchCommand = (program: Command) => {
         if (opts.issue) flagAnswers.issue = opts.issue;
 
         if (
-          !process.stdout.isTTY &&
+          !process.stdin.isTTY &&
           (!flagAnswers.type || !flagAnswers.subject) &&
           !opts.stdin
         ) {
-          throw new Error(
+          cmd.error(
             "No TTY detected. Run gitzy branch --help for non-interactive usage.",
           );
         }
