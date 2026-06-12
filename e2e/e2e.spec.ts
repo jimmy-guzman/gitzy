@@ -289,6 +289,24 @@ describe("gitzy", () => {
         Signed-off-by: Bot <bot@example.com>"
       `);
     });
+
+    it("should error when no TTY is detected", () => {
+      let output = "";
+
+      try {
+        execSync(`node "${BIN}" commit --dry-run`, {
+          cwd: E2E_CWD,
+          encoding: "utf8",
+          timeout: 5000,
+        });
+      } catch (error: unknown) {
+        if (error instanceof Error && "stdout" in error) {
+          output = String((error as { stdout: unknown }).stdout);
+        }
+      }
+
+      expect(output).toContain("No TTY detected");
+    });
   });
 
   describe("branch", () => {
@@ -345,6 +363,24 @@ describe("gitzy", () => {
       const result = await runBranch("--type feat --scope ui -m add-dark-mode");
 
       expect(result).toMatchInlineSnapshot(`"feat/ui/add-dark-mode"`);
+    });
+
+    it("should error when no TTY is detected", () => {
+      let output = "";
+
+      try {
+        execSync(`node "${BIN}" branch --dry-run`, {
+          cwd: E2E_CWD,
+          encoding: "utf8",
+          timeout: 5000,
+        });
+      } catch (error: unknown) {
+        if (error instanceof Error && "stdout" in error) {
+          output = String((error as { stdout: unknown }).stdout);
+        }
+      }
+
+      expect(output).toContain("No TTY detected");
     });
   });
 });

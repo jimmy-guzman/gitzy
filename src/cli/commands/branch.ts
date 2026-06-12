@@ -240,6 +240,16 @@ export const registerBranchCommand = (program: Command) => {
 
         if (opts.issue) flagAnswers.issue = opts.issue;
 
+        if (
+          !process.stdout.isTTY &&
+          (!flagAnswers.type || !flagAnswers.subject) &&
+          !opts.stdin
+        ) {
+          throw new Error(
+            "No TTY detected. Run gitzy branch --help for non-interactive usage.",
+          );
+        }
+
         const answers = await promptBranchQuestions(
           state,
           { ...stdinAnswers, ...flagAnswers },

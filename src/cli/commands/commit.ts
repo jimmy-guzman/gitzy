@@ -192,6 +192,17 @@ export const registerCommitCommand = (program: Command) => {
           ...(flags.type === undefined ? {} : { type: flags.type }),
         };
 
+        if (
+          !process.stdout.isTTY &&
+          (!flags.type || !flags.subject) &&
+          !flags.retry &&
+          !flags.stdin
+        ) {
+          throw new Error(
+            "No TTY detected. Run gitzy commit --help for non-interactive usage.",
+          );
+        }
+
         const answers = await promptQuestions(
           state,
           flags,
