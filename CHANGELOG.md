@@ -1,3 +1,10 @@
+## [7.2.1](https://github.com/jimmy-guzman/gitzy/compare/v7.2.0...v7.2.1) (2026-06-12)
+
+
+### Bug Fixes
+
+* **cli:** 🐛 fix non-tty detection ([#698](https://github.com/jimmy-guzman/gitzy/issues/698)) ([de9fd8e](https://github.com/jimmy-guzman/gitzy/commit/de9fd8ed29704f3841f975800813f55899b03f96))
+
 # [7.2.0](https://github.com/jimmy-guzman/gitzy/compare/v7.1.0...v7.2.0) (2026-06-12)
 
 
