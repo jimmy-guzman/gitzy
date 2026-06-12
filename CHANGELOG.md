@@ -1,3 +1,10 @@
+# [7.2.0](https://github.com/jimmy-guzman/gitzy/compare/v7.1.0...v7.2.0) (2026-06-12)
+
+
+### Features
+
+* **cli:** ✨ add non-tty detection ([#697](https://github.com/jimmy-guzman/gitzy/issues/697)) ([c62e073](https://github.com/jimmy-guzman/gitzy/commit/c62e0730da5967d7d1223199a77b9208ee6b9243))
+
 # [7.1.0](https://github.com/jimmy-guzman/gitzy/compare/v7.0.11...v7.1.0) (2026-06-09)
 
 
