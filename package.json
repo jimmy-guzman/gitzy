@@ -49,7 +49,7 @@
   },
   "prettier": "@jimmy.codes/prettier-config",
   "devDependencies": {
-    "@clack/prompts": "1.5.1",
+    "@clack/prompts": "1.6.0",
     "@jimmy.codes/eslint-config": "8.0.1",
     "@jimmy.codes/prettier-config": "2.1.2",
     "@leeoniya/ufuzzy": "1.0.19",
