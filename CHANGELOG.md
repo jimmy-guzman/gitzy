@@ -1,3 +1,10 @@
+## [7.2.2](https://github.com/jimmy-guzman/gitzy/compare/v7.2.1...v7.2.2) (2026-06-24)
+
+
+### Bug Fixes
+
+* 🐛 align description language ([#703](https://github.com/jimmy-guzman/gitzy/issues/703)) ([a4ba2d8](https://github.com/jimmy-guzman/gitzy/commit/a4ba2d803f19f1ede3f2424d45d7a9c97dfeb74a))
+
 ## [7.2.1](https://github.com/jimmy-guzman/gitzy/compare/v7.2.0...v7.2.1) (2026-06-12)
 
 
