@@ -28,7 +28,7 @@ jobs:
         run: pnpm check
 
       - name: codecov
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@v7
 
       - name: Publish to NPM
         uses: cycjimmy/semantic-release-action@v6
