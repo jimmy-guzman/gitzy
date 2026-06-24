@@ -1,6 +1,6 @@
 # gitzy 🪄
 
-> [Conventional commits][conventional-commits] CLI with branch name generation and commitlint integration.
+> [Conventional commits][conventional-commits] and branch CLI
 
 <!-- markdownlint-disable MD033 -->
 <p align="center">
