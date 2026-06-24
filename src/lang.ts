@@ -81,5 +81,5 @@ export const lang = {
       type: "Set type inline",
     },
   },
-  description: "Interactive conventional commits CLI",
+  description: "Conventional commits and branch CLI",
 } satisfies Lang;
