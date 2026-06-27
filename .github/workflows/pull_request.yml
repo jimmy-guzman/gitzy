@@ -30,7 +30,7 @@ jobs:
         run: pnpm check
 
       - name: codecov
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@v7
 
   commit_check:
     runs-on: ubuntu-latest
