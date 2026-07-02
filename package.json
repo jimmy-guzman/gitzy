@@ -63,7 +63,7 @@
     "husky": "9.1.7",
     "is-ci": "4.1.0",
     "jiti": "2.7.0",
-    "knip": "6.20.0",
+    "knip": "6.24.0",
     "lilconfig": "3.1.3",
     "lint-staged": "17.0.8",
     "npm-run-all2": "9.0.2",
