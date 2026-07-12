@@ -58,7 +58,7 @@
     "@vitest/coverage-v8": "4.1.9",
     "clean-pkg-json": "2.0.0",
     "commander": "15.0.0",
-    "commitlint": "21.1.0",
+    "commitlint": "21.2.1",
     "eslint": "10.5.0",
     "husky": "9.1.7",
     "is-ci": "4.1.0",
