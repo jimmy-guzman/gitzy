@@ -54,7 +54,7 @@
     "@jimmy.codes/prettier-config": "2.1.2",
     "@leeoniya/ufuzzy": "1.0.19",
     "@total-typescript/ts-reset": "0.6.1",
-    "@types/node": "24.13.2",
+    "@types/node": "24.13.3",
     "@vitest/coverage-v8": "4.1.9",
     "clean-pkg-json": "2.0.0",
     "commander": "15.0.0",
