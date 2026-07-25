@@ -30,7 +30,7 @@ config file, you'll need to update it.
 
 | Setting      | v6  | v7  |
 | ------------ | --- | --- |
-| `header.max` | 64  | 50  |
+| `header.max` | 64  | 64  |
 | `header.min` | 3   | 5   |
 | `body.max`   | —   | 70  |
 | `body.min`   | —   | 5   |
