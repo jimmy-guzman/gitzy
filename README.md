@@ -41,7 +41,7 @@
 - JSON output (`--json`) for scripting and CI
 - `--no-emoji` flag (precedence: `--no-emoji` > `GITZY_NO_EMOJI` env > `emoji.enabled` config)
 - `--stdin` for piping answers as JSON (both `commit` and `branch`)
-- ⚡ [Lightweight (~170 kB install)][packagephobia]
+- ⚡ [Lightweight][packagephobia]
 
 ## Usage
 
