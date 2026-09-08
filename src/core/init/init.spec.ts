@@ -48,7 +48,11 @@ describe("init", () => {
       exists: true,
       filePath: path.join("/some/dir", ".gitzyrc.json"),
     });
-    expect(writeFileSync).toHaveBeenCalledOnce();
+    expect(writeFileSync).toHaveBeenCalledExactlyOnceWith(
+      path.join("/some/dir", ".gitzyrc.json"),
+      expect.stringContaining('"types"'),
+      "utf8",
+    );
   });
 
   it("should use process.cwd() as default directory", () => {
