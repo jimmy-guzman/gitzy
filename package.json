@@ -77,7 +77,7 @@
     "valibot": "1.4.1",
     "vitest": "4.1.11"
   },
-  "packageManager": "pnpm@11.26.0",
+  "packageManager": "pnpm@12.4.1",
   "engines": {
     "node": "^22.13.0 || >=24"
   },
