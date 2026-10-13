@@ -5,6 +5,7 @@ import uFuzzy from "@leeoniya/ufuzzy";
 const uf = new uFuzzy({
   intraDel: 1,
   intraIns: 1,
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-assignment -- IntraMode is an ambient const enum with no runtime value
   intraMode: 1,
   intraSub: 1,
   intraTrn: 1,
