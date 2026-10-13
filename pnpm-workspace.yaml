@@ -7,7 +7,3 @@ autoInstallPeers: false
 savePrefix: ""
 
 saveExact: true
-
-minimumReleaseAgeExclude:
-  - "@types/node@24.13.0"
-  - knip@6.20.0
