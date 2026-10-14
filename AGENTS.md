@@ -45,6 +45,7 @@ src/
     commands/
       commit.ts           # Default subcommand: full conventional commit flow
       branch.ts           # Branch name generation flow
+      squash.ts           # Squash last N commits via soft reset, reusing commit's collectAnswers()
       init.ts             # Generates a starter gitzy.config.js
       config.ts           # Displays resolved config (--json for machine-readable output)
     utils/
@@ -73,6 +74,7 @@ src/
       checks.ts           # checkIfGitRepo(), checkIfStaged()
       operations.ts       # commit() — runs git commit -m, or writes COMMIT_EDITMSG in hook mode; getGitDir()
       branch.ts           # createBranch(), renameBranch(), getCurrentBranch()
+      squash.ts           # getDefaultBranch(), countCommitsAhead(), checkCanSquash(), softReset()
       amend.ts            # getAmendParts(), parseConventionalCommit() — pre-fill from HEAD
     init/
       init.ts             # init() — generates gitzy.config.js in cwd
@@ -96,7 +98,7 @@ The codebase is split into two layers with a thin orchestration layer connecting
 ## Key Patterns
 
 - **Path alias** `@/*` maps to `./src/*`.
-- **Subcommands:** `gitzy` alone runs the default `commit` subcommand. Explicit subcommands: `branch`, `init`, `config`.
+- **Subcommands:** `gitzy` alone runs the default `commit` subcommand. Explicit subcommands: `branch`, `squash`, `init`, `config`.
 - **Prompt pattern:** Each question (`type`, `scope`, `subject`, `body`, `breaking`, `issues`, `coAuthors`, `signoff`) is an exported factory that takes the prompt options and returns a function that either resolves the autofilled answer, calls a `@clack/prompts` prompt, or returns `undefined` to skip. Factories call clack through the injected `prompter` (a `Prompter` from `src/cli/types.ts`); `createPrompts()` defaults it to `@clack/prompts`, collects the prompts listed in `config.prompts`, and runs them with `prompter.group()`.
 - **Config schema:** Every config file is loaded through a valibot schema with `safeParse`. The schema only validates shape; it applies no defaults, so absent keys stay absent and commitlint-derived values are not overwritten when configs merge. Defaults are merged once, in `normalizeConfig()`, from the per-section objects in `defaults.ts`. Invalid config throws a `TypeError` with a human-readable summary. Mistakes that still parse (unknown keys or prompt names, negative lengths, a min above its max) become warnings from `validateConfig()`, which commands print to stderr via `resolveConfigWithWarnings()`.
 - **Config normalization:** `normalizeConfig()` converts `string` type entries (short form) to full `TypeEntry` objects by looking them up in `builtinTypes`.

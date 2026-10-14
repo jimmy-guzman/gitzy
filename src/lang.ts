@@ -19,6 +19,11 @@ interface Lang {
     flags: CommitFlagDescriptions;
   };
   description: string;
+  squash: {
+    description: string;
+    examples: string;
+    flags: { count: string; dryRun: string };
+  };
 }
 
 export const lang = {
@@ -85,4 +90,17 @@ export const lang = {
     },
   },
   description: "Conventional commits and branch CLI",
+  squash: {
+    description: "Squash the last N commits into a single conventional commit",
+    examples: `
+  $ gitzy squash
+  $ gitzy squash --count 3
+  $ gitzy squash --count 3 --type feat -m "add dark mode"
+  $ gitzy squash --count 3 --dry-run
+    `,
+    flags: {
+      count: "Number of commits to squash (default: commits ahead of origin)",
+      dryRun: "Show commit message without squashing",
+    },
+  },
 } satisfies Lang;

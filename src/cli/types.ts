@@ -57,3 +57,8 @@ export interface BranchFlags {
   subject?: string;
   type?: string;
 }
+
+export type SquashFlags = Omit<
+  CommitFlags,
+  "amend" | "hook" | "retry" | "signoff"
+> & { count?: number };

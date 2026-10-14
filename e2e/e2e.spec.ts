@@ -1,5 +1,5 @@
 import { execSync, spawnSync } from "node:child_process";
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
@@ -466,6 +466,76 @@ describe("gitzy", () => {
       }
 
       expect(output).toContain("Subject is required");
+    });
+  });
+
+  describe("squash", () => {
+    let repo = "";
+
+    const gitEnv = {
+      ...process.env,
+      GIT_AUTHOR_EMAIL: "jane@example.com",
+      GIT_AUTHOR_NAME: "Jane Doe",
+      GIT_COMMITTER_EMAIL: "jane@example.com",
+      GIT_COMMITTER_NAME: "Jane Doe",
+      GIT_CONFIG_GLOBAL: path.join(tmpdir(), "gitzy-e2e-no-config"),
+      GIT_CONFIG_NOSYSTEM: "1",
+      TEMP: E2E_CWD,
+      TMP: E2E_CWD,
+      TMPDIR: E2E_CWD,
+    };
+
+    const inRepo = (command: string) =>
+      execSync(command, {
+        cwd: repo,
+        encoding: "utf-8",
+        env: gitEnv,
+        timeout: 30_000,
+      });
+
+    beforeEach(() => {
+      repo = mkdtempSync(path.join(E2E_CWD, "squash-"));
+      inRepo("git init --initial-branch main");
+
+      for (const name of ["a", "b", "c"]) {
+        writeFileSync(path.join(repo, name), name);
+        inRepo(`git add ${name} && git commit -m "feat: add ${name}"`);
+      }
+    });
+
+    it("should output the squash plan as JSON", () => {
+      const output = inRepo(
+        `node "${BIN}" squash --count 2 --json --type feat -m "add letters"`
+      );
+
+      expect(JSON.parse(output)).toMatchObject({
+        count: 2,
+        header: "feat: ✨ add letters",
+      });
+    });
+
+    it("should squash the last commits into one", () => {
+      inRepo(`node "${BIN}" squash --count 2 --type feat -m "add letters"`);
+
+      expect(inRepo("git log --format=%s")).toMatchInlineSnapshot(`
+        "feat: ✨ add letters
+        feat: add a
+        "
+      `);
+    });
+
+    it("should reject a count below 2", () => {
+      let output = "";
+
+      try {
+        inRepo(`node "${BIN}" squash --count 1 2>&1`);
+      } catch (error: unknown) {
+        if (error instanceof Error && "stdout" in error) {
+          output = String(error.stdout);
+        }
+      }
+
+      expect(output).toContain("Must be an integer of at least 2.");
     });
   });
 });
