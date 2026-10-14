@@ -16,6 +16,23 @@ export interface CommitOptions {
 }
 
 /**
+ * Get the absolute path of the git directory, wherever in the work tree we are
+ */
+const getGitDir = async () => {
+  try {
+    const result = await x("git", ["rev-parse", "--absolute-git-dir"], {
+      throwOnError: true,
+    });
+
+    return result.stdout.trim();
+  } catch (error) {
+    throw new Error('Not a git repository \nYou can try running "git init"', {
+      cause: error,
+    });
+  }
+};
+
+/**
  * Execute a git commit with the given message
  *
  * @param message - The full commit message string
@@ -30,7 +47,7 @@ export interface CommitOptions {
  *
  * @param options.noVerify - Skip git hooks (--no-verify)
  *
- * @returns Object with the message and whether it was committed
+ * @returns Object with the message, whether it was committed, and in hook mode the COMMIT_EDITMSG path
  */
 export const commit = async (
   message: string,
@@ -46,12 +63,12 @@ export const commit = async (
   }
 
   if (hook) {
-    const gitDir = process.env.GIT_DIR ?? ".git";
+    const gitDir = process.env.GIT_DIR ?? (await getGitDir());
     const commitMsgPath = path.join(gitDir, "COMMIT_EDITMSG");
 
     writeFileSync(commitMsgPath, message);
 
-    return { committed: true, message };
+    return { commitMsgPath, committed: true, message };
   }
 
   const extraFlags: string[] = [];

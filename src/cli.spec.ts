@@ -1,9 +1,13 @@
+import { writeFileSync } from "node:fs";
+import path from "node:path";
+
 import { cli } from "./cli";
 import { defaultResolvedConfig } from "./core/config/defaults";
 import * as config from "./core/config/resolver";
 import * as gitChecks from "./core/git/checks";
 import * as gitOperations from "./core/git/operations";
 import * as gitSignoff from "./core/git/signoff";
+import { git, useTempGitRepo } from "./core/git/test-utils";
 
 const answerArgs = ["node", "gitzy", "--type", "feat", "-m", "test commit"];
 
@@ -123,5 +127,52 @@ describe(cli, () => {
         noVerify: undefined,
       })
     );
+  });
+
+  describe("when hook mode is inferred from the environment", () => {
+    useTempGitRepo();
+
+    it.each([
+      ["GIT_DIR", ".git"],
+      ["GIT_INDEX_FILE", path.join(".git", "index")],
+    ])(
+      "should warn and not commit when hook mode is inferred from %s",
+      async (name, value) => {
+        writeFileSync("file.txt", "hello");
+        await git("add", "file.txt");
+        vi.stubEnv(name, value);
+        vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
+          defaultResolvedConfig
+        );
+        const stderrSpy = vi
+          .spyOn(process.stderr, "write")
+          .mockReturnValue(true);
+
+        await cli();
+
+        const stderr = stderrSpy.mock.calls.map(([chunk]) => chunk).join("");
+
+        expect(stderr).toContain(`Inferred hook mode from ${name}`);
+        expect(stderr).toContain("--hook");
+        expect(stderr).toContain(path.join(".git", "COMMIT_EDITMSG"));
+        await expect(git("rev-list", "--count", "HEAD")).resolves.toBe("1");
+      }
+    );
+
+    it("should not warn when --hook is passed", async () => {
+      vi.stubEnv("GIT_DIR", ".git");
+      vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
+        defaultResolvedConfig
+      );
+      const stderrSpy = vi.spyOn(process.stderr, "write").mockReturnValue(true);
+
+      process.argv = [...answerArgs, "--hook"];
+
+      await cli();
+
+      const stderr = stderrSpy.mock.calls.map(([chunk]) => chunk).join("");
+
+      expect(stderr).not.toContain("Inferred hook mode");
+    });
   });
 });

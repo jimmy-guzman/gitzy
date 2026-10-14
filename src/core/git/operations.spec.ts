@@ -1,4 +1,11 @@
-import { chmodSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  chmodSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
@@ -43,6 +50,7 @@ describe(commit, () => {
       "feat: add feature"
     );
     expect(result).toStrictEqual({
+      commitMsgPath: path.join(process.cwd(), ".git", "COMMIT_EDITMSG"),
       committed: true,
       message: "feat: add feature",
     });
@@ -52,12 +60,41 @@ describe(commit, () => {
   it("should use GIT_DIR env var when set for COMMIT_EDITMSG path", async () => {
     const gitDir = mkdtempSync(path.join(os.tmpdir(), "gitzy-git-dir-"));
 
+    onTestFinished(() => {
+      rmSync(gitDir, { force: true, recursive: true });
+    });
     vi.stubEnv("GIT_DIR", gitDir);
 
     await commit("feat: add feature", { hook: true });
 
     expect(readFileSync(path.join(gitDir, "COMMIT_EDITMSG"), "utf-8")).toBe(
       "feat: add feature"
+    );
+  });
+
+  it("should write to the repo's COMMIT_EDITMSG when run from a subdirectory in hook mode", async () => {
+    const root = process.cwd();
+
+    mkdirSync("pkg");
+    process.chdir("pkg");
+
+    await commit("feat: add feature", { hook: true });
+
+    expect(
+      readFileSync(path.join(root, ".git", "COMMIT_EDITMSG"), "utf-8")
+    ).toBe("feat: add feature");
+  });
+
+  it("should explain when hook mode runs outside a git repository", async () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), "gitzy-no-repo-"));
+
+    onTestFinished(() => {
+      rmSync(dir, { force: true, recursive: true });
+    });
+    process.chdir(dir);
+
+    await expect(commit("feat: add feature", { hook: true })).rejects.toThrow(
+      "Not a git repository"
     );
   });
 
