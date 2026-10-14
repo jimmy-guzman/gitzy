@@ -5,7 +5,7 @@ An interactive CLI tool for creating [Conventional Commits](https://www.conventi
 ## Tech Stack
 
 - **Language:** TypeScript 5 (strict mode, ESNext target)
-- **Runtime:** Node.js `^20.19.0 || >=22.12.0` (`.nvmrc` pins `22`)
+- **Runtime:** Node.js (version pinned in `.nvmrc`)
 - **Module system:** ESM (`"type": "module"`)
 - **Package manager:** pnpm
 - **Build tool:** `tsdown` (Rollup-based TypeScript bundler, outputs `dist/run.mjs` and `dist/api/index.mjs`)

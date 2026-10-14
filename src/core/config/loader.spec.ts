@@ -108,6 +108,32 @@ describe("loadConfig", () => {
     });
   });
 
+  describe("TypeScript loader", () => {
+    const originalVersion = process.versions.node;
+
+    afterEach(() => {
+      Object.defineProperty(process.versions, "node", {
+        value: originalVersion,
+      });
+    });
+
+    it.each(["22.12.0", "22.17.1"])(
+      "should reject TypeScript configs on Node %s",
+      async (version) => {
+        Object.defineProperty(process.versions, "node", { value: version });
+        mockExplorer.search.mockResolvedValue(null);
+
+        await loadConfig("gitzy", mockSchema);
+
+        const loadTs = vi.mocked(lilconfig).mock.calls[0][1]?.loaders?.[".ts"];
+
+        await expect(loadTs?.("gitzy.config.ts", "")).rejects.toThrow(
+          "TypeScript config files require Node.js >=22.18.0",
+        );
+      },
+    );
+  });
+
   describe("config not found", () => {
     it("should return null when no config is found", async () => {
       mockExplorer.search.mockResolvedValue(null);
