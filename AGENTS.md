@@ -17,6 +17,7 @@ An interactive CLI tool for creating [Conventional Commits](https://www.conventi
 - **Git execution:** `tinyexec` (lightweight `child_process` wrapper)
 - **Formatting:** Oxfmt via Ultracite (`oxfmt.config.ts`)
 - **Linting:** Oxlint via Ultracite `core` + `anti-slop` + `vitest` presets (`oxlint.config.ts`), with type-aware rules and type-check (`typeAware`/`typeCheck` via `oxlint-tsgolint`); `src/**` bans `../` imports (use `@/`)
+- **Lint/format/type check entrypoint:** `ultracite check` / `ultracite fix` run Oxlint + Oxfmt together; Oxlint's `typeCheck` replaces a separate `tsc` run
 - **Testing:** Vitest 5 with V8 coverage (unit + e2e)
 - **Dead code detection:** Knip
 - **Spell checking:** cspell, run on staged files by lint-staged at commit time; add new words to `cspell.json` `words`
@@ -118,12 +119,9 @@ The codebase is split into two layers with a thin orchestration layer connecting
 pnpm build        # Bundle src/run.ts + src/index.ts → dist/ (minified)
 pnpm test         # Run tests in watch mode
 pnpm coverage     # Single-run with V8 coverage report
-pnpm check        # Full suite: knip + lint + format + coverage + typecheck (check builds first)
-pnpm lint         # Lint (Oxlint)
-pnpm lint:fix     # Lint and auto-fix
-pnpm format       # Check formatting (Oxfmt)
-pnpm format:fix   # Auto-fix formatting
-pnpm typecheck    # Type check (tsc --noEmit)
+pnpm check        # Full suite, in parallel: knip + lint + coverage (check builds first)
+pnpm lint         # Lint + format + type check (ultracite check)
+pnpm lint:fix     # Lint + format auto-fix (ultracite fix)
 pnpm knip         # Detect unused exports/dependencies
 pnpm gitzy        # Run the CLI locally from source (tsx src/run.ts)
 ```
@@ -134,10 +132,9 @@ After **every** set of changes, run all of these checks before considering the t
 
 ```txt
 pnpm knip         # 0. Check for unused code/deps (fix before proceeding)
-pnpm typecheck    # 1. Type check
-pnpm lint         # 2. Lint (fix errors before proceeding)
-pnpm coverage     # 3. Unit tests with coverage
-pnpm build        # 4. Production build (MUST pass)
+pnpm lint         # 1. Lint + format + type check (fix errors before proceeding)
+pnpm coverage     # 2. Unit tests with coverage
+pnpm build        # 3. Production build (MUST pass)
 ```
 
 If any step fails, fix the issue and re-run from that step. Do not move on until all pass.

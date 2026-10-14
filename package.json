@@ -29,18 +29,15 @@
   "scripts": {
     "build": "tsdown",
     "precheck": "pnpm build",
-    "check": "run-p knip lint format coverage typecheck",
+    "check": "pnpm run \"/^(knip|lint|coverage)$/\"",
     "coverage": "vitest run --coverage",
-    "format": "oxfmt --check",
     "gitzy": "tsx src/run.ts",
     "knip": "knip",
-    "lint": "oxlint",
-    "lint:fix": "oxlint --fix",
+    "lint": "ultracite check",
+    "lint:fix": "ultracite fix",
     "prepack": "pnpm build && clean-pkg-json",
     "prepare": "is-ci || husky",
-    "test": "vitest",
-    "typecheck": "tsc",
-    "format:fix": "oxfmt"
+    "test": "vitest"
   },
   "devDependencies": {
     "@clack/prompts": "1.8.1",
@@ -58,7 +55,6 @@
     "knip": "6.41.0",
     "lilconfig": "3.1.3",
     "lint-staged": "17.6.0",
-    "npm-run-all2": "9.0.3",
     "oxfmt": "0.71.0",
     "oxlint": "1.87.0",
     "oxlint-tsgolint": "7.0.2004",
