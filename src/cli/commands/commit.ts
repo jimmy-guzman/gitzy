@@ -128,7 +128,11 @@ const loadAutofill = async (flags: CommitFlags, store: GitzyStore) => {
   return { ...previous, ...(await readStdinJson(PartialMessagePartsSchema)) };
 };
 
-const writeMessage = async (state: GitzyState, flags: CommitFlags) => {
+const writeMessage = async (
+  state: GitzyState,
+  flags: CommitFlags,
+  hookInferredFrom: string | undefined
+) => {
   const emojiEnabled = flags.noEmoji === true ? false : (flags.emoji ?? true);
 
   if (flags.json === true) {
@@ -152,12 +156,19 @@ const writeMessage = async (state: GitzyState, flags: CommitFlags) => {
     return;
   }
 
-  await commit(message, {
+  const result = await commit(message, {
     amend: flags.amend,
     dryRun: flags.dryRun,
     hook: flags.hook,
     noVerify: flags.noVerify,
   });
+
+  if (hookInferredFrom !== undefined && "commitMsgPath" in result) {
+    log.warn(
+      `Inferred hook mode from ${hookInferredFrom}: wrote ${result.commitMsgPath} instead of running git commit. Pass --hook to make this explicit.`,
+      { output: process.stderr }
+    );
+  }
 };
 
 export const registerCommitCommand = (program: Command) => {
@@ -190,10 +201,16 @@ export const registerCommitCommand = (program: Command) => {
     .addHelpText("after", `\nExamples:\n      ${lang.commit.examples}\n    `)
     .action(async (opts: CommitFlags, command: Command) => {
       const store = new GitzyStore();
+      const hookInferredFrom =
+        opts.hook === true
+          ? undefined
+          : ["GIT_DIR", "GIT_INDEX_FILE"].find(
+              (name) => process.env[name] !== undefined
+            );
 
       const flags: CommitFlags = {
         ...opts,
-        hook: process.env.GIT_DIR !== undefined || Boolean(opts.hook),
+        hook: hookInferredFrom !== undefined || Boolean(opts.hook),
       };
 
       const state = {
@@ -271,7 +288,7 @@ export const registerCommitCommand = (program: Command) => {
           state.answers.signoff = await getSignoffTrailer();
         }
 
-        await writeMessage(state, flags);
+        await writeMessage(state, flags, hookInferredFrom);
       } catch (error: unknown) {
         log.error(error instanceof Error ? error.message : String(error));
         process.exit(1);

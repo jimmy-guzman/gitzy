@@ -1,5 +1,5 @@
 import { execSync } from "node:child_process";
-import { mkdtempSync } from "node:fs";
+import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
@@ -61,6 +61,7 @@ const runCommit = (args: string, stdin?: string) => {
   const raw = execSync(`node "${BIN}" commit --dry-run ${args}`, {
     cwd: E2E_CWD,
     encoding: "utf-8",
+    env: { ...process.env, TEMP: E2E_CWD, TMP: E2E_CWD, TMPDIR: E2E_CWD },
     input,
     timeout: 30_000,
   });
@@ -105,6 +106,10 @@ const runBranch = (args: string, stdin?: string) => {
 };
 
 describe("gitzy", () => {
+  afterAll(() => {
+    rmSync(E2E_CWD, { force: true, recursive: true });
+  });
+
   describe("commit", () => {
     it("should create commit message with all fields", () => {
       const stdin = JSON.stringify({

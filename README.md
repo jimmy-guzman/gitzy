@@ -79,7 +79,7 @@ gitzy branch --type feat -m "add dark mode" --scope ui
 | `--no-emoji` |  | disable emoji in commit message |
 | `--co-author <coAuthor...>` |  | add co-authors (repeatable: `--co-author "Name <email>"`) |
 | `--signoff [signoff]` | `-s` | add a Signed-off-by trailer (derives your git identity; pass `"Name <email>"` to override) |
-| `--hook` |  | enable running inside a git hook (e.g. `pre-commit`) |
+| `--hook` |  | enable running inside a git hook (e.g. `pre-commit`); inferred, with a warning, when omitted inside a hook |
 | `--stdin` |  | read answers from stdin as JSON (CLI flags take priority) |
 | `--version` | `-v` | display version number |
 | `--help` | `-h` | display help for command |
