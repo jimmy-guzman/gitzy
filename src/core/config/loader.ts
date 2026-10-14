@@ -47,11 +47,11 @@ const loadTs: Loader = async (filepath) => {
   const parts = process.versions.node.split(".").map(Number);
   const major = parts[0] ?? 0;
   const minor = parts[1] ?? 0;
-  const supportsNativeTs = (major === 22 && minor >= 12) || major > 22;
+  const supportsNativeTs = (major === 22 && minor >= 18) || major > 22;
 
   if (!supportsNativeTs) {
     throw new TypeError(
-      `TypeScript config files require Node.js >=22.12.0. Current version: ${process.versions.node}. Use a .js, .cjs, or .mjs config file instead, or upgrade Node.js.`,
+      `TypeScript config files require Node.js >=22.18.0. Current version: ${process.versions.node}. Use a .js, .cjs, or .mjs config file instead, or upgrade Node.js.`,
     );
   }
 

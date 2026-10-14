@@ -80,7 +80,7 @@
   },
   "packageManager": "pnpm@12.13.0",
   "engines": {
-    "node": "^22.13.0 || >=24"
+    "node": "^22.18.0 || >=24"
   },
   "publishConfig": {
     "access": "public"
