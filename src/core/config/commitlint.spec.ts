@@ -1,4 +1,7 @@
+import { parse } from "valibot";
+
 import { extractCommitlintRules } from "./commitlint";
+import { CommitlintConfigSchema } from "./commitlint-schema";
 
 describe(extractCommitlintRules, () => {
   it("should return all overrides mapped to v7 nested config shape", () => {
@@ -127,5 +130,35 @@ describe(extractCommitlintRules, () => {
     ).toStrictEqual({
       body: { min: 0 },
     });
+  });
+
+  it("should ignore a disabled rule with no condition or value", () => {
+    expect(
+      extractCommitlintRules({ rules: { "body-max-length": [0] } })
+    ).toStrictEqual({});
+  });
+
+  it("should parse and ignore rules gitzy does not read", () => {
+    expect(
+      extractCommitlintRules(
+        parse(CommitlintConfigSchema, {
+          rules: { "scope-case": [2, "always", ["lower-case", "kebab-case"]] },
+        })
+      )
+    ).toStrictEqual({});
+  });
+
+  it("should ignore rules with a never condition", () => {
+    expect(
+      extractCommitlintRules({ rules: { "type-enum": [2, "never", ["wip"]] } })
+    ).toStrictEqual({});
+  });
+
+  it("should ignore rules with severity 0", () => {
+    expect(
+      extractCommitlintRules({
+        rules: { "type-enum": [0, "always", ["feat"]] },
+      })
+    ).toStrictEqual({});
   });
 });
