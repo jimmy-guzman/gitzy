@@ -1,7 +1,8 @@
 import { createBranch, getCurrentBranch, renameBranch } from "./branch";
 import { git, useTempGitRepo } from "./test-utils";
 
-const listBranches = () => git("branch", "--format=%(refname:short)");
+const listBranches = async () =>
+  await git("branch", "--format=%(refname:short)");
 
 useTempGitRepo();
 

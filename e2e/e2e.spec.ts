@@ -56,7 +56,7 @@ const defaultBranchPayload = (): BranchPayload => ({
 });
 
 const runCommit = (args: string, stdin?: string) => {
-  const input = stdin ? Buffer.from(stdin) : undefined;
+  const input = stdin === undefined ? undefined : Buffer.from(stdin);
 
   const raw = execSync(`node "${BIN}" commit --dry-run ${args}`, {
     cwd: E2E_CWD,
@@ -84,7 +84,7 @@ const runCommit = (args: string, stdin?: string) => {
 };
 
 const runBranch = (args: string, stdin?: string) => {
-  const input = stdin ? Buffer.from(stdin) : undefined;
+  const input = stdin === undefined ? undefined : Buffer.from(stdin);
 
   const raw = execSync(`node "${BIN}" branch --dry-run ${args}`, {
     cwd: E2E_CWD,
@@ -97,7 +97,7 @@ const runBranch = (args: string, stdin?: string) => {
 
   const match = /Branch name: (?<name>.+)/u.exec(clean);
 
-  if (!match?.groups?.name) {
+  if (match?.groups?.name === undefined) {
     throw new Error(`Could not find branch name in output:\n${clean}`);
   }
 

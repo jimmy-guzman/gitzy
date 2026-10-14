@@ -42,7 +42,11 @@ const promptBranchQuestions = async (
   autofill: Partial<BranchAnswers>,
   amendInitial?: Partial<BranchAnswers>
 ): Promise<BranchAnswers> => {
-  if (autofill.type && autofill.subject) {
+  if (
+    autofill.type !== undefined &&
+    autofill.type !== "" &&
+    autofill.subject !== undefined
+  ) {
     const trimmedSubject = autofill.subject.trim();
     const validType = state.config.types.some((t) => t.name === autofill.type);
 
@@ -72,27 +76,27 @@ const promptBranchQuestions = async (
 
   const result = await group(
     {
-      issue: () => {
+      issue: async () => {
         if (autofill.issue !== undefined) {
-          return Promise.resolve(autofill.issue);
+          return autofill.issue;
         }
 
-        return text({
+        return await text({
           initialValue: amendInitial?.issue,
           message: "Add an issue reference",
           placeholder: "skip when none",
         });
       },
-      scope: () => {
+      scope: async () => {
         if (config.scopes.length === 0) {
-          return Promise.resolve("");
+          return "";
         }
 
         if (autofill.scope !== undefined) {
-          return Promise.resolve(autofill.scope);
+          return autofill.scope;
         }
 
-        return autocomplete({
+        return await autocomplete({
           filter: createFuzzyFilter(scopeOptions),
           initialValue: amendInitial?.scope,
           maxItems: 10,
@@ -100,12 +104,12 @@ const promptBranchQuestions = async (
           options: scopeOptions,
         });
       },
-      subject: () => {
+      subject: async () => {
         if (autofill.subject !== undefined) {
-          return Promise.resolve(autofill.subject);
+          return autofill.subject;
         }
 
-        return text({
+        return await text({
           initialValue: amendInitial?.subject,
           message: "Add a short description",
           validate: (input) =>
@@ -114,12 +118,12 @@ const promptBranchQuestions = async (
               : undefined,
         });
       },
-      type: () => {
+      type: async () => {
         if (autofill.type !== undefined) {
-          return Promise.resolve(autofill.type);
+          return autofill.type;
         }
 
-        return autocomplete({
+        return await autocomplete({
           filter: createFuzzyFilter(typeOptions),
           initialValue: amendInitial?.type,
           maxItems: 10,
@@ -147,19 +151,19 @@ const promptBranchQuestions = async (
 const toFlagAnswers = (opts: BranchFlags) => {
   const answers: Partial<BranchAnswers> = {};
 
-  if (opts.issue) {
+  if (opts.issue !== undefined && opts.issue !== "") {
     answers.issue = opts.issue;
   }
 
-  if (opts.scope) {
+  if (opts.scope !== undefined && opts.scope !== "") {
     answers.scope = opts.scope;
   }
 
-  if (opts.subject) {
+  if (opts.subject !== undefined && opts.subject !== "") {
     answers.subject = opts.subject;
   }
 
-  if (opts.type) {
+  if (opts.type !== undefined && opts.type !== "") {
     answers.type = opts.type;
   }
 
@@ -171,11 +175,11 @@ const writeResult = (
   branchName: string,
   oldName?: string
 ) => {
-  if (opts.json) {
+  if (opts.json === true) {
     process.stdout.write(
       `${JSON.stringify({ branchName, dryRun: opts.dryRun ?? false, oldName })}\n`
     );
-  } else if (opts.dryRun) {
+  } else if (opts.dryRun === true) {
     log.info(`Branch name: ${branchName}`);
   }
 };
@@ -211,21 +215,24 @@ export const registerBranchCommand = (program: Command) => {
       try {
         state.config = await resolveConfig();
 
-        const amendInitial = opts.amend
-          ? parseBranchName(
-              await getCurrentBranch().catch(() => ""),
-              state.config.scopes.map((s) => s.name)
-            )
-          : undefined;
-        const stdinAnswers = opts.stdin
-          ? await readStdinJson(PartialBranchAnswersSchema)
-          : {};
+        const amendInitial =
+          opts.amend === true
+            ? parseBranchName(
+                await getCurrentBranch().catch(() => ""),
+                state.config.scopes.map((s) => s.name)
+              )
+            : undefined;
+        const stdinAnswers =
+          opts.stdin === true
+            ? await readStdinJson(PartialBranchAnswersSchema)
+            : {};
         const flagAnswers = toFlagAnswers(opts);
 
         if (
           !process.stdin.isTTY &&
-          (!flagAnswers.type || !flagAnswers.subject) &&
-          !opts.stdin
+          (flagAnswers.type === undefined ||
+            flagAnswers.subject === undefined) &&
+          opts.stdin !== true
         ) {
           cmd.error(
             "No TTY detected. Run gitzy branch --help for non-interactive usage."
@@ -247,7 +254,7 @@ export const registerBranchCommand = (program: Command) => {
 
         const branchName = formatBranchName(parts, state.config.branch);
 
-        if (opts.amend) {
+        if (opts.amend === true) {
           const result = await renameBranch(branchName, {
             dryRun: opts.dryRun,
           });

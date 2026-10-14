@@ -29,13 +29,17 @@ import { isString } from "@/core/guards";
 import { GitzyStore } from "@/core/store/store";
 import { lang } from "@/lang";
 
-const promptQuestions = (
+const promptQuestions = async (
   state: GitzyState,
   flags: CommitFlags,
   autofillAnswers: Partial<Answers>,
   amendInitial?: Partial<Answers>
 ) => {
-  if (flags.type && flags.subject) {
+  if (
+    flags.type !== undefined &&
+    flags.type !== "" &&
+    flags.subject !== undefined
+  ) {
     const trimmedSubject = flags.subject.trim();
     const validType = state.config.types.some((t) => t.name === flags.type);
 
@@ -61,8 +65,16 @@ const promptQuestions = (
     }
   }
 
-  return createPrompts(state, flags, autofillAnswers, amendInitial);
+  return await createPrompts(state, flags, autofillAnswers, amendInitial);
 };
+
+const canSkipPrompts = (flags: CommitFlags) =>
+  (flags.type !== undefined &&
+    flags.type !== "" &&
+    flags.subject !== undefined &&
+    flags.subject !== "") ||
+  flags.retry === true ||
+  flags.stdin === true;
 
 const toFlagAnswers = (flags: CommitFlags) => {
   const answers: Partial<Answers> = {};
@@ -103,13 +115,13 @@ const toFlagAnswers = (flags: CommitFlags) => {
 };
 
 const loadAutofill = async (flags: CommitFlags, store: GitzyStore) => {
-  const previous = flags.retry ? store.load() : {};
+  const previous = flags.retry === true ? store.load() : {};
 
-  if (flags.retry && Object.keys(previous).length === 0) {
+  if (flags.retry === true && Object.keys(previous).length === 0) {
     log.warn(`There is no previous gitzy commit to retry...`);
   }
 
-  if (!flags.stdin) {
+  if (flags.stdin !== true) {
     return previous;
   }
 
@@ -119,7 +131,7 @@ const loadAutofill = async (flags: CommitFlags, store: GitzyStore) => {
 const writeMessage = async (state: GitzyState, flags: CommitFlags) => {
   const emojiEnabled = flags.noEmoji === true ? false : (flags.emoji ?? true);
 
-  if (flags.json) {
+  if (flags.json === true) {
     const result = formatMessageResult(
       state.config,
       state.answers,
@@ -133,7 +145,7 @@ const writeMessage = async (state: GitzyState, flags: CommitFlags) => {
 
   const message = formatMessage(state.config, state.answers, emojiEnabled);
 
-  if (flags.dryRun) {
+  if (flags.dryRun === true) {
     log.info(`Message...`);
     log.message(`\n${message}\n`);
 
@@ -189,7 +201,7 @@ export const registerCommitCommand = (program: Command) => {
         config: defaultResolvedConfig,
       };
 
-      if (flags.dryRun) {
+      if (flags.dryRun === true) {
         log.info("Running in dry mode...");
       }
 
@@ -219,19 +231,14 @@ export const registerCommitCommand = (program: Command) => {
 
         let amendInitial: Partial<Answers> | undefined;
 
-        if (flags.amend) {
+        if (flags.amend === true) {
           amendInitial = await getAmendParts();
         }
 
         const autofillAnswers = await loadAutofill(flags, store);
         const flagAnswers = toFlagAnswers(flags);
 
-        if (
-          !process.stdin.isTTY &&
-          (!flags.type || !flags.subject) &&
-          !flags.retry &&
-          !flags.stdin
-        ) {
+        if (!process.stdin.isTTY && !canSkipPrompts(flags)) {
           command.error(
             "No TTY detected. Run gitzy commit --help for non-interactive usage."
           );
@@ -252,7 +259,11 @@ export const registerCommitCommand = (program: Command) => {
           state.answers.coAuthors = flags.coAuthor;
         }
 
-        if (flags.signoff) {
+        if (
+          flags.signoff !== undefined &&
+          flags.signoff !== false &&
+          flags.signoff !== ""
+        ) {
           state.answers.signoff = flags.signoff;
         }
 

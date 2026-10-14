@@ -47,10 +47,5 @@ export const checkIfGitRepo = async () => {
  */
 export const shouldDoGitChecks = (
   cliFlags: { amend?: boolean; dryRun?: boolean; hook?: boolean } = {}
-) => {
-  if (cliFlags.dryRun || cliFlags.hook || cliFlags.amend) {
-    return false;
-  }
-
-  return true;
-};
+) =>
+  cliFlags.dryRun !== true && cliFlags.hook !== true && cliFlags.amend !== true;

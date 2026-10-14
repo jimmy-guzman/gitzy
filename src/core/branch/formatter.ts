@@ -63,7 +63,7 @@ export const formatBranchName = (parts: BranchParts, config: BranchConfig) => {
 
   const tokens = {
     issue: parts.issue?.trim() ?? "",
-    scope: parts.scope ? slugify(parts.scope) : "",
+    scope: parts.scope === undefined ? "" : slugify(parts.scope),
     subject: slugify(parts.subject),
     type: slugify(parts.type),
   } satisfies Record<string, string>;

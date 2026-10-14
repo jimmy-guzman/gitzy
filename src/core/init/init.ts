@@ -60,7 +60,7 @@ export const init = (
   const filePath = path.join(cwd, CONFIG_FILENAME);
   const exists = existsSync(filePath);
 
-  if (!exists || options.force) {
+  if (!exists || options.force === true) {
     writeFileSync(filePath, CONFIG_TEMPLATE, "utf-8");
   }
 

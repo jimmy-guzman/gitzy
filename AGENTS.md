@@ -4,7 +4,7 @@ An interactive CLI tool for creating [Conventional Commits](https://www.conventi
 
 ## Tech Stack
 
-- **Language:** TypeScript 5 (strict mode, ESNext target)
+- **Language:** TypeScript 7 (strict mode, ESNext target)
 - **Runtime:** Node.js (version pinned in `.nvmrc`)
 - **Module system:** ESM (`"type": "module"`)
 - **Package manager:** pnpm
@@ -16,7 +16,7 @@ An interactive CLI tool for creating [Conventional Commits](https://www.conventi
 - **Fuzzy search:** `@leeoniya/ufuzzy`
 - **Git execution:** `tinyexec` (lightweight `child_process` wrapper)
 - **Formatting:** Oxfmt via Ultracite (`oxfmt.config.ts`)
-- **Linting:** Oxlint via Ultracite `core` + `anti-slop` + `vitest` presets (`oxlint.config.ts`); `src/**` bans `../` imports (use `@/`)
+- **Linting:** Oxlint via Ultracite `core` + `anti-slop` + `vitest` presets (`oxlint.config.ts`), with type-aware rules and type-check (`typeAware`/`typeCheck` via `oxlint-tsgolint`); `src/**` bans `../` imports (use `@/`)
 - **Testing:** Vitest 5 with V8 coverage (unit + e2e)
 - **Dead code detection:** Knip
 - **Spell checking:** cspell

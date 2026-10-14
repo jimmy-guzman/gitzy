@@ -130,7 +130,11 @@ const createHead = (
   emojiPrefix: string
 ) => {
   const breakingIndicator =
-    config.breaking.format !== "footer" && parts.breaking ? "!" : "";
+    config.breaking.format !== "footer" &&
+    parts.breaking !== false &&
+    parts.breaking !== ""
+      ? "!"
+      : "";
 
   return `${parts.type + scope}${breakingIndicator}: ${emojiPrefix}${parts.subject}`;
 };
@@ -171,7 +175,9 @@ export const formatMessage = (
   const typeEntry = config.types.find((t) => t.name === parts.type);
   const emojiEnabled = isEmojiEnabled(config, emoji);
   const emojiPrefix =
-    emojiEnabled && typeEntry?.emoji ? `${typeEntry.emoji} ` : "";
+    emojiEnabled && typeEntry?.emoji !== undefined && typeEntry.emoji !== ""
+      ? `${typeEntry.emoji} `
+      : "";
   const scope = createScope(parts.scope);
   const head = createHead(parts, scope, config, emojiPrefix);
   const body = parts.body.trim() ? `\n\n${parts.body}` : "";
@@ -209,7 +215,7 @@ const getFooterStartRegex = (config: ResolvedConfig) => {
     ...GITHUB_PREFIXES.map(capitalize),
     config.emoji.breaking,
     config.emoji.issues,
-    config.issues.prefix ? capitalize(config.issues.prefix) : "",
+    config.issues.prefix === undefined ? "" : capitalize(config.issues.prefix),
   ]
     .filter(Boolean)
     .map(escapeRegex);

@@ -5,16 +5,24 @@ import path from "node:path";
 import { normalizeConfig } from "./normalizer";
 import { resolveConfig } from "./resolver";
 
+type Json =
+  | Json[]
+  | boolean
+  | number
+  | string
+  | { [key: string]: Json | undefined }
+  | null;
+
 describe(resolveConfig, () => {
   const originalCwd = process.cwd();
   let dir = "";
 
-  const writeConfigs = <G, C>(gitzy: G | null, commitlint: C | null) => {
-    if (gitzy) {
+  const writeConfigs = (gitzy: Json, commitlint: Json) => {
+    if (gitzy !== null) {
       writeFileSync(path.join(dir, ".gitzyrc.json"), JSON.stringify(gitzy));
     }
 
-    if (commitlint) {
+    if (commitlint !== null) {
       writeFileSync(
         path.join(dir, ".commitlintrc.json"),
         JSON.stringify(commitlint)

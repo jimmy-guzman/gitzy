@@ -107,17 +107,11 @@ export const createBranch = async (
     return { branchName };
   }
 
-  if (checkout) {
-    const args = from
-      ? ["checkout", "-b", branchName, from]
-      : ["checkout", "-b", branchName];
+  const fromArgs = from !== undefined && from !== "" ? [from] : [];
 
-    await runGit(args, "git checkout -b");
-  } else {
-    const args = from ? ["branch", branchName, from] : ["branch", branchName];
-
-    await runGit(args, "git branch");
-  }
+  await (checkout
+    ? runGit(["checkout", "-b", branchName, ...fromArgs], "git checkout -b")
+    : runGit(["branch", branchName, ...fromArgs], "git branch"));
 
   return { branchName };
 };

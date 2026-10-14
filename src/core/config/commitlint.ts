@@ -7,7 +7,7 @@ import type { BodyConfig, Config } from "./types";
 
 const toRange = (max: number | undefined, min: number | undefined) => {
   if (max === undefined && min === undefined) {
-    return;
+    return null;
   }
 
   const range: Partial<BodyConfig> = {};
