@@ -61,12 +61,12 @@ const applyPattern = (
 export const formatBranchName = (parts: BranchParts, config: BranchConfig) => {
   const { max, pattern } = config;
 
-  const tokens: Record<string, string> = {
+  const tokens = {
     issue: parts.issue?.trim() ?? "",
     scope: parts.scope ? slugify(parts.scope) : "",
     subject: slugify(parts.subject),
     type: slugify(parts.type),
-  };
+  } satisfies Record<string, string>;
 
   const formatted = applyPattern(pattern, tokens);
 

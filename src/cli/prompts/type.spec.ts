@@ -1,11 +1,10 @@
-import * as clack from "@clack/prompts";
-
 import { defaultResolvedConfig } from "@/core/config/defaults";
 import { defaultMessageParts } from "@/core/conventional/types";
 
+import { createFakePrompter } from "./test-utils";
 import { createTypeOptions, type } from "./type";
 
-vi.mock(import("@clack/prompts"));
+const prompter = createFakePrompter();
 
 const setupTypeOptions = (configOverrides = {}, flags = {}) =>
   createTypeOptions(
@@ -20,6 +19,7 @@ const setupType = (configOverrides = {}, autofill = {}, initial = {}) =>
     config: { ...defaultResolvedConfig, ...configOverrides },
     flags: {},
     initial,
+    prompter,
   });
 
 describe(createTypeOptions, () => {
@@ -68,7 +68,7 @@ describe(createTypeOptions, () => {
 
 describe(type, () => {
   beforeEach(() => {
-    vi.mocked(clack.autocomplete).mockResolvedValue("feat");
+    prompter.autocomplete.mockResolvedValue("feat");
   });
 
   it("should return a factory function", () => {
@@ -86,7 +86,7 @@ describe(type, () => {
   });
 
   it("should call autocomplete when no autofill", async () => {
-    const { autocomplete } = await import("@clack/prompts");
+    const { autocomplete } = prompter;
 
     const factory = setupType();
 
@@ -102,7 +102,7 @@ describe(type, () => {
   });
 
   it("should forward initialValue to autocomplete", async () => {
-    const { autocomplete } = await import("@clack/prompts");
+    const { autocomplete } = prompter;
 
     const factory = type({
       answers: defaultMessageParts,
@@ -110,6 +110,7 @@ describe(type, () => {
       config: defaultResolvedConfig,
       flags: {},
       initial: { type: "fix" },
+      prompter,
     });
 
     await factory();

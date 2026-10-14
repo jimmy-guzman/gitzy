@@ -1,15 +1,10 @@
-import type * as clack from "@clack/prompts";
-
 import { defaultResolvedConfig } from "@/core/config/defaults";
 import { defaultMessageParts } from "@/core/conventional/types";
 
 import { body } from "./body";
+import { createFakePrompter } from "./test-utils";
 
-vi.mock(import("@clack/prompts"), () => ({
-  multiline: vi
-    .fn<typeof clack.multiline>()
-    .mockResolvedValue("a longer description"),
-}));
+const prompter = createFakePrompter();
 
 const setupBody = (configOverrides = {}, autofill = {}) =>
   body({
@@ -17,22 +12,25 @@ const setupBody = (configOverrides = {}, autofill = {}) =>
     autofill,
     config: { ...defaultResolvedConfig, ...configOverrides },
     flags: {},
+    prompter,
   });
 
 const getValidate = async (configOverrides = {}) => {
-  const { multiline } = await import("@clack/prompts");
+  const { multiline } = prompter;
 
   const factory = setupBody(configOverrides);
 
   await factory();
 
-  const [[call]] = vi.mocked(multiline).mock.calls;
+  const [[call]] = multiline.mock.calls;
 
-  expect(call.validate).toBeDefined();
+  const { validate } = call;
 
-  return call.validate as (
-    value: string | undefined
-  ) => Error | string | undefined;
+  if (!validate || "~standard" in validate) {
+    throw new Error("Expected the prompt to receive a validate function");
+  }
+
+  return validate;
 };
 
 describe(body, () => {
@@ -63,7 +61,7 @@ describe(body, () => {
   });
 
   it("should call multiline when no autofill", async () => {
-    const { multiline } = await import("@clack/prompts");
+    const { multiline } = prompter;
 
     const factory = setupBody();
 

@@ -1,3 +1,5 @@
+import { isString } from "@/core/guards";
+
 import {
   builtinTypes,
   defaultBodyConfig,
@@ -13,7 +15,7 @@ import type { Config, ResolvedConfig, ScopeEntry, TypeEntry } from "./types";
 const builtinTypeMap = new Map(builtinTypes.map((t) => [t.name, t]));
 
 const resolveTypeEntry = (entry: string | TypeEntry): TypeEntry => {
-  if (typeof entry === "string") {
+  if (isString(entry)) {
     const builtin = builtinTypeMap.get(entry);
 
     return builtin ?? { name: entry };
@@ -29,7 +31,7 @@ const resolveTypeEntry = (entry: string | TypeEntry): TypeEntry => {
 };
 
 const resolveScopeEntry = (entry: ScopeEntry | string): ScopeEntry => {
-  if (typeof entry === "string") {
+  if (isString(entry)) {
     return { name: entry };
   }
 

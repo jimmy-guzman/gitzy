@@ -15,6 +15,7 @@ import {
   formatMessage,
   formatMessageResult,
 } from "@/core/conventional/message";
+import { PartialMessagePartsSchema } from "@/core/conventional/schema";
 import { defaultMessageParts } from "@/core/conventional/types";
 import { getAmendParts } from "@/core/git/amend";
 import {
@@ -24,6 +25,7 @@ import {
 } from "@/core/git/checks";
 import { commit } from "@/core/git/operations";
 import { getSignoffTrailer } from "@/core/git/signoff";
+import { isString } from "@/core/guards";
 import { GitzyStore } from "@/core/store/store";
 import { lang } from "@/lang";
 
@@ -62,28 +64,56 @@ const promptQuestions = (
   return createPrompts(state, flags, autofillAnswers, amendInitial);
 };
 
-const toFlagAnswers = (flags: CommitFlags) => ({
-  ...(flags.body === undefined ? {} : { body: flags.body }),
-  ...(flags.breaking === undefined ? {} : { breaking: flags.breaking }),
-  ...(flags.coAuthor === undefined ? {} : { coAuthors: flags.coAuthor }),
-  ...(flags.issue === undefined ? {} : { issues: flags.issue }),
-  ...(flags.scope === undefined ? {} : { scope: flags.scope }),
-  ...(flags.signoff === undefined ? {} : { signoff: flags.signoff }),
-  ...(flags.subject === undefined ? {} : { subject: flags.subject }),
-  ...(flags.type === undefined ? {} : { type: flags.type }),
-});
+const toFlagAnswers = (flags: CommitFlags) => {
+  const answers: Partial<Answers> = {};
 
-const loadAutofill = async (flags: CommitFlags, store: GitzyStore<Answers>) => {
+  if (flags.body !== undefined) {
+    answers.body = flags.body;
+  }
+
+  if (flags.breaking !== undefined) {
+    answers.breaking = flags.breaking;
+  }
+
+  if (flags.coAuthor !== undefined) {
+    answers.coAuthors = flags.coAuthor;
+  }
+
+  if (flags.issue !== undefined) {
+    answers.issues = flags.issue;
+  }
+
+  if (flags.scope !== undefined) {
+    answers.scope = flags.scope;
+  }
+
+  if (flags.signoff !== undefined) {
+    answers.signoff = flags.signoff;
+  }
+
+  if (flags.subject !== undefined) {
+    answers.subject = flags.subject;
+  }
+
+  if (flags.type !== undefined) {
+    answers.type = flags.type;
+  }
+
+  return answers;
+};
+
+const loadAutofill = async (flags: CommitFlags, store: GitzyStore) => {
   const previous = flags.retry ? store.load() : {};
 
   if (flags.retry && Object.keys(previous).length === 0) {
     log.warn(`There is no previous gitzy commit to retry...`);
   }
 
-  return {
-    ...previous,
-    ...(flags.stdin ? await readStdinJson<Partial<Answers>>() : {}),
-  };
+  if (!flags.stdin) {
+    return previous;
+  }
+
+  return { ...previous, ...(await readStdinJson(PartialMessagePartsSchema)) };
 };
 
 const writeMessage = async (state: GitzyState, flags: CommitFlags) => {
@@ -147,7 +177,7 @@ export const registerCommitCommand = (program: Command) => {
     .option("--stdin", lang.commit.flags.stdin)
     .addHelpText("after", `\nExamples:\n      ${lang.commit.examples}\n    `)
     .action(async (opts: CommitFlags, command: Command) => {
-      const store = new GitzyStore<Answers>();
+      const store = new GitzyStore();
 
       const flags: CommitFlags = {
         ...opts,
@@ -167,7 +197,7 @@ export const registerCommitCommand = (program: Command) => {
         state.config = await resolveConfig();
 
         if (
-          typeof flags.breaking === "string" &&
+          isString(flags.breaking) &&
           flags.breaking &&
           state.config.breaking.format === "!"
         ) {

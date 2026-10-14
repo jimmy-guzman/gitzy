@@ -1,8 +1,14 @@
-import { cancel, group, isCancel } from "@clack/prompts";
+import * as clack from "@clack/prompts";
+import type { PromptGroup } from "@clack/prompts";
 
-import type { Answers, CommitFlags, GitzyState } from "@/cli/types";
-import type { PromptName } from "@/core/config/defaults";
-import { availablePrompts } from "@/core/config/defaults";
+import type {
+  Answers,
+  CommitFlags,
+  CreatedPromptOptions,
+  GitzyState,
+  Prompter,
+} from "@/cli/types";
+import { splitList } from "@/core/conventional/schema";
 
 import { body } from "./body";
 import { breaking } from "./breaking";
@@ -13,7 +19,26 @@ import { signoff } from "./signoff";
 import { subject } from "./subject";
 import { type } from "./type";
 
-const prompts = {
+interface RawGroupResult {
+  body?: string | symbol;
+  breaking?: boolean | string | symbol;
+  coAuthors?: string | symbol;
+  issues?: string | symbol;
+  scope?: string | symbol;
+  signoff?: boolean | string | symbol;
+  subject?: string | symbol;
+  type?: string | symbol;
+}
+
+type PromptName = keyof RawGroupResult;
+
+type PromptFactories = {
+  [K in PromptName]: (
+    options: CreatedPromptOptions
+  ) => NonNullable<PromptGroup<RawGroupResult>[K]>;
+};
+
+const prompts: PromptFactories = {
   body,
   breaking,
   coAuthors,
@@ -22,89 +47,47 @@ const prompts = {
   signoff,
   subject,
   type,
-} as const;
-
-interface RawGroupResult {
-  body?: string;
-  breaking?: boolean | string;
-  coAuthors?: string;
-  issues?: string;
-  scope?: string;
-  signoff?: boolean | string;
-  subject?: string;
-  type?: string;
-}
-
-const parseIssues = (raw: string | undefined): string[] => {
-  if (!raw || raw.trim() === "") {
-    return [];
-  }
-
-  return raw
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
 };
 
-const parseCoAuthors = (raw: string | undefined) => {
-  if (!raw || raw.trim() === "") {
-    return [];
-  }
-
-  return raw
-    .split(",")
-    .map((a) => a.trim())
-    .filter(Boolean);
-};
+const isPromptName = (name: string): name is PromptName =>
+  Object.hasOwn(prompts, name);
 
 export const createPrompts = async (
   { answers, config }: GitzyState,
   flags: CommitFlags,
   autofill?: Partial<Answers>,
-  initial?: Partial<Answers>
+  initial?: Partial<Answers>,
+  prompter: Prompter = clack
 ) => {
-  const activePrompts: Record<
-    string,
-    ReturnType<(typeof prompts)[PromptName]>
-  > = {};
+  const options = { answers, autofill, config, flags, initial, prompter };
+  const activePrompts: PromptGroup<RawGroupResult> = {};
+  const addPrompt = <K extends PromptName>(name: K) => {
+    activePrompts[name] = prompts[name](options);
+  };
 
   for (const question of config.prompts) {
-    if (!(availablePrompts as readonly string[]).includes(question)) {
-      continue;
+    if (isPromptName(question)) {
+      addPrompt(question);
     }
-
-    const promptFn = prompts[question as PromptName];
-
-    activePrompts[question] = promptFn({
-      answers,
-      autofill,
-      config,
-      flags,
-      initial,
-    });
   }
 
-  const result = (await group(activePrompts, {
+  const result = await prompter.group(activePrompts, {
     onCancel: () => {
-      cancel("Cancelled.");
+      prompter.cancel("Cancelled.");
       process.exit(0);
     },
-  })) as RawGroupResult;
+  });
 
-  if (isCancel(result)) {
-    cancel("Cancelled.");
+  if (prompter.isCancel(result)) {
+    prompter.cancel("Cancelled.");
     process.exit(0);
   }
 
   return {
     body: (result.body ?? "").trim(),
     breaking: result.breaking ?? "",
-    coAuthors: parseCoAuthors(
-      typeof result.coAuthors === "string" ? result.coAuthors : undefined
-    ),
-    issues: parseIssues(
-      typeof result.issues === "string" ? result.issues : undefined
-    ),
+    coAuthors: splitList(result.coAuthors),
+    issues: splitList(result.issues),
     scope: result.scope ?? "",
     signoff: result.signoff ?? false,
     subject: result.subject ?? "",

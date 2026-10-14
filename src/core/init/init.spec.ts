@@ -1,83 +1,89 @@
-import { existsSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
 import { init } from "./init";
 
-vi.mock(import("node:fs"));
-
 describe(init, () => {
+  const originalCwd = process.cwd();
+  let dir = "";
+  let filePath = "";
+
   beforeEach(() => {
-    vi.resetAllMocks();
+    dir = mkdtempSync(path.join(os.tmpdir(), "gitzy-init-"));
+    filePath = path.join(dir, ".gitzyrc.json");
+  });
+
+  afterEach(() => {
+    process.chdir(originalCwd);
+    rmSync(dir, { force: true, recursive: true });
   });
 
   it("should write config file when it does not exist", () => {
-    vi.mocked(existsSync).mockReturnValue(false);
+    const result = init(dir);
 
-    const result = init("/some/dir");
-
-    expect(result).toStrictEqual({
-      exists: false,
-      filePath: path.join("/some/dir", ".gitzyrc.json"),
-    });
-    expect(writeFileSync).toHaveBeenCalledWith(
-      path.join("/some/dir", ".gitzyrc.json"),
-      expect.stringContaining('"types"'),
-      "utf-8"
-    );
+    expect(result).toStrictEqual({ exists: false, filePath });
+    expect(readFileSync(filePath, "utf-8")).toMatchInlineSnapshot(`
+      "{
+        "branch": {
+          "checkout": true,
+          "max": 72,
+          "pattern": "{type}/{scope}/{issue}-{subject}"
+        },
+        "breaking": {
+          "format": "footer"
+        },
+        "emoji": {
+          "enabled": true
+        },
+        "header": {
+          "max": 64,
+          "min": 5
+        },
+        "issues": {
+          "pattern": "github",
+          "prefix": "closes"
+        },
+        "scopes": [],
+        "types": [
+          "chore",
+          "docs",
+          "feat",
+          "fix",
+          "refactor",
+          "test",
+          "style",
+          "ci"
+        ]
+      }
+      "
+    `);
   });
 
   it("should not write file when it already exists", () => {
-    vi.mocked(existsSync).mockReturnValue(true);
+    writeFileSync(filePath, "{}");
 
-    const result = init("/some/dir");
+    const result = init(dir);
 
-    expect(result).toStrictEqual({
-      exists: true,
-      filePath: path.join("/some/dir", ".gitzyrc.json"),
-    });
-    expect(writeFileSync).not.toHaveBeenCalled();
+    expect(result).toStrictEqual({ exists: true, filePath });
+    expect(readFileSync(filePath, "utf-8")).toBe("{}");
   });
 
   it("should overwrite file when it already exists and force is true", () => {
-    vi.mocked(existsSync).mockReturnValue(true);
+    writeFileSync(filePath, "{}");
 
-    const result = init("/some/dir", { force: true });
+    const result = init(dir, { force: true });
 
-    expect(result).toStrictEqual({
-      exists: true,
-      filePath: path.join("/some/dir", ".gitzyrc.json"),
-    });
-    expect(writeFileSync).toHaveBeenCalledExactlyOnceWith(
-      path.join("/some/dir", ".gitzyrc.json"),
-      expect.stringContaining('"types"'),
-      "utf-8"
-    );
+    expect(result).toStrictEqual({ exists: true, filePath });
+    expect(readFileSync(filePath, "utf-8")).toContain('"types"');
   });
 
   it("should use process.cwd() as default directory", () => {
-    vi.mocked(existsSync).mockReturnValue(false);
+    process.chdir(dir);
 
     const result = init();
 
     expect(result.filePath).toBe(path.join(process.cwd(), ".gitzyrc.json"));
-  });
-
-  it("should write config with expected content shape", () => {
-    vi.mocked(existsSync).mockReturnValue(false);
-
-    init(os.tmpdir());
-
-    const [, content] = vi.mocked(writeFileSync).mock.calls[0] as [
-      string,
-      string,
-      string,
-    ];
-
-    expect(content).toContain('"types"');
-    expect(content).toContain('"header"');
-    expect(content).toContain('"breaking"');
-    expect(content).toContain('"issues"');
-    expect(content).toContain('"branch"');
+    expect(readFileSync(result.filePath, "utf-8")).toContain('"types"');
   });
 });

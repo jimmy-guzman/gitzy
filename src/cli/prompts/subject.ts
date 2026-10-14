@@ -1,12 +1,12 @@
-import { text } from "@clack/prompts";
-
 import type { Answers, CreatedPromptOptions } from "@/cli/types";
 
 import { pluralize } from "./utils/pluralize";
 
 const EMOJI_LENGTH = 3;
 
-export const leadingLabel = (answers?: Partial<Answers>) => {
+type LabelParts = Partial<Pick<Answers, "scope" | "type">>;
+
+export const leadingLabel = (answers?: LabelParts) => {
   const scope =
     answers?.scope && answers.scope !== "none" ? `(${answers.scope})` : "";
 
@@ -32,11 +32,12 @@ export const subject = ({
   },
   flags,
   initial,
+  prompter,
 }: CreatedPromptOptions) => {
   const emojiEnabled = resolveEmojiEnabled(flags, configEmojiEnabled);
   const emojiLength = emojiEnabled ? EMOJI_LENGTH : 0;
 
-  return (context?: { results: Partial<Answers> }) => {
+  return (context?: { results: LabelParts }) => {
     const validate = (value = "") => {
       const label = leadingLabel(context?.results);
 
@@ -60,7 +61,7 @@ export const subject = ({
       }
     }
 
-    return text({
+    return prompter.text({
       initialValue: initial?.subject,
       message: "Add a short description",
       placeholder: `${min}-${max} characters`,

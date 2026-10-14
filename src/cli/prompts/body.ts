@@ -1,5 +1,3 @@
-import { multiline } from "@clack/prompts";
-
 import type { CreatedPromptOptions } from "@/cli/types";
 
 import { pluralize } from "./utils/pluralize";
@@ -11,13 +9,14 @@ export const body =
       body: { max, min },
     },
     initial,
+    prompter,
   }: CreatedPromptOptions) =>
   () => {
     if (autofill?.body !== undefined) {
       return Promise.resolve(autofill.body);
     }
 
-    return multiline({
+    return prompter.multiline({
       initialValue: initial?.body,
       message: "Add a longer description",
       placeholder: "Optional — press Enter twice to skip",

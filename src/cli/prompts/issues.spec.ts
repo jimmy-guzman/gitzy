@@ -1,12 +1,9 @@
-import type * as clack from "@clack/prompts";
-
 import { defaultResolvedConfig } from "@/core/config/defaults";
 
 import { issues } from "./issues";
+import { createFakePrompter } from "./test-utils";
 
-vi.mock(import("@clack/prompts"), () => ({
-  text: vi.fn<typeof clack.text>().mockResolvedValue(""),
-}));
+const prompter = createFakePrompter();
 
 const setupIssues = (autofill = {}) =>
   issues({
@@ -21,6 +18,7 @@ const setupIssues = (autofill = {}) =>
     autofill,
     config: defaultResolvedConfig,
     flags: {},
+    prompter,
   });
 
 describe(issues, () => {
@@ -43,7 +41,7 @@ describe(issues, () => {
   });
 
   it("should call text when no autofill", async () => {
-    const { text } = await import("@clack/prompts");
+    const { text } = prompter;
 
     const factory = setupIssues();
 
@@ -58,7 +56,7 @@ describe(issues, () => {
   });
 
   it("should pass initialValue from amend", async () => {
-    const { text } = await import("@clack/prompts");
+    const { text } = prompter;
 
     const factory = issues({
       answers: {
@@ -79,6 +77,7 @@ describe(issues, () => {
         subject: "",
         type: "",
       },
+      prompter,
     });
 
     await factory();

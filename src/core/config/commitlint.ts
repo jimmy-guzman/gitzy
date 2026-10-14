@@ -3,15 +3,25 @@
  */
 
 import type { CommitlintConfig } from "./commitlint-schema";
-import type { Config } from "./types";
+import type { BodyConfig, Config } from "./types";
 
-const toRange = (max: number | undefined, min: number | undefined) =>
-  max === undefined && min === undefined
-    ? undefined
-    : {
-        ...(max === undefined ? {} : { max }),
-        ...(min === undefined ? {} : { min }),
-      };
+const toRange = (max: number | undefined, min: number | undefined) => {
+  if (max === undefined && min === undefined) {
+    return;
+  }
+
+  const range: Partial<BodyConfig> = {};
+
+  if (max !== undefined) {
+    range.max = max;
+  }
+
+  if (min !== undefined) {
+    range.min = min;
+  }
+
+  return range;
+};
 
 export const extractCommitlintRules = (
   config: CommitlintConfig

@@ -9,19 +9,6 @@ import type {
   TypeEntry,
 } from "./types";
 
-export const availablePrompts = [
-  "body",
-  "breaking",
-  "coAuthors",
-  "issues",
-  "scope",
-  "signoff",
-  "subject",
-  "type",
-] as const;
-
-export type PromptName = (typeof availablePrompts)[number];
-
 export const defaultPrompts = [
   "type",
   "scope",

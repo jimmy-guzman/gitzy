@@ -1,49 +1,19 @@
-import { x } from "tinyexec";
-
 import { getSignoffTrailer } from "./signoff";
-
-vi.mock(import("tinyexec"));
+import { git, useTempGitRepo } from "./test-utils";
 
 describe(getSignoffTrailer, () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
+  useTempGitRepo();
 
-  it('should parse "Name <email>" from GIT_COMMITTER_IDENT', async () => {
-    vi.mocked(x).mockResolvedValue({
-      exitCode: 0,
-      stderr: "",
-      stdout: "Jane Doe <jane@example.com> 1700000000 -0700",
-    });
-
-    await expect(getSignoffTrailer()).resolves.toBe(
-      "Jane Doe <jane@example.com>"
-    );
-    expect(x).toHaveBeenCalledWith("git", ["var", "GIT_COMMITTER_IDENT"], {
-      throwOnError: true,
-    });
-  });
-
-  it("should trim surrounding whitespace before parsing", async () => {
-    vi.mocked(x).mockResolvedValue({
-      exitCode: 0,
-      stderr: "",
-      stdout: "  Jane Doe <jane@example.com> 1700000000 -0700\n",
-    });
-
+  it('should return "Name <email>" from the committer identity', async () => {
     await expect(getSignoffTrailer()).resolves.toBe(
       "Jane Doe <jane@example.com>"
     );
   });
 
-  it("should return an empty string when git throws", async () => {
-    vi.mocked(x).mockRejectedValue(new Error("no identity"));
-
-    await expect(getSignoffTrailer()).resolves.toBe("");
-  });
-
-  it("should return an empty string when output has no identity", async () => {
-    vi.mocked(x).mockResolvedValue({ exitCode: 0, stderr: "", stdout: "" });
+  it("should return an empty string when no identity is configured", async () => {
+    await git("config", "--unset", "user.name");
+    await git("config", "--unset", "user.email");
+    await git("config", "user.useConfigOnly", "true");
 
     await expect(getSignoffTrailer()).resolves.toBe("");
   });

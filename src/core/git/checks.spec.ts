@@ -1,8 +1,7 @@
-import { x } from "tinyexec";
+import { rmSync, writeFileSync } from "node:fs";
 
 import { checkIfGitRepo, checkIfStaged, shouldDoGitChecks } from "./checks";
-
-vi.mock(import("tinyexec"));
+import { git, useTempGitRepo } from "./test-utils";
 
 describe(shouldDoGitChecks, () => {
   it("should perform check if no flags", () => {
@@ -27,24 +26,21 @@ describe(shouldDoGitChecks, () => {
 });
 
 describe(checkIfStaged, () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
+  useTempGitRepo();
 
-  it("should throw when no files are staged (exit code 0)", async () => {
-    vi.mocked(x).mockResolvedValue({ exitCode: 0, stderr: "", stdout: "" });
-
+  it("should throw when no files are staged", async () => {
     await expect(checkIfStaged()).rejects.toThrow("No files staged");
   });
 
-  it("should resolve when files are staged (exit code 1)", async () => {
-    vi.mocked(x).mockResolvedValue({ exitCode: 1, stderr: "", stdout: "" });
+  it("should resolve when files are staged", async () => {
+    writeFileSync("file.txt", "hello");
+    await git("add", "file.txt");
 
     await expect(checkIfStaged()).resolves.toBe("");
   });
 
-  it("should throw when git command fails (exit code > 1)", async () => {
-    vi.mocked(x).mockResolvedValue({ exitCode: 128, stderr: "", stdout: "" });
+  it("should throw when git diff fails", async () => {
+    rmSync(".git", { force: true, recursive: true });
 
     await expect(checkIfStaged()).rejects.toThrow(
       "Failed to check staged files (git diff)"
@@ -52,68 +48,28 @@ describe(checkIfStaged, () => {
   });
 
   it("should rethrow spawn errors", async () => {
-    const spawnError = new Error("spawn git ENOENT");
+    vi.stubEnv("PATH", "");
 
-    vi.mocked(x).mockRejectedValue(spawnError);
-
-    await expect(checkIfStaged()).rejects.toThrow("spawn git ENOENT");
-  });
-
-  it("should call git with correct arguments", async () => {
-    const mockOutput = { exitCode: 1, stderr: "", stdout: "" };
-    const mockX = vi.mocked(x).mockResolvedValue(mockOutput);
-
-    await checkIfStaged();
-
-    expect(mockX).toHaveBeenCalledWith("git", [
-      "--no-pager",
-      "diff",
-      "--cached",
-      "--quiet",
-      "--exit-code",
-    ]);
+    await expect(checkIfStaged()).rejects.toThrow("ENOENT");
   });
 });
 
 describe(checkIfGitRepo, () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
+  useTempGitRepo();
 
-  it("should throw when not a git repository (non-zero exit code)", async () => {
-    vi.mocked(x).mockRejectedValue(
-      "fatal: not a git repository (or any of the parent directories): .git"
-    );
-
-    await expect(checkIfGitRepo()).rejects.toThrow("Not a git repository");
-  });
-
-  it("should resolve when inside a git repository (exit code 0)", async () => {
-    vi.mocked(x).mockResolvedValue({ exitCode: 0, stderr: "", stdout: "" });
-
+  it("should resolve when inside a git repository", async () => {
     await expect(checkIfGitRepo()).resolves.toBe("");
   });
 
-  it("should throw friendly error when git command fails (spawn error)", async () => {
-    const spawnError = new Error("spawn git ENOENT");
-
-    vi.mocked(x).mockRejectedValue(spawnError);
+  it("should throw when not a git repository", async () => {
+    rmSync(".git", { force: true, recursive: true });
 
     await expect(checkIfGitRepo()).rejects.toThrow("Not a git repository");
   });
 
-  it("should call git with correct arguments", async () => {
-    const mockOutput = { exitCode: 0, stderr: "", stdout: "" };
-    const mockX = vi.mocked(x).mockResolvedValue(mockOutput);
+  it("should throw friendly error when git cannot be spawned", async () => {
+    vi.stubEnv("PATH", "");
 
-    await checkIfGitRepo();
-
-    expect(mockX).toHaveBeenCalledWith(
-      "git",
-      ["rev-parse", "--is-inside-work-tree"],
-      {
-        throwOnError: true,
-      }
-    );
+    await expect(checkIfGitRepo()).rejects.toThrow("Not a git repository");
   });
 });

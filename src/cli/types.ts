@@ -1,7 +1,24 @@
+import type * as clack from "@clack/prompts";
+
 import type { ResolvedConfig } from "@/core/config/types";
 import type { MessageParts } from "@/core/conventional/types";
 
 export type Answers = MessageParts;
+
+/**
+ * The clack prompts gitzy uses, injectable so tests can supply fakes
+ */
+export interface Prompter {
+  autocomplete: (
+    opts: clack.AutocompleteOptions<string>
+  ) => Promise<string | symbol>;
+  cancel: typeof clack.cancel;
+  confirm: typeof clack.confirm;
+  group: typeof clack.group;
+  isCancel: typeof clack.isCancel;
+  multiline: typeof clack.multiline;
+  text: typeof clack.text;
+}
 
 export interface CreatedPromptOptions {
   answers: Answers;
@@ -9,6 +26,7 @@ export interface CreatedPromptOptions {
   config: ResolvedConfig;
   flags: CommitFlags;
   initial?: Partial<Answers>;
+  prompter: Prompter;
 }
 
 export interface CommitFlags {

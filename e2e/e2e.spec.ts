@@ -274,7 +274,7 @@ describe("gitzy", () => {
         });
       } catch (error: unknown) {
         if (error instanceof Error && "stdout" in error) {
-          output = String((error as { stdout: unknown }).stdout);
+          output = String(error.stdout);
         }
       }
 
@@ -349,7 +349,7 @@ describe("gitzy", () => {
         });
       } catch (error: unknown) {
         if (error instanceof Error && "stdout" in error) {
-          output = String((error as { stdout: unknown }).stdout);
+          output = String(error.stdout);
         }
       }
 

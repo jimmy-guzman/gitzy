@@ -5,43 +5,19 @@ import * as gitChecks from "./core/git/checks";
 import * as gitOperations from "./core/git/operations";
 import * as gitSignoff from "./core/git/signoff";
 
-vi.mock(import("@clack/prompts"));
-
-vi.mock(import("../package.json"), () => ({
-  engines: { node: "20" },
-  version: "1.0.0",
-}));
+const answerArgs = ["node", "gitzy", "--type", "feat", "-m", "test commit"];
 
 describe(cli, () => {
   const originalArgv = process.argv;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     vi.resetAllMocks();
     Object.defineProperty(process.stdin, "isTTY", {
       configurable: true,
       value: true,
     });
 
-    const clack = vi.mocked(await import("@clack/prompts"));
-
-    clack.group.mockImplementation(
-      async (prompts: Record<string, () => unknown>) => {
-        const entries = await Promise.all(
-          Object.entries(prompts).map(async ([key, fn]) => [key, await fn()])
-        );
-
-        return Object.fromEntries(
-          entries.filter(([, value]) => value !== undefined)
-        );
-      }
-    );
-    clack.autocomplete.mockResolvedValue("feat");
-    clack.text.mockResolvedValue("test commit");
-    clack.confirm.mockResolvedValue(false);
-    clack.multiline.mockResolvedValue("");
-    clack.isCancel.mockReturnValue(false);
-
-    process.argv = ["node", "gitzy"];
+    process.argv = [...answerArgs];
   });
 
   afterEach(() => {
@@ -63,7 +39,7 @@ describe(cli, () => {
       defaultResolvedConfig
     );
 
-    process.argv = ["node", "gitzy", "-n"];
+    process.argv = [...answerArgs, "-n"];
 
     await cli();
 
@@ -87,7 +63,7 @@ describe(cli, () => {
       defaultResolvedConfig
     );
 
-    process.argv = ["node", "gitzy", "-s"];
+    process.argv = [...answerArgs, "-s"];
 
     await cli();
 
@@ -108,7 +84,7 @@ describe(cli, () => {
       defaultResolvedConfig
     );
 
-    process.argv = ["node", "gitzy", "--signoff", "Bot <bot@example.com>"];
+    process.argv = [...answerArgs, "--signoff", "Bot <bot@example.com>"];
 
     await cli();
 

@@ -33,10 +33,20 @@ export const parseBranchName = (
     ...rawSubjectStart.slice(1),
   ].filter(Boolean);
 
-  return {
-    ...(issue === undefined ? {} : { issue }),
-    ...(hasScope ? { scope: segments[1] } : {}),
+  const parts: BranchParts = {
     subject: subjectSegments.join("-"),
     type: segments[0] ?? "",
   };
+
+  if (issue !== undefined) {
+    parts.issue = issue;
+  }
+
+  const [, scope] = segments;
+
+  if (hasScope) {
+    parts.scope = scope;
+  }
+
+  return parts;
 };

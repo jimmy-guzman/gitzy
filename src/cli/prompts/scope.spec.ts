@@ -1,11 +1,10 @@
-import * as clack from "@clack/prompts";
-
 import { defaultResolvedConfig } from "@/core/config/defaults";
 import { defaultMessageParts } from "@/core/conventional/types";
 
 import { scope } from "./scope";
+import { createFakePrompter } from "./test-utils";
 
-vi.mock(import("@clack/prompts"));
+const prompter = createFakePrompter();
 
 const setupScope = (configOverrides = {}, autofill = {}) =>
   scope({
@@ -13,12 +12,13 @@ const setupScope = (configOverrides = {}, autofill = {}) =>
     autofill,
     config: { ...defaultResolvedConfig, ...configOverrides },
     flags: {},
+    prompter,
   });
 
 describe(scope, () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(clack.autocomplete).mockResolvedValue("build");
+    prompter.autocomplete.mockResolvedValue("build");
   });
 
   it("should return undefined from factory if no scopes", () => {
@@ -39,7 +39,7 @@ describe(scope, () => {
   });
 
   it("should call autocomplete when scopes are configured", async () => {
-    const { autocomplete } = await import("@clack/prompts");
+    const { autocomplete } = prompter;
 
     const factory = setupScope({ scopes: [{ name: "build" }] });
 
@@ -55,7 +55,7 @@ describe(scope, () => {
   });
 
   it("should pass description as hint in autocomplete options", async () => {
-    const { autocomplete } = await import("@clack/prompts");
+    const { autocomplete } = prompter;
 
     const factory = setupScope({
       scopes: [
@@ -77,7 +77,7 @@ describe(scope, () => {
   });
 
   it("should pass initialValue from amend initial", async () => {
-    const { autocomplete } = await import("@clack/prompts");
+    const { autocomplete } = prompter;
 
     const factory = scope({
       answers: defaultMessageParts,
@@ -91,6 +91,7 @@ describe(scope, () => {
         subject: "",
         type: "",
       },
+      prompter,
     });
 
     await factory();

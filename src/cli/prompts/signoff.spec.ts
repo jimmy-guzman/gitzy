@@ -1,20 +1,11 @@
-import type * as clack from "@clack/prompts";
-
 import type { Answers } from "@/cli/types";
 import { defaultResolvedConfig } from "@/core/config/defaults";
-import type * as signoffModule from "@/core/git/signoff";
+import * as signoffModule from "@/core/git/signoff";
 
 import { signoff } from "./signoff";
+import { createFakePrompter } from "./test-utils";
 
-vi.mock(import("@clack/prompts"), () => ({
-  text: vi.fn<typeof clack.text>().mockResolvedValue(""),
-}));
-
-vi.mock(import("@/core/git/signoff"), () => ({
-  getSignoffTrailer: vi
-    .fn<typeof signoffModule.getSignoffTrailer>()
-    .mockResolvedValue("Jane Doe <jane@example.com>"),
-}));
+const prompter = createFakePrompter();
 
 const emptyAnswers: Answers = {
   body: "",
@@ -31,11 +22,15 @@ const setupSignoff = (autofill = {}) =>
     autofill,
     config: defaultResolvedConfig,
     flags: {},
+    prompter,
   });
 
 describe(signoff, () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.spyOn(signoffModule, "getSignoffTrailer").mockResolvedValue(
+      "Jane Doe <jane@example.com>"
+    );
   });
 
   it("should return a factory function", () => {
@@ -57,7 +52,7 @@ describe(signoff, () => {
   });
 
   it("should prefill the text prompt with the derived git identity", async () => {
-    const { text } = await import("@clack/prompts");
+    const { text } = prompter;
 
     const factory = setupSignoff();
 
@@ -72,13 +67,14 @@ describe(signoff, () => {
   });
 
   it("should prefill with the prior signature when amending", async () => {
-    const { text } = await import("@clack/prompts");
+    const { text } = prompter;
 
     const factory = signoff({
       answers: emptyAnswers,
       config: defaultResolvedConfig,
       flags: {},
       initial: { ...emptyAnswers, signoff: "Prev <prev@example.com>" },
+      prompter,
     });
 
     await factory();

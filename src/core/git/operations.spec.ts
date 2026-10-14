@@ -1,141 +1,114 @@
-import { writeFileSync } from "node:fs";
+import { chmodSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import os from "node:os";
 import path from "node:path";
 
-import { x } from "tinyexec";
-
 import { commit } from "./operations";
+import { git, useTempGitRepo } from "./test-utils";
 
-vi.mock(import("node:fs"));
-vi.mock(import("tinyexec"));
+const headMessage = () => git("log", "-1", "--pretty=%B");
+
+const commitCount = () => git("rev-list", "--count", "HEAD");
+
+const stageFile = async () => {
+  writeFileSync("file.txt", "hello");
+  await git("add", "file.txt");
+};
+
+const installFailingPreCommitHook = () => {
+  const hookPath = path.join(".git", "hooks", "pre-commit");
+
+  writeFileSync(hookPath, "#!/bin/sh\nexit 1\n");
+  chmodSync(hookPath, 0o755);
+};
 
 describe(commit, () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
+  useTempGitRepo();
 
-  it("should return committed: false without executing git when dryRun is true", async () => {
+  it("should return committed: false without committing when dryRun is true", async () => {
+    await stageFile();
+
     const result = await commit("feat: add feature", { dryRun: true });
 
     expect(result).toStrictEqual({
       committed: false,
       message: "feat: add feature",
     });
-    expect(x).not.toHaveBeenCalled();
+    await expect(commitCount()).resolves.toBe("1");
   });
 
-  it("should write to COMMIT_EDITMSG and return committed: true when hook is true", async () => {
+  it("should write to COMMIT_EDITMSG without committing when hook is true", async () => {
     const result = await commit("feat: add feature", { hook: true });
 
-    expect(writeFileSync).toHaveBeenCalledWith(
-      path.join(".git", "COMMIT_EDITMSG"),
+    expect(readFileSync(path.join(".git", "COMMIT_EDITMSG"), "utf-8")).toBe(
       "feat: add feature"
     );
     expect(result).toStrictEqual({
       committed: true,
       message: "feat: add feature",
     });
-    expect(x).not.toHaveBeenCalled();
+    await expect(commitCount()).resolves.toBe("1");
   });
 
   it("should use GIT_DIR env var when set for COMMIT_EDITMSG path", async () => {
-    vi.stubEnv("GIT_DIR", "/custom/git/dir");
+    const gitDir = mkdtempSync(path.join(os.tmpdir(), "gitzy-git-dir-"));
 
-    try {
-      const result = await commit("feat: add feature", { hook: true });
+    vi.stubEnv("GIT_DIR", gitDir);
 
-      expect(writeFileSync).toHaveBeenCalledWith(
-        path.join("/custom/git/dir", "COMMIT_EDITMSG"),
-        "feat: add feature"
-      );
-      expect(result).toStrictEqual({
-        committed: true,
-        message: "feat: add feature",
-      });
-    } finally {
-      vi.unstubAllEnvs();
-    }
+    await commit("feat: add feature", { hook: true });
+
+    expect(readFileSync(path.join(gitDir, "COMMIT_EDITMSG"), "utf-8")).toBe(
+      "feat: add feature"
+    );
   });
 
-  it("should execute git commit with the message", async () => {
-    vi.mocked(x).mockResolvedValue({ exitCode: 0, stderr: "", stdout: "" });
+  it("should commit staged changes with the message", async () => {
+    await stageFile();
 
     const result = await commit("feat: add feature");
 
-    expect(x).toHaveBeenCalledWith(
-      "git",
-      ["commit", "-m", "feat: add feature"],
-      { nodeOptions: { stdio: "inherit" } }
-    );
     expect(result).toStrictEqual({
       committed: true,
       message: "feat: add feature",
     });
+    await expect(headMessage()).resolves.toBe("feat: add feature");
+    await expect(commitCount()).resolves.toBe("2");
   });
 
-  it("should pass --no-verify when noVerify is true", async () => {
-    vi.mocked(x).mockResolvedValue({ exitCode: 0, stderr: "", stdout: "" });
+  it("should skip git hooks when noVerify is true", async () => {
+    installFailingPreCommitHook();
+    await stageFile();
 
     await commit("feat: add feature", { noVerify: true });
 
-    expect(x).toHaveBeenCalledWith(
-      "git",
-      ["commit", "-m", "feat: add feature", "--no-verify"],
-      { nodeOptions: { stdio: "inherit" } }
-    );
+    await expect(headMessage()).resolves.toBe("feat: add feature");
   });
 
-  it("should pass --amend when amend is true", async () => {
-    vi.mocked(x).mockResolvedValue({ exitCode: 0, stderr: "", stdout: "" });
-
+  it("should amend the previous commit when amend is true", async () => {
+    await stageFile();
     await commit("feat: update feature", { amend: true });
 
-    expect(x).toHaveBeenCalledWith(
-      "git",
-      ["commit", "-m", "feat: update feature", "--amend"],
-      { nodeOptions: { stdio: "inherit" } }
-    );
+    await expect(headMessage()).resolves.toBe("feat: update feature");
+    await expect(commitCount()).resolves.toBe("1");
   });
 
-  it("should pass --amend and --no-verify when both options are true", async () => {
-    vi.mocked(x).mockResolvedValue({ exitCode: 0, stderr: "", stdout: "" });
+  it("should amend and skip git hooks when both options are true", async () => {
+    installFailingPreCommitHook();
+    await stageFile();
 
     await commit("feat: update feature", { amend: true, noVerify: true });
 
-    expect(x).toHaveBeenCalledWith(
-      "git",
-      ["commit", "-m", "feat: update feature", "--amend", "--no-verify"],
-      { nodeOptions: { stdio: "inherit" } }
-    );
+    await expect(headMessage()).resolves.toBe("feat: update feature");
+    await expect(commitCount()).resolves.toBe("1");
   });
 
-  it("should call process.exit with the exit code when git commit fails", async () => {
-    vi.mocked(x).mockResolvedValue({ exitCode: 1, stderr: "", stdout: "" });
-    const exitSpy = vi
-      .spyOn(process, "exit")
-      .mockReturnValue(undefined as never);
-
-    try {
-      await commit("feat: add feature");
-
-      expect(exitSpy).toHaveBeenCalledWith(1);
-    } finally {
-      exitSpy.mockRestore();
-    }
-  });
-
-  it("should use defaults when no options are provided", async () => {
-    vi.mocked(x).mockResolvedValue({ exitCode: 0, stderr: "", stdout: "" });
-
-    const result = await commit("chore: update deps");
-
-    expect(x).toHaveBeenCalledWith(
-      "git",
-      ["commit", "-m", "chore: update deps"],
-      { nodeOptions: { stdio: "inherit" } }
-    );
-    expect(result).toStrictEqual({
-      committed: true,
-      message: "chore: update deps",
+  it("should exit with git's exit code when git commit fails", async () => {
+    const exitSpy = vi.spyOn(process, "exit").mockImplementation((code) => {
+      throw new Error(`process.exit(${String(code)})`);
     });
+
+    await expect(commit("feat: add feature")).rejects.toThrow(
+      "process.exit(1)"
+    );
+    expect(exitSpy).toHaveBeenCalledExactlyOnceWith(1);
   });
 });
