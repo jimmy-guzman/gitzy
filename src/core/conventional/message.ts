@@ -188,17 +188,22 @@ export const formatMessageResult = (
     maxWidth
   );
   const body = parts.body.trim() ? wrap(parts.body, maxWidth) : "";
-  const footer = wrap(
+  const notes = wrap(
     [
       createBreaking(parts.breaking, config, emojiEnabled),
       createIssues(parts.issues, config, emojiEnabled),
-      createCoAuthors(parts.coAuthors),
-      createSignoff(parts.signoff),
     ]
       .filter(Boolean)
       .join("\n\n"),
     maxWidth
   );
+  const trailers = [
+    createCoAuthors(parts.coAuthors),
+    createSignoff(parts.signoff),
+  ]
+    .filter(Boolean)
+    .join("\n");
+  const footer = [notes, trailers].filter(Boolean).join("\n\n");
   const message = [header, body, footer].filter(Boolean).join("\n\n");
 
   return { body, footer, header, message, parts };
