@@ -5,46 +5,14 @@ import * as gitChecks from "./core/git/checks";
 import * as gitOperations from "./core/git/operations";
 import * as gitSignoff from "./core/git/signoff";
 
-vi.mock("@clack/prompts", () => {
-  return {
-    autocomplete: vi.fn().mockResolvedValue("feat"),
-    cancel: vi.fn(),
-    confirm: vi.fn().mockResolvedValue(false),
-    group: vi.fn(async (prompts: Record<string, () => unknown>) => {
-      const result: Record<string, unknown> = {};
+vi.mock(import("@clack/prompts"));
 
-      for (const [key, fn] of Object.entries(prompts)) {
-        const value = await fn();
+vi.mock(import("../package.json"), () => ({
+  engines: { node: "20" },
+  version: "1.0.0",
+}));
 
-        if (value !== undefined) {
-          result[key] = value;
-        }
-      }
-
-      return result;
-    }),
-    isCancel: vi.fn().mockReturnValue(false),
-    log: {
-      error: vi.fn(),
-      info: vi.fn(),
-      message: vi.fn(),
-      step: vi.fn(),
-      success: vi.fn(),
-      warn: vi.fn(),
-    },
-    multiline: vi.fn().mockResolvedValue(""),
-    text: vi.fn().mockResolvedValue("test commit"),
-  };
-});
-
-vi.mock("../package.json", () => {
-  return {
-    engines: { node: "20" },
-    version: "1.0.0",
-  };
-});
-
-describe("cli", () => {
+describe(cli, () => {
   const originalArgv = process.argv;
 
   beforeEach(async () => {
@@ -58,18 +26,14 @@ describe("cli", () => {
 
     clack.group.mockImplementation(
       async (prompts: Record<string, () => unknown>) => {
-        const result: Record<string, unknown> = {};
+        const entries = await Promise.all(
+          Object.entries(prompts).map(async ([key, fn]) => [key, await fn()])
+        );
 
-        for (const [key, fn] of Object.entries(prompts)) {
-          const value = await fn();
-
-          if (value !== undefined) {
-            result[key] = value;
-          }
-        }
-
-        return result;
-      },
+        return Object.fromEntries(
+          entries.filter(([, value]) => value !== undefined)
+        );
+      }
     );
     clack.autocomplete.mockResolvedValue("feat");
     clack.text.mockResolvedValue("test commit");
@@ -96,7 +60,7 @@ describe("cli", () => {
     vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce("");
     vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce("");
     vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
-      defaultResolvedConfig,
+      defaultResolvedConfig
     );
 
     process.argv = ["node", "gitzy", "-n"];
@@ -105,7 +69,7 @@ describe("cli", () => {
 
     expect(performCommitSpy).toHaveBeenCalledWith(
       expect.stringContaining(""),
-      expect.objectContaining({ noVerify: true }),
+      expect.objectContaining({ noVerify: true })
     );
   });
 
@@ -115,12 +79,12 @@ describe("cli", () => {
       .mockResolvedValueOnce({ committed: true, message: "" });
 
     vi.spyOn(gitSignoff, "getSignoffTrailer").mockResolvedValueOnce(
-      "Test User <test@example.com>",
+      "Test User <test@example.com>"
     );
     vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce("");
     vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce("");
     vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
-      defaultResolvedConfig,
+      defaultResolvedConfig
     );
 
     process.argv = ["node", "gitzy", "-s"];
@@ -129,7 +93,7 @@ describe("cli", () => {
 
     expect(performCommitSpy).toHaveBeenCalledWith(
       expect.stringContaining("Signed-off-by: Test User <test@example.com>"),
-      expect.any(Object),
+      expect.any(Object)
     );
   });
 
@@ -141,7 +105,7 @@ describe("cli", () => {
     vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce("");
     vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce("");
     vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
-      defaultResolvedConfig,
+      defaultResolvedConfig
     );
 
     process.argv = ["node", "gitzy", "--signoff", "Bot <bot@example.com>"];
@@ -150,7 +114,7 @@ describe("cli", () => {
 
     expect(performCommitSpy).toHaveBeenCalledWith(
       expect.stringContaining("Signed-off-by: Bot <bot@example.com>"),
-      expect.any(Object),
+      expect.any(Object)
     );
   });
 
@@ -181,7 +145,7 @@ describe("cli", () => {
         dryRun: undefined,
         hook: false,
         noVerify: undefined,
-      }),
+      })
     );
   });
 });

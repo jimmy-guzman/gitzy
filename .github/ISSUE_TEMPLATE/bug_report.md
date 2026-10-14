@@ -8,8 +8,7 @@ assignees: jimmy-guzman
 
 ---
 
-name: 🐛 Bug Report
-about: Bugs, missing documentation, or unexpected behavior 🤔.
+name: 🐛 Bug Report about: Bugs, missing documentation, or unexpected behavior 🤔.
 
 ---
 

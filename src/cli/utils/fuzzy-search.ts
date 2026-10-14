@@ -1,11 +1,9 @@
 import type { Option } from "@clack/prompts";
-
 import uFuzzy from "@leeoniya/ufuzzy";
 
 const uf = new uFuzzy({
   intraDel: 1,
   intraIns: 1,
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-assignment -- IntraMode is an ambient const enum with no runtime value
   intraMode: 1,
   intraSub: 1,
   intraTrn: 1,
@@ -18,13 +16,15 @@ const uf = new uFuzzy({
  * runs once per unique needle and returns a Set of matching values.
  */
 export const createFuzzyFilter = <Value>(
-  options: Option<Value>[],
+  options: Option<Value>[]
 ): ((search: string, option: Option<Value>) => boolean) => {
   let lastNeedle = "";
   let matchingValues = new Set<Value>();
 
   return (search: string, option: Option<Value>) => {
-    if (search.trim() === "") return true;
+    if (search.trim() === "") {
+      return true;
+    }
 
     if (search !== lastNeedle) {
       lastNeedle = search;
@@ -39,7 +39,7 @@ export const createFuzzyFilter = <Value>(
 
       const [indexes, _info, order] = uf.search(
         uFuzzy.latinize(haystack),
-        uFuzzy.latinize(search),
+        uFuzzy.latinize(search)
       );
 
       if (indexes && order && indexes.length > 0) {

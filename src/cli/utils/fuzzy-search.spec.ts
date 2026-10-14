@@ -2,7 +2,7 @@ import type { Option } from "@clack/prompts";
 
 import { createFuzzyFilter } from "@/cli/utils/fuzzy-search";
 
-describe("createFuzzyFilter", () => {
+describe(createFuzzyFilter, () => {
   it("should return true for all options when search is empty", () => {
     const options: Option<string>[] = [
       { label: "joe", value: "joe" },
@@ -10,8 +10,8 @@ describe("createFuzzyFilter", () => {
     ];
     const filter = createFuzzyFilter(options);
 
-    expect(filter("", options[0])).toBe(true);
-    expect(filter("", options[1])).toBe(true);
+    expect(filter("", options[0])).toBeTruthy();
+    expect(filter("", options[1])).toBeTruthy();
   });
 
   it("should return true for all options when search is whitespace", () => {
@@ -21,8 +21,8 @@ describe("createFuzzyFilter", () => {
     ];
     const filter = createFuzzyFilter(options);
 
-    expect(filter("   ", options[0])).toBe(true);
-    expect(filter("   ", options[1])).toBe(true);
+    expect(filter("   ", options[0])).toBeTruthy();
+    expect(filter("   ", options[1])).toBeTruthy();
   });
 
   it("should filter by label match", () => {
@@ -32,8 +32,8 @@ describe("createFuzzyFilter", () => {
     ];
     const filter = createFuzzyFilter(options);
 
-    expect(filter("app", options[0])).toBe(true);
-    expect(filter("app", options[1])).toBe(false);
+    expect(filter("app", options[0])).toBeTruthy();
+    expect(filter("app", options[1])).toBeFalsy();
   });
 
   it("should filter by hint match", () => {
@@ -43,8 +43,8 @@ describe("createFuzzyFilter", () => {
     ];
     const filter = createFuzzyFilter(options);
 
-    expect(filter("feature", options[0])).toBe(true);
-    expect(filter("feature", options[1])).toBe(false);
+    expect(filter("feature", options[0])).toBeTruthy();
+    expect(filter("feature", options[1])).toBeFalsy();
   });
 
   it("should handle fuzzy matching", () => {
@@ -54,7 +54,7 @@ describe("createFuzzyFilter", () => {
     ];
     const filter = createFuzzyFilter(options);
 
-    expect(filter("actor", options[0])).toBe(true);
+    expect(filter("actor", options[0])).toBeTruthy();
   });
 
   it("should fall back to case-insensitive substring match", () => {
@@ -64,8 +64,8 @@ describe("createFuzzyFilter", () => {
     ];
     const filter = createFuzzyFilter(options);
 
-    expect(filter("JOHN", options[0])).toBe(true);
-    expect(filter("JOHN", options[1])).toBe(false);
+    expect(filter("JOHN", options[0])).toBeTruthy();
+    expect(filter("JOHN", options[1])).toBeFalsy();
   });
 
   it("should return false for all options when no matches", () => {
@@ -75,8 +75,8 @@ describe("createFuzzyFilter", () => {
     ];
     const filter = createFuzzyFilter(options);
 
-    expect(filter("xyz123", options[0])).toBe(false);
-    expect(filter("xyz123", options[1])).toBe(false);
+    expect(filter("xyz123", options[0])).toBeFalsy();
+    expect(filter("xyz123", options[1])).toBeFalsy();
   });
 
   it("should cache results for the same needle", () => {
@@ -96,8 +96,8 @@ describe("createFuzzyFilter", () => {
     const options: Option<string>[] = [{ value: "apple" }, { value: "banana" }];
     const filter = createFuzzyFilter(options);
 
-    expect(filter("app", options[0])).toBe(true);
-    expect(filter("app", options[1])).toBe(false);
+    expect(filter("app", options[0])).toBeTruthy();
+    expect(filter("app", options[1])).toBeFalsy();
   });
 
   it("should handle special characters in search", () => {
@@ -107,14 +107,14 @@ describe("createFuzzyFilter", () => {
     ];
     const filter = createFuzzyFilter(options);
 
-    expect(filter("cafe", options[0])).toBe(true);
+    expect(filter("cafe", options[0])).toBeTruthy();
   });
 
   it("should handle empty options array", () => {
     const options: Option<string>[] = [];
     const filter = createFuzzyFilter(options);
 
-    expect(filter("test", { label: "test", value: "test" })).toBe(false);
+    expect(filter("test", { label: "test", value: "test" })).toBeFalsy();
   });
 
   it("should handle options with undefined hints", () => {
@@ -124,7 +124,7 @@ describe("createFuzzyFilter", () => {
     ];
     const filter = createFuzzyFilter(options);
 
-    expect(filter("bug", options[1])).toBe(true);
-    expect(filter("bug", options[0])).toBe(false);
+    expect(filter("bug", options[1])).toBeTruthy();
+    expect(filter("bug", options[0])).toBeFalsy();
   });
 });

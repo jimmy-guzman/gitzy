@@ -2,31 +2,31 @@ import { x } from "tinyexec";
 
 import { checkIfGitRepo, checkIfStaged, shouldDoGitChecks } from "./checks";
 
-vi.mock("tinyexec");
+vi.mock(import("tinyexec"));
 
-describe("shouldDoGitChecks", () => {
+describe(shouldDoGitChecks, () => {
   it("should perform check if no flags", () => {
-    expect(shouldDoGitChecks()).toBe(true);
+    expect(shouldDoGitChecks()).toBeTruthy();
   });
 
   it("should perform check if no cli flags", () => {
-    expect(shouldDoGitChecks({ dryRun: false, hook: false })).toBe(true);
+    expect(shouldDoGitChecks({ dryRun: false, hook: false })).toBeTruthy();
   });
 
   it("should skip git check if dryRun flag is true", () => {
-    expect(shouldDoGitChecks({ dryRun: true, hook: false })).toBe(false);
+    expect(shouldDoGitChecks({ dryRun: true, hook: false })).toBeFalsy();
   });
 
   it("should skip git check if hook flag is true", () => {
-    expect(shouldDoGitChecks({ dryRun: false, hook: true })).toBe(false);
+    expect(shouldDoGitChecks({ dryRun: false, hook: true })).toBeFalsy();
   });
 
   it("should skip git check if amend flag is true", () => {
-    expect(shouldDoGitChecks({ amend: true })).toBe(false);
+    expect(shouldDoGitChecks({ amend: true })).toBeFalsy();
   });
 });
 
-describe("checkIfStaged", () => {
+describe(checkIfStaged, () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
@@ -47,7 +47,7 @@ describe("checkIfStaged", () => {
     vi.mocked(x).mockResolvedValue({ exitCode: 128, stderr: "", stdout: "" });
 
     await expect(checkIfStaged()).rejects.toThrow(
-      "Failed to check staged files (git diff)",
+      "Failed to check staged files (git diff)"
     );
   });
 
@@ -75,14 +75,14 @@ describe("checkIfStaged", () => {
   });
 });
 
-describe("checkIfGitRepo", () => {
+describe(checkIfGitRepo, () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
 
   it("should throw when not a git repository (non-zero exit code)", async () => {
     vi.mocked(x).mockRejectedValue(
-      "fatal: not a git repository (or any of the parent directories): .git",
+      "fatal: not a git repository (or any of the parent directories): .git"
     );
 
     await expect(checkIfGitRepo()).rejects.toThrow("Not a git repository");
@@ -113,7 +113,7 @@ describe("checkIfGitRepo", () => {
       ["rev-parse", "--is-inside-work-tree"],
       {
         throwOnError: true,
-      },
+      }
     );
   });
 });

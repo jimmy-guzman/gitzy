@@ -9,12 +9,7 @@
 </p>
 <!-- markdownlint-enable MD033 -->
 
-![actions][actions-badge]
-[![version][version-badge]][package]
-[![downloads][downloads-badge]][npmtrends]
-[![Install Size][install-size-badge]][packagephobia]
-[![License][license-badge]][license]
-[![Code Coverage][coverage-badge]][coverage]
+![actions][actions-badge] [![version][version-badge]][package] [![downloads][downloads-badge]][npmtrends] [![Install Size][install-size-badge]][packagephobia] [![License][license-badge]][license] [![Code Coverage][coverage-badge]][coverage]
 
 ## Table of Contents
 
@@ -58,36 +53,36 @@ gitzy branch --type feat -m "add dark mode" --scope ui
 
 `gitzy` is the same as `gitzy commit`. Explicit subcommands:
 
-| Subcommand     | Description                                                                    |
-| -------------- | ------------------------------------------------------------------------------ |
-| `gitzy`        | Alias for `gitzy commit`                                                       |
-| `gitzy commit` | Interactive conventional commit flow (default)                                 |
-| `gitzy branch` | Generate a branch name from a conventional commit prompt                       |
-| `gitzy init`   | Generate a starter `.gitzyrc.json` in the current dir (`--force` to overwrite) |
-| `gitzy config` | Display the resolved config as JSON                                            |
+| Subcommand | Description |
+| --- | --- |
+| `gitzy` | Alias for `gitzy commit` |
+| `gitzy commit` | Interactive conventional commit flow (default) |
+| `gitzy branch` | Generate a branch name from a conventional commit prompt |
+| `gitzy init` | Generate a starter `.gitzyrc.json` in the current dir (`--force` to overwrite) |
+| `gitzy config` | Display the resolved config as JSON |
 
 ### `gitzy commit` flags
 
-| Flag                        | Alias | Description                                                                                |
-| --------------------------- | ----- | ------------------------------------------------------------------------------------------ |
-| `--type <type>`             |       | set type inline (with `--subject`, skips all prompts)                                      |
-| `--scope <scope>`           |       | set scope inline                                                                           |
-| `--subject <subject>`       | `-m`  | set subject inline (with `--type`, skips all prompts)                                      |
-| `--body <body>`             |       | set body inline                                                                            |
-| `--breaking [breaking]`     |       | mark as breaking; add message for `footer`/`both` formats                                  |
-| `--issue <issue...>`        |       | set issues inline (repeatable: `--issue '#123' --issue '#456'`)                            |
-| `--dry-run`                 | `-D`  | show commit message without committing                                                     |
-| `--retry`                   |       | retry last commit and skip prompts                                                         |
-| `--amend`                   | `-a`  | amend the previous commit (pre-fills prompts from HEAD)                                    |
-| `--no-verify`               | `-n`  | skip git hooks                                                                             |
-| `--json`                    |       | output structured JSON (see shape below)                                                   |
-| `--no-emoji`                |       | disable emoji in commit message                                                            |
-| `--co-author <coAuthor...>` |       | add co-authors (repeatable: `--co-author "Name <email>"`)                                  |
-| `--signoff [signoff]`       | `-s`  | add a Signed-off-by trailer (derives your git identity; pass `"Name <email>"` to override) |
-| `--hook`                    |       | enable running inside a git hook (e.g. `pre-commit`)                                       |
-| `--stdin`                   |       | read answers from stdin as JSON (CLI flags take priority)                                  |
-| `--version`                 | `-v`  | display version number                                                                     |
-| `--help`                    | `-h`  | display help for command                                                                   |
+| Flag | Alias | Description |
+| --- | --- | --- |
+| `--type <type>` |  | set type inline (with `--subject`, skips all prompts) |
+| `--scope <scope>` |  | set scope inline |
+| `--subject <subject>` | `-m` | set subject inline (with `--type`, skips all prompts) |
+| `--body <body>` |  | set body inline |
+| `--breaking [breaking]` |  | mark as breaking; add message for `footer`/`both` formats |
+| `--issue <issue...>` |  | set issues inline (repeatable: `--issue '#123' --issue '#456'`) |
+| `--dry-run` | `-D` | show commit message without committing |
+| `--retry` |  | retry last commit and skip prompts |
+| `--amend` | `-a` | amend the previous commit (pre-fills prompts from HEAD) |
+| `--no-verify` | `-n` | skip git hooks |
+| `--json` |  | output structured JSON (see shape below) |
+| `--no-emoji` |  | disable emoji in commit message |
+| `--co-author <coAuthor...>` |  | add co-authors (repeatable: `--co-author "Name <email>"`) |
+| `--signoff [signoff]` | `-s` | add a Signed-off-by trailer (derives your git identity; pass `"Name <email>"` to override) |
+| `--hook` |  | enable running inside a git hook (e.g. `pre-commit`) |
+| `--stdin` |  | read answers from stdin as JSON (CLI flags take priority) |
+| `--version` | `-v` | display version number |
+| `--help` | `-h` | display help for command |
 
 #### `commit --json` output shape
 
@@ -112,19 +107,19 @@ gitzy branch --type feat -m "add dark mode" --scope ui
 
 ### `gitzy branch` flags
 
-| Flag                  | Alias | Description                                               |
-| --------------------- | ----- | --------------------------------------------------------- |
-| `--type <type>`       |       | set type inline (with `--subject`, skips all prompts)     |
-| `--scope <scope>`     |       | set scope inline                                          |
-| `--subject <subject>` | `-m`  | set subject inline (with `--type`, skips all prompts)     |
-| `--issue <issue>`     |       | set issue reference inline (e.g. `#42` or `PROJ-123`)     |
-| `--from <branch>`     |       | create the branch from a base branch                      |
-| `--amend`             | `-a`  | rename the current branch instead of creating a new one   |
-| `--no-checkout`       |       | do not checkout the new branch after creating it          |
-| `--dry-run`           | `-D`  | show branch name without creating it                      |
-| `--json`              |       | output result as JSON (see shape below)                   |
-| `--stdin`             |       | read answers from stdin as JSON (CLI flags take priority) |
-| `--help`              | `-h`  | display help for command                                  |
+| Flag | Alias | Description |
+| --- | --- | --- |
+| `--type <type>` |  | set type inline (with `--subject`, skips all prompts) |
+| `--scope <scope>` |  | set scope inline |
+| `--subject <subject>` | `-m` | set subject inline (with `--type`, skips all prompts) |
+| `--issue <issue>` |  | set issue reference inline (e.g. `#42` or `PROJ-123`) |
+| `--from <branch>` |  | create the branch from a base branch |
+| `--amend` | `-a` | rename the current branch instead of creating a new one |
+| `--no-checkout` |  | do not checkout the new branch after creating it |
+| `--dry-run` | `-D` | show branch name without creating it |
+| `--json` |  | output result as JSON (see shape below) |
+| `--stdin` |  | read answers from stdin as JSON (CLI flags take priority) |
+| `--help` | `-h` | display help for command |
 
 #### `branch --json` output shape
 
@@ -146,10 +141,10 @@ When used with `--amend`, also includes the previous branch name:
 
 By default, `gitzy` works out of the box. You can configure it via a `gitzy` key in `package.json`, or one of the following files:
 
-`.gitzyrc`, `.gitzyrc.json`, `.gitzyrc.js`, `.gitzyrc.cjs`, `.gitzyrc.mjs`,
-`gitzy.config.js`, `gitzy.config.cjs`, `gitzy.config.mjs`, `gitzy.config.ts`, `gitzy.config.mts`
+`.gitzyrc`, `.gitzyrc.json`, `.gitzyrc.js`, `.gitzyrc.cjs`, `.gitzyrc.mjs`, `gitzy.config.js`, `gitzy.config.cjs`, `gitzy.config.mjs`, `gitzy.config.ts`, `gitzy.config.mts`
 
 > [!NOTE]
+>
 > All of these files can also live under a `.config/` directory. TypeScript config files (`.ts`/`.mts`) are loaded with Node's built-in type stripping, so they need no extra tooling.
 
 Use `defineConfig` for editor autocomplete:
@@ -214,11 +209,8 @@ prompts: [
 ```
 
 > [!NOTE]
-> The `signoff` prompt is a text input prefilled with your git identity (edit to
-> customize, clear to skip) that adds a `Signed-off-by` trailer. It is opt-in
-> (not in the default `prompts`). The `--signoff` / `-s` flag works regardless
-> of this config, and accepts an optional `"Name <email>"` to override the
-> derived identity.
+>
+> The `signoff` prompt is a text input prefilled with your git identity (edit to customize, clear to skip) that adds a `Signed-off-by` trailer. It is opt-in (not in the default `prompts`). The `--signoff` / `-s` flag works regardless of this config, and accepts an optional `"Name <email>"` to override the derived identity.
 
 ### `header`
 
@@ -286,6 +278,7 @@ emoji: {
 ```
 
 > [!NOTE]
+>
 > Set the `GITZY_NO_EMOJI` environment variable or pass `--no-emoji` to disable all emojis. Precedence: `--no-emoji` flag > `GITZY_NO_EMOJI` env > `emoji.enabled` config.
 
 ### `issues`
@@ -301,6 +294,7 @@ issues: {
 ```
 
 > [!TIP]
+>
 > Specify multiple issues separated by commas: `#123, #456`, or with keywords: `resolves #123, fixes #456`, or cross-repo: `org/repo#123`. Use `pattern: "jira"` for Jira-style keys like `PROJ-123`.
 
 ### `branch`
@@ -320,12 +314,12 @@ branch: {
 
 #### Branch name examples
 
-| type    | scope  | issue    | subject           | output                       |
-| ------- | ------ | -------- | ----------------- | ---------------------------- |
-| `feat`  | `ui`   |          | `add dark mode`   | `feat/ui/add/dark/mode`      |
-| `fix`   |        | `#42`    | `login crash`     | `fix/#42-login/crash`        |
-| `chore` | `deps` |          | `bump typescript` | `chore/deps/bump/typescript` |
-| `feat`  |        | `PROJ-1` | `new dashboard`   | `feat/PROJ-1-new/dashboard`  |
+| type | scope | issue | subject | output |
+| --- | --- | --- | --- | --- |
+| `feat` | `ui` |  | `add dark mode` | `feat/ui/add/dark/mode` |
+| `fix` |  | `#42` | `login crash` | `fix/#42-login/crash` |
+| `chore` | `deps` |  | `bump typescript` | `chore/deps/bump/typescript` |
+| `feat` |  | `PROJ-1` | `new dashboard` | `feat/PROJ-1-new/dashboard` |
 
 ### commitlint integration
 

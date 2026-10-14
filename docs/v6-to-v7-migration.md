@@ -6,8 +6,7 @@
 
 ## Config
 
-The flat config schema has been replaced with a nested structure. If you have a
-config file, you'll need to update it.
+The flat config schema has been replaced with a nested structure. If you have a config file, you'll need to update it.
 
 ### Key Mapping
 
@@ -35,9 +34,7 @@ config file, you'll need to update it.
 | `body.max`   | —   | 70  |
 | `body.min`   | —   | 5   |
 
-> **Note:** The default type list is unchanged — all 11 built-in types (`chore`,
-> `ci`, `docs`, `feat`, `fix`, `perf`, `refactor`, `release`, `revert`, `style`,
-> `test`) are still available by default.
+> **Note:** The default type list is unchanged — all 11 built-in types (`chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refactor`, `release`, `revert`, `style`, `test`) are still available by default.
 
 ### Before / After
 
@@ -86,8 +83,7 @@ config file, you'll need to update it.
 
 ### YAML Config Removed
 
-YAML config files (`.gitzyrc.yaml`, `.gitzyrc.yml`) are no longer supported.
-Convert to JSON, JS, or TS:
+YAML config files (`.gitzyrc.yaml`, `.gitzyrc.yml`) are no longer supported. Convert to JSON, JS, or TS:
 
 - `.gitzyrc` (JSON)
 - `.gitzyrc.json`
@@ -98,8 +94,7 @@ All of the above are also supported inside a `.config/` subdirectory.
 
 ### TypeScript Config Files
 
-TypeScript config files are now natively supported (no external loader
-required). Use `defineConfig` for type safety:
+TypeScript config files are now natively supported (no external loader required). Use `defineConfig` for type safety:
 
 ```ts
 // gitzy.config.ts
@@ -113,24 +108,20 @@ export default defineConfig({
 
 ### Commitlint Auto-Detection
 
-The `useCommitlintConfig` flag and `--commitlint` CLI flag have been removed.
-Commitlint config is now **always** auto-detected and merged as a base layer
-(gitzy config wins on conflicts).
+The `useCommitlintConfig` flag and `--commitlint` CLI flag have been removed. Commitlint config is now **always** auto-detected and merged as a base layer (gitzy config wins on conflicts).
 
 ## CLI Flags
 
 ### Removed Flags
 
-| Removed                 | Replacement                                                       |
-| ----------------------- | ----------------------------------------------------------------- |
-| `-S, --skip`            | Use the `prompts` config array to control which prompts are shown |
-| `-p, --passthrough`     | Use `--no-verify` or `--amend` for common cases                   |
-| `-l, --commitlint`      | Auto-detected (no flag needed)                                    |
-| `-i, --issues <string>` | Renamed to `--issue <issue...>` (repeatable)                      |
+| Removed | Replacement |
+| --- | --- |
+| `-S, --skip` | Use the `prompts` config array to control which prompts are shown |
+| `-p, --passthrough` | Use `--no-verify` or `--amend` for common cases |
+| `-l, --commitlint` | Auto-detected (no flag needed) |
+| `-i, --issues <string>` | Renamed to `--issue <issue...>` (repeatable) |
 
-> **Note:** `--passthrough` previously forwarded arbitrary git flags (e.g.
-> `--no-gpg-sign`, `-S`). There is no general replacement — use `git commit`
-> directly for flags not covered by gitzy's own options.
+> **Note:** `--passthrough` previously forwarded arbitrary git flags (e.g. `--no-gpg-sign`, `-S`). There is no general replacement — use `git commit` directly for flags not covered by gitzy's own options.
 
 ### Removed Short Aliases
 
@@ -143,9 +134,7 @@ All single-letter aliases except the following have been removed:
 | `-a`  | `--amend`     |
 | `-n`  | `--no-verify` |
 
-Removed aliases: `-d` (body), `-b` (breaking), `-s` (scope), `-t` (type),
-`-r` (retry), `-H` (hook), `-S` (skip), `-i` (issues). Use the full flag names
-instead.
+Removed aliases: `-d` (body), `-b` (breaking), `-s` (scope), `-t` (type), `-r` (retry), `-H` (hook), `-S` (skip), `-i` (issues). Use the full flag names instead.
 
 ### New Flags (commit)
 
@@ -172,8 +161,7 @@ instead.
 
 ## New Subcommands
 
-v7 adds three explicit subcommands. Running `gitzy` with no subcommand still
-defaults to `commit`:
+v7 adds three explicit subcommands. Running `gitzy` with no subcommand still defaults to `commit`:
 
 | Command        | Description                            |
 | -------------- | -------------------------------------- |
@@ -195,5 +183,4 @@ to:
 {tmpdir}/gitzy/v7/{project}-store.json
 ```
 
-Your first `--retry` after upgrading will start fresh. Previous retry data from
-v6 is not migrated (and won't cause errors).
+Your first `--retry` after upgrading will start fresh. Previous retry data from v6 is not migrated (and won't cause errors).

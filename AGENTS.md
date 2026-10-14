@@ -8,16 +8,16 @@ An interactive CLI tool for creating [Conventional Commits](https://www.conventi
 - **Runtime:** Node.js (version pinned in `.nvmrc`)
 - **Module system:** ESM (`"type": "module"`)
 - **Package manager:** pnpm
-- **Build tool:** `tsdown` (Rollup-based TypeScript bundler, outputs `dist/run.mjs` and `dist/api/index.mjs`)
+- **Build tool:** `tsdown` (Rollup-based TypeScript bundler, outputs `dist/run.mjs` and `dist/index.mjs`)
 - **CLI framework:** `commander`
-- **Interactive prompts:** `enquirer`
+- **Interactive prompts:** `@clack/prompts`
 - **Config loading:** `lilconfig` (cosmiconfig-compatible, supports JSON/JS — no YAML, no `.ts`)
 - **Config validation:** `valibot` (schema-first, tree-shakeable)
 - **Fuzzy search:** `@leeoniya/ufuzzy`
 - **Git execution:** `tinyexec` (lightweight `child_process` wrapper)
-- **Formatting:** Prettier 3 with `@jimmy.codes/prettier-config`
-- **Linting:** ESLint 9 with `@jimmy.codes/eslint-config` (flat config)
-- **Testing:** Vitest 4 with V8 coverage (unit + e2e)
+- **Formatting:** Oxfmt via Ultracite (`oxfmt.config.ts`)
+- **Linting:** Oxlint via Ultracite `core` + `vitest` presets (`oxlint.config.ts`)
+- **Testing:** Vitest 5 with V8 coverage (unit + e2e)
 - **Dead code detection:** Knip
 - **Spell checking:** cspell
 
@@ -29,8 +29,7 @@ src/
   cli.ts                  # Main CLI wiring: commander setup, registers all subcommands
   lang.ts                 # All user-facing strings (flag descriptions, examples)
   reset.d.ts              # Applies @total-typescript/ts-reset globally
-  api/
-    index.ts              # Public Node API exports (second tsdown entry → dist/api/index.mjs)
+  index.ts                # Public Node API exports (second tsdown entry → dist/index.mjs)
   cli/
     types.ts              # Core TS interfaces: Answers, CommitFlags, BranchFlags, GlobalFlags, GitzyState
     prompts/              # One file per interactive question
@@ -49,7 +48,7 @@ src/
       config.ts           # Displays resolved config (--json for machine-readable output)
     utils/
       fuzzy-search.ts     # Generic multi-key fuzzy search via uFuzzy
-      logging.ts          # Colored console helpers (info/hint/danger/warn/log)
+      stdin.ts            # readStdinJson() — reads + parses --stdin answers
   core/
     config/
       types.ts            # Config, ResolvedConfig, TypeEntry, ScopeEntry, defineConfig() interfaces
@@ -63,6 +62,7 @@ src/
     branch/
       types.ts            # BranchParts interface
       formatter.ts        # formatBranchName(), slugify()
+      parser.ts           # parseBranchName() — recovers parts from a branch name (--amend)
     conventional/
       types.ts            # MessageParts interface + defaultMessageParts
       message.ts          # formatMessage(), wrap(), isEmojiEnabled(), GITZY_NO_EMOJI support
@@ -86,26 +86,26 @@ e2e/
 The codebase is split into two layers with a thin orchestration layer connecting them:
 
 - **`src/core/`** — pure business logic with no CLI dependencies: config loading/validation, conventional commit message formatting, branch name formatting, git operations, retry state store. All modules are UI-agnostic.
-- **`src/cli/`** — all UI concerns: Commander flags, Enquirer prompt definitions, logging helpers, subcommand registrations.
+- **`src/cli/`** — all UI concerns: Commander flags, `@clack/prompts` prompt definitions, subcommand registrations.
 - **`src/cli.ts`** — thin orchestrator that registers all four Commander subcommands.
 - **`src/run.ts`** — the shebang entrypoint; one-liner that calls `cli()`.
-- **`src/api/index.ts`** — public Node API re-exports from `src/core/` only.
+- **`src/index.ts`** — public Node API (`defineConfig`, `Config`), re-exported from `src/core/` only.
 
 ## Key Patterns
 
 - **Path alias** `@/*` maps to `./src/*`.
 - **Subcommands:** `gitzy` alone runs the default `commit` subcommand. Explicit subcommands: `branch`, `init`, `config`.
-- **Prompt pattern:** Each question is a single exported function (`type`, `scope`, `subject`, `body`, `breaking`, `issues`) returning an Enquirer prompt config object (or `null` to skip). `createPrompts()` composes these based on `config.prompts`.
+- **Prompt pattern:** Each question (`type`, `scope`, `subject`, `body`, `breaking`, `issues`, `coAuthors`, `signoff`) is an exported factory that takes the prompt options and returns a function that either resolves the autofilled answer, calls a `@clack/prompts` prompt, or returns `undefined` to skip. `createPrompts()` collects the ones listed in `config.prompts` and runs them with clack's `group()`.
 - **Config schema:** Every config file is loaded through a valibot schema with `safeParse`. Defaults are applied at the schema level via `optional(field, default)`, not manually in code. Invalid config throws a `TypeError` with a human-readable summary.
 - **Config normalization:** `normalizeConfig()` converts `string` type entries (short form) to full `TypeEntry` objects by looking them up in `builtinTypes`.
-- **Logging:** All console output goes through `src/cli/utils/logging.ts` using Node's built-in `styleText` from `node:util`. No external color library at runtime.
+- **Logging:** All CLI output goes through `@clack/prompts` (`log.*`, `cancel`). No `console.*` calls and no color library.
 - **Emoji:** Controlled by `config.emoji.enabled` (config) and the `GITZY_NO_EMOJI` env var. No `--no-emoji` CLI flag.
 - **`--stdin`:** Both `commit` and `branch` commands accept JSON answers piped via stdin, merged with CLI flags (flags take priority over stdin).
 - **`--amend` (commit):** Parses HEAD commit message with `getAmendParts()` to pre-fill prompts (best-effort regex parsing).
 - **`--amend` (branch):** Renames the current branch via `git branch -m`. Warns if a remote tracking ref exists.
 - **Store (retry mode):** Previous answers persisted as JSON in `os.tmpdir()/gitzy/<cwd-basename>-store.json` at mode `0o0600`.
-- **Bundling:** `tsdown` inlines `ansi-colors`, `commander`, `enquirer`, `valibot`, `@leeoniya/ufuzzy` into `dist/run.mjs`. `lilconfig` and `tinyexec` remain external runtime `dependencies`.
-- **Node API:** `src/api/index.ts` is the second tsdown entry → `dist/api/index.mjs`. The `exports` map in `package.json` points `"."` to this file.
+- **Bundling:** `tsdown` bundles every runtime package listed in `deps.onlyBundle` (`tsdown.config.ts`): `@clack/prompts` and its dependencies, `commander`, `valibot`, `@leeoniya/ufuzzy`, `lilconfig`, `tinyexec`. The published package has no runtime `dependencies`.
+- **Node API:** `src/index.ts` is the second tsdown entry → `dist/index.mjs`. The `exports` map in `package.json` points `"."` to this file.
 - Use `satisfies` for type narrowing when possible (e.g., `lang.ts` config objects).
 - Private class fields (`#`) used in `GitzyStore`.
 - `as const` used for tuple/literal types in defaults and schemas.
@@ -114,13 +114,13 @@ The codebase is split into two layers with a thin orchestration layer connecting
 ## Commands
 
 ```txt
-pnpm build        # Bundle src/run.ts + src/api/index.ts → dist/ (minified)
+pnpm build        # Bundle src/run.ts + src/index.ts → dist/ (minified)
 pnpm test         # Run tests in watch mode
 pnpm coverage     # Single-run with V8 coverage report
 pnpm check        # Full suite: knip + lint + format + coverage + typecheck (check builds first)
-pnpm lint         # Lint (ESLint)
+pnpm lint         # Lint (Oxlint)
 pnpm lint:fix     # Lint and auto-fix
-pnpm format       # Check formatting (Prettier)
+pnpm format       # Check formatting (Oxfmt)
 pnpm format:fix   # Auto-fix formatting
 pnpm typecheck    # Type check (tsc --noEmit)
 pnpm knip         # Detect unused exports/dependencies
@@ -147,7 +147,8 @@ If any step fails, fix the issue and re-run from that step. Do not move on until
 - **Test files:** use the `.spec.ts` suffix and live next to the code they test (`src/**/*.spec.ts`). E2E tests live in `e2e/`.
 - **Inline snapshots:** `toMatchInlineSnapshot` is used heavily for commit message output verification — prefer this over string assertions for message formatting tests.
 - **Test helpers:** factory/setup functions (e.g., `setupFormatCommitMessage()`) keep test DRY using spread-based config/answer overrides for targeted scenarios.
-- **Vitest globals:** `globals: true` is set — `describe`, `it`, `expect` do not need to be imported.
+- **Vitest globals:** `globals: true` is set — `describe`, `it`, `expect`, `vi` must not be imported (enforced by `oxlint.config.ts`).
+- **Mocks:** use `vi.mock(import("module"))` and typed `vi.fn<typeof fn>()`. For generic APIs (e.g. `@clack/prompts`), automock the module and set implementations with `vi.mocked(...)` in `beforeEach` inside a `describe`.
 - Sort object keys and import statements alphabetically.
 - Prefer named exports over default exports.
 - Use `replaceAll()` instead of `replace()` with global regex (enforced by linter).
@@ -167,7 +168,8 @@ If any step fails, fix the issue and re-run from that step. Do not move on until
 
 ## Do NOT
 
-- Use Prettier alternatives — this project uses Prettier (not oxfmt or others).
+- Use other linters or formatters — this project uses Ultracite's Oxlint + Oxfmt presets.
+- Turn off Ultracite rules to make lint pass — fix the code instead.
 - Add unnecessary type assertions (`as`, `!`, `any`) without first exhausting proper solutions.
 - Leave unused exports, dependencies, or files — run `pnpm knip` to detect and remove them.
 - Leave tests in a failing state — after making changes, run `pnpm coverage` and fix any broken tests before finishing.

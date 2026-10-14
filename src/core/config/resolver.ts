@@ -12,36 +12,32 @@
  *   Gitzy entries NOT in the commitlint enum are excluded.
  */
 
-import type { Config, ScopeEntry, TypeEntry } from "./types";
-
 import { extractCommitlintRules } from "./commitlint";
 import { CommitlintConfigSchema } from "./commitlint-schema";
 import { loadConfig } from "./loader";
 import { normalizeConfig } from "./normalizer";
 import { ConfigSchema } from "./schema";
+import type { Config, ScopeEntry, TypeEntry } from "./types";
 
-const toName = (entry: ScopeEntry | string | TypeEntry) => {
-  return typeof entry === "string" ? entry : entry.name;
-};
+const toName = (entry: ScopeEntry | string | TypeEntry) =>
+  typeof entry === "string" ? entry : entry.name;
 
 const constrainByName = <T extends ScopeEntry | string | TypeEntry>(
   gitzy: readonly T[],
-  commitlint: readonly T[],
+  commitlint: readonly T[]
 ): readonly T[] => {
   const commitlintNames = new Set(commitlint.map(toName));
   const gitzyNames = new Set(gitzy.map(toName));
-  const allowed = gitzy.filter((e) => {
-    return commitlintNames.has(toName(e));
-  });
-  const extras = commitlint.filter((e) => {
-    return !gitzyNames.has(toName(e));
-  });
+  const allowed = gitzy.filter((e) => commitlintNames.has(toName(e)));
+  const extras = commitlint.filter((e) => !gitzyNames.has(toName(e)));
 
   return [...allowed, ...extras];
 };
 
 const mergeConfigs = (base: Config | null, overrides: Config): Config => {
-  if (!base) return overrides;
+  if (!base) {
+    return overrides;
+  }
 
   return {
     ...base,

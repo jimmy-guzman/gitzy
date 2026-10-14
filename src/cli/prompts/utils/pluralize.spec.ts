@@ -1,6 +1,6 @@
 import { pluralize } from "./pluralize";
 
-describe("pluralize", () => {
+describe(pluralize, () => {
   it("should not add 's' when count is 1", () => {
     expect(pluralize(1, "character")).toBe("1 character");
   });

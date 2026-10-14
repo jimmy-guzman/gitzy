@@ -1,11 +1,11 @@
 import { text } from "@clack/prompts";
 
 import type { CreatedPromptOptions } from "@/cli/types";
-
 import { getSignoffTrailer } from "@/core/git/signoff";
 
-export const signoff = ({ autofill, initial }: CreatedPromptOptions) => {
-  return async () => {
+export const signoff =
+  ({ autofill, initial }: CreatedPromptOptions) =>
+  async () => {
     if (autofill?.signoff !== undefined) {
       return autofill.signoff;
     }
@@ -21,4 +21,3 @@ export const signoff = ({ autofill, initial }: CreatedPromptOptions) => {
       placeholder: "leave empty to skip",
     });
   };
-};

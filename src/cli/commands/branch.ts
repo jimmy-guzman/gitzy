@@ -2,15 +2,15 @@
  * Branch command — interactive branch name generation flow
  */
 
+import { autocomplete, cancel, group, log, text } from "@clack/prompts";
 import type { Command } from "commander";
 
-import { autocomplete, cancel, group, log, text } from "@clack/prompts";
-
 import type { BranchFlags, GitzyState } from "@/cli/types";
-import type { BranchParts } from "@/core/branch/types";
-
 import { createFuzzyFilter } from "@/cli/utils/fuzzy-search";
+import { readStdinJson } from "@/cli/utils/stdin";
 import { formatBranchName } from "@/core/branch/formatter";
+import { parseBranchName } from "@/core/branch/parser";
+import type { BranchParts } from "@/core/branch/types";
 import { defaultResolvedConfig } from "@/core/config/defaults";
 import { resolveConfig } from "@/core/config/resolver";
 import {
@@ -30,13 +30,11 @@ interface BranchAnswers {
 const promptBranchQuestions = async (
   state: GitzyState,
   autofill: Partial<BranchAnswers>,
-  amendInitial?: Partial<BranchAnswers>,
+  amendInitial?: Partial<BranchAnswers>
 ): Promise<BranchAnswers> => {
   if (autofill.type && autofill.subject) {
     const trimmedSubject = autofill.subject.trim();
-    const validType = state.config.types.some((t) => {
-      return t.name === autofill.type;
-    });
+    const validType = state.config.types.some((t) => t.name === autofill.type);
 
     if (trimmedSubject && validType) {
       return {
@@ -50,41 +48,39 @@ const promptBranchQuestions = async (
 
   const { config } = state;
 
-  const typeOptions = config.types.map((t) => {
-    return {
-      hint: t.description,
-      label: t.name,
-      value: t.name,
-    };
-  });
+  const typeOptions = config.types.map((t) => ({
+    hint: t.description,
+    label: t.name,
+    value: t.name,
+  }));
 
-  const scopeOptions = config.scopes.map((s) => {
-    return {
-      hint: s.description,
-      label: s.name,
-      value: s.name,
-    };
-  });
+  const scopeOptions = config.scopes.map((s) => ({
+    hint: s.description,
+    label: s.name,
+    value: s.name,
+  }));
 
-  /* eslint-disable perfectionist/sort-objects -- insertion order controls prompt sequence */
   const result = await group(
     {
-      type: () => {
-        if (autofill.type !== undefined) return Promise.resolve(autofill.type);
+      issue: () => {
+        if (autofill.issue !== undefined) {
+          return Promise.resolve(autofill.issue);
+        }
 
-        return autocomplete({
-          filter: createFuzzyFilter(typeOptions),
-          initialValue: amendInitial?.type,
-          maxItems: 10,
-          message: "Choose the type",
-          options: typeOptions,
+        return text({
+          initialValue: amendInitial?.issue,
+          message: "Add an issue reference",
+          placeholder: "skip when none",
         });
       },
       scope: () => {
-        if (config.scopes.length === 0) return Promise.resolve("");
+        if (config.scopes.length === 0) {
+          return Promise.resolve("");
+        }
 
-        if (autofill.scope !== undefined)
+        if (autofill.scope !== undefined) {
           return Promise.resolve(autofill.scope);
+        }
 
         return autocomplete({
           filter: createFuzzyFilter(scopeOptions),
@@ -95,39 +91,39 @@ const promptBranchQuestions = async (
         });
       },
       subject: () => {
-        if (autofill.subject !== undefined)
+        if (autofill.subject !== undefined) {
           return Promise.resolve(autofill.subject);
+        }
 
         return text({
           initialValue: amendInitial?.subject,
           message: "Add a short description",
-          validate: (input) => {
-            if ((input ?? "").trim().length === 0) {
-              return "Subject is required";
-            }
-
-            return undefined;
-          },
+          validate: (input) =>
+            (input ?? "").trim().length === 0
+              ? "Subject is required"
+              : undefined,
         });
       },
-      issue: () => {
-        if (autofill.issue !== undefined)
-          return Promise.resolve(autofill.issue);
+      type: () => {
+        if (autofill.type !== undefined) {
+          return Promise.resolve(autofill.type);
+        }
 
-        return text({
-          initialValue: amendInitial?.issue,
-          message: "Add an issue reference",
-          placeholder: "skip when none",
+        return autocomplete({
+          filter: createFuzzyFilter(typeOptions),
+          initialValue: amendInitial?.type,
+          maxItems: 10,
+          message: "Choose the type",
+          options: typeOptions,
         });
       },
     },
-    /* eslint-enable perfectionist/sort-objects -- end prompt sequence block */
     {
       onCancel: () => {
         cancel("Cancelled.");
         process.exit(0);
       },
-    },
+    }
   );
 
   return {
@@ -136,6 +132,31 @@ const promptBranchQuestions = async (
     subject: result.subject,
     type: result.type,
   };
+};
+
+const toFlagAnswers = (opts: BranchFlags): Partial<BranchAnswers> => ({
+  ...(opts.issue ? { issue: opts.issue } : {}),
+  ...(opts.scope ? { scope: opts.scope } : {}),
+  ...(opts.subject ? { subject: opts.subject } : {}),
+  ...(opts.type ? { type: opts.type } : {}),
+});
+
+const writeResult = (
+  opts: BranchFlags,
+  branchName: string,
+  oldName?: string
+) => {
+  if (opts.json) {
+    process.stdout.write(
+      `${JSON.stringify({
+        branchName,
+        dryRun: opts.dryRun ?? false,
+        ...(oldName === undefined ? {} : { oldName }),
+      })}\n`
+    );
+  } else if (opts.dryRun) {
+    log.info(`Branch name: ${branchName}`);
+  }
 };
 
 export const registerBranchCommand = (program: Command) => {
@@ -169,76 +190,16 @@ export const registerBranchCommand = (program: Command) => {
       try {
         state.config = await resolveConfig();
 
-        let amendInitial: Partial<BranchAnswers> | undefined;
-
-        if (opts.amend) {
-          const currentBranch = await getCurrentBranch().catch(() => {
-            return "";
-          });
-          const segments = currentBranch.split("/");
-
-          const knownScopes = new Set(
-            state.config.scopes.map((s) => {
-              return s.name;
-            }),
-          );
-          const hasScope = knownScopes.has(segments.at(1) ?? "");
-          const rawSubjectStart = hasScope
-            ? segments.slice(2)
-            : segments.slice(1);
-
-          /** Detect and strip a leading `{issue}-` prefix from the first subject segment */
-          const issuePrefix = /^(#\d+|[A-Z]+-\d+)-(.+)$/.exec(
-            rawSubjectStart[0] ?? "",
-          );
-          const detectedIssue = issuePrefix ? issuePrefix[1] : undefined;
-          const firstSubjectSegment = issuePrefix
-            ? issuePrefix[2]
-            : rawSubjectStart[0];
-          const subjectSegments = [
-            firstSubjectSegment,
-            ...rawSubjectStart.slice(1),
-          ].filter(Boolean);
-
-          amendInitial = {
-            ...(detectedIssue === undefined ? {} : { issue: detectedIssue }),
-            ...(hasScope ? { scope: segments[1] } : {}),
-            subject: subjectSegments.join("-"),
-            type: segments[0] ?? "",
-          };
-        }
-
-        let stdinAnswers: Partial<BranchAnswers> = {};
-
-        if (opts.stdin) {
-          const raw = await new Promise<string>((resolve) => {
-            let data = "";
-
-            process.stdin.setEncoding("utf8");
-            process.stdin.on("data", (chunk) => {
-              data += String(chunk);
-            });
-            process.stdin.on("end", () => {
-              resolve(data);
-            });
-          });
-
-          try {
-            stdinAnswers = JSON.parse(raw) as Partial<BranchAnswers>;
-          } catch {
-            throw new Error("Invalid JSON provided to --stdin");
-          }
-        }
-
-        const flagAnswers: Partial<BranchAnswers> = {};
-
-        if (opts.type) flagAnswers.type = opts.type;
-
-        if (opts.scope) flagAnswers.scope = opts.scope;
-
-        if (opts.subject) flagAnswers.subject = opts.subject;
-
-        if (opts.issue) flagAnswers.issue = opts.issue;
+        const amendInitial = opts.amend
+          ? parseBranchName(
+              await getCurrentBranch().catch(() => ""),
+              state.config.scopes.map((s) => s.name)
+            )
+          : undefined;
+        const stdinAnswers = opts.stdin
+          ? await readStdinJson<Partial<BranchAnswers>>()
+          : {};
+        const flagAnswers = toFlagAnswers(opts);
 
         if (
           !process.stdin.isTTY &&
@@ -246,14 +207,14 @@ export const registerBranchCommand = (program: Command) => {
           !opts.stdin
         ) {
           cmd.error(
-            "No TTY detected. Run gitzy branch --help for non-interactive usage.",
+            "No TTY detected. Run gitzy branch --help for non-interactive usage."
           );
         }
 
         const answers = await promptBranchQuestions(
           state,
           { ...stdinAnswers, ...flagAnswers },
-          amendInitial,
+          amendInitial
         );
 
         const parts: BranchParts = {
@@ -272,21 +233,11 @@ export const registerBranchCommand = (program: Command) => {
 
           if (result.hasRemote) {
             log.warn(
-              `Remote tracking ref exists for "${result.oldName}". You must manually push and delete the remote branch.`,
+              `Remote tracking ref exists for "${result.oldName}". You must manually push and delete the remote branch.`
             );
           }
 
-          if (opts.json) {
-            process.stdout.write(
-              `${JSON.stringify({
-                branchName: result.newName,
-                dryRun: opts.dryRun ?? false,
-                oldName: result.oldName,
-              })}\n`,
-            );
-          } else if (opts.dryRun) {
-            log.info(`Branch name: ${result.newName}`);
-          }
+          writeResult(opts, result.newName, result.oldName);
         } else {
           const result = await createBranch(
             branchName,
@@ -294,19 +245,10 @@ export const registerBranchCommand = (program: Command) => {
               ? opts.checkout
               : state.config.branch.checkout,
             opts.dryRun,
-            opts.from,
+            opts.from
           );
 
-          if (opts.json) {
-            process.stdout.write(
-              `${JSON.stringify({
-                branchName: result.branchName,
-                dryRun: opts.dryRun ?? false,
-              })}\n`,
-            );
-          } else if (opts.dryRun) {
-            log.info(`Branch name: ${result.branchName}`);
-          }
+          writeResult(opts, result.branchName);
         }
       } catch (error: unknown) {
         log.error(error instanceof Error ? error.message : String(error));

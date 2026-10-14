@@ -15,7 +15,7 @@ export const leadingLabel = (answers?: Partial<Answers>) => {
 
 const resolveEmojiEnabled = (
   flags: CreatedPromptOptions["flags"],
-  configEnabled: boolean,
+  configEnabled: boolean
 ) => {
   if (flags.noEmoji === true || process.env.GITZY_NO_EMOJI === "1") {
     return false;
@@ -47,26 +47,24 @@ export const subject = ({
       const remaining = max - label.length - emojiLength;
       const overBy = value.length - remaining;
 
-      if (overBy > 0) {
-        return `Remove ${pluralize(overBy, "character")} (${remaining} available)`;
-      }
-
-      return undefined;
+      return overBy > 0
+        ? `Remove ${pluralize(overBy, "character")} (${remaining} available)`
+        : undefined;
     };
 
     if (autofill?.subject !== undefined) {
       const trimmed = autofill.subject.trim();
 
-      if (!validate(trimmed)) return Promise.resolve(trimmed);
+      if (!validate(trimmed)) {
+        return Promise.resolve(trimmed);
+      }
     }
 
     return text({
       initialValue: initial?.subject,
       message: "Add a short description",
       placeholder: `${min}-${max} characters`,
-      validate: (value = "") => {
-        return validate(value.trim());
-      },
+      validate: (value = "") => validate(value.trim()),
     });
   };
 };

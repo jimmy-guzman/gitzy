@@ -2,19 +2,20 @@ import { text } from "@clack/prompts";
 
 import type { CreatedPromptOptions } from "@/cli/types";
 
-export const issues = ({
-  autofill,
-  config: {
-    issues: { hint: issuesHint, prefix: issuesPrefix },
-  },
-  initial,
-}: CreatedPromptOptions) => {
-  return () => {
+export const issues =
+  ({
+    autofill,
+    config: {
+      issues: { hint: issuesHint, prefix: issuesPrefix },
+    },
+    initial,
+  }: CreatedPromptOptions) =>
+  () => {
     if (autofill?.issues !== undefined) {
       return Promise.resolve(
         Array.isArray(autofill.issues)
           ? autofill.issues.join(", ")
-          : autofill.issues,
+          : autofill.issues
       );
     }
 
@@ -29,4 +30,3 @@ export const issues = ({
       placeholder: issuesHint,
     });
   };
-};

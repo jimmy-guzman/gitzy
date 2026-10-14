@@ -1,26 +1,22 @@
-import type { Answers } from "@/cli/types";
+import type * as clack from "@clack/prompts";
 
+import type { Answers } from "@/cli/types";
 import { defaultResolvedConfig } from "@/core/config/defaults";
 import { defaultMessageParts } from "@/core/conventional/types";
 
 import { leadingLabel, subject } from "./subject";
 
-vi.mock("@clack/prompts", () => {
-  return { text: vi.fn().mockResolvedValue("a cool feature") };
-});
+vi.mock(import("@clack/prompts"), () => ({
+  text: vi.fn<typeof clack.text>().mockResolvedValue("a cool feature"),
+}));
 
-beforeEach(() => {
-  vi.clearAllMocks();
-});
-
-const setupSubject = (configOverrides = {}, autofill = {}) => {
-  return subject({
+const setupSubject = (configOverrides = {}, autofill = {}) =>
+  subject({
     answers: defaultMessageParts,
     autofill,
     config: { ...defaultResolvedConfig, ...configOverrides },
     flags: {},
   });
-};
 
 const answers: Partial<Answers> = {
   scope: "*",
@@ -29,7 +25,7 @@ const answers: Partial<Answers> = {
 
 const getValidate = async (
   configOverrides = {},
-  results: Partial<Answers> = {},
+  results: Partial<Answers> = {}
 ) => {
   const { text } = await import("@clack/prompts");
 
@@ -37,16 +33,16 @@ const getValidate = async (
 
   await factory({ results });
 
-  const call = vi.mocked(text).mock.calls[0][0];
+  const [[call]] = vi.mocked(text).mock.calls;
 
   expect(call.validate).toBeDefined();
 
   return call.validate as (
-    value: string | undefined,
+    value: string | undefined
   ) => Error | string | undefined;
 };
 
-describe("leadingLabel", () => {
+describe(leadingLabel, () => {
   it("should create subject's leading label with scope", () => {
     expect(leadingLabel(answers)).toBe("feat(*): ");
   });
@@ -60,7 +56,11 @@ describe("leadingLabel", () => {
   });
 });
 
-describe("subject", () => {
+describe(subject, () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it("should return a factory function", () => {
     const factory = setupSubject();
 
@@ -86,7 +86,7 @@ describe("subject", () => {
       expect.objectContaining({
         message: "Add a short description",
         placeholder: "5-64 characters",
-      }),
+      })
     );
   });
 
@@ -119,7 +119,7 @@ describe("subject", () => {
 
       // remaining = 64 - 9 - 3 = 52, input = 53, overBy = 1
       expect(validate("#".repeat(53))).toBe(
-        "Remove 1 character (52 available)",
+        "Remove 1 character (52 available)"
       );
     });
 
@@ -138,21 +138,21 @@ describe("subject", () => {
     it("should account for emoji length", async () => {
       const validate = await getValidate(
         { emoji: { ...defaultResolvedConfig.emoji, enabled: true } },
-        { scope: "*", type: "feat" },
+        { scope: "*", type: "feat" }
       );
 
       // leadingLabel("feat(*): ") = 9 chars, emoji = 3, max = 64
       // remaining = 64 - 9 - 3 = 52
       expect(validate("#".repeat(52))).toBeUndefined();
       expect(validate("#".repeat(53))).toBe(
-        "Remove 1 character (52 available)",
+        "Remove 1 character (52 available)"
       );
     });
 
     it("should pass when emojis are disabled", async () => {
       const validate = await getValidate(
         { emoji: { ...defaultResolvedConfig.emoji, enabled: false } },
-        { scope: "*", type: "feat" },
+        { scope: "*", type: "feat" }
       );
 
       expect(validate("#".repeat(41))).toBeUndefined();

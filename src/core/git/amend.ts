@@ -68,15 +68,19 @@ export const parseConventionalCommit = (message: string): ParsedCommit => {
   const { breaking: bangBreaking, scope, subject, type } = headerMatch.groups;
   const result: ParsedCommit = { subject, type };
 
-  if (scope) result.scope = scope;
+  if (scope) {
+    result.scope = scope;
+  }
 
   const footerStart = rest.search(
-    /^(?:\p{Emoji_Presentation}\s)?(?:BREAKING[ -]CHANGE|Co-authored-by|Signed-off-by|Closes|Fixes|Resolves)/imu,
+    /^(?:\p{Emoji_Presentation}\s)?(?:BREAKING[ -]CHANGE|Co-authored-by|Signed-off-by|Closes|Fixes|Resolves)/imu
   );
   const bodyText =
     footerStart === -1 ? rest : rest.slice(0, footerStart).trim();
 
-  if (bodyText) result.body = bodyText;
+  if (bodyText) {
+    result.body = bodyText;
+  }
 
   const breakingMatch = BREAKING_FOOTER_REGEX.exec(rest);
 
@@ -90,13 +94,11 @@ export const parseConventionalCommit = (message: string): ParsedCommit => {
 
   if (issueMatches.length > 0) {
     result.issues = issueMatches
-      .map((m) => {
-        return m.groups?.ref ?? "";
-      })
+      .map((m) => m.groups?.ref ?? "")
       .filter(Boolean);
   }
 
-  const signoffMatch = /^Signed-off-by:(?<signoff>.+)$/im.exec(rest);
+  const signoffMatch = /^Signed-off-by:(?<signoff>.+)$/imu.exec(rest);
   const signoff = signoffMatch?.groups?.signoff.trim();
 
   if (signoff) {

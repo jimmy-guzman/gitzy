@@ -1,24 +1,20 @@
-import type { Answers } from "@/cli/types";
+import type * as clack from "@clack/prompts";
 
+import type { Answers } from "@/cli/types";
 import { defaultResolvedConfig } from "@/core/config/defaults";
+import type * as signoffModule from "@/core/git/signoff";
 
 import { signoff } from "./signoff";
 
-vi.mock("@clack/prompts", () => {
-  return {
-    text: vi.fn().mockResolvedValue(""),
-  };
-});
+vi.mock(import("@clack/prompts"), () => ({
+  text: vi.fn<typeof clack.text>().mockResolvedValue(""),
+}));
 
-vi.mock("@/core/git/signoff", () => {
-  return {
-    getSignoffTrailer: vi.fn().mockResolvedValue("Jane Doe <jane@example.com>"),
-  };
-});
-
-beforeEach(() => {
-  vi.clearAllMocks();
-});
+vi.mock(import("@/core/git/signoff"), () => ({
+  getSignoffTrailer: vi
+    .fn<typeof signoffModule.getSignoffTrailer>()
+    .mockResolvedValue("Jane Doe <jane@example.com>"),
+}));
 
 const emptyAnswers: Answers = {
   body: "",
@@ -29,16 +25,19 @@ const emptyAnswers: Answers = {
   type: "",
 };
 
-const setupSignoff = (autofill = {}) => {
-  return signoff({
+const setupSignoff = (autofill = {}) =>
+  signoff({
     answers: emptyAnswers,
     autofill,
     config: defaultResolvedConfig,
     flags: {},
   });
-};
 
-describe("signoff", () => {
+describe(signoff, () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it("should return a factory function", () => {
     const factory = setupSignoff();
 
@@ -48,7 +47,7 @@ describe("signoff", () => {
   it("should return the boolean autofill value verbatim", async () => {
     const factory = setupSignoff({ signoff: true });
 
-    await expect(factory()).resolves.toBe(true);
+    await expect(factory()).resolves.toBeTruthy();
   });
 
   it("should return the string autofill override verbatim", async () => {
@@ -68,7 +67,7 @@ describe("signoff", () => {
       expect.objectContaining({
         initialValue: "Jane Doe <jane@example.com>",
         message: "Signed-off-by",
-      }),
+      })
     );
   });
 
@@ -87,7 +86,7 @@ describe("signoff", () => {
     expect(text).toHaveBeenCalledWith(
       expect.objectContaining({
         initialValue: "Prev <prev@example.com>",
-      }),
+      })
     );
   });
 });

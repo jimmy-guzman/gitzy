@@ -2,7 +2,7 @@ import { defaultBranchConfig } from "@/core/config/defaults";
 
 import { formatBranchName, slugify } from "./formatter";
 
-describe("slugify", () => {
+describe(slugify, () => {
   it("should lowercase and replace spaces with dashes", () => {
     expect(slugify("Add New Feature")).toBe("add-new-feature");
   });
@@ -24,7 +24,7 @@ describe("slugify", () => {
   });
 });
 
-describe("formatBranchName", () => {
+describe(formatBranchName, () => {
   it("should format full branch name with all parts", () => {
     const result = formatBranchName(
       {
@@ -33,7 +33,7 @@ describe("formatBranchName", () => {
         subject: "add new flag",
         type: "feat",
       },
-      defaultBranchConfig,
+      defaultBranchConfig
     );
 
     expect(result).toMatchInlineSnapshot(`"feat/cli/PROJ-123-add-new-flag"`);
@@ -42,7 +42,7 @@ describe("formatBranchName", () => {
   it("should omit scope segment when scope is absent", () => {
     const result = formatBranchName(
       { subject: "add new flag", type: "feat" },
-      defaultBranchConfig,
+      defaultBranchConfig
     );
 
     expect(result).toMatchInlineSnapshot(`"feat/add-new-flag"`);
@@ -51,7 +51,7 @@ describe("formatBranchName", () => {
   it("should omit issue segment when issue is absent", () => {
     const result = formatBranchName(
       { scope: "cli", subject: "add new flag", type: "feat" },
-      defaultBranchConfig,
+      defaultBranchConfig
     );
 
     expect(result).toMatchInlineSnapshot(`"feat/cli/add-new-flag"`);
@@ -60,7 +60,7 @@ describe("formatBranchName", () => {
   it("should omit both scope and issue when neither is present", () => {
     const result = formatBranchName(
       { subject: "fix crash", type: "fix" },
-      defaultBranchConfig,
+      defaultBranchConfig
     );
 
     expect(result).toMatchInlineSnapshot(`"fix/fix-crash"`);
@@ -73,7 +73,7 @@ describe("formatBranchName", () => {
           "this is a very very very very very very very very long subject",
         type: "feat",
       },
-      { ...defaultBranchConfig, max: 20 },
+      { ...defaultBranchConfig, max: 20 }
     );
 
     expect(result.length).toBeLessThanOrEqual(20);
@@ -82,7 +82,7 @@ describe("formatBranchName", () => {
   it("should use custom pattern", () => {
     const result = formatBranchName(
       { scope: "core", subject: "refactor module", type: "refactor" },
-      { ...defaultBranchConfig, pattern: "{type}/{subject}" },
+      { ...defaultBranchConfig, pattern: "{type}/{subject}" }
     );
 
     expect(result).toMatchInlineSnapshot(`"refactor/refactor-module"`);
@@ -91,7 +91,7 @@ describe("formatBranchName", () => {
   it("should handle subject with special characters", () => {
     const result = formatBranchName(
       { subject: "fix: null pointer exception!", type: "fix" },
-      { ...defaultBranchConfig, pattern: "{type}/{subject}" },
+      { ...defaultBranchConfig, pattern: "{type}/{subject}" }
     );
 
     expect(result).toMatchInlineSnapshot(`"fix/fix-null-pointer-exception"`);

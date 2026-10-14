@@ -52,7 +52,7 @@ const hasRemoteTracking = async (branchName: string) => {
  */
 export const renameBranch = async (
   newName: string,
-  { dryRun = false }: RenameBranchOptions = {},
+  { dryRun = false }: RenameBranchOptions = {}
 ): Promise<RenameBranchResult> => {
   const oldName = await getCurrentBranch();
   const hasRemote = await hasRemoteTracking(oldName);
@@ -67,7 +67,7 @@ export const renameBranch = async (
 
   if (result.exitCode !== 0) {
     throw new Error(
-      `git branch -m failed with exit code ${(result.exitCode ?? 1).toString()}${result.stderr ? `: ${result.stderr}` : ""}`,
+      `git branch -m failed with exit code ${(result.exitCode ?? 1).toString()}${result.stderr ? `: ${result.stderr}` : ""}`
     );
   }
 
@@ -81,7 +81,7 @@ const runGit = async (args: string[], errorPrefix: string) => {
 
   if (result.exitCode !== 0) {
     throw new Error(
-      `${errorPrefix} failed with exit code ${(result.exitCode ?? 1).toString()}${result.stderr ? `: ${result.stderr}` : ""}`,
+      `${errorPrefix} failed with exit code ${(result.exitCode ?? 1).toString()}${result.stderr ? `: ${result.stderr}` : ""}`
     );
   }
 };
@@ -101,7 +101,7 @@ export const createBranch = async (
   branchName: string,
   checkout = true,
   dryRun = false,
-  from?: string,
+  from?: string
 ): Promise<{ branchName: string }> => {
   if (dryRun) {
     return { branchName };

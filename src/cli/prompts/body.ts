@@ -4,15 +4,18 @@ import type { CreatedPromptOptions } from "@/cli/types";
 
 import { pluralize } from "./utils/pluralize";
 
-export const body = ({
-  autofill,
-  config: {
-    body: { max, min },
-  },
-  initial,
-}: CreatedPromptOptions) => {
-  return () => {
-    if (autofill?.body !== undefined) return Promise.resolve(autofill.body);
+export const body =
+  ({
+    autofill,
+    config: {
+      body: { max, min },
+    },
+    initial,
+  }: CreatedPromptOptions) =>
+  () => {
+    if (autofill?.body !== undefined) {
+      return Promise.resolve(autofill.body);
+    }
 
     return multiline({
       initialValue: initial?.body,
@@ -25,12 +28,9 @@ export const body = ({
           return `Add ${pluralize(min - trimmedLength, "more character")} (minimum ${min})`;
         }
 
-        if (trimmedLength > max) {
-          return `Remove ${pluralize(trimmedLength - max, "character")} (${max} available)`;
-        }
-
-        return undefined;
+        return trimmedLength > max
+          ? `Remove ${pluralize(trimmedLength - max, "character")} (${max} available)`
+          : undefined;
       },
     });
   };
-};

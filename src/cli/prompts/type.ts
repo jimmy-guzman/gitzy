@@ -1,15 +1,14 @@
 import { autocomplete } from "@clack/prompts";
 
 import type { CommitFlags, CreatedPromptOptions } from "@/cli/types";
-import type { ResolvedConfig } from "@/core/config/types";
-
 import { createFuzzyFilter } from "@/cli/utils/fuzzy-search";
+import type { ResolvedConfig } from "@/core/config/types";
 
 export const createTypeOptions = (
   config: ResolvedConfig,
-  flags?: CommitFlags,
-) => {
-  return config.types.map((typeEntry) => {
+  flags?: CommitFlags
+) =>
+  config.types.map((typeEntry) => {
     const hasEmoji =
       typeEntry.emoji && config.emoji.enabled && (flags?.emoji ?? true);
     const prefix = hasEmoji ? `${typeEntry.emoji} ` : "";
@@ -20,16 +19,13 @@ export const createTypeOptions = (
       value: typeEntry.name,
     };
   });
-};
 
-export const type = ({
-  autofill,
-  config,
-  flags,
-  initial,
-}: CreatedPromptOptions) => {
-  return () => {
-    if (autofill?.type !== undefined) return Promise.resolve(autofill.type);
+export const type =
+  ({ autofill, config, flags, initial }: CreatedPromptOptions) =>
+  () => {
+    if (autofill?.type !== undefined) {
+      return Promise.resolve(autofill.type);
+    }
 
     const options = createTypeOptions(config, flags);
 
@@ -41,4 +37,3 @@ export const type = ({
       options,
     });
   };
-};

@@ -12,14 +12,13 @@ import type { BranchParts } from "./types";
  * Lowercases, replaces non-alphanumeric chars (except dash/dot) with a dash,
  * and collapses consecutive dashes
  */
-export const slugify = (value: string) => {
-  return value
+export const slugify = (value: string) =>
+  value
     .toLowerCase()
     .trim()
-    .replaceAll(/[^a-z0-9.]+/g, "-")
-    .replaceAll(/-+/g, "-")
-    .replaceAll(/^-|-$/g, "");
-};
+    .replaceAll(/[^a-z0-9.]+/gu, "-")
+    .replaceAll(/-+/gu, "-")
+    .replaceAll(/^-|-$/gu, "");
 
 /**
  * Replace pattern tokens with resolved values, then clean up
@@ -33,7 +32,7 @@ export const slugify = (value: string) => {
  */
 const applyPattern = (
   pattern: string,
-  tokens: Record<string, string>,
+  tokens: Record<string, string>
 ): string => {
   let result = pattern;
 
@@ -41,10 +40,10 @@ const applyPattern = (
     result = result.replaceAll(`{${token}}`, value);
   }
 
-  result = result.replaceAll(/\/+/g, "/");
-  result = result.replaceAll(/\/[-_]+/g, "/");
-  result = result.replaceAll(/[-_]+\//g, "/");
-  result = result.replaceAll(/^\/|\/$/g, "");
+  result = result.replaceAll(/\/+/gu, "/");
+  result = result.replaceAll(/\/[-_]+/gu, "/");
+  result = result.replaceAll(/[-_]+\//gu, "/");
+  result = result.replaceAll(/^\/|\/$/gu, "");
 
   return result;
 };

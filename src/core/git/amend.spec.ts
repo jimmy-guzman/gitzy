@@ -6,9 +6,9 @@ import {
   parseConventionalCommit,
 } from "./amend";
 
-vi.mock("tinyexec");
+vi.mock(import("tinyexec"));
 
-describe("parseConventionalCommit", () => {
+describe(parseConventionalCommit, () => {
   it("should parse a basic commit message", () => {
     const result = parseConventionalCommit("feat: add new feature");
 
@@ -40,7 +40,7 @@ describe("parseConventionalCommit", () => {
 
   it("should parse breaking change via BREAKING CHANGE footer", () => {
     const result = parseConventionalCommit(
-      "feat: add feature\n\nBREAKING CHANGE: removes old API",
+      "feat: add feature\n\nBREAKING CHANGE: removes old API"
     );
 
     expect(result).toStrictEqual({
@@ -61,7 +61,7 @@ describe("parseConventionalCommit", () => {
 
   it("should parse body text", () => {
     const result = parseConventionalCommit(
-      "feat: add feature\n\nThis is the body text.",
+      "feat: add feature\n\nThis is the body text."
     );
 
     expect(result).toStrictEqual({
@@ -73,7 +73,7 @@ describe("parseConventionalCommit", () => {
 
   it("should separate body from footer", () => {
     const result = parseConventionalCommit(
-      "feat: add feature\n\nThis is the body.\n\nBREAKING CHANGE: breaks everything",
+      "feat: add feature\n\nThis is the body.\n\nBREAKING CHANGE: breaks everything"
     );
 
     expect(result).toStrictEqual({
@@ -94,7 +94,7 @@ describe("parseConventionalCommit", () => {
 
   it("should strip emoji from BREAKING CHANGE footer", () => {
     const result = parseConventionalCommit(
-      "feat: add feature\n\nBREAKING CHANGE: 💥 removes old API",
+      "feat: add feature\n\nBREAKING CHANGE: 💥 removes old API"
     );
 
     expect(result).toStrictEqual({
@@ -106,7 +106,7 @@ describe("parseConventionalCommit", () => {
 
   it("should parse issues from Closes footer", () => {
     const result = parseConventionalCommit(
-      "feat: add feature\n\n🏁 Closes #123",
+      "feat: add feature\n\n🏁 Closes #123"
     );
 
     expect(result).toStrictEqual({
@@ -118,7 +118,7 @@ describe("parseConventionalCommit", () => {
 
   it("should parse multiple issue references", () => {
     const result = parseConventionalCommit(
-      "fix: resolve bug\n\nCloses #1\nFixes #2\nResolves #3",
+      "fix: resolve bug\n\nCloses #1\nFixes #2\nResolves #3"
     );
 
     expect(result).toStrictEqual({
@@ -130,7 +130,7 @@ describe("parseConventionalCommit", () => {
 
   it("should capture the Signed-off-by signature and keep it out of the body", () => {
     const result = parseConventionalCommit(
-      "feat: add feature\n\nThis is the body.\n\nSigned-off-by: Jane Doe <jane@example.com>",
+      "feat: add feature\n\nThis is the body.\n\nSigned-off-by: Jane Doe <jane@example.com>"
     );
 
     expect(result).toStrictEqual({
@@ -143,7 +143,7 @@ describe("parseConventionalCommit", () => {
 
   it("should handle scope with breaking ! indicator", () => {
     const result = parseConventionalCommit(
-      "refactor(core)!: rewrite internals\n\nBREAKING CHANGE: new API shape",
+      "refactor(core)!: rewrite internals\n\nBREAKING CHANGE: new API shape"
     );
 
     expect(result).toStrictEqual({
@@ -155,7 +155,7 @@ describe("parseConventionalCommit", () => {
   });
 });
 
-describe("getHeadCommitMessage", () => {
+describe(getHeadCommitMessage, () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
@@ -176,7 +176,7 @@ describe("getHeadCommitMessage", () => {
   });
 });
 
-describe("getAmendParts", () => {
+describe(getAmendParts, () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });

@@ -2,9 +2,8 @@
  * Init command — generate a starter gitzy config file
  */
 
-import type { Command } from "commander";
-
 import { log } from "@clack/prompts";
+import type { Command } from "commander";
 
 import { init } from "@/core/init/init";
 

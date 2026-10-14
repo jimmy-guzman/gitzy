@@ -1,5 +1,4 @@
 import type { InferOutput } from "valibot";
-
 import { array, number, object, optional, string, tuple } from "valibot";
 
 const HeaderLengthRuleSchema = tuple([number(), string(), number()]);
@@ -20,7 +19,7 @@ export const CommitlintConfigSchema = object({
       "scope-case": optional(ScopeCaseRuleSchema),
       "scope-enum": optional(ScopeEnumRuleSchema),
       "type-enum": optional(TypeEnumRuleSchema),
-    }),
+    })
   ),
 });
 

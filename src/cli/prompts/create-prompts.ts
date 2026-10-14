@@ -2,12 +2,11 @@ import { cancel, group, isCancel } from "@clack/prompts";
 
 import type { Answers, CommitFlags, GitzyState } from "@/cli/types";
 import type { PromptName } from "@/core/config/defaults";
-
 import { availablePrompts } from "@/core/config/defaults";
 
 import { body } from "./body";
 import { breaking } from "./breaking";
-import { coAuthors } from "./coAuthors";
+import { coAuthors } from "./co-authors";
 import { issues } from "./issues";
 import { scope } from "./scope";
 import { signoff } from "./signoff";
@@ -37,24 +36,24 @@ interface RawGroupResult {
 }
 
 const parseIssues = (raw: string | undefined): string[] => {
-  if (!raw || raw.trim() === "") return [];
+  if (!raw || raw.trim() === "") {
+    return [];
+  }
 
   return raw
     .split(",")
-    .map((s) => {
-      return s.trim();
-    })
+    .map((s) => s.trim())
     .filter(Boolean);
 };
 
 const parseCoAuthors = (raw: string | undefined) => {
-  if (!raw || raw.trim() === "") return [];
+  if (!raw || raw.trim() === "") {
+    return [];
+  }
 
   return raw
     .split(",")
-    .map((a) => {
-      return a.trim();
-    })
+    .map((a) => a.trim())
     .filter(Boolean);
 };
 
@@ -62,7 +61,7 @@ export const createPrompts = async (
   { answers, config }: GitzyState,
   flags: CommitFlags,
   autofill?: Partial<Answers>,
-  initial?: Partial<Answers>,
+  initial?: Partial<Answers>
 ) => {
   const activePrompts: Record<
     string,
@@ -101,10 +100,10 @@ export const createPrompts = async (
     body: (result.body ?? "").trim(),
     breaking: result.breaking ?? "",
     coAuthors: parseCoAuthors(
-      typeof result.coAuthors === "string" ? result.coAuthors : undefined,
+      typeof result.coAuthors === "string" ? result.coAuthors : undefined
     ),
     issues: parseIssues(
-      typeof result.issues === "string" ? result.issues : undefined,
+      typeof result.issues === "string" ? result.issues : undefined
     ),
     scope: result.scope ?? "",
     signoff: result.signoff ?? false,
