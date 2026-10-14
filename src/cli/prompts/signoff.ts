@@ -13,7 +13,7 @@ export const signoff =
       ? initial.signoff
       : await getSignoffTrailer();
 
-    return prompter.text({
+    return await prompter.text({
       initialValue,
       message: "Signed-off-by",
       placeholder: "leave empty to skip",

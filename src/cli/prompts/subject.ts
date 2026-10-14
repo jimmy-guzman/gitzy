@@ -8,9 +8,15 @@ type LabelParts = Partial<Pick<Answers, "scope" | "type">>;
 
 export const leadingLabel = (answers?: LabelParts) => {
   const scope =
-    answers?.scope && answers.scope !== "none" ? `(${answers.scope})` : "";
+    answers?.scope !== undefined &&
+    answers.scope !== "" &&
+    answers.scope !== "none"
+      ? `(${answers.scope})`
+      : "";
 
-  return answers?.type ? `${answers.type}${scope}: ` : "";
+  return answers?.type !== undefined && answers.type !== ""
+    ? `${answers.type}${scope}: `
+    : "";
 };
 
 const resolveEmojiEnabled = (
@@ -37,7 +43,7 @@ export const subject = ({
   const emojiEnabled = resolveEmojiEnabled(flags, configEmojiEnabled);
   const emojiLength = emojiEnabled ? EMOJI_LENGTH : 0;
 
-  return (context?: { results: LabelParts }) => {
+  return async (context?: { results: LabelParts }) => {
     const validate = (value = "") => {
       const label = leadingLabel(context?.results);
 
@@ -56,12 +62,12 @@ export const subject = ({
     if (autofill?.subject !== undefined) {
       const trimmed = autofill.subject.trim();
 
-      if (!validate(trimmed)) {
-        return Promise.resolve(trimmed);
+      if (validate(trimmed) === undefined) {
+        return trimmed;
       }
     }
 
-    return prompter.text({
+    return await prompter.text({
       initialValue: initial?.subject,
       message: "Add a short description",
       placeholder: `${min}-${max} characters`,

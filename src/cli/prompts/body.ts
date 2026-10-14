@@ -11,12 +11,12 @@ export const body =
     initial,
     prompter,
   }: CreatedPromptOptions) =>
-  () => {
+  async () => {
     if (autofill?.body !== undefined) {
-      return Promise.resolve(autofill.body);
+      return autofill.body;
     }
 
-    return prompter.multiline({
+    return await prompter.multiline({
       initialValue: initial?.body,
       message: "Add a longer description",
       placeholder: "Optional — press Enter twice to skip",

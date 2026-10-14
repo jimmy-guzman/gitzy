@@ -8,7 +8,10 @@ export const createTypeOptions = (
 ) =>
   config.types.map((typeEntry) => {
     const hasEmoji =
-      typeEntry.emoji && config.emoji.enabled && (flags?.emoji ?? true);
+      typeEntry.emoji !== undefined &&
+      typeEntry.emoji !== "" &&
+      config.emoji.enabled &&
+      (flags?.emoji ?? true);
     const prefix = hasEmoji ? `${typeEntry.emoji} ` : "";
 
     return {
@@ -20,14 +23,14 @@ export const createTypeOptions = (
 
 export const type =
   ({ autofill, config, flags, initial, prompter }: CreatedPromptOptions) =>
-  () => {
+  async () => {
     if (autofill?.type !== undefined) {
-      return Promise.resolve(autofill.type);
+      return autofill.type;
     }
 
     const options = createTypeOptions(config, flags);
 
-    return prompter.autocomplete({
+    return await prompter.autocomplete({
       filter: createFuzzyFilter(options),
       initialValue: initial?.type,
       maxItems: 10,

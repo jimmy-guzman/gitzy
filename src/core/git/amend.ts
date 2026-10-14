@@ -84,7 +84,7 @@ export const parseConventionalCommit = (message: string): ParsedCommit => {
 
   const breakingMatch = BREAKING_FOOTER_REGEX.exec(rest);
 
-  if (breakingMatch?.groups?.breaking) {
+  if (breakingMatch?.groups?.breaking !== undefined) {
     result.breaking = breakingMatch.groups.breaking;
   } else if (bangBreaking === "!") {
     result.breaking = true;
@@ -101,7 +101,7 @@ export const parseConventionalCommit = (message: string): ParsedCommit => {
   const signoffMatch = /^Signed-off-by:(?<signoff>.+)$/imu.exec(rest);
   const signoff = signoffMatch?.groups?.signoff.trim();
 
-  if (signoff) {
+  if (signoff !== undefined && signoff !== "") {
     result.signoff = signoff;
   }
 

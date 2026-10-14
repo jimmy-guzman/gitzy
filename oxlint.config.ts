@@ -7,6 +7,10 @@ export default defineConfig({
   env: core.env,
   extends: [core, antiSlop, vitest],
   ignorePatterns: core.ignorePatterns,
+  options: {
+    typeAware: true,
+    typeCheck: true,
+  },
   overrides: [
     {
       files: ["src/**"],

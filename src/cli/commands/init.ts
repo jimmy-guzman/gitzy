@@ -16,7 +16,7 @@ export const registerInitCommand = (program: Command) => {
       try {
         const result = init(process.cwd(), { force: opts.force });
 
-        if (result.exists && !opts.force) {
+        if (result.exists && opts.force !== true) {
           log.warn(`Config file already exists: ${result.filePath}`);
         } else {
           log.success(`Created config file: ${result.filePath}`);

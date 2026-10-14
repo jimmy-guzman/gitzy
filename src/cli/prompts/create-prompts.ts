@@ -61,13 +61,16 @@ export const createPrompts = async (
 ) => {
   const options = { answers, autofill, config, flags, initial, prompter };
   const activePrompts: PromptGroup<RawGroupResult> = {};
-  const addPrompt = <K extends PromptName>(name: K) => {
-    activePrompts[name] = prompts[name](options);
+  const addPrompt = <K extends PromptName>(
+    name: K,
+    factory: PromptFactories[K]
+  ) => {
+    activePrompts[name] = factory(options);
   };
 
   for (const question of config.prompts) {
     if (isPromptName(question)) {
-      addPrompt(question);
+      addPrompt(question, prompts[question]);
     }
   }
 

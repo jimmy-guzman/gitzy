@@ -3,13 +3,9 @@ import { createFuzzyFilter } from "@/cli/utils/fuzzy-search";
 
 export const scope =
   ({ autofill, config: { scopes }, initial, prompter }: CreatedPromptOptions) =>
-  () => {
+  async () => {
     if (autofill?.scope !== undefined) {
-      return Promise.resolve(autofill.scope);
-    }
-
-    if (scopes.length === 0) {
-      return;
+      return autofill.scope;
     }
 
     const options = scopes.map((scopeEntry) => ({
@@ -18,11 +14,13 @@ export const scope =
       value: scopeEntry.name,
     }));
 
-    return prompter.autocomplete({
-      filter: createFuzzyFilter(options),
-      initialValue: initial?.scope,
-      maxItems: 10,
-      message: "Choose the scope",
-      options,
-    });
+    return scopes.length === 0
+      ? undefined
+      : await prompter.autocomplete({
+          filter: createFuzzyFilter(options),
+          initialValue: initial?.scope,
+          maxItems: 10,
+          message: "Choose the scope",
+          options,
+        });
   };

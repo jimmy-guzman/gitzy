@@ -96,7 +96,7 @@ describe(type, () => {
       expect.objectContaining({
         maxItems: 10,
         message: "Choose the type",
-        options: expect.any(Array),
+        options: createTypeOptions(defaultResolvedConfig, {}),
       })
     );
   });

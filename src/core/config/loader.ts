@@ -3,7 +3,7 @@ import { pathToFileURL } from "node:url";
 import type { Loader } from "lilconfig";
 import { lilconfig } from "lilconfig";
 import type { BaseIssue, BaseSchema } from "valibot";
-import { safeParse, summarize } from "valibot";
+import { looseObject, safeParse, summarize, unknown } from "valibot";
 
 const configExts = [".js", ".cjs", ".mjs"] as const;
 const tsExts = [".ts", ".mts"] as const;
@@ -47,9 +47,11 @@ const loadTs: Loader = async (filepath) => {
   const url = pathToFileURL(filepath).href;
 
   try {
-    const mod = await import(url);
+    const mod: unknown = await import(url);
 
-    return mod.default ?? mod;
+    const parsed = safeParse(looseObject({ default: unknown() }), mod);
+
+    return parsed.success ? parsed.output.default : mod;
   } catch (error: unknown) {
     throw new TypeError(
       `Failed to load TypeScript config at ${filepath}: ${error instanceof Error ? error.message : String(error)}`,
@@ -74,11 +76,13 @@ export const loadConfig = async <
 
   const result = await explorer.search(process.cwd());
 
-  if (!result?.config) {
+  const config: unknown = result?.config;
+
+  if (config === undefined || config === null) {
     return null;
   }
 
-  const parsed = safeParse(schema, result.config);
+  const parsed = safeParse(schema, config);
 
   if (!parsed.success) {
     throw new TypeError(summarize(parsed.issues));

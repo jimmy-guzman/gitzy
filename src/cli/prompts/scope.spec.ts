@@ -21,10 +21,10 @@ describe(scope, () => {
     prompter.autocomplete.mockResolvedValue("build");
   });
 
-  it("should return undefined from factory if no scopes", () => {
+  it("should return undefined from factory if no scopes", async () => {
     const factory = setupScope();
 
-    expect(factory()).toBeUndefined();
+    await expect(factory()).resolves.toBeUndefined();
   });
 
   it("should skip prompt and return autofill value when provided", async () => {

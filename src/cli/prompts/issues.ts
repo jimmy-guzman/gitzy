@@ -9,9 +9,9 @@ export const issues =
     initial,
     prompter,
   }: CreatedPromptOptions) =>
-  () => {
+  async () => {
     if (autofill?.issues !== undefined) {
-      return Promise.resolve(autofill.issues.join(", "));
+      return autofill.issues.join(", ");
     }
 
     const initialIssues =
@@ -19,7 +19,7 @@ export const issues =
         ? initial.issues.join(", ")
         : undefined;
 
-    return prompter.text({
+    return await prompter.text({
       initialValue: initialIssues,
       message: `Add issues this commit closes (${issuesPrefix}:)`,
       placeholder: issuesHint,

@@ -5,9 +5,9 @@ import path from "node:path";
 import { commit } from "./operations";
 import { git, useTempGitRepo } from "./test-utils";
 
-const headMessage = () => git("log", "-1", "--pretty=%B");
+const headMessage = async () => await git("log", "-1", "--pretty=%B");
 
-const commitCount = () => git("rev-list", "--count", "HEAD");
+const commitCount = async () => await git("rev-list", "--count", "HEAD");
 
 const stageFile = async () => {
   writeFileSync("file.txt", "hello");

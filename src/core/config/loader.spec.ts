@@ -11,9 +11,11 @@ const schema = valibot.object({
   version: valibot.string(),
 });
 
+type TestConfig = Partial<Record<"name" | "version", number | string>>;
+
 const config = { name: "gitzy", version: "1.0.0" };
 
-const serialize = <T>(file: string, value: T) => {
+const serialize = (file: string, value: TestConfig) => {
   const json = JSON.stringify(value);
 
   if (path.basename(file) === "package.json") {
@@ -35,7 +37,7 @@ describe(loadConfig, () => {
   const originalCwd = process.cwd();
   let dir = "";
 
-  const writeConfig = <T>(file: string, value: T | typeof config = config) => {
+  const writeConfig = (file: string, value: TestConfig = config) => {
     const filePath = path.join(dir, file);
 
     mkdirSync(path.dirname(filePath), { recursive: true });
