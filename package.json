@@ -36,7 +36,7 @@
     "lint": "ultracite check",
     "lint:fix": "ultracite fix",
     "prepack": "pnpm build && clean-pkg-json",
-    "prepare": "is-ci || husky",
+    "prepare": "husky",
     "test": "vitest"
   },
   "devDependencies": {
@@ -50,7 +50,6 @@
     "commitlint": "21.2.3",
     "cspell": "10.3.6",
     "husky": "9.1.7",
-    "is-ci": "4.1.0",
     "jiti": "2.7.0",
     "knip": "6.41.0",
     "lilconfig": "3.1.3",

@@ -1,20 +1,15 @@
 import { defaultResolvedConfig } from "@/core/config/defaults";
-import { defaultMessageParts } from "@/core/conventional/types";
 
 import { createFakePrompter } from "./test-utils";
 import { createTypeOptions, type } from "./type";
 
 const prompter = createFakePrompter();
 
-const setupTypeOptions = (configOverrides = {}, flags = {}) =>
-  createTypeOptions(
-    { ...defaultResolvedConfig, ...configOverrides },
-    { emoji: true, ...flags }
-  );
+const setupTypeOptions = (configOverrides = {}, emoji = true) =>
+  createTypeOptions({ ...defaultResolvedConfig, ...configOverrides }, emoji);
 
 const setupType = (configOverrides = {}, autofill = {}, initial = {}) =>
   type({
-    answers: defaultMessageParts,
     autofill,
     config: { ...defaultResolvedConfig, ...configOverrides },
     flags: {},
@@ -46,7 +41,7 @@ describe(createTypeOptions, () => {
   });
 
   it("should not have an emoji when --no-emoji", () => {
-    const options = setupTypeOptions({}, { emoji: false });
+    const options = setupTypeOptions({}, false);
 
     const featOption = options.find((o) => o.value === "feat");
 
@@ -96,7 +91,7 @@ describe(type, () => {
       expect.objectContaining({
         maxItems: 10,
         message: "Choose the type",
-        options: createTypeOptions(defaultResolvedConfig, {}),
+        options: createTypeOptions(defaultResolvedConfig),
       })
     );
   });
@@ -105,7 +100,6 @@ describe(type, () => {
     const { autocomplete } = prompter;
 
     const factory = type({
-      answers: defaultMessageParts,
       autofill: {},
       config: defaultResolvedConfig,
       flags: {},

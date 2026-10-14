@@ -1,14 +1,10 @@
 import * as clack from "@clack/prompts";
 import type { PromptGroup } from "@clack/prompts";
 
-import type {
-  Answers,
-  CommitFlags,
-  CreatedPromptOptions,
-  GitzyState,
-  Prompter,
-} from "@/cli/types";
+import type { CommitFlags, CreatedPromptOptions, Prompter } from "@/cli/types";
+import type { ResolvedConfig } from "@/core/config/types";
 import { splitList } from "@/core/conventional/schema";
+import type { MessageParts } from "@/core/conventional/types";
 
 import { body } from "./body";
 import { breaking } from "./breaking";
@@ -53,13 +49,13 @@ const isPromptName = (name: string): name is PromptName =>
   Object.hasOwn(prompts, name);
 
 export const createPrompts = async (
-  { answers, config }: GitzyState,
+  config: ResolvedConfig,
   flags: CommitFlags,
-  autofill?: Partial<Answers>,
-  initial?: Partial<Answers>,
+  autofill?: Partial<MessageParts>,
+  initial?: Partial<MessageParts>,
   prompter: Prompter = clack
 ) => {
-  const options = { answers, autofill, config, flags, initial, prompter };
+  const options = { autofill, config, flags, initial, prompter };
   const activePrompts: PromptGroup<RawGroupResult> = {};
   const addPrompt = <K extends PromptName>(
     name: K,

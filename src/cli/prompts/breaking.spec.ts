@@ -11,14 +11,6 @@ const setupBreaking = (
   autofill = {}
 ) =>
   breaking({
-    answers: {
-      body: "",
-      breaking: "",
-      issues: [],
-      scope: "",
-      subject: "",
-      type: "",
-    },
     autofill,
     config: { ...defaultResolvedConfig, ...configOverrides },
     flags: {},
@@ -88,14 +80,6 @@ describe(breaking, () => {
     const { confirm } = prompter;
 
     const factory = breaking({
-      answers: {
-        body: "",
-        breaking: "",
-        issues: [],
-        scope: "",
-        subject: "",
-        type: "",
-      },
       config: { ...defaultResolvedConfig, breaking: { format: "!" } },
       flags: {},
       initial: {

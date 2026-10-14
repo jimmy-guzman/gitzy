@@ -1,6 +1,5 @@
-import type { Answers } from "@/cli/types";
 import { defaultResolvedConfig } from "@/core/config/defaults";
-import { defaultMessageParts } from "@/core/conventional/types";
+import type { MessageParts } from "@/core/conventional/types";
 
 import { leadingLabel, subject } from "./subject";
 import { createFakePrompter } from "./test-utils";
@@ -9,21 +8,20 @@ const prompter = createFakePrompter();
 
 const setupSubject = (configOverrides = {}, autofill = {}) =>
   subject({
-    answers: defaultMessageParts,
     autofill,
     config: { ...defaultResolvedConfig, ...configOverrides },
     flags: {},
     prompter,
   });
 
-const answers: Partial<Answers> = {
+const answers: Partial<MessageParts> = {
   scope: "*",
   type: "feat",
 };
 
 const getValidate = async (
   configOverrides = {},
-  results: Partial<Answers> = {}
+  results: Partial<MessageParts> = {}
 ) => {
   const { text } = prompter;
 

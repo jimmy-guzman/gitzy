@@ -59,13 +59,13 @@ const createBreaking = (
   { breaking: breakingCfg, emoji: emojiCfg }: ResolvedConfig,
   emojiEnabled: boolean
 ) => {
-  if (breakingCfg.format === "!" || !isString(breaking)) {
+  if (breakingCfg.format === "!" || !isString(breaking) || !breaking) {
     return "";
   }
 
   const emojiStr = emojiEnabled ? `${emojiCfg.breaking} ` : "";
 
-  return breaking ? `\n\nBREAKING CHANGE: ${emojiStr}${breaking}` : "";
+  return `BREAKING CHANGE: ${emojiStr}${breaking}`;
 };
 
 const createIssues = (
@@ -73,10 +73,6 @@ const createIssues = (
   { emoji: emojiCfg, issues: issuesCfg }: ResolvedConfig,
   emojiEnabled: boolean
 ) => {
-  if (issues.length === 0) {
-    return "";
-  }
-
   const isJira = issuesCfg.pattern === "jira";
   const defaultPrefix = issuesCfg.prefix ?? "closes";
 
@@ -93,31 +89,16 @@ const createIssues = (
 
   const emojiStr = emojiEnabled ? `${emojiCfg.issues} ` : "";
 
-  return `\n\n${emojiStr}${formatted}`;
+  return `${emojiStr}${formatted}`;
 };
 
-const createCoAuthors = (coAuthors: string[] | undefined) => {
-  if (!coAuthors || coAuthors.length === 0) {
-    return "";
-  }
-
-  return `\n\n${coAuthors
-    .map((author) => `Co-authored-by: ${author}`)
-    .join("\n")}`;
-};
+const createCoAuthors = (coAuthors: string[] = []) =>
+  coAuthors.map((author) => `Co-authored-by: ${author}`).join("\n");
 
 const createSignoff = (signoff: MessageParts["signoff"]) => {
-  if (!isString(signoff)) {
-    return "";
-  }
+  const trimmed = isString(signoff) ? signoff.trim() : "";
 
-  const trimmed = signoff.trim();
-
-  if (!trimmed) {
-    return "";
-  }
-
-  return `\n\nSigned-off-by: ${trimmed}`;
+  return trimmed ? `Signed-off-by: ${trimmed}` : "";
 };
 
 const createScope = (scope: string) =>
@@ -148,49 +129,24 @@ export const wrap = (string: string, maxWidth = MAX_WIDTH) => {
   return string.replaceAll(regex, "$1\n");
 };
 
-const isEmojiEnabled = (config: ResolvedConfig, emojiOverride: boolean) => {
+/**
+ * Whether emoji should be rendered, honoring `GITZY_NO_EMOJI`, the config, and the CLI override
+ *
+ * @param config - Resolved configuration
+ *
+ * @param emojiOverride - CLI emoji flag (`--no-emoji` sets it to false)
+ *
+ * @returns Whether emoji are enabled
+ */
+export const isEmojiEnabled = (
+  config: ResolvedConfig,
+  emojiOverride: boolean
+) => {
   if (process.env.GITZY_NO_EMOJI === "1") {
     return false;
   }
 
   return config.emoji.enabled && emojiOverride;
-};
-
-/**
- * Format message parts into a conventional commit message
- *
- * @param config - Resolved configuration for formatting
- *
- * @param parts - The message data (type, scope, subject, etc)
- *
- * @param emoji - Whether to include emojis (can override config)
- *
- * @returns Formatted commit message string
- */
-export const formatMessage = (
-  config: ResolvedConfig,
-  parts: MessageParts,
-  emoji: boolean
-) => {
-  const typeEntry = config.types.find((t) => t.name === parts.type);
-  const emojiEnabled = isEmojiEnabled(config, emoji);
-  const emojiPrefix =
-    emojiEnabled && typeEntry?.emoji !== undefined && typeEntry.emoji !== ""
-      ? `${typeEntry.emoji} `
-      : "";
-  const scope = createScope(parts.scope);
-  const head = createHead(parts, scope, config, emojiPrefix);
-  const body = parts.body.trim() ? `\n\n${parts.body}` : "";
-  const breaking = createBreaking(parts.breaking, config, emojiEnabled);
-  const issues = createIssues(parts.issues, config, emojiEnabled);
-  const coAuthors = createCoAuthors(parts.coAuthors);
-  const signoff = createSignoff(parts.signoff);
-  const maxWidth = Math.max(config.header.max, MAX_WIDTH);
-
-  return wrap(
-    `${head}${body}${breaking}${issues}${coAuthors}${signoff}`,
-    maxWidth
-  );
 };
 
 /**
@@ -203,32 +159,6 @@ interface CommitResult {
   message: string;
   parts: MessageParts;
 }
-
-const escapeRegex = (value: string) =>
-  value.replaceAll(/[.*+?^${}()|[\]\\]/gu, String.raw`\$&`);
-
-// ReDoS is mitigated: all user-controlled inputs (config.emoji.breaking,
-// config.emoji.issues, config.issues.prefix) are escaped via escapeRegex, and
-// the pattern is anchored (^) with simple alternation and bounded input.
-const getFooterStartRegex = (config: ResolvedConfig) => {
-  const configValues = [
-    ...GITHUB_PREFIXES.map(capitalize),
-    config.emoji.breaking,
-    config.emoji.issues,
-    config.issues.prefix === undefined ? "" : capitalize(config.issues.prefix),
-  ]
-    .filter(Boolean)
-    .map(escapeRegex);
-
-  const patterns = [
-    "BREAKING[ -]CHANGE:",
-    "Co-authored-by:",
-    "Signed-off-by:",
-    ...new Set(configValues),
-  ];
-
-  return new RegExp(`^(?:${patterns.join("|")})`, "iu");
-};
 
 /**
  * Format message parts into a structured commit result
@@ -246,34 +176,30 @@ export const formatMessageResult = (
   parts: MessageParts,
   emoji: boolean
 ): CommitResult => {
-  const message = formatMessage(config, parts, emoji);
-  const sections = message.split(/\n\n/u);
-  const header = sections[0] ?? "";
-  const footerStartRegex = getFooterStartRegex(config);
-
-  let body = "";
-  let footer = "";
-
-  if (sections.length > 1) {
-    let footerStart = sections.length;
-
-    for (let i = sections.length - 1; i >= 1; i -= 1) {
-      const section = sections[i] ?? "";
-
-      if (footerStartRegex.test(section)) {
-        footerStart = i;
-      } else {
-        break;
-      }
-    }
-
-    if (footerStart === 1) {
-      footer = sections.slice(1).join("\n\n");
-    } else {
-      body = sections.slice(1, footerStart).join("\n\n");
-      footer = sections.slice(footerStart).join("\n\n");
-    }
-  }
+  const typeEntry = config.types.find((t) => t.name === parts.type);
+  const emojiEnabled = isEmojiEnabled(config, emoji);
+  const emojiPrefix =
+    emojiEnabled && typeEntry?.emoji !== undefined && typeEntry.emoji !== ""
+      ? `${typeEntry.emoji} `
+      : "";
+  const maxWidth = Math.max(config.header.max, MAX_WIDTH);
+  const header = wrap(
+    createHead(parts, createScope(parts.scope), config, emojiPrefix),
+    maxWidth
+  );
+  const body = parts.body.trim() ? wrap(parts.body, maxWidth) : "";
+  const footer = wrap(
+    [
+      createBreaking(parts.breaking, config, emojiEnabled),
+      createIssues(parts.issues, config, emojiEnabled),
+      createCoAuthors(parts.coAuthors),
+      createSignoff(parts.signoff),
+    ]
+      .filter(Boolean)
+      .join("\n\n"),
+    maxWidth
+  );
+  const message = [header, body, footer].filter(Boolean).join("\n\n");
 
   return { body, footer, header, message, parts };
 };

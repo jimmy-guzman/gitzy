@@ -1,5 +1,5 @@
-import type { Answers } from "@/cli/types";
 import { defaultResolvedConfig } from "@/core/config/defaults";
+import type { MessageParts } from "@/core/conventional/types";
 import * as signoffModule from "@/core/git/signoff";
 
 import { signoff } from "./signoff";
@@ -7,7 +7,7 @@ import { createFakePrompter } from "./test-utils";
 
 const prompter = createFakePrompter();
 
-const emptyAnswers: Answers = {
+const emptyAnswers: MessageParts = {
   body: "",
   breaking: "",
   issues: [],
@@ -18,7 +18,6 @@ const emptyAnswers: Answers = {
 
 const setupSignoff = (autofill = {}) =>
   signoff({
-    answers: emptyAnswers,
     autofill,
     config: defaultResolvedConfig,
     flags: {},
@@ -70,7 +69,6 @@ describe(signoff, () => {
     const { text } = prompter;
 
     const factory = signoff({
-      answers: emptyAnswers,
       config: defaultResolvedConfig,
       flags: {},
       initial: { ...emptyAnswers, signoff: "Prev <prev@example.com>" },

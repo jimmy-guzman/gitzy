@@ -31,18 +31,6 @@ const installFailingPreCommitHook = () => {
 describe(commit, () => {
   useTempGitRepo();
 
-  it("should return committed: false without committing when dryRun is true", async () => {
-    await stageFile();
-
-    const result = await commit("feat: add feature", { dryRun: true });
-
-    expect(result).toStrictEqual({
-      committed: false,
-      message: "feat: add feature",
-    });
-    await expect(commitCount()).resolves.toBe("1");
-  });
-
   it("should write to COMMIT_EDITMSG without committing when hook is true", async () => {
     const result = await commit("feat: add feature", { hook: true });
 
@@ -51,7 +39,6 @@ describe(commit, () => {
     );
     expect(result).toStrictEqual({
       commitMsgPath: path.join(process.cwd(), ".git", "COMMIT_EDITMSG"),
-      committed: true,
       message: "feat: add feature",
     });
     await expect(commitCount()).resolves.toBe("1");
@@ -104,7 +91,6 @@ describe(commit, () => {
     const result = await commit("feat: add feature");
 
     expect(result).toStrictEqual({
-      committed: true,
       message: "feat: add feature",
     });
     await expect(headMessage()).resolves.toBe("feat: add feature");

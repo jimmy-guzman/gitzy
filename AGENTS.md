@@ -32,7 +32,7 @@ src/
   reset.d.ts              # Applies @total-typescript/ts-reset globally
   index.ts                # Public Node API exports (second tsdown entry → dist/index.mjs)
   cli/
-    types.ts              # Core TS interfaces: Answers, CommitFlags, BranchFlags, GitzyState, Prompter
+    types.ts              # Core TS interfaces: CommitFlags, BranchFlags, CreatedPromptOptions, Prompter
     prompts/              # One file per interactive question
       constants.ts        # Shared prompt constants
       create-prompts.ts   # Assembles the active prompt list from config.prompts
@@ -54,12 +54,11 @@ src/
     config/
       types.ts            # Config, ResolvedConfig, TypeEntry, ScopeEntry, defineConfig() interfaces
       defaults.ts         # defaultResolvedConfig, builtinTypes, per-section defaults
-      schema.ts           # Valibot ConfigSchema (validates + applies defaults)
+      schema.ts           # Valibot ConfigSchema (validates shape only, no defaults)
       loader.ts           # Generic loadConfig() via lilconfig + valibot safeParse
-      normalizer.ts       # normalizeConfig() — resolves string type names to TypeEntry objects
+      normalizer.ts       # normalizeConfig() — merges per-section defaults, resolves string type names to TypeEntry objects
       resolver.ts         # resolveConfig() — auto-detects gitzy + commitlint config
-      commitlint.ts       # extractCommitlintRules() maps commitlint rules → gitzy config
-      commitlint-schema.ts # Valibot schema for parsing commitlint config shape
+      commitlint.ts       # CommitlintConfigSchema + extractCommitlintRules() maps commitlint rules → gitzy config
     branch/
       types.ts            # BranchParts interface
       formatter.ts        # formatBranchName(), slugify()
@@ -67,9 +66,9 @@ src/
     conventional/
       types.ts            # MessageParts interface + defaultMessageParts
       schema.ts           # PartialMessagePartsSchema — validates answers from stdin and the retry store
-      message.ts          # formatMessage(), wrap(), isEmojiEnabled(), GITZY_NO_EMOJI support
+      message.ts          # formatMessageResult() (header/body/footer + full message), wrap(), isEmojiEnabled() (shared by prompts), GITZY_NO_EMOJI support
     git/
-      checks.ts           # checkIfGitRepo(), checkIfStaged(), shouldDoGitChecks()
+      checks.ts           # checkIfGitRepo(), checkIfStaged()
       operations.ts       # commit() — runs git commit -m, or writes COMMIT_EDITMSG in hook mode
       branch.ts           # createBranch(), renameBranch(), getCurrentBranch()
       amend.ts            # getAmendParts(), parseConventionalCommit() — pre-fill from HEAD
@@ -77,8 +76,7 @@ src/
       init.ts             # init() — generates gitzy.config.js in cwd
     guards.ts             # isString() type predicate (keeps `typeof` inside a named guard)
     store/
-      store.ts            # GitzyStore<T> class — JSON file store in OS temp dir (for --retry)
-      utils.ts            # mkdir, gitzyStorePath()
+      store.ts            # loadAnswers(), saveAnswers(), storePath() — JSON file in OS temp dir (for --retry)
 e2e/
   e2e.spec.ts             # E2E tests: runs the built binary via execSync with --dry-run/--stdin
 ```
@@ -98,10 +96,10 @@ The codebase is split into two layers with a thin orchestration layer connecting
 - **Path alias** `@/*` maps to `./src/*`.
 - **Subcommands:** `gitzy` alone runs the default `commit` subcommand. Explicit subcommands: `branch`, `init`, `config`.
 - **Prompt pattern:** Each question (`type`, `scope`, `subject`, `body`, `breaking`, `issues`, `coAuthors`, `signoff`) is an exported factory that takes the prompt options and returns a function that either resolves the autofilled answer, calls a `@clack/prompts` prompt, or returns `undefined` to skip. Factories call clack through the injected `prompter` (a `Prompter` from `src/cli/types.ts`); `createPrompts()` defaults it to `@clack/prompts`, collects the prompts listed in `config.prompts`, and runs them with `prompter.group()`.
-- **Config schema:** Every config file is loaded through a valibot schema with `safeParse`. Defaults are applied at the schema level via `optional(field, default)`, not manually in code. Invalid config throws a `TypeError` with a human-readable summary.
+- **Config schema:** Every config file is loaded through a valibot schema with `safeParse`. The schema only validates shape; it applies no defaults, so absent keys stay absent and commitlint-derived values are not overwritten when configs merge. Defaults are merged once, in `normalizeConfig()`, from the per-section objects in `defaults.ts`. Invalid config throws a `TypeError` with a human-readable summary.
 - **Config normalization:** `normalizeConfig()` converts `string` type entries (short form) to full `TypeEntry` objects by looking them up in `builtinTypes`.
 - **Logging:** All CLI output goes through `@clack/prompts` (`log.*`, `cancel`). No `console.*` calls and no color library.
-- **Emoji:** Controlled by `config.emoji.enabled` (config) and the `GITZY_NO_EMOJI` env var. No `--no-emoji` CLI flag.
+- **Emoji:** Controlled by `config.emoji.enabled` (config), the `GITZY_NO_EMOJI` env var, and the commit `--no-emoji` flag (Commander maps it to `flags.emoji === false`). Always resolve it through `isEmojiEnabled()` in `src/core/conventional/message.ts`.
 - **`--stdin`:** Both `commit` and `branch` commands accept JSON answers piped via stdin, validated with a valibot schema and merged with CLI flags (flags take priority over stdin).
 - **`--amend` (commit):** Parses HEAD commit message with `getAmendParts()` to pre-fill prompts (best-effort regex parsing).
 - **`--amend` (branch):** Renames the current branch via `git branch -m`. Warns if a remote tracking ref exists.
@@ -109,7 +107,6 @@ The codebase is split into two layers with a thin orchestration layer connecting
 - **Bundling:** `tsdown` bundles every runtime package listed in `deps.onlyBundle` (`tsdown.config.ts`): `@clack/prompts` and its dependencies, `commander`, `valibot`, `@leeoniya/ufuzzy`, `lilconfig`, `tinyexec`. The published package has no runtime `dependencies`.
 - **Node API:** `src/index.ts` is the second tsdown entry → `dist/index.mjs`. The `exports` map in `package.json` points `"."` to this file.
 - Use `satisfies` for type narrowing when possible (e.g., `lang.ts` config objects).
-- Private class fields (`#`) used in `GitzyStore`.
 - `as const` used for tuple/literal types in defaults and schemas.
 - `InferOutput<typeof Schema>` from valibot used to derive runtime-validated types.
 

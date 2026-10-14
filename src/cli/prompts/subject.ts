@@ -1,10 +1,12 @@
-import type { Answers, CreatedPromptOptions } from "@/cli/types";
+import type { CreatedPromptOptions } from "@/cli/types";
+import { isEmojiEnabled } from "@/core/conventional/message";
+import type { MessageParts } from "@/core/conventional/types";
 
 import { pluralize } from "./utils/pluralize";
 
 const EMOJI_LENGTH = 3;
 
-type LabelParts = Partial<Pick<Answers, "scope" | "type">>;
+type LabelParts = Partial<Pick<MessageParts, "scope" | "type">>;
 
 export const leadingLabel = (answers?: LabelParts) => {
   const scope =
@@ -19,29 +21,17 @@ export const leadingLabel = (answers?: LabelParts) => {
     : "";
 };
 
-const resolveEmojiEnabled = (
-  flags: CreatedPromptOptions["flags"],
-  configEnabled: boolean
-) => {
-  if (flags.noEmoji === true || process.env.GITZY_NO_EMOJI === "1") {
-    return false;
-  }
-
-  return flags.emoji ?? configEnabled;
-};
-
 export const subject = ({
   autofill,
-  config: {
-    emoji: { enabled: configEmojiEnabled },
-    header: { max, min },
-  },
+  config,
   flags,
   initial,
   prompter,
 }: CreatedPromptOptions) => {
-  const emojiEnabled = resolveEmojiEnabled(flags, configEmojiEnabled);
-  const emojiLength = emojiEnabled ? EMOJI_LENGTH : 0;
+  const { max, min } = config.header;
+  const emojiLength = isEmojiEnabled(config, flags.emoji ?? true)
+    ? EMOJI_LENGTH
+    : 0;
 
   return async (context?: { results: LabelParts }) => {
     const validate = (value = "") => {

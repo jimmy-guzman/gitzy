@@ -1,6 +1,9 @@
 import type { BranchFlags, CommitFlags } from "@/cli/types";
 
-type CommitFlagDescriptions = Record<keyof Omit<CommitFlags, "emoji">, string>;
+type CommitFlagDescriptions = Record<
+  Exclude<keyof CommitFlags, "emoji"> | "noEmoji",
+  string
+>;
 
 type BranchFlagDescriptions = Record<keyof BranchFlags, string>;
 

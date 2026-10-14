@@ -7,33 +7,26 @@ import type { Command } from "commander";
 import { Option } from "commander";
 
 import { createPrompts } from "@/cli/prompts/create-prompts";
-import type { Answers, CommitFlags, GitzyState } from "@/cli/types";
+import type { CommitFlags } from "@/cli/types";
 import { readStdinJson } from "@/cli/utils/stdin";
-import { defaultResolvedConfig } from "@/core/config/defaults";
 import { resolveConfig } from "@/core/config/resolver";
-import {
-  formatMessage,
-  formatMessageResult,
-} from "@/core/conventional/message";
+import type { ResolvedConfig } from "@/core/config/types";
+import { formatMessageResult } from "@/core/conventional/message";
 import { PartialMessagePartsSchema } from "@/core/conventional/schema";
-import { defaultMessageParts } from "@/core/conventional/types";
+import type { MessageParts } from "@/core/conventional/types";
 import { getAmendParts } from "@/core/git/amend";
-import {
-  checkIfGitRepo,
-  checkIfStaged,
-  shouldDoGitChecks,
-} from "@/core/git/checks";
+import { checkIfGitRepo, checkIfStaged } from "@/core/git/checks";
 import { commit } from "@/core/git/operations";
 import { getSignoffTrailer } from "@/core/git/signoff";
 import { isString } from "@/core/guards";
-import { GitzyStore } from "@/core/store/store";
+import { loadAnswers, saveAnswers } from "@/core/store/store";
 import { lang } from "@/lang";
 
 const promptQuestions = async (
-  state: GitzyState,
+  config: ResolvedConfig,
   flags: CommitFlags,
-  autofillAnswers: Partial<Answers>,
-  amendInitial?: Partial<Answers>
+  autofillAnswers: Partial<MessageParts>,
+  amendInitial?: Partial<MessageParts>
 ) => {
   if (
     flags.type !== undefined &&
@@ -41,10 +34,10 @@ const promptQuestions = async (
     flags.subject !== undefined
   ) {
     const trimmedSubject = flags.subject.trim();
-    const validType = state.config.types.some((t) => t.name === flags.type);
+    const validType = config.types.some((t) => t.name === flags.type);
 
     if (!validType) {
-      const allowed = state.config.types.map((t) => t.name).join(", ");
+      const allowed = config.types.map((t) => t.name).join(", ");
 
       throw new Error(
         `Invalid --type "${flags.type}". Allowed types: ${allowed}`
@@ -65,7 +58,7 @@ const promptQuestions = async (
     }
   }
 
-  return await createPrompts(state, flags, autofillAnswers, amendInitial);
+  return await createPrompts(config, flags, autofillAnswers, amendInitial);
 };
 
 const canSkipPrompts = (flags: CommitFlags) =>
@@ -77,7 +70,7 @@ const canSkipPrompts = (flags: CommitFlags) =>
   flags.stdin === true;
 
 const toFlagAnswers = (flags: CommitFlags) => {
-  const answers: Partial<Answers> = {};
+  const answers: Partial<MessageParts> = {};
 
   if (flags.body !== undefined) {
     answers.body = flags.body;
@@ -114,8 +107,8 @@ const toFlagAnswers = (flags: CommitFlags) => {
   return answers;
 };
 
-const loadAutofill = async (flags: CommitFlags, store: GitzyStore) => {
-  const previous = flags.retry === true ? store.load() : {};
+const loadAutofill = async (flags: CommitFlags) => {
+  const previous = flags.retry === true ? loadAnswers() : {};
 
   if (flags.retry === true && Object.keys(previous).length === 0) {
     log.warn(`There is no previous gitzy commit to retry...`);
@@ -129,25 +122,20 @@ const loadAutofill = async (flags: CommitFlags, store: GitzyStore) => {
 };
 
 const writeMessage = async (
-  state: GitzyState,
+  config: ResolvedConfig,
+  answers: MessageParts,
   flags: CommitFlags,
   hookInferredFrom: string | undefined
 ) => {
-  const emojiEnabled = flags.noEmoji === true ? false : (flags.emoji ?? true);
+  const formatted = formatMessageResult(config, answers, flags.emoji ?? true);
 
   if (flags.json === true) {
-    const result = formatMessageResult(
-      state.config,
-      state.answers,
-      emojiEnabled
-    );
-
-    process.stdout.write(`${JSON.stringify(result)}\n`);
+    process.stdout.write(`${JSON.stringify(formatted)}\n`);
 
     return;
   }
 
-  const message = formatMessage(state.config, state.answers, emojiEnabled);
+  const { message } = formatted;
 
   if (flags.dryRun === true) {
     log.info(`Message...`);
@@ -158,7 +146,6 @@ const writeMessage = async (
 
   const result = await commit(message, {
     amend: flags.amend,
-    dryRun: flags.dryRun,
     hook: flags.hook,
     noVerify: flags.noVerify,
   });
@@ -200,7 +187,6 @@ export const registerCommitCommand = (program: Command) => {
     .option("--stdin", lang.commit.flags.stdin)
     .addHelpText("after", `\nExamples:\n      ${lang.commit.examples}\n    `)
     .action(async (opts: CommitFlags, command: Command) => {
-      const store = new GitzyStore();
       const hookInferredFrom =
         opts.hook === true
           ? undefined
@@ -213,22 +199,17 @@ export const registerCommitCommand = (program: Command) => {
         hook: hookInferredFrom !== undefined || Boolean(opts.hook),
       };
 
-      const state = {
-        answers: defaultMessageParts,
-        config: defaultResolvedConfig,
-      };
-
       if (flags.dryRun === true) {
         log.info("Running in dry mode...");
       }
 
       try {
-        state.config = await resolveConfig();
+        const config = await resolveConfig();
 
         if (
           isString(flags.breaking) &&
           flags.breaking &&
-          state.config.breaking.format === "!"
+          config.breaking.format === "!"
         ) {
           log.warn(
             "--breaking message ignored when using '!' format. Use --breaking (without value) instead."
@@ -236,23 +217,17 @@ export const registerCommitCommand = (program: Command) => {
         }
 
         if (
-          shouldDoGitChecks({
-            amend: flags.amend,
-            dryRun: flags.dryRun,
-            hook: flags.hook,
-          })
+          flags.dryRun !== true &&
+          flags.hook !== true &&
+          flags.amend !== true
         ) {
           await checkIfGitRepo();
           await checkIfStaged();
         }
 
-        let amendInitial: Partial<Answers> | undefined;
-
-        if (flags.amend === true) {
-          amendInitial = await getAmendParts();
-        }
-
-        const autofillAnswers = await loadAutofill(flags, store);
+        const amendInitial =
+          flags.amend === true ? await getAmendParts() : undefined;
+        const autofillAnswers = await loadAutofill(flags);
         const flagAnswers = toFlagAnswers(flags);
 
         if (!process.stdin.isTTY && !canSkipPrompts(flags)) {
@@ -261,19 +236,17 @@ export const registerCommitCommand = (program: Command) => {
           );
         }
 
-        const answers = await promptQuestions(
-          state,
+        const answers: MessageParts = await promptQuestions(
+          config,
           flags,
           { ...autofillAnswers, ...flagAnswers },
           amendInitial
         );
 
-        store.save(answers);
-
-        state.answers = { ...state.answers, ...answers };
+        saveAnswers(answers);
 
         if (flags.coAuthor) {
-          state.answers.coAuthors = flags.coAuthor;
+          answers.coAuthors = flags.coAuthor;
         }
 
         if (
@@ -281,14 +254,14 @@ export const registerCommitCommand = (program: Command) => {
           flags.signoff !== false &&
           flags.signoff !== ""
         ) {
-          state.answers.signoff = flags.signoff;
+          answers.signoff = flags.signoff;
         }
 
-        if (state.answers.signoff === true) {
-          state.answers.signoff = await getSignoffTrailer();
+        if (answers.signoff === true) {
+          answers.signoff = await getSignoffTrailer();
         }
 
-        await writeMessage(state, flags, hookInferredFrom);
+        await writeMessage(config, answers, flags, hookInferredFrom);
       } catch (error: unknown) {
         log.error(error instanceof Error ? error.message : String(error));
         process.exit(1);

@@ -35,10 +35,10 @@ describe(cli, () => {
   it("should pass noVerify when -n flag is used", async () => {
     const performCommitSpy = vi
       .spyOn(gitOperations, "commit")
-      .mockResolvedValueOnce({ committed: true, message: "" });
+      .mockResolvedValueOnce({ message: "" });
 
-    vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce("");
-    vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce("");
+    vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce();
+    vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce();
     vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
       defaultResolvedConfig
     );
@@ -56,13 +56,13 @@ describe(cli, () => {
   it("should derive the Signed-off-by trailer when -s is used", async () => {
     const performCommitSpy = vi
       .spyOn(gitOperations, "commit")
-      .mockResolvedValueOnce({ committed: true, message: "" });
+      .mockResolvedValueOnce({ message: "" });
 
     vi.spyOn(gitSignoff, "getSignoffTrailer").mockResolvedValueOnce(
       "Test User <test@example.com>"
     );
-    vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce("");
-    vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce("");
+    vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce();
+    vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce();
     vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
       defaultResolvedConfig
     );
@@ -80,10 +80,10 @@ describe(cli, () => {
   it("should use an explicit Signed-off-by override verbatim", async () => {
     const performCommitSpy = vi
       .spyOn(gitOperations, "commit")
-      .mockResolvedValueOnce({ committed: true, message: "" });
+      .mockResolvedValueOnce({ message: "" });
 
-    vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce("");
-    vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce("");
+    vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce();
+    vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce();
     vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
       defaultResolvedConfig
     );
@@ -101,13 +101,13 @@ describe(cli, () => {
   it("should run with defaults", async () => {
     const performCommitSpy = vi
       .spyOn(gitOperations, "commit")
-      .mockResolvedValueOnce({ committed: true, message: "" });
+      .mockResolvedValueOnce({ message: "" });
     const checkIfGitSpy = vi
       .spyOn(gitChecks, "checkIfGitRepo")
-      .mockResolvedValueOnce("");
+      .mockResolvedValueOnce();
     const checkIfStagedSpy = vi
       .spyOn(gitChecks, "checkIfStaged")
-      .mockResolvedValueOnce("");
+      .mockResolvedValueOnce();
 
     const getUserConfigSpy = vi
       .spyOn(config, "resolveConfig")
@@ -122,7 +122,6 @@ describe(cli, () => {
       expect.stringContaining(""),
       expect.objectContaining({
         amend: undefined,
-        dryRun: undefined,
         hook: false,
         noVerify: undefined,
       })

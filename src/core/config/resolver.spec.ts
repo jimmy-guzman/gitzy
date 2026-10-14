@@ -205,7 +205,7 @@ describe(resolveConfig, () => {
   });
 
   describe("commitlint header rule merging", () => {
-    it.fails("should use commitlint header.max when gitzy does not set it", async () => {
+    it("should use commitlint header.max when gitzy does not set it", async () => {
       const gitzyConfig = { header: { min: 3 } };
       const commitlintConfig = {
         rules: { "header-max-length": [2, "always", 72] },
