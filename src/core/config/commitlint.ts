@@ -2,11 +2,27 @@
  * Helpers for loading and parsing commitlint configuration
  */
 
-import type { GenericSchema } from "valibot";
-import { array, is, number, string } from "valibot";
+import type { GenericSchema, InferOutput } from "valibot";
+import { array, is, number, object, optional, string, unknown } from "valibot";
 
-import type { CommitlintConfig } from "./commitlint-schema";
 import type { BodyConfig, Config } from "./types";
+
+const RuleSchema = array(unknown());
+
+export const CommitlintConfigSchema = object({
+  rules: optional(
+    object({
+      "body-max-length": optional(RuleSchema),
+      "body-min-length": optional(RuleSchema),
+      "header-max-length": optional(RuleSchema),
+      "header-min-length": optional(RuleSchema),
+      "scope-enum": optional(RuleSchema),
+      "type-enum": optional(RuleSchema),
+    })
+  ),
+});
+
+type CommitlintConfig = InferOutput<typeof CommitlintConfigSchema>;
 
 const toRange = (max: number | undefined, min: number | undefined) => {
   if (max === undefined && min === undefined) {

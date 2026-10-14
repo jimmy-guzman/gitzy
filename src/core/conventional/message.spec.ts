@@ -3,13 +3,13 @@ import type { ResolvedConfig } from "@/core/config/types";
 import type { MessageParts } from "@/core/conventional/types";
 import { defaultMessageParts } from "@/core/conventional/types";
 
-import { formatMessage, formatMessageResult, wrap } from "./message";
+import { formatMessageResult, wrap } from "./message";
 
 const setupFormatCommitMessage = (
   config: Partial<ResolvedConfig> = {},
   answers = {}
 ) =>
-  formatMessage(
+  formatMessageResult(
     { ...defaultResolvedConfig, ...config },
     {
       body: "this an amazing feature, lots of details",
@@ -21,7 +21,7 @@ const setupFormatCommitMessage = (
       ...answers,
     },
     true
-  );
+  ).message;
 
 const setupFormatMessageResult = (
   configOverrides: Partial<ResolvedConfig> = {},
@@ -460,7 +460,7 @@ describe("formatCommitMessage", () => {
   });
 
   it("should format correctly when in hook mode", () => {
-    const formattedMessage = formatMessage(
+    const formattedMessage = formatMessageResult(
       defaultResolvedConfig,
       {
         body: "this an amazing feature, lots of details",
@@ -471,7 +471,7 @@ describe("formatCommitMessage", () => {
         type: "feat",
       },
       true
-    );
+    ).message;
 
     expect(formattedMessage).toMatchInlineSnapshot(`
       "feat(*): ✨ a cool new \`feature\`
@@ -485,11 +485,11 @@ describe("formatCommitMessage", () => {
   });
 
   it("should not crash when parts.type is empty (not in config.types)", () => {
-    const result = formatMessage(
+    const result = formatMessageResult(
       defaultResolvedConfig,
       defaultMessageParts,
       true
-    );
+    ).message;
 
     expect(result).toMatchInlineSnapshot(`": "`);
   });

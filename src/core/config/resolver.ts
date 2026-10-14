@@ -14,8 +14,7 @@
 
 import { isString } from "@/core/guards";
 
-import { extractCommitlintRules } from "./commitlint";
-import { CommitlintConfigSchema } from "./commitlint-schema";
+import { CommitlintConfigSchema, extractCommitlintRules } from "./commitlint";
 import { loadConfig } from "./loader";
 import { normalizeConfig } from "./normalizer";
 import { ConfigSchema } from "./schema";
@@ -36,48 +35,24 @@ const constrainByName = <T extends ScopeEntry | string | TypeEntry>(
   return [...allowed, ...extras];
 };
 
-const mergeConfigs = (base: Config | null, overrides: Config): Config => {
-  if (!base) {
-    return overrides;
-  }
-
-  return {
-    ...base,
-    ...overrides,
-    body:
-      (base.body ?? overrides.body)
-        ? { ...base.body, ...overrides.body }
-        : undefined,
-    branch:
-      (base.branch ?? overrides.branch)
-        ? { ...base.branch, ...overrides.branch }
-        : undefined,
-    breaking:
-      (base.breaking ?? overrides.breaking)
-        ? { ...base.breaking, ...overrides.breaking }
-        : undefined,
-    emoji:
-      (base.emoji ?? overrides.emoji)
-        ? { ...base.emoji, ...overrides.emoji }
-        : undefined,
-    header:
-      (base.header ?? overrides.header)
-        ? { ...base.header, ...overrides.header }
-        : undefined,
-    issues:
-      (base.issues ?? overrides.issues)
-        ? { ...base.issues, ...overrides.issues }
-        : undefined,
-    scopes:
-      base.scopes && overrides.scopes
-        ? constrainByName(overrides.scopes, base.scopes)
-        : (overrides.scopes ?? base.scopes),
-    types:
-      base.types && overrides.types
-        ? constrainByName(overrides.types, base.types)
-        : (overrides.types ?? base.types),
-  };
-};
+const mergeConfigs = (base: Config, overrides: Config): Config => ({
+  ...base,
+  ...overrides,
+  body: { ...base.body, ...overrides.body },
+  branch: { ...base.branch, ...overrides.branch },
+  breaking: { ...base.breaking, ...overrides.breaking },
+  emoji: { ...base.emoji, ...overrides.emoji },
+  header: { ...base.header, ...overrides.header },
+  issues: { ...base.issues, ...overrides.issues },
+  scopes:
+    base.scopes && overrides.scopes
+      ? constrainByName(overrides.scopes, base.scopes)
+      : (overrides.scopes ?? base.scopes),
+  types:
+    base.types && overrides.types
+      ? constrainByName(overrides.types, base.types)
+      : (overrides.types ?? base.types),
+});
 
 export const resolveConfig = async () => {
   const [config, commitlintConfig] = await Promise.all([

@@ -1,5 +1,4 @@
 import { defaultResolvedConfig } from "@/core/config/defaults";
-import { defaultMessageParts } from "@/core/conventional/types";
 
 import { scope } from "./scope";
 import { createFakePrompter } from "./test-utils";
@@ -8,7 +7,6 @@ const prompter = createFakePrompter();
 
 const setupScope = (configOverrides = {}, autofill = {}) =>
   scope({
-    answers: defaultMessageParts,
     autofill,
     config: { ...defaultResolvedConfig, ...configOverrides },
     flags: {},
@@ -80,7 +78,6 @@ describe(scope, () => {
     const { autocomplete } = prompter;
 
     const factory = scope({
-      answers: defaultMessageParts,
       config: { ...defaultResolvedConfig, scopes: [{ name: "build" }] },
       flags: {},
       initial: {

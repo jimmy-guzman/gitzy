@@ -1,5 +1,4 @@
 import { defaultResolvedConfig } from "@/core/config/defaults";
-import { defaultMessageParts } from "@/core/conventional/types";
 
 import { body } from "./body";
 import { createFakePrompter } from "./test-utils";
@@ -8,7 +7,6 @@ const prompter = createFakePrompter();
 
 const setupBody = (configOverrides = {}, autofill = {}) =>
   body({
-    answers: defaultMessageParts,
     autofill,
     config: { ...defaultResolvedConfig, ...configOverrides },
     flags: {},

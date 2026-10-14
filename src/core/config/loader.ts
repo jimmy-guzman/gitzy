@@ -2,7 +2,7 @@ import { pathToFileURL } from "node:url";
 
 import type { Loader } from "lilconfig";
 import { lilconfig } from "lilconfig";
-import type { BaseIssue, BaseSchema } from "valibot";
+import type { GenericSchema } from "valibot";
 import { looseObject, safeParse, summarize, unknown } from "valibot";
 
 const configExts = [".js", ".cjs", ".mjs"] as const;
@@ -33,17 +33,6 @@ const getSearchPlaces = (configName: string) => {
 };
 
 const loadTs: Loader = async (filepath) => {
-  const parts = process.versions.node.split(".").map(Number);
-  const major = parts[0] ?? 0;
-  const minor = parts[1] ?? 0;
-  const supportsNativeTs = (major === 22 && minor >= 18) || major > 22;
-
-  if (!supportsNativeTs) {
-    throw new TypeError(
-      `TypeScript config files require Node.js >=22.18.0. Current version: ${process.versions.node}. Use a .js, .cjs, or .mjs config file instead, or upgrade Node.js.`
-    );
-  }
-
   const url = pathToFileURL(filepath).href;
 
   try {
@@ -60,9 +49,7 @@ const loadTs: Loader = async (filepath) => {
   }
 };
 
-export const loadConfig = async <
-  const TSchema extends BaseSchema<unknown, unknown, BaseIssue<unknown>>,
->(
+export const loadConfig = async <const TSchema extends GenericSchema>(
   configName: string,
   schema: TSchema
 ) => {

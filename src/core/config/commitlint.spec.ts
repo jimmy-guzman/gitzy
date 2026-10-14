@@ -1,7 +1,6 @@
 import { parse } from "valibot";
 
-import { extractCommitlintRules } from "./commitlint";
-import { CommitlintConfigSchema } from "./commitlint-schema";
+import { CommitlintConfigSchema, extractCommitlintRules } from "./commitlint";
 
 describe(extractCommitlintRules, () => {
   it("should return all overrides mapped to v7 nested config shape", () => {

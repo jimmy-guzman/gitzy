@@ -38,6 +38,18 @@ const hasRemoteTracking = async (branchName: string) => {
   return result.exitCode === 0;
 };
 
+const runGit = async (args: string[], errorPrefix: string) => {
+  const result = await x("git", args, {
+    nodeOptions: { stdio: "pipe" },
+  });
+
+  if (result.exitCode !== 0) {
+    throw new Error(
+      `${errorPrefix} failed with exit code ${(result.exitCode ?? 1).toString()}${result.stderr ? `: ${result.stderr}` : ""}`
+    );
+  }
+};
+
 /**
  * Rename the current branch using `git branch -m`
  * Warns if a remote tracking ref exists (manual push/delete required)
@@ -61,29 +73,9 @@ export const renameBranch = async (
     return { hasRemote, newName, oldName };
   }
 
-  const result = await x("git", ["branch", "-m", oldName, newName], {
-    nodeOptions: { stdio: "pipe" },
-  });
-
-  if (result.exitCode !== 0) {
-    throw new Error(
-      `git branch -m failed with exit code ${(result.exitCode ?? 1).toString()}${result.stderr ? `: ${result.stderr}` : ""}`
-    );
-  }
+  await runGit(["branch", "-m", oldName, newName], "git branch -m");
 
   return { hasRemote, newName, oldName };
-};
-
-const runGit = async (args: string[], errorPrefix: string) => {
-  const result = await x("git", args, {
-    nodeOptions: { stdio: "pipe" },
-  });
-
-  if (result.exitCode !== 0) {
-    throw new Error(
-      `${errorPrefix} failed with exit code ${(result.exitCode ?? 1).toString()}${result.stderr ? `: ${result.stderr}` : ""}`
-    );
-  }
 };
 
 /**
@@ -102,9 +94,9 @@ export const createBranch = async (
   checkout = true,
   dryRun = false,
   from?: string
-): Promise<{ branchName: string }> => {
+) => {
   if (dryRun) {
-    return { branchName };
+    return;
   }
 
   const fromArgs = from !== undefined && from !== "" ? [from] : [];
@@ -112,6 +104,4 @@ export const createBranch = async (
   await (checkout
     ? runGit(["checkout", "-b", branchName, ...fromArgs], "git checkout -b")
     : runGit(["branch", branchName, ...fromArgs], "git branch"));
-
-  return { branchName };
 };

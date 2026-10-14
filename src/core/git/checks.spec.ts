@@ -1,29 +1,7 @@
 import { rmSync, writeFileSync } from "node:fs";
 
-import { checkIfGitRepo, checkIfStaged, shouldDoGitChecks } from "./checks";
+import { checkIfGitRepo, checkIfStaged } from "./checks";
 import { git, useTempGitRepo } from "./test-utils";
-
-describe(shouldDoGitChecks, () => {
-  it("should perform check if no flags", () => {
-    expect(shouldDoGitChecks()).toBeTruthy();
-  });
-
-  it("should perform check if no cli flags", () => {
-    expect(shouldDoGitChecks({ dryRun: false, hook: false })).toBeTruthy();
-  });
-
-  it("should skip git check if dryRun flag is true", () => {
-    expect(shouldDoGitChecks({ dryRun: true, hook: false })).toBeFalsy();
-  });
-
-  it("should skip git check if hook flag is true", () => {
-    expect(shouldDoGitChecks({ dryRun: false, hook: true })).toBeFalsy();
-  });
-
-  it("should skip git check if amend flag is true", () => {
-    expect(shouldDoGitChecks({ amend: true })).toBeFalsy();
-  });
-});
 
 describe(checkIfStaged, () => {
   useTempGitRepo();
@@ -36,7 +14,7 @@ describe(checkIfStaged, () => {
     writeFileSync("file.txt", "hello");
     await git("add", "file.txt");
 
-    await expect(checkIfStaged()).resolves.toBe("");
+    await expect(checkIfStaged()).resolves.toBeUndefined();
   });
 
   it("should throw when git diff fails", async () => {
@@ -58,7 +36,7 @@ describe(checkIfGitRepo, () => {
   useTempGitRepo();
 
   it("should resolve when inside a git repository", async () => {
-    await expect(checkIfGitRepo()).resolves.toBe("");
+    await expect(checkIfGitRepo()).resolves.toBeUndefined();
   });
 
   it("should throw when not a git repository", async () => {

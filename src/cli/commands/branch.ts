@@ -6,14 +6,14 @@ import { autocomplete, cancel, group, log, text } from "@clack/prompts";
 import type { Command } from "commander";
 import { object, partial, string } from "valibot";
 
-import type { BranchFlags, GitzyState } from "@/cli/types";
+import type { BranchFlags } from "@/cli/types";
 import { createFuzzyFilter } from "@/cli/utils/fuzzy-search";
 import { readStdinJson } from "@/cli/utils/stdin";
 import { formatBranchName } from "@/core/branch/formatter";
 import { parseBranchName } from "@/core/branch/parser";
 import type { BranchParts } from "@/core/branch/types";
-import { defaultResolvedConfig } from "@/core/config/defaults";
 import { resolveConfig } from "@/core/config/resolver";
+import type { ResolvedConfig } from "@/core/config/types";
 import {
   createBranch,
   getCurrentBranch,
@@ -30,25 +30,18 @@ const PartialBranchAnswersSchema = partial(
   })
 );
 
-interface BranchAnswers {
-  issue?: string;
-  scope?: string;
-  subject: string;
-  type: string;
-}
-
 const promptBranchQuestions = async (
-  state: GitzyState,
-  autofill: Partial<BranchAnswers>,
-  amendInitial?: Partial<BranchAnswers>
-): Promise<BranchAnswers> => {
+  config: ResolvedConfig,
+  autofill: Partial<BranchParts>,
+  amendInitial?: Partial<BranchParts>
+) => {
   if (
     autofill.type !== undefined &&
     autofill.type !== "" &&
     autofill.subject !== undefined
   ) {
     const trimmedSubject = autofill.subject.trim();
-    const validType = state.config.types.some((t) => t.name === autofill.type);
+    const validType = config.types.some((t) => t.name === autofill.type);
 
     if (trimmedSubject && validType) {
       return {
@@ -59,8 +52,6 @@ const promptBranchQuestions = async (
       };
     }
   }
-
-  const { config } = state;
 
   const typeOptions = config.types.map((t) => ({
     hint: t.description,
@@ -74,7 +65,7 @@ const promptBranchQuestions = async (
     value: s.name,
   }));
 
-  const result = await group(
+  return await group(
     {
       issue: async () => {
         if (autofill.issue !== undefined) {
@@ -139,17 +130,10 @@ const promptBranchQuestions = async (
       },
     }
   );
-
-  return {
-    issue: result.issue,
-    scope: result.scope,
-    subject: result.subject,
-    type: result.type,
-  };
 };
 
 const toFlagAnswers = (opts: BranchFlags) => {
-  const answers: Partial<BranchAnswers> = {};
+  const answers: Partial<BranchParts> = {};
 
   if (opts.issue !== undefined && opts.issue !== "") {
     answers.issue = opts.issue;
@@ -200,26 +184,14 @@ export const registerBranchCommand = (program: Command) => {
     .option("--stdin", lang.branch.flags.stdin)
     .addHelpText("after", `\nExamples:\n      ${lang.branch.examples}\n    `)
     .action(async (opts: BranchFlags, cmd: Command) => {
-      const state: GitzyState = {
-        answers: {
-          body: "",
-          breaking: "",
-          issues: [],
-          scope: "",
-          subject: "",
-          type: "",
-        },
-        config: defaultResolvedConfig,
-      };
-
       try {
-        state.config = await resolveConfig();
+        const config = await resolveConfig();
 
         const amendInitial =
           opts.amend === true
             ? parseBranchName(
                 await getCurrentBranch().catch(() => ""),
-                state.config.scopes.map((s) => s.name)
+                config.scopes.map((s) => s.name)
               )
             : undefined;
         const stdinAnswers =
@@ -240,19 +212,12 @@ export const registerBranchCommand = (program: Command) => {
         }
 
         const answers = await promptBranchQuestions(
-          state,
+          config,
           { ...stdinAnswers, ...flagAnswers },
           amendInitial
         );
 
-        const parts: BranchParts = {
-          issue: answers.issue,
-          scope: answers.scope,
-          subject: answers.subject,
-          type: answers.type,
-        };
-
-        const branchName = formatBranchName(parts, state.config.branch);
+        const branchName = formatBranchName(answers, config.branch);
 
         if (opts.amend === true) {
           const result = await renameBranch(branchName, {
@@ -267,16 +232,16 @@ export const registerBranchCommand = (program: Command) => {
 
           writeResult(opts, result.newName, result.oldName);
         } else {
-          const result = await createBranch(
+          await createBranch(
             branchName,
             cmd.getOptionValueSource("checkout") === "cli"
               ? opts.checkout
-              : state.config.branch.checkout,
+              : config.branch.checkout,
             opts.dryRun,
             opts.from
           );
 
-          writeResult(opts, result.branchName);
+          writeResult(opts, branchName);
         }
       } catch (error: unknown) {
         log.error(error instanceof Error ? error.message : String(error));

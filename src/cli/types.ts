@@ -3,8 +3,6 @@ import type * as clack from "@clack/prompts";
 import type { ResolvedConfig } from "@/core/config/types";
 import type { MessageParts } from "@/core/conventional/types";
 
-export type Answers = MessageParts;
-
 /**
  * The clack prompts gitzy uses, injectable so tests can supply fakes
  */
@@ -21,11 +19,10 @@ export interface Prompter {
 }
 
 export interface CreatedPromptOptions {
-  answers: Answers;
-  autofill?: Partial<Answers>;
+  autofill?: Partial<MessageParts>;
   config: ResolvedConfig;
   flags: CommitFlags;
-  initial?: Partial<Answers>;
+  initial?: Partial<MessageParts>;
   prompter: Prompter;
 }
 
@@ -39,7 +36,6 @@ export interface CommitFlags {
   hook?: boolean;
   issue?: string[];
   json?: boolean;
-  noEmoji?: boolean;
   noVerify?: boolean;
   retry?: boolean;
   scope?: string;
@@ -60,9 +56,4 @@ export interface BranchFlags {
   stdin?: boolean;
   subject?: string;
   type?: string;
-}
-
-export interface GitzyState {
-  answers: Answers;
-  config: ResolvedConfig;
 }

@@ -144,26 +144,4 @@ describe(loadConfig, () => {
       /^Failed to load TypeScript config at .*gitzy\.config\.ts/u
     );
   });
-
-  describe("on Node versions without type stripping", () => {
-    const originalVersion = process.versions.node;
-
-    afterEach(() => {
-      Object.defineProperty(process.versions, "node", {
-        value: originalVersion,
-      });
-    });
-
-    it.each(["22.12.0", "22.17.1"])(
-      "should reject TypeScript configs on Node %s",
-      async (version) => {
-        Object.defineProperty(process.versions, "node", { value: version });
-        writeConfig("gitzy.config.ts");
-
-        await expect(loadConfig("gitzy", schema)).rejects.toThrow(
-          "TypeScript config files require Node.js >=22.18.0"
-        );
-      }
-    );
-  });
 });

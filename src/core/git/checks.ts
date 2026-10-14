@@ -18,11 +18,9 @@ export const checkIfStaged = async () => {
     );
   }
 
-  if (result.exitCode === 1) {
-    return "";
+  if (result.exitCode !== 1) {
+    throw new Error("Failed to check staged files (git diff)");
   }
-
-  throw new Error("Failed to check staged files (git diff)");
 };
 
 /**
@@ -33,19 +31,9 @@ export const checkIfGitRepo = async () => {
     await x("git", ["rev-parse", "--is-inside-work-tree"], {
       throwOnError: true,
     });
-
-    return "";
   } catch (error) {
     throw new Error('Not a git repository \nYou can try running "git init"', {
       cause: error,
     });
   }
 };
-
-/**
- * Determines whether or not to perform git checks based on flags
- */
-export const shouldDoGitChecks = (
-  cliFlags: { amend?: boolean; dryRun?: boolean; hook?: boolean } = {}
-) =>
-  cliFlags.dryRun !== true && cliFlags.hook !== true && cliFlags.amend !== true;

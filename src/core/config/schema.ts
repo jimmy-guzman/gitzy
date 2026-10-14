@@ -11,16 +11,6 @@ import {
   union,
 } from "valibot";
 
-import {
-  defaultBodyConfig,
-  defaultBranchConfig,
-  defaultBreakingConfig,
-  defaultEmojiConfig,
-  defaultHeaderConfig,
-  defaultIssuesConfig,
-  defaultPrompts,
-} from "./defaults";
-
 const typeEntrySchema = object({
   description: optional(string()),
   emoji: optional(string()),
@@ -38,49 +28,43 @@ const scopeSchema = union([string(), scopeEntrySchema]);
 export const ConfigSchema = object({
   body: optional(
     object({
-      max: optional(number(), defaultBodyConfig.max),
-      min: optional(number(), defaultBodyConfig.min),
+      max: optional(number()),
+      min: optional(number()),
     })
   ),
   branch: optional(
     object({
-      checkout: optional(boolean(), defaultBranchConfig.checkout),
-      max: optional(number(), defaultBranchConfig.max),
-      pattern: optional(string(), defaultBranchConfig.pattern),
+      checkout: optional(boolean()),
+      max: optional(number()),
+      pattern: optional(string()),
     })
   ),
   breaking: optional(
     object({
-      format: optional(
-        picklist(["!", "both", "footer"] as const),
-        defaultBreakingConfig.format
-      ),
+      format: optional(picklist(["!", "both", "footer"] as const)),
     })
   ),
   emoji: optional(
     object({
-      breaking: optional(string(), defaultEmojiConfig.breaking),
-      enabled: optional(boolean(), defaultEmojiConfig.enabled),
-      issues: optional(string(), defaultEmojiConfig.issues),
+      breaking: optional(string()),
+      enabled: optional(boolean()),
+      issues: optional(string()),
     })
   ),
   header: optional(
     object({
-      max: optional(number(), defaultHeaderConfig.max),
-      min: optional(number(), defaultHeaderConfig.min),
+      max: optional(number()),
+      min: optional(number()),
     })
   ),
   issues: optional(
     object({
-      hint: optional(string(), defaultIssuesConfig.hint),
-      pattern: optional(
-        picklist(["github", "jira"] as const),
-        defaultIssuesConfig.pattern
-      ),
-      prefix: optional(string(), defaultIssuesConfig.prefix),
+      hint: optional(string()),
+      pattern: optional(picklist(["github", "jira"] as const)),
+      prefix: optional(string()),
     })
   ),
-  prompts: pipe(optional(array(string()), [...defaultPrompts]), readonly()),
+  prompts: pipe(optional(array(string())), readonly()),
   scopes: pipe(optional(array(scopeSchema)), readonly()),
   types: pipe(optional(array(typeSchema)), readonly()),
 });

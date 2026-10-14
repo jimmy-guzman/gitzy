@@ -17,17 +17,7 @@ describe(createPrompts, () => {
 
   it("should return answers with default prompts", async () => {
     const result = await createPrompts(
-      {
-        answers: {
-          body: "",
-          breaking: "",
-          issues: [],
-          scope: "",
-          subject: "",
-          type: "",
-        },
-        config: defaultResolvedConfig,
-      },
+      defaultResolvedConfig,
       {},
       undefined,
       undefined,
@@ -48,17 +38,7 @@ describe(createPrompts, () => {
 
   it("should only include configured prompts", async () => {
     await createPrompts(
-      {
-        answers: {
-          body: "",
-          breaking: "",
-          issues: [],
-          scope: "",
-          subject: "",
-          type: "",
-        },
-        config: { ...defaultResolvedConfig, prompts: ["type"] },
-      },
+      { ...defaultResolvedConfig, prompts: ["type"] },
       {},
       undefined,
       undefined,
@@ -74,18 +54,8 @@ describe(createPrompts, () => {
   it("should skip unknown prompt names", async () => {
     await createPrompts(
       {
-        answers: {
-          body: "",
-          breaking: "",
-          issues: [],
-          scope: "",
-          subject: "",
-          type: "",
-        },
-        config: {
-          ...defaultResolvedConfig,
-          prompts: ["type", "unknown-prompt"],
-        },
+        ...defaultResolvedConfig,
+        prompts: ["type", "unknown-prompt"],
       },
       {},
       undefined,
@@ -101,17 +71,7 @@ describe(createPrompts, () => {
 
   it("should use autofill values to skip prompts", async () => {
     const result = await createPrompts(
-      {
-        answers: {
-          body: "",
-          breaking: "",
-          issues: [],
-          scope: "",
-          subject: "",
-          type: "",
-        },
-        config: defaultResolvedConfig,
-      },
+      defaultResolvedConfig,
       {},
       {
         body: "my body",
@@ -139,17 +99,7 @@ describe(createPrompts, () => {
 
   it("should include the signoff prompt only when configured", async () => {
     await createPrompts(
-      {
-        answers: {
-          body: "",
-          breaking: "",
-          issues: [],
-          scope: "",
-          subject: "",
-          type: "",
-        },
-        config: { ...defaultResolvedConfig, prompts: ["type", "signoff"] },
-      },
+      { ...defaultResolvedConfig, prompts: ["type", "signoff"] },
       {},
       undefined,
       undefined,
@@ -168,17 +118,7 @@ describe(createPrompts, () => {
     prompter.text.mockResolvedValue("Jane Doe <jane@example.com>");
 
     const result = await createPrompts(
-      {
-        answers: {
-          body: "",
-          breaking: "",
-          issues: [],
-          scope: "",
-          subject: "",
-          type: "",
-        },
-        config: { ...defaultResolvedConfig, prompts: ["signoff"] },
-      },
+      { ...defaultResolvedConfig, prompts: ["signoff"] },
       {},
       undefined,
       undefined,

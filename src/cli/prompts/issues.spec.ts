@@ -7,14 +7,6 @@ const prompter = createFakePrompter();
 
 const setupIssues = (autofill = {}) =>
   issues({
-    answers: {
-      body: "",
-      breaking: "",
-      issues: [],
-      scope: "",
-      subject: "",
-      type: "",
-    },
     autofill,
     config: defaultResolvedConfig,
     flags: {},
@@ -59,14 +51,6 @@ describe(issues, () => {
     const { text } = prompter;
 
     const factory = issues({
-      answers: {
-        body: "",
-        breaking: "",
-        issues: [],
-        scope: "",
-        subject: "",
-        type: "",
-      },
       config: defaultResolvedConfig,
       flags: {},
       initial: {

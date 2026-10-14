@@ -8,13 +8,6 @@ import path from "node:path";
 
 import { x } from "tinyexec";
 
-export interface CommitOptions {
-  amend?: boolean;
-  dryRun?: boolean;
-  hook?: boolean;
-  noVerify?: boolean;
-}
-
 /**
  * Get the absolute path of the git directory, wherever in the work tree we are
  */
@@ -41,34 +34,27 @@ const getGitDir = async () => {
  *
  * @param options.amend - Amend the previous commit
  *
- * @param options.dryRun - Show message without committing
- *
  * @param options.hook - Run in git hook mode (writes to COMMIT_EDITMSG)
  *
  * @param options.noVerify - Skip git hooks (--no-verify)
  *
- * @returns Object with the message, whether it was committed, and in hook mode the COMMIT_EDITMSG path
+ * @returns Object with the message and, in hook mode, the COMMIT_EDITMSG path
  */
 export const commit = async (
   message: string,
   {
     amend = false,
-    dryRun = false,
     hook = false,
     noVerify = false,
-  }: CommitOptions = {}
+  }: { amend?: boolean; hook?: boolean; noVerify?: boolean } = {}
 ) => {
-  if (dryRun) {
-    return { committed: false, message };
-  }
-
   if (hook) {
     const gitDir = process.env.GIT_DIR ?? (await getGitDir());
     const commitMsgPath = path.join(gitDir, "COMMIT_EDITMSG");
 
     writeFileSync(commitMsgPath, message);
 
-    return { commitMsgPath, committed: true, message };
+    return { commitMsgPath, message };
   }
 
   const extraFlags: string[] = [];
@@ -91,5 +77,5 @@ export const commit = async (
     process.exit(result.exitCode);
   }
 
-  return { committed: true, message };
+  return { message };
 };

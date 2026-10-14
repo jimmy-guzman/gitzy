@@ -55,10 +55,9 @@ describe(renameBranch, () => {
 });
 
 describe(createBranch, () => {
-  it("should return dry-run result without creating the branch", async () => {
-    const result = await createBranch("feat/my-branch", true, true);
+  it("should not create the branch on a dry run", async () => {
+    await createBranch("feat/my-branch", true, true);
 
-    expect(result).toStrictEqual({ branchName: "feat/my-branch" });
     await expect(listBranches()).resolves.toBe("main");
   });
 
