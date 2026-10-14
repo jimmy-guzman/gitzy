@@ -185,6 +185,14 @@ describe(resolveConfig, () => {
       expect(result.types.map((t) => t.name)).toStrictEqual(["feat", "fix"]);
     });
 
+    it("should load a commitlint config with a disabled rule", async () => {
+      writeConfigs(null, { rules: { "body-max-length": [0] } });
+
+      const result = await resolveConfig();
+
+      expect(result).toStrictEqual(normalizeConfig({}));
+    });
+
     it("should return normalized gitzy config when commitlint is not present", async () => {
       const gitzyConfig = { types: ["feat"] };
 

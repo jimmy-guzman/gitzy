@@ -2,6 +2,9 @@
  * Helpers for loading and parsing commitlint configuration
  */
 
+import type { GenericSchema } from "valibot";
+import { array, is, number, string } from "valibot";
+
 import type { CommitlintConfig } from "./commitlint-schema";
 import type { BodyConfig, Config } from "./types";
 
@@ -23,20 +26,33 @@ const toRange = (max: number | undefined, min: number | undefined) => {
   return range;
 };
 
+const ruleValue = <T extends GenericSchema>(
+  rule: unknown[] | undefined,
+  schema: T
+) => {
+  const [severity, condition, value] = rule ?? [];
+
+  return (severity === 1 || severity === 2) &&
+    condition === "always" &&
+    is(schema, value)
+    ? value
+    : undefined;
+};
+
 export const extractCommitlintRules = (
   config: CommitlintConfig
 ): Partial<Config> => {
   const rules = config.rules ?? {};
   const body = toRange(
-    rules["body-max-length"]?.[2],
-    rules["body-min-length"]?.[2]
+    ruleValue(rules["body-max-length"], number()),
+    ruleValue(rules["body-min-length"], number())
   );
   const header = toRange(
-    rules["header-max-length"]?.[2],
-    rules["header-min-length"]?.[2]
+    ruleValue(rules["header-max-length"], number()),
+    ruleValue(rules["header-min-length"], number())
   );
-  const types = rules["type-enum"]?.[2];
-  const scopes = rules["scope-enum"]?.[2];
+  const types = ruleValue(rules["type-enum"], array(string()));
+  const scopes = ruleValue(rules["scope-enum"], array(string()));
 
   return {
     ...(body && { body }),

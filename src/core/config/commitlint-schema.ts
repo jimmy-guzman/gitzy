@@ -1,24 +1,17 @@
 import type { InferOutput } from "valibot";
-import { array, number, object, optional, string, tuple } from "valibot";
+import { array, object, optional, unknown } from "valibot";
 
-const HeaderLengthRuleSchema = tuple([number(), string(), number()]);
-
-const ScopeCaseRuleSchema = tuple([number(), string(), string()]);
-
-const ScopeEnumRuleSchema = tuple([number(), string(), array(string())]);
-
-const TypeEnumRuleSchema = tuple([number(), string(), array(string())]);
+const RuleSchema = array(unknown());
 
 export const CommitlintConfigSchema = object({
   rules: optional(
     object({
-      "body-max-length": optional(HeaderLengthRuleSchema),
-      "body-min-length": optional(HeaderLengthRuleSchema),
-      "header-max-length": optional(HeaderLengthRuleSchema),
-      "header-min-length": optional(HeaderLengthRuleSchema),
-      "scope-case": optional(ScopeCaseRuleSchema),
-      "scope-enum": optional(ScopeEnumRuleSchema),
-      "type-enum": optional(TypeEnumRuleSchema),
+      "body-max-length": optional(RuleSchema),
+      "body-min-length": optional(RuleSchema),
+      "header-max-length": optional(RuleSchema),
+      "header-min-length": optional(RuleSchema),
+      "scope-enum": optional(RuleSchema),
+      "type-enum": optional(RuleSchema),
     })
   ),
 });
