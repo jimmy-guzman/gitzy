@@ -61,7 +61,7 @@ const runCommit = (args: string, stdin?: string) => {
   const raw = execSync(`node "${BIN}" commit --dry-run ${args}`, {
     cwd: E2E_CWD,
     encoding: "utf-8",
-    env: { ...process.env, TMPDIR: E2E_CWD },
+    env: { ...process.env, TEMP: E2E_CWD, TMP: E2E_CWD, TMPDIR: E2E_CWD },
     input,
     timeout: 30_000,
   });
