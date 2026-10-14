@@ -19,7 +19,7 @@ An interactive CLI tool for creating [Conventional Commits](https://www.conventi
 - **Linting:** Oxlint via Ultracite `core` + `anti-slop` + `vitest` presets (`oxlint.config.ts`), with type-aware rules and type-check (`typeAware`/`typeCheck` via `oxlint-tsgolint`); `src/**` bans `../` imports (use `@/`)
 - **Testing:** Vitest 5 with V8 coverage (unit + e2e)
 - **Dead code detection:** Knip
-- **Spell checking:** cspell
+- **Spell checking:** cspell, run on staged files by lint-staged at commit time; add new words to `cspell.json` `words`
 
 ## Project Structure
 

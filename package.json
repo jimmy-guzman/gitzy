@@ -51,6 +51,7 @@
     "clean-pkg-json": "2.0.0",
     "commander": "15.0.0",
     "commitlint": "21.2.3",
+    "cspell": "10.3.6",
     "husky": "9.1.7",
     "is-ci": "4.1.0",
     "jiti": "2.7.0",
@@ -74,7 +75,8 @@
   },
   "lint-staged": {
     "*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,json,jsonc,css,scss,less,vue,svelte,astro,html,md,mdx,yaml,yml,graphql,gql}": [
-      "pnpm exec ultracite fix"
+      "pnpm exec ultracite fix",
+      "cspell --no-must-find-files --no-progress"
     ]
   },
   "engines": {
