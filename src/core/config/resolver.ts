@@ -12,6 +12,8 @@
  *   Gitzy entries NOT in the commitlint enum are excluded.
  */
 
+import { isString } from "@/core/guards";
+
 import { extractCommitlintRules } from "./commitlint";
 import { CommitlintConfigSchema } from "./commitlint-schema";
 import { loadConfig } from "./loader";
@@ -20,7 +22,7 @@ import { ConfigSchema } from "./schema";
 import type { Config, ScopeEntry, TypeEntry } from "./types";
 
 const toName = (entry: ScopeEntry | string | TypeEntry) =>
-  typeof entry === "string" ? entry : entry.name;
+  isString(entry) ? entry : entry.name;
 
 const constrainByName = <T extends ScopeEntry | string | TypeEntry>(
   gitzy: readonly T[],

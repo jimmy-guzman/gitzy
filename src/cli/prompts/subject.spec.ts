@@ -1,14 +1,11 @@
-import type * as clack from "@clack/prompts";
-
 import type { Answers } from "@/cli/types";
 import { defaultResolvedConfig } from "@/core/config/defaults";
 import { defaultMessageParts } from "@/core/conventional/types";
 
 import { leadingLabel, subject } from "./subject";
+import { createFakePrompter } from "./test-utils";
 
-vi.mock(import("@clack/prompts"), () => ({
-  text: vi.fn<typeof clack.text>().mockResolvedValue("a cool feature"),
-}));
+const prompter = createFakePrompter();
 
 const setupSubject = (configOverrides = {}, autofill = {}) =>
   subject({
@@ -16,6 +13,7 @@ const setupSubject = (configOverrides = {}, autofill = {}) =>
     autofill,
     config: { ...defaultResolvedConfig, ...configOverrides },
     flags: {},
+    prompter,
   });
 
 const answers: Partial<Answers> = {
@@ -27,19 +25,21 @@ const getValidate = async (
   configOverrides = {},
   results: Partial<Answers> = {}
 ) => {
-  const { text } = await import("@clack/prompts");
+  const { text } = prompter;
 
   const factory = setupSubject(configOverrides);
 
   await factory({ results });
 
-  const [[call]] = vi.mocked(text).mock.calls;
+  const [[call]] = text.mock.calls;
 
-  expect(call.validate).toBeDefined();
+  const { validate } = call;
 
-  return call.validate as (
-    value: string | undefined
-  ) => Error | string | undefined;
+  if (!validate || "~standard" in validate) {
+    throw new Error("Expected the prompt to receive a validate function");
+  }
+
+  return validate;
 };
 
 describe(leadingLabel, () => {
@@ -76,7 +76,7 @@ describe(subject, () => {
   });
 
   it("should call text when no autofill", async () => {
-    const { text } = await import("@clack/prompts");
+    const { text } = prompter;
 
     const factory = setupSubject();
 

@@ -4,6 +4,7 @@
  */
 
 import type { ResolvedConfig } from "@/core/config/types";
+import { isString } from "@/core/guards";
 
 import type { MessageParts } from "./types";
 
@@ -58,7 +59,7 @@ const createBreaking = (
   { breaking: breakingCfg, emoji: emojiCfg }: ResolvedConfig,
   emojiEnabled: boolean
 ) => {
-  if (breakingCfg.format === "!" || typeof breaking === "boolean") {
+  if (breakingCfg.format === "!" || !isString(breaking)) {
     return "";
   }
 
@@ -106,7 +107,7 @@ const createCoAuthors = (coAuthors: string[] | undefined) => {
 };
 
 const createSignoff = (signoff: MessageParts["signoff"]) => {
-  if (typeof signoff !== "string") {
+  if (!isString(signoff)) {
     return "";
   }
 

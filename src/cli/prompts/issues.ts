@@ -1,5 +1,3 @@
-import { text } from "@clack/prompts";
-
 import type { CreatedPromptOptions } from "@/cli/types";
 
 export const issues =
@@ -9,14 +7,11 @@ export const issues =
       issues: { hint: issuesHint, prefix: issuesPrefix },
     },
     initial,
+    prompter,
   }: CreatedPromptOptions) =>
   () => {
     if (autofill?.issues !== undefined) {
-      return Promise.resolve(
-        Array.isArray(autofill.issues)
-          ? autofill.issues.join(", ")
-          : autofill.issues
-      );
+      return Promise.resolve(autofill.issues.join(", "));
     }
 
     const initialIssues =
@@ -24,7 +19,7 @@ export const issues =
         ? initial.issues.join(", ")
         : undefined;
 
-    return text({
+    return prompter.text({
       initialValue: initialIssues,
       message: `Add issues this commit closes (${issuesPrefix}:)`,
       placeholder: issuesHint,

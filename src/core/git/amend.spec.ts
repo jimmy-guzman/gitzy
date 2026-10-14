@@ -1,12 +1,9 @@
-import { x } from "tinyexec";
-
 import {
   getAmendParts,
   getHeadCommitMessage,
   parseConventionalCommit,
 } from "./amend";
-
-vi.mock(import("tinyexec"));
+import { git, useTempGitRepo } from "./test-utils";
 
 describe(parseConventionalCommit, () => {
   it("should parse a basic commit message", () => {
@@ -156,41 +153,22 @@ describe(parseConventionalCommit, () => {
 });
 
 describe(getHeadCommitMessage, () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
+  useTempGitRepo();
 
   it("should return the trimmed HEAD commit message", async () => {
-    vi.mocked(x).mockResolvedValue({
-      exitCode: 0,
-      stderr: "",
-      stdout: "feat: add feature\n",
-    });
+    await git("commit", "--allow-empty", "--message", "feat: add feature\n");
 
-    const result = await getHeadCommitMessage();
-
-    expect(result).toBe("feat: add feature");
-    expect(x).toHaveBeenCalledWith("git", ["log", "-1", "--pretty=%B"], {
-      throwOnError: true,
-    });
+    await expect(getHeadCommitMessage()).resolves.toBe("feat: add feature");
   });
 });
 
 describe(getAmendParts, () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
+  useTempGitRepo();
 
   it("should return parsed parts from HEAD commit", async () => {
-    vi.mocked(x).mockResolvedValue({
-      exitCode: 0,
-      stderr: "",
-      stdout: "feat(cli): add flag\n",
-    });
+    await git("commit", "--allow-empty", "--message", "feat(cli): add flag");
 
-    const result = await getAmendParts();
-
-    expect(result).toStrictEqual({
+    await expect(getAmendParts()).resolves.toStrictEqual({
       scope: "cli",
       subject: "add flag",
       type: "feat",
@@ -198,10 +176,8 @@ describe(getAmendParts, () => {
   });
 
   it("should return empty object when git command fails", async () => {
-    vi.mocked(x).mockRejectedValue(new Error("not a git repo"));
+    await git("checkout", "--orphan", "empty");
 
-    const result = await getAmendParts();
-
-    expect(result).toStrictEqual({});
+    await expect(getAmendParts()).resolves.toStrictEqual({});
   });
 });

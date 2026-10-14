@@ -1,14 +1,10 @@
-import type * as clack from "@clack/prompts";
-
 import { defaultResolvedConfig } from "@/core/config/defaults";
 import type { ResolvedConfig } from "@/core/config/types";
 
 import { breaking } from "./breaking";
+import { createFakePrompter } from "./test-utils";
 
-vi.mock(import("@clack/prompts"), () => ({
-  confirm: vi.fn<typeof clack.confirm>().mockResolvedValue(false),
-  text: vi.fn<typeof clack.text>().mockResolvedValue(""),
-}));
+const prompter = createFakePrompter();
 
 const setupBreaking = (
   configOverrides: Partial<ResolvedConfig> = {},
@@ -26,6 +22,7 @@ const setupBreaking = (
     autofill,
     config: { ...defaultResolvedConfig, ...configOverrides },
     flags: {},
+    prompter,
   });
 
 describe(breaking, () => {
@@ -59,7 +56,7 @@ describe(breaking, () => {
   });
 
   it("should call confirm when format is '!'", async () => {
-    const { confirm } = await import("@clack/prompts");
+    const { confirm } = prompter;
 
     const factory = setupBreaking({ breaking: { format: "!" } });
 
@@ -73,7 +70,7 @@ describe(breaking, () => {
   });
 
   it("should call text when format is not '!'", async () => {
-    const { text } = await import("@clack/prompts");
+    const { text } = prompter;
 
     const factory = setupBreaking();
 
@@ -88,7 +85,7 @@ describe(breaking, () => {
   });
 
   it("should pass initialValue from amend for confirm", async () => {
-    const { confirm } = await import("@clack/prompts");
+    const { confirm } = prompter;
 
     const factory = breaking({
       answers: {
@@ -109,6 +106,7 @@ describe(breaking, () => {
         subject: "",
         type: "",
       },
+      prompter,
     });
 
     await factory();

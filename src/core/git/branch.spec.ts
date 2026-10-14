@@ -1,176 +1,108 @@
-import { x } from "tinyexec";
-
 import { createBranch, getCurrentBranch, renameBranch } from "./branch";
+import { git, useTempGitRepo } from "./test-utils";
 
-vi.mock(import("tinyexec"));
+const listBranches = () => git("branch", "--format=%(refname:short)");
 
-interface MockResult {
-  exitCode: number;
-  stderr: string;
-  stdout: string;
-}
-
-const mockX = (...results: MockResult[]) => {
-  for (const result of results) {
-    vi.mocked(x).mockResolvedValueOnce(result);
-  }
-};
+useTempGitRepo();
 
 describe(getCurrentBranch, () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
-
   it("should return the current branch name", async () => {
-    vi.mocked(x).mockResolvedValue({
-      exitCode: 0,
-      stderr: "",
-      stdout: "feat/my-branch\n",
-    });
+    await git("checkout", "-b", "feat/my-branch");
 
-    const result = await getCurrentBranch();
-
-    expect(result).toBe("feat/my-branch");
-    expect(x).toHaveBeenCalledWith("git", ["branch", "--show-current"], {
-      throwOnError: true,
-    });
+    await expect(getCurrentBranch()).resolves.toBe("feat/my-branch");
   });
 });
 
 describe(renameBranch, () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
-
-  it("should return dry-run result without executing git branch -m", async () => {
-    mockX(
-      { exitCode: 0, stderr: "", stdout: "old-branch\n" },
-      { exitCode: 1, stderr: "", stdout: "" }
-    );
-
+  it("should return dry-run result without renaming the branch", async () => {
     const result = await renameBranch("new-branch", { dryRun: true });
 
     expect(result).toStrictEqual({
       hasRemote: false,
       newName: "new-branch",
-      oldName: "old-branch",
+      oldName: "main",
     });
-    expect(x).toHaveBeenCalledTimes(2);
+    await expect(getCurrentBranch()).resolves.toBe("main");
   });
 
   it("should rename branch and return result", async () => {
-    mockX(
-      { exitCode: 0, stderr: "", stdout: "old-branch\n" },
-      { exitCode: 1, stderr: "", stdout: "" },
-      { exitCode: 0, stderr: "", stdout: "" }
-    );
-
     const result = await renameBranch("new-branch");
 
     expect(result).toStrictEqual({
       hasRemote: false,
       newName: "new-branch",
-      oldName: "old-branch",
+      oldName: "main",
     });
-    expect(x).toHaveBeenCalledWith(
-      "git",
-      ["branch", "-m", "old-branch", "new-branch"],
-      { nodeOptions: { stdio: "pipe" } }
-    );
+    await expect(getCurrentBranch()).resolves.toBe("new-branch");
   });
 
   it("should detect remote tracking ref", async () => {
-    mockX(
-      { exitCode: 0, stderr: "", stdout: "old-branch\n" },
-      { exitCode: 0, stderr: "", stdout: "origin\n" },
-      { exitCode: 0, stderr: "", stdout: "" }
-    );
+    await git("config", "branch.main.remote", "origin");
 
     const result = await renameBranch("new-branch");
 
     expect(result.hasRemote).toBeTruthy();
   });
 
-  it("should exit on git branch -m failure", async () => {
-    mockX(
-      { exitCode: 0, stderr: "", stdout: "old-branch\n" },
-      { exitCode: 1, stderr: "", stdout: "" },
-      { exitCode: 128, stderr: "error", stdout: "" }
-    );
+  it("should throw on git branch -m failure", async () => {
+    await git("branch", "taken");
 
-    await expect(renameBranch("new-branch")).rejects.toThrow(
-      "git branch -m failed with exit code 128: error"
+    await expect(renameBranch("taken")).rejects.toThrow(
+      "git branch -m failed with exit code 128: fatal: a branch named 'taken' already exists"
     );
   });
 });
 
 describe(createBranch, () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
-
-  it("should return dry-run result without executing git", async () => {
+  it("should return dry-run result without creating the branch", async () => {
     const result = await createBranch("feat/my-branch", true, true);
 
     expect(result).toStrictEqual({ branchName: "feat/my-branch" });
-    expect(x).not.toHaveBeenCalled();
+    await expect(listBranches()).resolves.toBe("main");
   });
 
   it("should checkout new branch when checkout is true", async () => {
-    vi.mocked(x).mockResolvedValue({ exitCode: 0, stderr: "", stdout: "" });
-
     await createBranch("feat/my-branch");
 
-    expect(x).toHaveBeenCalledWith(
-      "git",
-      ["checkout", "-b", "feat/my-branch"],
-      { nodeOptions: { stdio: "pipe" } }
-    );
+    await expect(getCurrentBranch()).resolves.toBe("feat/my-branch");
   });
 
   it("should create branch without checkout when checkout is false", async () => {
-    vi.mocked(x).mockResolvedValue({ exitCode: 0, stderr: "", stdout: "" });
-
     await createBranch("feat/my-branch", false);
 
-    expect(x).toHaveBeenCalledWith("git", ["branch", "feat/my-branch"], {
-      nodeOptions: { stdio: "pipe" },
-    });
+    await expect(getCurrentBranch()).resolves.toBe("main");
+    await expect(listBranches()).resolves.toContain("feat/my-branch");
   });
 
   it("should checkout new branch from a base ref", async () => {
-    vi.mocked(x).mockResolvedValue({ exitCode: 0, stderr: "", stdout: "" });
+    await git("branch", "base");
+    await git("commit", "--allow-empty", "--message", "chore: ahead");
 
-    await createBranch("feat/my-branch", true, false, "main");
+    await createBranch("feat/my-branch", true, false, "base");
 
-    expect(x).toHaveBeenCalledWith(
-      "git",
-      ["checkout", "-b", "feat/my-branch", "main"],
-      { nodeOptions: { stdio: "pipe" } }
+    await expect(getCurrentBranch()).resolves.toBe("feat/my-branch");
+    await expect(git("rev-parse", "HEAD")).resolves.toBe(
+      await git("rev-parse", "base")
     );
   });
 
   it("should create branch without checkout from a base ref", async () => {
-    vi.mocked(x).mockResolvedValue({ exitCode: 0, stderr: "", stdout: "" });
+    await git("branch", "base");
+    await git("commit", "--allow-empty", "--message", "chore: ahead");
 
-    await createBranch("feat/my-branch", false, false, "main");
+    await createBranch("feat/my-branch", false, false, "base");
 
-    expect(x).toHaveBeenCalledWith(
-      "git",
-      ["branch", "feat/my-branch", "main"],
-      { nodeOptions: { stdio: "pipe" } }
+    await expect(getCurrentBranch()).resolves.toBe("main");
+    await expect(git("rev-parse", "feat/my-branch")).resolves.toBe(
+      await git("rev-parse", "base")
     );
   });
 
-  it("should exit on git failure", async () => {
-    vi.mocked(x).mockResolvedValue({
-      exitCode: 1,
-      stderr: "error",
-      stdout: "",
-    });
+  it("should throw on git failure", async () => {
+    await git("branch", "taken");
 
-    await expect(createBranch("feat/my-branch")).rejects.toThrow(
-      "git checkout -b failed with exit code 1: error"
+    await expect(createBranch("taken")).rejects.toThrow(
+      "git checkout -b failed with exit code 128: fatal: a branch named 'taken' already exists"
     );
   });
 });

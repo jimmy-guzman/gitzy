@@ -4,6 +4,7 @@
 
 import { autocomplete, cancel, group, log, text } from "@clack/prompts";
 import type { Command } from "commander";
+import { object, partial, string } from "valibot";
 
 import type { BranchFlags, GitzyState } from "@/cli/types";
 import { createFuzzyFilter } from "@/cli/utils/fuzzy-search";
@@ -19,6 +20,15 @@ import {
   renameBranch,
 } from "@/core/git/branch";
 import { lang } from "@/lang";
+
+const PartialBranchAnswersSchema = partial(
+  object({
+    issue: string(),
+    scope: string(),
+    subject: string(),
+    type: string(),
+  })
+);
 
 interface BranchAnswers {
   issue?: string;
@@ -134,12 +144,27 @@ const promptBranchQuestions = async (
   };
 };
 
-const toFlagAnswers = (opts: BranchFlags): Partial<BranchAnswers> => ({
-  ...(opts.issue ? { issue: opts.issue } : {}),
-  ...(opts.scope ? { scope: opts.scope } : {}),
-  ...(opts.subject ? { subject: opts.subject } : {}),
-  ...(opts.type ? { type: opts.type } : {}),
-});
+const toFlagAnswers = (opts: BranchFlags) => {
+  const answers: Partial<BranchAnswers> = {};
+
+  if (opts.issue) {
+    answers.issue = opts.issue;
+  }
+
+  if (opts.scope) {
+    answers.scope = opts.scope;
+  }
+
+  if (opts.subject) {
+    answers.subject = opts.subject;
+  }
+
+  if (opts.type) {
+    answers.type = opts.type;
+  }
+
+  return answers;
+};
 
 const writeResult = (
   opts: BranchFlags,
@@ -148,11 +173,7 @@ const writeResult = (
 ) => {
   if (opts.json) {
     process.stdout.write(
-      `${JSON.stringify({
-        branchName,
-        dryRun: opts.dryRun ?? false,
-        ...(oldName === undefined ? {} : { oldName }),
-      })}\n`
+      `${JSON.stringify({ branchName, dryRun: opts.dryRun ?? false, oldName })}\n`
     );
   } else if (opts.dryRun) {
     log.info(`Branch name: ${branchName}`);
@@ -197,7 +218,7 @@ export const registerBranchCommand = (program: Command) => {
             )
           : undefined;
         const stdinAnswers = opts.stdin
-          ? await readStdinJson<Partial<BranchAnswers>>()
+          ? await readStdinJson(PartialBranchAnswersSchema)
           : {};
         const flagAnswers = toFlagAnswers(opts);
 

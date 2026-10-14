@@ -1,5 +1,3 @@
-import { autocomplete } from "@clack/prompts";
-
 import type { CommitFlags, CreatedPromptOptions } from "@/cli/types";
 import { createFuzzyFilter } from "@/cli/utils/fuzzy-search";
 import type { ResolvedConfig } from "@/core/config/types";
@@ -21,7 +19,7 @@ export const createTypeOptions = (
   });
 
 export const type =
-  ({ autofill, config, flags, initial }: CreatedPromptOptions) =>
+  ({ autofill, config, flags, initial, prompter }: CreatedPromptOptions) =>
   () => {
     if (autofill?.type !== undefined) {
       return Promise.resolve(autofill.type);
@@ -29,7 +27,7 @@ export const type =
 
     const options = createTypeOptions(config, flags);
 
-    return autocomplete({
+    return prompter.autocomplete({
       filter: createFuzzyFilter(options),
       initialValue: initial?.type,
       maxItems: 10,

@@ -47,7 +47,7 @@ const loadTs: Loader = async (filepath) => {
   const url = pathToFileURL(filepath).href;
 
   try {
-    const mod = (await import(url)) as Record<string, unknown>;
+    const mod = await import(url);
 
     return mod.default ?? mod;
   } catch (error: unknown) {

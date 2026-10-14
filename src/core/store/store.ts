@@ -1,75 +1,60 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import type { GitzyStoreError } from "./types";
-import { gitzyStorePath, mkdir, tryUnlink } from "./utils";
+import type { InferOutput } from "valibot";
+import { parseJson, pipe, safeParse, string } from "valibot";
 
-const idx = Symbol("gitzy");
+import { PartialMessagePartsSchema } from "@/core/conventional/schema";
+
+import { gitzyStorePath } from "./utils";
+
+type StoredAnswers = InferOutput<typeof PartialMessagePartsSchema>;
 
 /**
- * Minimal typed version of [data-store](https://github.com/jonschlinkert/data-store/tree/4.1.0)
- *
+ * Persists the previous commit answers so `--retry` can reuse them
  */
-export class GitzyStore<T = Record<string, unknown>> {
-  [idx]?: T;
-  path: string;
+export class GitzyStore {
+  #data?: StoredAnswers;
+  readonly path = gitzyStorePath();
 
-  get data(): T {
-    return this[idx] ?? this.#tryLoad();
+  load() {
+    this.#data ??= this.#read();
+
+    return this.#data;
   }
 
-  constructor() {
-    this.path = gitzyStorePath();
+  save(data: StoredAnswers) {
+    this.#data = data;
+    fs.mkdirSync(path.dirname(this.path), { recursive: true });
+    fs.writeFileSync(this.path, JSON.stringify(data, null, 2), {
+      mode: 0o0600,
+    });
   }
 
-  clear() {
-    this.save({} as T);
-  }
+  #read(): StoredAnswers {
+    let raw: string;
 
-  destroy() {
-    tryUnlink(this.path);
-  }
-
-  load(): T {
-    return this.data;
-  }
-
-  save(data: T) {
-    this[idx] = data;
-    this.#writeFile();
-  }
-
-  #json() {
-    return JSON.stringify(this.data, null, 2);
-  }
-
-  #readParseFile() {
-    return JSON.parse(String(fs.readFileSync(this.path))) as T;
-  }
-
-  #tryLoad(): T {
     try {
-      return (this[idx] = this.#readParseFile());
+      raw = fs.readFileSync(this.path, "utf-8");
     } catch (error) {
-      const err = error as GitzyStoreError;
-
-      if (err.code === "EACCES") {
+      if (
+        error instanceof Error &&
+        "code" in error &&
+        error.code === "EACCES"
+      ) {
         throw new Error("gitzy does not have permission to load this file", {
           cause: error,
         });
       }
 
-      if (err.code === "ENOENT" || err.name === "SyntaxError") {
-        return (this[idx] = {} as T);
-      }
-
-      return {} as T;
+      return {};
     }
-  }
 
-  #writeFile() {
-    mkdir(path.dirname(this.path));
+    const parsed = safeParse(
+      pipe(string(), parseJson(), PartialMessagePartsSchema),
+      raw
+    );
 
-    fs.writeFileSync(this.path, this.#json(), { mode: 0o0600 });
+    return parsed.success ? parsed.output : {};
   }
 }

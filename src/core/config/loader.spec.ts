@@ -1,115 +1,149 @@
-import { lilconfig } from "lilconfig";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import os from "node:os";
+import path from "node:path";
+
 import * as valibot from "valibot";
 
 import { loadConfig } from "./loader";
 
-vi.mock(import("lilconfig"));
-vi.mock(import("valibot"), async (importOriginal) => {
-  const actual = await importOriginal();
-
-  return {
-    ...actual,
-    safeParse: vi.fn<typeof actual.safeParse>(actual.safeParse),
-  };
+const schema = valibot.object({
+  name: valibot.string(),
+  version: valibot.string(),
 });
 
-type Searcher = ReturnType<typeof lilconfig>;
+const config = { name: "gitzy", version: "1.0.0" };
+
+const serialize = <T>(file: string, value: T) => {
+  const json = JSON.stringify(value);
+
+  if (path.basename(file) === "package.json") {
+    return JSON.stringify({ gitzy: value });
+  }
+
+  if (/\.(?:c?js)$/u.test(file)) {
+    return `module.exports = ${json};`;
+  }
+
+  if (/\.(?:mjs|m?ts)$/u.test(file)) {
+    return `export default ${json};`;
+  }
+
+  return json;
+};
 
 describe(loadConfig, () => {
-  const mockSchema = valibot.object({
-    name: valibot.string(),
-    version: valibot.string(),
-  });
+  const originalCwd = process.cwd();
+  let dir = "";
 
-  const mockExplorer = {
-    clearCaches: vi.fn<Searcher["clearCaches"]>(),
-    clearLoadCache: vi.fn<Searcher["clearLoadCache"]>(),
-    clearSearchCache: vi.fn<Searcher["clearSearchCache"]>(),
-    load: vi.fn<Searcher["load"]>(),
-    search: vi.fn<Searcher["search"]>(),
+  const writeConfig = <T>(file: string, value: T | typeof config = config) => {
+    const filePath = path.join(dir, file);
+
+    mkdirSync(path.dirname(filePath), { recursive: true });
+    writeFileSync(filePath, serialize(file, value));
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
-    vi.resetAllMocks();
-    vi.mocked(lilconfig).mockReturnValue(mockExplorer);
+    dir = mkdtempSync(path.join(os.tmpdir(), "gitzy-loader-"));
+    process.chdir(dir);
   });
 
-  describe("lilconfig initialization", () => {
-    it("should initialize lilconfig with correct config name", async () => {
-      mockExplorer.search.mockResolvedValue(null);
-
-      await loadConfig("gitzy", mockSchema);
-
-      expect(lilconfig).toHaveBeenCalledWith("gitzy", expect.any(Object));
-    });
-
-    it("should not configure YAML loaders", async () => {
-      mockExplorer.search.mockResolvedValue(null);
-
-      await loadConfig("gitzy", mockSchema);
-
-      const [[, config]] = vi.mocked(lilconfig).mock.calls;
-
-      expect(config?.loaders).not.toHaveProperty(".yaml");
-      expect(config?.loaders).not.toHaveProperty(".yml");
-    });
-
-    it("should configure .ts and .mts loaders", async () => {
-      mockExplorer.search.mockResolvedValue(null);
-
-      await loadConfig("gitzy", mockSchema);
-
-      const [[, config]] = vi.mocked(lilconfig).mock.calls;
-
-      expect(config?.loaders).toHaveProperty(".ts");
-      expect(config?.loaders).toHaveProperty(".mts");
-    });
-
-    it("should configure correct search places — no YAML, includes .ts and .mts", async () => {
-      mockExplorer.search.mockResolvedValue(null);
-
-      await loadConfig("gitzy", mockSchema);
-
-      const [[, config]] = vi.mocked(lilconfig).mock.calls;
-
-      expect(config?.searchPlaces).toStrictEqual([
-        "package.json",
-        ".gitzyrc",
-        ".gitzyrc.json",
-        ".gitzyrc.js",
-        ".gitzyrc.cjs",
-        ".gitzyrc.mjs",
-        "gitzy.config.js",
-        "gitzy.config.cjs",
-        "gitzy.config.mjs",
-        "gitzy.config.ts",
-        "gitzy.config.mts",
-        ".config/.gitzyrc",
-        ".config/.gitzyrc.json",
-        ".config/.gitzyrc.js",
-        ".config/.gitzyrc.cjs",
-        ".config/.gitzyrc.mjs",
-        ".config/gitzy.config.js",
-        ".config/gitzy.config.cjs",
-        ".config/gitzy.config.mjs",
-        ".config/gitzy.config.ts",
-        ".config/gitzy.config.mts",
-      ]);
-    });
-
-    it("should use process.cwd() for search", async () => {
-      const originalCwd = process.cwd();
-
-      mockExplorer.search.mockResolvedValue(null);
-
-      await loadConfig("gitzy", mockSchema);
-
-      expect(mockExplorer.search).toHaveBeenCalledWith(originalCwd);
-    });
+  afterEach(() => {
+    process.chdir(originalCwd);
+    rmSync(dir, { force: true, recursive: true });
   });
 
-  describe("TypeScript loader", () => {
+  it("should return null when no config is found", async () => {
+    await expect(loadConfig("gitzy", schema)).resolves.toBeNull();
+  });
+
+  it.each([
+    "package.json",
+    ".gitzyrc",
+    ".gitzyrc.json",
+    ".gitzyrc.js",
+    ".gitzyrc.cjs",
+    ".gitzyrc.mjs",
+    "gitzy.config.js",
+    "gitzy.config.cjs",
+    "gitzy.config.mjs",
+    "gitzy.config.ts",
+    "gitzy.config.mts",
+    ".config/.gitzyrc",
+    ".config/.gitzyrc.json",
+    ".config/.gitzyrc.js",
+    ".config/.gitzyrc.cjs",
+    ".config/.gitzyrc.mjs",
+    ".config/gitzy.config.js",
+    ".config/gitzy.config.cjs",
+    ".config/gitzy.config.mjs",
+    ".config/gitzy.config.ts",
+    ".config/gitzy.config.mts",
+  ])("should load config from %s", async (file) => {
+    writeConfig(file);
+
+    await expect(loadConfig("gitzy", schema)).resolves.toStrictEqual(config);
+  });
+
+  it.each([".gitzyrc.yaml", ".gitzyrc.yml"])(
+    "should ignore YAML config %s",
+    async (file) => {
+      writeFileSync(path.join(dir, file), "name: gitzy\nversion: 1.0.0\n");
+
+      await expect(loadConfig("gitzy", schema)).resolves.toBeNull();
+    }
+  );
+
+  it("should search for configs named after the given config name", async () => {
+    writeConfig(".commitlintrc.json");
+
+    await expect(loadConfig("gitzy", schema)).resolves.toBeNull();
+    await expect(loadConfig("commitlint", schema)).resolves.toStrictEqual(
+      config
+    );
+  });
+
+  it("should return null when package.json has no matching key", async () => {
+    writeFileSync(path.join(dir, "package.json"), JSON.stringify({}));
+
+    await expect(loadConfig("gitzy", schema)).resolves.toBeNull();
+  });
+
+  it("should apply schema defaults to an empty config", async () => {
+    writeConfig(".gitzyrc.json", {});
+
+    const result = await loadConfig(
+      "gitzy",
+      valibot.object({ name: valibot.optional(valibot.string(), "fallback") })
+    );
+
+    expect(result).toStrictEqual({ name: "fallback" });
+  });
+
+  it("should throw a TypeError summarizing validation issues", async () => {
+    writeConfig(".gitzyrc.json", { name: 123, version: "1.0.0" });
+
+    await expect(loadConfig("gitzy", schema)).rejects
+      .toThrowErrorMatchingInlineSnapshot(`
+      [TypeError: × Invalid type: Expected string but received 123
+        → at name]
+    `);
+  });
+
+  it("should throw a TypeError for missing required fields", async () => {
+    writeConfig(".gitzyrc.json", { version: "1.0.0" });
+
+    await expect(loadConfig("gitzy", schema)).rejects.toThrow(TypeError);
+  });
+
+  it("should throw a TypeError when a TypeScript config fails to load", async () => {
+    writeFileSync(path.join(dir, "gitzy.config.ts"), "export default {");
+
+    await expect(loadConfig("gitzy", schema)).rejects.toThrow(
+      /^Failed to load TypeScript config at .*gitzy\.config\.ts/u
+    );
+  });
+
+  describe("on Node versions without type stripping", () => {
     const originalVersion = process.versions.node;
 
     afterEach(() => {
@@ -122,161 +156,12 @@ describe(loadConfig, () => {
       "should reject TypeScript configs on Node %s",
       async (version) => {
         Object.defineProperty(process.versions, "node", { value: version });
-        mockExplorer.search.mockResolvedValue(null);
+        writeConfig("gitzy.config.ts");
 
-        await loadConfig("gitzy", mockSchema);
-
-        const loadTs = vi.mocked(lilconfig).mock.calls[0][1]?.loaders?.[".ts"];
-
-        await expect(loadTs?.("gitzy.config.ts", "")).rejects.toThrow(
+        await expect(loadConfig("gitzy", schema)).rejects.toThrow(
           "TypeScript config files require Node.js >=22.18.0"
         );
       }
     );
-  });
-
-  describe("config not found", () => {
-    it("should return null when no config is found", async () => {
-      mockExplorer.search.mockResolvedValue(null);
-
-      const result = await loadConfig("gitzy", mockSchema);
-
-      expect(result).toBeNull();
-    });
-
-    it("should return null when result exists but config is undefined", async () => {
-      mockExplorer.search.mockResolvedValue({
-        config: undefined,
-        filepath: "/path/to/config",
-      });
-
-      const result = await loadConfig("gitzy", mockSchema);
-
-      expect(result).toBeNull();
-    });
-
-    it("should return null when result exists but config is null", async () => {
-      mockExplorer.search.mockResolvedValue({
-        config: null,
-        filepath: "/path/to/config",
-      });
-
-      const result = await loadConfig("gitzy", mockSchema);
-
-      expect(result).toBeNull();
-    });
-  });
-
-  describe("valid config", () => {
-    it("should parse and return valid config", async () => {
-      const configData = { name: "gitzy", version: "1.0.0" };
-
-      mockExplorer.search.mockResolvedValue({
-        config: configData,
-        filepath: "/path/to/.gitzyrc.json",
-      });
-
-      const result = await loadConfig("gitzy", mockSchema);
-
-      expect(result).toStrictEqual(configData);
-    });
-
-    it("should pass the correct schema to safeParse", async () => {
-      const customSchema = valibot.object({
-        foo: valibot.string(),
-      });
-      const configData = { foo: "bar" };
-
-      mockExplorer.search.mockResolvedValue({
-        config: configData,
-        filepath: "/path/to/config",
-      });
-
-      const result = await loadConfig("test", customSchema);
-
-      expect(result).toStrictEqual(configData);
-      expect(valibot.safeParse).toHaveBeenCalledWith(customSchema, configData);
-    });
-  });
-
-  describe("validation errors", () => {
-    it("should throw TypeError with summarized issues for validation errors", async () => {
-      const configData = { name: 123, version: "1.0.0" };
-
-      mockExplorer.search.mockResolvedValue({
-        config: configData,
-        filepath: "/path/to/config",
-      });
-
-      await expect(loadConfig("gitzy", mockSchema)).rejects.toThrow(TypeError);
-      await expect(loadConfig("gitzy", mockSchema)).rejects.toThrow(
-        "× Invalid type: Expected string but received 123\n  → at name"
-      );
-    });
-
-    it("should throw TypeError for missing required fields", async () => {
-      const configData = { version: "1.0.0" };
-
-      mockExplorer.search.mockResolvedValue({
-        config: configData,
-        filepath: "/path/to/config",
-      });
-
-      await expect(loadConfig("gitzy", mockSchema)).rejects.toThrow(TypeError);
-    });
-
-    it("should throw TypeError for wrong field types", async () => {
-      const configData = { name: "gitzy", version: 123 };
-
-      mockExplorer.search.mockResolvedValue({
-        config: configData,
-        filepath: "/path/to/config",
-      });
-
-      await expect(loadConfig("gitzy", mockSchema)).rejects.toThrow(TypeError);
-    });
-  });
-
-  describe("edge cases", () => {
-    it("should handle empty config object with optional schema", async () => {
-      const flexibleSchema = valibot.object({
-        name: valibot.optional(valibot.string()),
-        version: valibot.optional(valibot.string()),
-      });
-      const configData = {};
-
-      mockExplorer.search.mockResolvedValue({
-        config: configData,
-        filepath: "/path/to/config",
-      });
-
-      const result = await loadConfig("gitzy", flexibleSchema);
-
-      expect(result).toStrictEqual(configData);
-    });
-
-    it("should handle config with different config name", async () => {
-      mockExplorer.search.mockResolvedValue(null);
-
-      await loadConfig("commitlint", mockSchema);
-
-      expect(lilconfig).toHaveBeenCalledWith("commitlint", expect.any(Object));
-
-      const [[, config]] = vi.mocked(lilconfig).mock.calls;
-
-      expect(config?.searchPlaces).toContain(".commitlintrc.json");
-      expect(config?.searchPlaces).toContain("commitlint.config.js");
-    });
-
-    it("should handle config name with special characters", async () => {
-      mockExplorer.search.mockResolvedValue(null);
-
-      await loadConfig("my-special-gitzy", mockSchema);
-
-      const [[, config]] = vi.mocked(lilconfig).mock.calls;
-
-      expect(config?.searchPlaces).toContain(".my-special-gitzyrc.json");
-      expect(config?.searchPlaces).toContain("my-special-gitzy.config.js");
-    });
   });
 });
