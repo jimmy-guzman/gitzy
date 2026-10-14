@@ -1,16 +1,15 @@
+import { defaultResolvedConfig } from "@/core/config/defaults";
 import type { ResolvedConfig } from "@/core/config/types";
 import type { MessageParts } from "@/core/conventional/types";
-
-import { defaultResolvedConfig } from "@/core/config/defaults";
 import { defaultMessageParts } from "@/core/conventional/types";
 
 import { formatMessage, formatMessageResult, wrap } from "./message";
 
 const setupFormatCommitMessage = (
   config: Partial<ResolvedConfig> = {},
-  answers = {},
-) => {
-  return formatMessage(
+  answers = {}
+) =>
+  formatMessage(
     { ...defaultResolvedConfig, ...config },
     {
       body: "this an amazing feature, lots of details",
@@ -21,21 +20,19 @@ const setupFormatCommitMessage = (
       type: "feat",
       ...answers,
     },
-    true,
+    true
   );
-};
 
 const setupFormatMessageResult = (
   configOverrides: Partial<ResolvedConfig> = {},
   partsOverrides: Partial<MessageParts> = {},
-  emoji = true,
-) => {
-  return formatMessageResult(
+  emoji = true
+) =>
+  formatMessageResult(
     { ...defaultResolvedConfig, ...configOverrides },
     { ...defaultMessageParts, breaking: "", coAuthors: [], ...partsOverrides },
-    emoji,
+    emoji
   );
-};
 
 describe("formatCommitMessage", () => {
   it("should format commit message with everything", () => {
@@ -209,7 +206,7 @@ describe("formatCommitMessage", () => {
       { emoji: { breaking: "💥", enabled: false, issues: "🏁" } },
       {
         issues: ["resolves #10", "resolves #123"],
-      },
+      }
     );
 
     expect(formattedMessage).toMatchInlineSnapshot(`
@@ -233,7 +230,7 @@ describe("formatCommitMessage", () => {
       },
       {
         issues: ["#123", "#456"],
-      },
+      }
     );
 
     expect(formattedMessage).toMatchInlineSnapshot(`
@@ -322,7 +319,7 @@ describe("formatCommitMessage", () => {
       {
         subject:
           "reduce deps by replacing `cosmiconfig` w/ `lilconfig` & `yaml`",
-      },
+      }
     );
 
     expect(formattedMessage).toMatchInlineSnapshot(`
@@ -345,7 +342,7 @@ describe("formatCommitMessage", () => {
     });
 
     expect(formattedMessage).toMatchInlineSnapshot(
-      `"feat(*): ✨ this has "quotes""`,
+      `"feat(*): ✨ this has "quotes""`
     );
   });
 
@@ -358,7 +355,7 @@ describe("formatCommitMessage", () => {
     });
 
     expect(formattedMessage).toMatchInlineSnapshot(
-      `"feat(*): ✨ this has \`quotes\`"`,
+      `"feat(*): ✨ this has \`quotes\`"`
     );
   });
 
@@ -371,11 +368,11 @@ describe("formatCommitMessage", () => {
         issues: [],
         subject:
           "this is a very very very very very very very very very subject",
-      },
+      }
     );
 
     expect(formattedMessage).toMatchInlineSnapshot(
-      `"feat(*): ✨ this is a very very very very very very very very very subject"`,
+      `"feat(*): ✨ this is a very very very very very very very very very subject"`
     );
     expect(formattedMessage).toHaveLength(73);
   });
@@ -389,7 +386,7 @@ describe("formatCommitMessage", () => {
         issues: [],
         subject:
           "this is a very very very very very very very very very subject",
-      },
+      }
     );
 
     expect(formattedMessage).toMatchInlineSnapshot(`
@@ -420,7 +417,7 @@ describe("formatCommitMessage", () => {
       },
       {
         breaking: false,
-      },
+      }
     );
 
     expect(formattedMessage).toMatchInlineSnapshot(`
@@ -473,7 +470,7 @@ describe("formatCommitMessage", () => {
         subject: "a cool new `feature`",
         type: "feat",
       },
-      true,
+      true
     );
 
     expect(formattedMessage).toMatchInlineSnapshot(`
@@ -491,7 +488,7 @@ describe("formatCommitMessage", () => {
     const result = formatMessage(
       defaultResolvedConfig,
       defaultMessageParts,
-      true,
+      true
     );
 
     expect(result).toMatchInlineSnapshot(`": "`);
@@ -507,7 +504,7 @@ describe("formatCommitMessage", () => {
       },
       {
         issues: ["PROJ-123", "PROJ-456"],
-      },
+      }
     );
 
     expect(formattedMessage).toMatchInlineSnapshot(`
@@ -589,7 +586,7 @@ describe("formatCommitMessage", () => {
   });
 });
 
-describe("formatMessageResult", () => {
+describe(formatMessageResult, () => {
   it("should split header, body, and footer into structured result", () => {
     const result = setupFormatMessageResult(
       {},
@@ -600,7 +597,7 @@ describe("formatMessageResult", () => {
         scope: "*",
         subject: "a cool new feature",
         type: "feat",
-      },
+      }
     );
 
     expect(result).toMatchInlineSnapshot(`
@@ -638,7 +635,7 @@ describe("formatMessageResult", () => {
       {
         subject: "quick fix",
         type: "fix",
-      },
+      }
     );
 
     expect(result).toMatchInlineSnapshot(`
@@ -670,7 +667,7 @@ describe("formatMessageResult", () => {
         subject: "a feature",
         type: "feat",
       },
-      false,
+      false
     );
 
     expect(result).toMatchInlineSnapshot(`
@@ -709,7 +706,7 @@ describe("formatMessageResult", () => {
         issues: ["#100", "#200"],
         subject: "fix bugs",
         type: "fix",
-      },
+      }
     );
 
     expect(result).toMatchInlineSnapshot(`
@@ -744,7 +741,7 @@ describe("formatMessageResult", () => {
         coAuthors: ["Alice <alice@example.com>"],
         subject: "complex commit",
         type: "chore",
-      },
+      }
     );
 
     expect(result).toMatchInlineSnapshot(`
@@ -786,20 +783,20 @@ describe("formatMessageResult", () => {
         signoff: "Jane Doe <jane@example.com>",
         subject: "a feature",
         type: "feat",
-      },
+      }
     );
 
     expect(result.body).toMatchInlineSnapshot(`"a description"`);
     expect(result.footer).toMatchInlineSnapshot(
-      `"Signed-off-by: Jane Doe <jane@example.com>"`,
+      `"Signed-off-by: Jane Doe <jane@example.com>"`
     );
   });
 });
 
-describe("wrap", () => {
+describe(wrap, () => {
   it("should wrap", () => {
     const wrappedString = wrap(
-      `feat(*): ✨ this is a very very very very very very very very very subject`,
+      `feat(*): ✨ this is a very very very very very very very very very subject`
     );
 
     expect(wrappedString).toMatchInlineSnapshot(`

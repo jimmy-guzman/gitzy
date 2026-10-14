@@ -1,25 +1,20 @@
-import type { ResolvedConfig } from "@/core/config/types";
+import type * as clack from "@clack/prompts";
 
 import { defaultResolvedConfig } from "@/core/config/defaults";
+import type { ResolvedConfig } from "@/core/config/types";
 
 import { breaking } from "./breaking";
 
-vi.mock("@clack/prompts", () => {
-  return {
-    confirm: vi.fn().mockResolvedValue(false),
-    text: vi.fn().mockResolvedValue(""),
-  };
-});
-
-beforeEach(() => {
-  vi.clearAllMocks();
-});
+vi.mock(import("@clack/prompts"), () => ({
+  confirm: vi.fn<typeof clack.confirm>().mockResolvedValue(false),
+  text: vi.fn<typeof clack.text>().mockResolvedValue(""),
+}));
 
 const setupBreaking = (
   configOverrides: Partial<ResolvedConfig> = {},
-  autofill = {},
-) => {
-  return breaking({
+  autofill = {}
+) =>
+  breaking({
     answers: {
       body: "",
       breaking: "",
@@ -32,9 +27,12 @@ const setupBreaking = (
     config: { ...defaultResolvedConfig, ...configOverrides },
     flags: {},
   });
-};
 
-describe("breaking", () => {
+describe(breaking, () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it("should return a factory function", () => {
     const factory = setupBreaking();
 
@@ -52,12 +50,12 @@ describe("breaking", () => {
   it("should skip prompt with boolean autofill", async () => {
     const factory = setupBreaking(
       { breaking: { format: "!" } },
-      { breaking: true },
+      { breaking: true }
     );
 
     const result = await factory();
 
-    expect(result).toBe(true);
+    expect(result).toBeTruthy();
   });
 
   it("should call confirm when format is '!'", async () => {
@@ -70,7 +68,7 @@ describe("breaking", () => {
     expect(confirm).toHaveBeenCalledWith(
       expect.objectContaining({
         message: "Is this a breaking change?",
-      }),
+      })
     );
   });
 
@@ -85,7 +83,7 @@ describe("breaking", () => {
       expect.objectContaining({
         message: "Add any breaking changes",
         placeholder: "skip when none",
-      }),
+      })
     );
   });
 
@@ -118,7 +116,7 @@ describe("breaking", () => {
     expect(confirm).toHaveBeenCalledWith(
       expect.objectContaining({
         initialValue: true,
-      }),
+      })
     );
   });
 });

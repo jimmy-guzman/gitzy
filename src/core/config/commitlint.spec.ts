@@ -1,6 +1,6 @@
 import { extractCommitlintRules } from "./commitlint";
 
-describe("extractCommitlintRules", () => {
+describe(extractCommitlintRules, () => {
   it("should return all overrides mapped to v7 nested config shape", () => {
     expect(
       extractCommitlintRules({
@@ -12,7 +12,7 @@ describe("extractCommitlintRules", () => {
           "scope-enum": [2, "always", ["1", "2"]],
           "type-enum": [2, "always", ["1", "2"]],
         },
-      }),
+      })
     ).toMatchObject({
       body: { max: 72, min: 3 },
       header: { max: 10, min: 1 },
@@ -35,7 +35,7 @@ describe("extractCommitlintRules", () => {
         rules: {
           "header-max-length": [2, "always", 100],
         },
-      }),
+      })
     ).toStrictEqual({
       header: { max: 100 },
     });
@@ -47,7 +47,7 @@ describe("extractCommitlintRules", () => {
         rules: {
           "header-min-length": [2, "always", 5],
         },
-      }),
+      })
     ).toStrictEqual({
       header: { min: 5 },
     });
@@ -60,7 +60,7 @@ describe("extractCommitlintRules", () => {
           "header-max-length": [2, "always", 50],
           "type-enum": [2, "always", ["feat", "fix"]],
         },
-      }),
+      })
     ).toStrictEqual({
       header: { max: 50 },
       types: ["feat", "fix"],
@@ -73,7 +73,7 @@ describe("extractCommitlintRules", () => {
         rules: {
           "header-min-length": [2, "always", 0],
         },
-      }),
+      })
     ).toStrictEqual({
       header: { min: 0 },
     });
@@ -86,7 +86,7 @@ describe("extractCommitlintRules", () => {
           "scope-enum": [2, "always", []],
           "type-enum": [2, "always", []],
         },
-      }),
+      })
     ).toStrictEqual({
       scopes: [],
       types: [],
@@ -99,7 +99,7 @@ describe("extractCommitlintRules", () => {
         rules: {
           "body-max-length": [2, "always", 100],
         },
-      }),
+      })
     ).toStrictEqual({
       body: { max: 100 },
     });
@@ -111,7 +111,7 @@ describe("extractCommitlintRules", () => {
         rules: {
           "body-min-length": [2, "always", 10],
         },
-      }),
+      })
     ).toStrictEqual({
       body: { min: 10 },
     });
@@ -123,7 +123,7 @@ describe("extractCommitlintRules", () => {
         rules: {
           "body-min-length": [2, "always", 0],
         },
-      }),
+      })
     ).toStrictEqual({
       body: { min: 0 },
     });

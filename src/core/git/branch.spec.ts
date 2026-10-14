@@ -2,7 +2,7 @@ import { x } from "tinyexec";
 
 import { createBranch, getCurrentBranch, renameBranch } from "./branch";
 
-vi.mock("tinyexec");
+vi.mock(import("tinyexec"));
 
 interface MockResult {
   exitCode: number;
@@ -16,7 +16,7 @@ const mockX = (...results: MockResult[]) => {
   }
 };
 
-describe("getCurrentBranch", () => {
+describe(getCurrentBranch, () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
@@ -37,7 +37,7 @@ describe("getCurrentBranch", () => {
   });
 });
 
-describe("renameBranch", () => {
+describe(renameBranch, () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
@@ -45,7 +45,7 @@ describe("renameBranch", () => {
   it("should return dry-run result without executing git branch -m", async () => {
     mockX(
       { exitCode: 0, stderr: "", stdout: "old-branch\n" },
-      { exitCode: 1, stderr: "", stdout: "" },
+      { exitCode: 1, stderr: "", stdout: "" }
     );
 
     const result = await renameBranch("new-branch", { dryRun: true });
@@ -62,7 +62,7 @@ describe("renameBranch", () => {
     mockX(
       { exitCode: 0, stderr: "", stdout: "old-branch\n" },
       { exitCode: 1, stderr: "", stdout: "" },
-      { exitCode: 0, stderr: "", stdout: "" },
+      { exitCode: 0, stderr: "", stdout: "" }
     );
 
     const result = await renameBranch("new-branch");
@@ -75,7 +75,7 @@ describe("renameBranch", () => {
     expect(x).toHaveBeenCalledWith(
       "git",
       ["branch", "-m", "old-branch", "new-branch"],
-      { nodeOptions: { stdio: "pipe" } },
+      { nodeOptions: { stdio: "pipe" } }
     );
   });
 
@@ -83,28 +83,28 @@ describe("renameBranch", () => {
     mockX(
       { exitCode: 0, stderr: "", stdout: "old-branch\n" },
       { exitCode: 0, stderr: "", stdout: "origin\n" },
-      { exitCode: 0, stderr: "", stdout: "" },
+      { exitCode: 0, stderr: "", stdout: "" }
     );
 
     const result = await renameBranch("new-branch");
 
-    expect(result.hasRemote).toBe(true);
+    expect(result.hasRemote).toBeTruthy();
   });
 
   it("should exit on git branch -m failure", async () => {
     mockX(
       { exitCode: 0, stderr: "", stdout: "old-branch\n" },
       { exitCode: 1, stderr: "", stdout: "" },
-      { exitCode: 128, stderr: "error", stdout: "" },
+      { exitCode: 128, stderr: "error", stdout: "" }
     );
 
     await expect(renameBranch("new-branch")).rejects.toThrow(
-      "git branch -m failed with exit code 128: error",
+      "git branch -m failed with exit code 128: error"
     );
   });
 });
 
-describe("createBranch", () => {
+describe(createBranch, () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
@@ -124,7 +124,7 @@ describe("createBranch", () => {
     expect(x).toHaveBeenCalledWith(
       "git",
       ["checkout", "-b", "feat/my-branch"],
-      { nodeOptions: { stdio: "pipe" } },
+      { nodeOptions: { stdio: "pipe" } }
     );
   });
 
@@ -146,7 +146,7 @@ describe("createBranch", () => {
     expect(x).toHaveBeenCalledWith(
       "git",
       ["checkout", "-b", "feat/my-branch", "main"],
-      { nodeOptions: { stdio: "pipe" } },
+      { nodeOptions: { stdio: "pipe" } }
     );
   });
 
@@ -158,7 +158,7 @@ describe("createBranch", () => {
     expect(x).toHaveBeenCalledWith(
       "git",
       ["branch", "feat/my-branch", "main"],
-      { nodeOptions: { stdio: "pipe" } },
+      { nodeOptions: { stdio: "pipe" } }
     );
   });
 
@@ -170,7 +170,7 @@ describe("createBranch", () => {
     });
 
     await expect(createBranch("feat/my-branch")).rejects.toThrow(
-      "git checkout -b failed with exit code 1: error",
+      "git checkout -b failed with exit code 1: error"
     );
   });
 });

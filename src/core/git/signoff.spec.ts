@@ -2,9 +2,9 @@ import { x } from "tinyexec";
 
 import { getSignoffTrailer } from "./signoff";
 
-vi.mock("tinyexec");
+vi.mock(import("tinyexec"));
 
-describe("getSignoffTrailer", () => {
+describe(getSignoffTrailer, () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
@@ -17,7 +17,7 @@ describe("getSignoffTrailer", () => {
     });
 
     await expect(getSignoffTrailer()).resolves.toBe(
-      "Jane Doe <jane@example.com>",
+      "Jane Doe <jane@example.com>"
     );
     expect(x).toHaveBeenCalledWith("git", ["var", "GIT_COMMITTER_IDENT"], {
       throwOnError: true,
@@ -32,7 +32,7 @@ describe("getSignoffTrailer", () => {
     });
 
     await expect(getSignoffTrailer()).resolves.toBe(
-      "Jane Doe <jane@example.com>",
+      "Jane Doe <jane@example.com>"
     );
   });
 

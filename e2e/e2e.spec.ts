@@ -1,29 +1,25 @@
 import { execSync } from "node:child_process";
 import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import path from "node:path";
 
 /** Absolute path to the built binary — resolved once relative to this file */
-const BIN = resolve(import.meta.dirname, "../dist/run.mjs");
+const BIN = path.resolve(import.meta.dirname, "../dist/run.mjs");
 
 /**
  * Isolated working directory for this e2e run — unique per process so
  * parallel test runs don't share state, and lives outside the repo so
  * lilconfig cannot walk up and find the project's own gitzy.config.js.
  */
-const E2E_CWD = mkdtempSync(join(tmpdir(), "gitzy-e2e-"));
+const E2E_CWD = mkdtempSync(path.join(tmpdir(), "gitzy-e2e-"));
 
 /** ESC character — built dynamically to avoid no-control-regex lint errors */
 const ESC = String.fromCodePoint(0x1b);
 const ANSI_RE = new RegExp(String.raw`${ESC}\[[0-9;?]*[A-Za-z@]`, "gu");
 const CURSOR_RE = new RegExp(String.raw`${ESC}\[\?25[lh]`, "gu");
 
-const stripAnsi = (s: string) => {
-  return s
-    .replaceAll("\r\n", "\n")
-    .replaceAll(ANSI_RE, "")
-    .replaceAll(CURSOR_RE, "");
-};
+const stripAnsi = (s: string) =>
+  s.replaceAll("\r\n", "\n").replaceAll(ANSI_RE, "").replaceAll(CURSOR_RE, "");
 
 interface CommitPayload {
   body: string;
@@ -42,98 +38,75 @@ interface BranchPayload {
   type: string;
 }
 
-const defaultCommitPayload = (): CommitPayload => {
-  return {
-    body: "",
-    breaking: false,
-    coAuthors: [],
-    issues: [],
-    scope: "",
-    subject: "testing",
-    type: "chore",
-  };
-};
+const defaultCommitPayload = (): CommitPayload => ({
+  body: "",
+  breaking: false,
+  coAuthors: [],
+  issues: [],
+  scope: "",
+  subject: "testing",
+  type: "chore",
+});
 
-const defaultBranchPayload = (): BranchPayload => {
-  return {
-    issue: "",
-    scope: "",
-    subject: "add dark mode",
-    type: "feat",
-  };
-};
+const defaultBranchPayload = (): BranchPayload => ({
+  issue: "",
+  scope: "",
+  subject: "add dark mode",
+  type: "feat",
+});
 
 const runCommit = (args: string, stdin?: string) => {
-  return new Promise<string>((resolve, reject) => {
-    try {
-      const input = stdin ? Buffer.from(stdin) : undefined;
+  const input = stdin ? Buffer.from(stdin) : undefined;
 
-      const raw = execSync(`node "${BIN}" commit --dry-run ${args}`, {
-        cwd: E2E_CWD,
-        encoding: "utf8",
-        input,
-        timeout: 30_000,
-      });
-
-      const clean = stripAnsi(raw);
-
-      const marker = "Message...";
-      const start = clean.indexOf(marker);
-
-      if (start === -1) {
-        reject(new Error(`Could not find message marker in output:\n${clean}`));
-
-        return;
-      }
-
-      const afterMarker = clean.slice(start + marker.length);
-      const message = afterMarker
-        .split("\n")
-        .map((line) => {
-          return line.replace(/^[│|]\s{0,2}/, "");
-        })
-        .join("\n")
-        .trim();
-
-      resolve(message);
-    } catch (error: unknown) {
-      reject(error instanceof Error ? error : new Error(String(error)));
-    }
+  const raw = execSync(`node "${BIN}" commit --dry-run ${args}`, {
+    cwd: E2E_CWD,
+    encoding: "utf-8",
+    input,
+    timeout: 30_000,
   });
+
+  const clean = stripAnsi(raw);
+
+  const marker = "Message...";
+  const start = clean.indexOf(marker);
+
+  if (start === -1) {
+    throw new Error(`Could not find message marker in output:\n${clean}`);
+  }
+
+  const afterMarker = clean.slice(start + marker.length);
+
+  return afterMarker
+    .split("\n")
+    .map((line) => line.replace(/^[│|]\s{0,2}/u, ""))
+    .join("\n")
+    .trim();
 };
 
 const runBranch = (args: string, stdin?: string) => {
-  return new Promise<string>((resolve, reject) => {
-    try {
-      const input = stdin ? Buffer.from(stdin) : undefined;
+  const input = stdin ? Buffer.from(stdin) : undefined;
 
-      const raw = execSync(`node "${BIN}" branch --dry-run ${args}`, {
-        cwd: E2E_CWD,
-        encoding: "utf8",
-        input,
-        timeout: 30_000,
-      });
-
-      const clean = stripAnsi(raw);
-
-      const match = /Branch name: (.+)/.exec(clean);
-
-      if (!match) {
-        reject(new Error(`Could not find branch name in output:\n${clean}`));
-
-        return;
-      }
-
-      resolve(match[1].trim());
-    } catch (error: unknown) {
-      reject(error instanceof Error ? error : new Error(String(error)));
-    }
+  const raw = execSync(`node "${BIN}" branch --dry-run ${args}`, {
+    cwd: E2E_CWD,
+    encoding: "utf-8",
+    input,
+    timeout: 30_000,
   });
+
+  const clean = stripAnsi(raw);
+
+  const match = /Branch name: (?<name>.+)/u.exec(clean);
+
+  if (!match?.groups?.name) {
+    throw new Error(`Could not find branch name in output:\n${clean}`);
+  }
+
+  return match.groups.name.trim();
 };
 
 describe("gitzy", () => {
   describe("commit", () => {
-    it("should create commit message with all fields", async () => {
+    it("should create commit message with all fields", () => {
       const stdin = JSON.stringify({
         ...defaultCommitPayload(),
         body: "some longer description",
@@ -142,7 +115,7 @@ describe("gitzy", () => {
         scope: "e2e",
       });
 
-      const result = await runCommit("--stdin", stdin);
+      const result = runCommit("--stdin", stdin);
 
       expect(result).toMatchInlineSnapshot(`
         "chore(e2e): 🤖 testing
@@ -155,14 +128,14 @@ describe("gitzy", () => {
       `);
     });
 
-    it("should create commit message with type, scope, subject and issues", async () => {
+    it("should create commit message with type, scope, subject and issues", () => {
       const stdin = JSON.stringify({
         ...defaultCommitPayload(),
         issues: ["#123"],
         scope: "e2e",
       });
 
-      const result = await runCommit("--stdin", stdin);
+      const result = runCommit("--stdin", stdin);
 
       expect(result).toMatchInlineSnapshot(`
         "chore(e2e): 🤖 testing
@@ -171,14 +144,14 @@ describe("gitzy", () => {
       `);
     });
 
-    it("should create commit message with type, scope, subject and body", async () => {
+    it("should create commit message with type, scope, subject and body", () => {
       const stdin = JSON.stringify({
         ...defaultCommitPayload(),
         body: "some longer description",
         scope: "e2e",
       });
 
-      const result = await runCommit("--stdin", stdin);
+      const result = runCommit("--stdin", stdin);
 
       expect(result).toMatchInlineSnapshot(`
         "chore(e2e): 🤖 testing
@@ -187,54 +160,54 @@ describe("gitzy", () => {
       `);
     });
 
-    it("should create commit message with type, scope and subject", async () => {
+    it("should create commit message with type, scope and subject", () => {
       const stdin = JSON.stringify({
         ...defaultCommitPayload(),
         scope: "e2e",
       });
 
-      const result = await runCommit("--stdin", stdin);
+      const result = runCommit("--stdin", stdin);
 
       expect(result).toMatchInlineSnapshot(`"chore(e2e): 🤖 testing"`);
     });
 
-    it("should create commit message with type and subject only", async () => {
+    it("should create commit message with type and subject only", () => {
       const stdin = JSON.stringify(defaultCommitPayload());
 
-      const result = await runCommit("--stdin", stdin);
+      const result = runCommit("--stdin", stdin);
 
       expect(result).toMatchInlineSnapshot(`"chore: 🤖 testing"`);
     });
 
-    it("should NOT add '!' when breaking is true and format is footer", async () => {
+    it("should NOT add '!' when breaking is true and format is footer", () => {
       const stdin = JSON.stringify({
         ...defaultCommitPayload(),
         breaking: true,
       });
 
-      const result = await runCommit("--stdin", stdin);
+      const result = runCommit("--stdin", stdin);
 
       expect(result).toMatchInlineSnapshot(`"chore: 🤖 testing"`);
     });
 
-    it("should respect inline flags over stdin", async () => {
+    it("should respect inline flags over stdin", () => {
       const stdin = JSON.stringify({
         ...defaultCommitPayload(),
         subject: "from stdin",
         type: "docs",
       });
 
-      const result = await runCommit("--type feat -m override --stdin", stdin);
+      const result = runCommit("--type feat -m override --stdin", stdin);
 
       expect(result).toMatchInlineSnapshot(`"feat: ✨ override"`);
     });
 
-    it("should add co-authors to commit message", async () => {
+    it("should add co-authors to commit message", () => {
       const stdin = JSON.stringify(defaultCommitPayload());
 
-      const result = await runCommit(
+      const result = runCommit(
         '--stdin --co-author "Alice <alice@example.com>"',
-        stdin,
+        stdin
       );
 
       expect(result).toMatchInlineSnapshot(`
@@ -244,20 +217,20 @@ describe("gitzy", () => {
       `);
     });
 
-    it("should skip prompts when --type and --subject are provided as flags", async () => {
-      const result = await runCommit("--type feat -m add-endpoint");
+    it("should skip prompts when --type and --subject are provided as flags", () => {
+      const result = runCommit("--type feat -m add-endpoint");
 
       expect(result).toMatchInlineSnapshot(`"feat: ✨ add-endpoint"`);
     });
 
-    it("should skip prompts and include scope when --type, --scope, and --subject are provided", async () => {
-      const result = await runCommit("--type feat --scope api -m add-endpoint");
+    it("should skip prompts and include scope when --type, --scope, and --subject are provided", () => {
+      const result = runCommit("--type feat --scope api -m add-endpoint");
 
       expect(result).toMatchInlineSnapshot(`"feat(api): ✨ add-endpoint"`);
     });
 
-    it("should skip prompts and include issue when --type, --subject, and --issue are provided", async () => {
-      const result = await runCommit("--type fix -m fix-bug --issue '#123'");
+    it("should skip prompts and include issue when --type, --subject, and --issue are provided", () => {
+      const result = runCommit("--type fix -m fix-bug --issue '#123'");
 
       expect(result).toMatchInlineSnapshot(`
         "fix: 🐛 fix-bug
@@ -266,9 +239,9 @@ describe("gitzy", () => {
       `);
     });
 
-    it("should skip prompts and include co-author when --type, --subject, and --co-author are provided", async () => {
-      const result = await runCommit(
-        '--type feat -m add-endpoint --co-author "Alice <alice@example.com>"',
+    it("should skip prompts and include co-author when --type, --subject, and --co-author are provided", () => {
+      const result = runCommit(
+        '--type feat -m add-endpoint --co-author "Alice <alice@example.com>"'
       );
 
       expect(result).toMatchInlineSnapshot(`
@@ -278,9 +251,9 @@ describe("gitzy", () => {
       `);
     });
 
-    it("should add an explicit Signed-off-by override via --signoff", async () => {
-      const result = await runCommit(
-        '--type feat -m add-endpoint --signoff "Bot <bot@example.com>"',
+    it("should add an explicit Signed-off-by override via --signoff", () => {
+      const result = runCommit(
+        '--type feat -m add-endpoint --signoff "Bot <bot@example.com>"'
       );
 
       expect(result).toMatchInlineSnapshot(`
@@ -296,7 +269,7 @@ describe("gitzy", () => {
       try {
         execSync(`node "${BIN}" commit --dry-run`, {
           cwd: E2E_CWD,
-          encoding: "utf8",
+          encoding: "utf-8",
           timeout: 5000,
         });
       } catch (error: unknown) {
@@ -310,57 +283,57 @@ describe("gitzy", () => {
   });
 
   describe("branch", () => {
-    it("should format a branch name with type, scope and subject", async () => {
+    it("should format a branch name with type, scope and subject", () => {
       const stdin = JSON.stringify({
         ...defaultBranchPayload(),
         scope: "ui",
       });
 
-      const result = await runBranch("--stdin", stdin);
+      const result = runBranch("--stdin", stdin);
 
       expect(result).toMatchInlineSnapshot(`"feat/ui/add-dark-mode"`);
     });
 
-    it("should format a branch name with type and subject only", async () => {
+    it("should format a branch name with type and subject only", () => {
       const stdin = JSON.stringify({
         ...defaultBranchPayload(),
         subject: "fix login bug",
         type: "fix",
       });
 
-      const result = await runBranch("--stdin", stdin);
+      const result = runBranch("--stdin", stdin);
 
       expect(result).toMatchInlineSnapshot(`"fix/fix-login-bug"`);
     });
 
-    it("should include issue reference in branch name", async () => {
+    it("should include issue reference in branch name", () => {
       const stdin = JSON.stringify({
         ...defaultBranchPayload(),
         issue: "PROJ-123",
         subject: "add feature",
       });
 
-      const result = await runBranch("--stdin", stdin);
+      const result = runBranch("--stdin", stdin);
 
       expect(result).toMatchInlineSnapshot(`"feat/PROJ-123-add-feature"`);
     });
 
-    it("should format a branch name with --from flag", async () => {
+    it("should format a branch name with --from flag", () => {
       const stdin = JSON.stringify(defaultBranchPayload());
 
-      const result = await runBranch("--stdin --from main", stdin);
+      const result = runBranch("--stdin --from main", stdin);
 
       expect(result).toMatchInlineSnapshot(`"feat/add-dark-mode"`);
     });
 
-    it("should skip prompts when --type and --subject are provided as flags", async () => {
-      const result = await runBranch("--type feat -m add-dark-mode");
+    it("should skip prompts when --type and --subject are provided as flags", () => {
+      const result = runBranch("--type feat -m add-dark-mode");
 
       expect(result).toMatchInlineSnapshot(`"feat/add-dark-mode"`);
     });
 
-    it("should skip prompts and include scope when --type, --scope, and --subject are provided", async () => {
-      const result = await runBranch("--type feat --scope ui -m add-dark-mode");
+    it("should skip prompts and include scope when --type, --scope, and --subject are provided", () => {
+      const result = runBranch("--type feat --scope ui -m add-dark-mode");
 
       expect(result).toMatchInlineSnapshot(`"feat/ui/add-dark-mode"`);
     });
@@ -371,7 +344,7 @@ describe("gitzy", () => {
       try {
         execSync(`node "${BIN}" branch --dry-run`, {
           cwd: E2E_CWD,
-          encoding: "utf8",
+          encoding: "utf-8",
           timeout: 5000,
         });
       } catch (error: unknown) {

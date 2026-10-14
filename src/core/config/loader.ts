@@ -1,9 +1,8 @@
-import type { Loader } from "lilconfig";
-import type { BaseIssue, BaseSchema } from "valibot";
-
 import { pathToFileURL } from "node:url";
 
+import type { Loader } from "lilconfig";
 import { lilconfig } from "lilconfig";
+import type { BaseIssue, BaseSchema } from "valibot";
 import { safeParse, summarize } from "valibot";
 
 const configExts = [".js", ".cjs", ".mjs"] as const;
@@ -18,28 +17,18 @@ const getSearchPlaces = (configName: string) => {
 
   const base = [
     `.${configName}rc`,
-    ...rcExts.map((ext) => {
-      return `.${configName}rc${ext}`;
-    }),
-    ...configExts.map((ext) => {
-      return `${configName}.config${ext}`;
-    }),
+    ...rcExts.map((ext) => `.${configName}rc${ext}`),
+    ...configExts.map((ext) => `${configName}.config${ext}`),
   ];
 
-  const tsBase = tsExts.map((ext) => {
-    return `${configName}.config${ext}`;
-  });
+  const tsBase = tsExts.map((ext) => `${configName}.config${ext}`);
 
   return [
     "package.json",
     ...base,
     ...tsBase,
-    ...base.map((path) => {
-      return `.config/${path}`;
-    }),
-    ...tsBase.map((path) => {
-      return `.config/${path}`;
-    }),
+    ...base.map((path) => `.config/${path}`),
+    ...tsBase.map((path) => `.config/${path}`),
   ];
 };
 
@@ -51,7 +40,7 @@ const loadTs: Loader = async (filepath) => {
 
   if (!supportsNativeTs) {
     throw new TypeError(
-      `TypeScript config files require Node.js >=22.18.0. Current version: ${process.versions.node}. Use a .js, .cjs, or .mjs config file instead, or upgrade Node.js.`,
+      `TypeScript config files require Node.js >=22.18.0. Current version: ${process.versions.node}. Use a .js, .cjs, or .mjs config file instead, or upgrade Node.js.`
     );
   }
 
@@ -64,7 +53,7 @@ const loadTs: Loader = async (filepath) => {
   } catch (error: unknown) {
     throw new TypeError(
       `Failed to load TypeScript config at ${filepath}: ${error instanceof Error ? error.message : String(error)}`,
-      { cause: error },
+      { cause: error }
     );
   }
 };
@@ -73,7 +62,7 @@ export const loadConfig = async <
   const TSchema extends BaseSchema<unknown, unknown, BaseIssue<unknown>>,
 >(
   configName: string,
-  schema: TSchema,
+  schema: TSchema
 ) => {
   const explorer = lilconfig(configName, {
     loaders: {
@@ -85,7 +74,9 @@ export const loadConfig = async <
 
   const result = await explorer.search(process.cwd());
 
-  if (!result?.config) return null;
+  if (!result?.config) {
+    return null;
+  }
 
   const parsed = safeParse(schema, result.config);
 

@@ -1,73 +1,40 @@
 import { defaultResolvedConfig } from "@/core/config/defaults";
+import type * as signoffModule from "@/core/git/signoff";
 
 import { createPrompts } from "./create-prompts";
 
-vi.mock("@/core/git/signoff", () => {
-  return {
-    getSignoffTrailer: vi.fn().mockResolvedValue("Jane Doe <jane@example.com>"),
-  };
-});
+vi.mock(import("@/core/git/signoff"), () => ({
+  getSignoffTrailer: vi
+    .fn<typeof signoffModule.getSignoffTrailer>()
+    .mockResolvedValue("Jane Doe <jane@example.com>"),
+}));
 
-vi.mock("@clack/prompts", () => {
-  return {
-    autocomplete: vi.fn().mockResolvedValue("feat"),
-    cancel: vi.fn(),
-    confirm: vi.fn().mockResolvedValue(false),
-    group: vi.fn(async (prompts: Record<string, () => unknown>) => {
-      const result: Record<string, unknown> = {};
+vi.mock(import("@clack/prompts"));
 
-      for (const [key, fn] of Object.entries(prompts)) {
-        const value = await fn();
+describe(createPrompts, () => {
+  beforeEach(async () => {
+    vi.clearAllMocks();
 
-        if (value !== undefined) {
-          result[key] = value;
-        }
+    const clack = vi.mocked(await import("@clack/prompts"));
+
+    clack.group.mockImplementation(
+      async (prompts: Record<string, () => unknown>) => {
+        const entries = await Promise.all(
+          Object.entries(prompts).map(async ([key, fn]) => [key, await fn()])
+        );
+
+        return Object.fromEntries(
+          entries.filter(([, value]) => value !== undefined)
+        );
       }
+    );
+    clack.autocomplete.mockResolvedValue("feat");
+    clack.text.mockResolvedValue("");
+    clack.confirm.mockResolvedValue(false);
+    clack.multiline.mockResolvedValue("");
+    clack.isCancel.mockReturnValue(false);
+  });
 
-      return result;
-    }),
-    isCancel: vi.fn().mockReturnValue(false),
-    log: {
-      error: vi.fn(),
-      info: vi.fn(),
-      message: vi.fn(),
-      step: vi.fn(),
-      success: vi.fn(),
-      warn: vi.fn(),
-    },
-    multiline: vi.fn().mockResolvedValue(""),
-    text: vi.fn().mockResolvedValue(""),
-  };
-});
-
-beforeEach(async () => {
-  vi.clearAllMocks();
-
-  const clack = vi.mocked(await import("@clack/prompts"));
-
-  clack.group.mockImplementation(
-    async (prompts: Record<string, () => unknown>) => {
-      const result: Record<string, unknown> = {};
-
-      for (const [key, fn] of Object.entries(prompts)) {
-        const value = await fn();
-
-        if (value !== undefined) {
-          result[key] = value;
-        }
-      }
-
-      return result;
-    },
-  );
-  clack.autocomplete.mockResolvedValue("feat");
-  clack.text.mockResolvedValue("");
-  clack.confirm.mockResolvedValue(false);
-  clack.multiline.mockResolvedValue("");
-  clack.isCancel.mockReturnValue(false);
-});
-
-describe("createPrompts", () => {
   it("should return answers with default prompts", async () => {
     const result = await createPrompts(
       {
@@ -81,7 +48,7 @@ describe("createPrompts", () => {
         },
         config: defaultResolvedConfig,
       },
-      {},
+      {}
     );
 
     expect(result).toStrictEqual({
@@ -111,7 +78,7 @@ describe("createPrompts", () => {
         },
         config: { ...defaultResolvedConfig, prompts: ["type"] },
       },
-      {},
+      {}
     );
 
     const groupCall = vi.mocked(group).mock.calls[0][0] as Record<
@@ -141,7 +108,7 @@ describe("createPrompts", () => {
           prompts: ["type", "unknown-prompt"],
         },
       },
-      {},
+      {}
     );
 
     const groupCall = vi.mocked(group).mock.calls[0][0] as Record<
@@ -174,7 +141,7 @@ describe("createPrompts", () => {
         scope: "",
         subject: "my subject",
         type: "fix",
-      },
+      }
     );
 
     expect(result).toStrictEqual({
@@ -204,7 +171,7 @@ describe("createPrompts", () => {
         },
         config: { ...defaultResolvedConfig, prompts: ["type", "signoff"] },
       },
-      {},
+      {}
     );
 
     const groupCall = vi.mocked(group).mock.calls[0][0] as Record<
@@ -232,7 +199,7 @@ describe("createPrompts", () => {
         },
         config: { ...defaultResolvedConfig, prompts: ["signoff"] },
       },
-      {},
+      {}
     );
 
     expect(result.signoff).toBe("Jane Doe <jane@example.com>");

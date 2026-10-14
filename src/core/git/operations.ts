@@ -39,7 +39,7 @@ export const commit = async (
     dryRun = false,
     hook = false,
     noVerify = false,
-  }: CommitOptions = {},
+  }: CommitOptions = {}
 ) => {
   if (dryRun) {
     return { committed: false, message };
@@ -56,9 +56,13 @@ export const commit = async (
 
   const extraFlags: string[] = [];
 
-  if (amend) extraFlags.push("--amend");
+  if (amend) {
+    extraFlags.push("--amend");
+  }
 
-  if (noVerify) extraFlags.push("--no-verify");
+  if (noVerify) {
+    extraFlags.push("--no-verify");
+  }
 
   const result = await x("git", ["commit", "-m", message, ...extraFlags], {
     nodeOptions: { stdio: "inherit" },

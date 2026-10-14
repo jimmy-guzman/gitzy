@@ -4,9 +4,9 @@ import path from "node:path";
 
 import { init } from "./init";
 
-vi.mock("node:fs");
+vi.mock(import("node:fs"));
 
-describe("init", () => {
+describe(init, () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
@@ -23,7 +23,7 @@ describe("init", () => {
     expect(writeFileSync).toHaveBeenCalledWith(
       path.join("/some/dir", ".gitzyrc.json"),
       expect.stringContaining('"types"'),
-      "utf8",
+      "utf-8"
     );
   });
 
@@ -51,7 +51,7 @@ describe("init", () => {
     expect(writeFileSync).toHaveBeenCalledExactlyOnceWith(
       path.join("/some/dir", ".gitzyrc.json"),
       expect.stringContaining('"types"'),
-      "utf8",
+      "utf-8"
     );
   });
 

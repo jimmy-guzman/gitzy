@@ -40,45 +40,45 @@ export const ConfigSchema = object({
     object({
       max: optional(number(), defaultBodyConfig.max),
       min: optional(number(), defaultBodyConfig.min),
-    }),
+    })
   ),
   branch: optional(
     object({
       checkout: optional(boolean(), defaultBranchConfig.checkout),
       max: optional(number(), defaultBranchConfig.max),
       pattern: optional(string(), defaultBranchConfig.pattern),
-    }),
+    })
   ),
   breaking: optional(
     object({
       format: optional(
         picklist(["!", "both", "footer"] as const),
-        defaultBreakingConfig.format,
+        defaultBreakingConfig.format
       ),
-    }),
+    })
   ),
   emoji: optional(
     object({
       breaking: optional(string(), defaultEmojiConfig.breaking),
       enabled: optional(boolean(), defaultEmojiConfig.enabled),
       issues: optional(string(), defaultEmojiConfig.issues),
-    }),
+    })
   ),
   header: optional(
     object({
       max: optional(number(), defaultHeaderConfig.max),
       min: optional(number(), defaultHeaderConfig.min),
-    }),
+    })
   ),
   issues: optional(
     object({
       hint: optional(string(), defaultIssuesConfig.hint),
       pattern: optional(
         picklist(["github", "jira"] as const),
-        defaultIssuesConfig.pattern,
+        defaultIssuesConfig.pattern
       ),
       prefix: optional(string(), defaultIssuesConfig.prefix),
-    }),
+    })
   ),
   prompts: pipe(optional(array(string()), [...defaultPrompts]), readonly()),
   scopes: pipe(optional(array(scopeSchema)), readonly()),

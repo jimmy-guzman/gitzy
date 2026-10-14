@@ -39,21 +39,21 @@ Same as `--amend`: calls `getAmendParts()` (which runs `git log -1 --pretty=%B` 
 
 Mirrors `gitzy commit` minus `--retry`, `--hook`, and `--amend`. Adds `--count`.
 
-| Flag                        | Alias | Description                                                    |
-| --------------------------- | ----- | -------------------------------------------------------------- |
-| `--count <n>`               | `-n`  | number of commits to squash (default: commits ahead of origin) |
-| `--type <type>`             | `-t`  | set type inline (with `--subject`, skips all prompts)          |
-| `--scope <scope>`           | `-s`  | set scope inline                                               |
-| `--subject <message>`       | `-m`  | set subject inline (with `--type`, skips all prompts)          |
-| `--body <body>`             | `-d`  | set body inline                                                |
-| `--breaking [breaking]`     | `-b`  | mark as breaking; add message for `footer`/`both` formats      |
-| `--issue <issue...>`        | `-i`  | set issues inline (repeatable)                                 |
-| `--co-author <coAuthor...>` | `-c`  | add co-authors (repeatable)                                    |
-| `--dry-run`                 | `-D`  | show what would happen without touching git                    |
-| `--no-verify`               | `-V`  | skip git hooks                                                 |
-| `--json`                    | `-j`  | output structured JSON                                         |
-| `--no-emoji`                |       | disable emoji in commit message                                |
-| `--stdin`                   |       | read answers from stdin as JSON                                |
+| Flag | Alias | Description |
+| --- | --- | --- |
+| `--count <n>` | `-n` | number of commits to squash (default: commits ahead of origin) |
+| `--type <type>` | `-t` | set type inline (with `--subject`, skips all prompts) |
+| `--scope <scope>` | `-s` | set scope inline |
+| `--subject <message>` | `-m` | set subject inline (with `--type`, skips all prompts) |
+| `--body <body>` | `-d` | set body inline |
+| `--breaking [breaking]` | `-b` | mark as breaking; add message for `footer`/`both` formats |
+| `--issue <issue...>` | `-i` | set issues inline (repeatable) |
+| `--co-author <coAuthor...>` | `-c` | add co-authors (repeatable) |
+| `--dry-run` | `-D` | show what would happen without touching git |
+| `--no-verify` | `-V` | skip git hooks |
+| `--json` | `-j` | output structured JSON |
+| `--no-emoji` |  | disable emoji in commit message |
+| `--stdin` |  | read answers from stdin as JSON |
 
 ---
 
@@ -121,25 +121,25 @@ This allows E2E tests to run without a real git repo (same pattern as `commit --
 
 ## Files to Create
 
-| File                          | Purpose                                                                        |
-| ----------------------------- | ------------------------------------------------------------------------------ |
-| `src/core/git/squash.ts`      | `getDefaultBranch()`, `getCommitsAheadCount(base)`, `softReset(count, dryRun)` |
-| `src/core/git/squash.spec.ts` | Unit tests for all three functions (vi.mock tinyexec)                          |
-| `src/cli/commands/squash.ts`  | `registerSquashCommand(program)` — flag registration + action handler          |
+| File | Purpose |
+| --- | --- |
+| `src/core/git/squash.ts` | `getDefaultBranch()`, `getCommitsAheadCount(base)`, `softReset(count, dryRun)` |
+| `src/core/git/squash.spec.ts` | Unit tests for all three functions (vi.mock tinyexec) |
+| `src/cli/commands/squash.ts` | `registerSquashCommand(program)` — flag registration + action handler |
 
 ---
 
 ## Files to Modify
 
-| File                 | Change                                                   |
-| -------------------- | -------------------------------------------------------- |
-| `src/cli/types.ts`   | Add `SquashFlags` interface                              |
-| `src/lang.ts`        | Add `squash` key to `Lang` interface and `lang` object   |
-| `src/cli.ts`         | Import and call `registerSquashCommand(program)`         |
-| `e2e/e2e.spec.ts`    | Add `runSquash` helper + `describe("squash", ...)` block |
-| `README.md`          | Add `gitzy squash` to subcommands table + flags table    |
-| `AGENTS.md`          | Add `squash` to allowed commit scopes list               |
-| `.commitlintrc.json` | Add `"squash"` to `scope-enum` array                     |
+| File | Change |
+| --- | --- |
+| `src/cli/types.ts` | Add `SquashFlags` interface |
+| `src/lang.ts` | Add `squash` key to `Lang` interface and `lang` object |
+| `src/cli.ts` | Import and call `registerSquashCommand(program)` |
+| `e2e/e2e.spec.ts` | Add `runSquash` helper + `describe("squash", ...)` block |
+| `README.md` | Add `gitzy squash` to subcommands table + flags table |
+| `AGENTS.md` | Add `squash` to allowed commit scopes list |
+| `.commitlintrc.json` | Add `"squash"` to `scope-enum` array |
 
 ---
 
@@ -185,13 +185,13 @@ export interface SquashFlags {
 
 ## Edge Cases
 
-| Scenario                                       | Behavior                                                                                                                                 |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `--count 1` or `--count 0`                     | Error before any git ops: "count must be at least 2"                                                                                     |
-| Auto-detected count is 0 or 1                  | Friendly error: "Nothing to squash — only N commit ahead of `origin/main`"                                                               |
-| No remote configured                           | `getDefaultBranch` returns `"origin/main"` as fallback; `getCommitsAheadCount` likely fails → surface error asking user to use `--count` |
-| `softReset` fails (e.g. merge commit in range) | git exits non-zero; tinyexec calls `process.exit` (same pattern as existing ops)                                                         |
-| `--type` + `--subject` both provided           | Prompts skipped entirely (same short-circuit as commit)                                                                                  |
+| Scenario | Behavior |
+| --- | --- |
+| `--count 1` or `--count 0` | Error before any git ops: "count must be at least 2" |
+| Auto-detected count is 0 or 1 | Friendly error: "Nothing to squash — only N commit ahead of `origin/main`" |
+| No remote configured | `getDefaultBranch` returns `"origin/main"` as fallback; `getCommitsAheadCount` likely fails → surface error asking user to use `--count` |
+| `softReset` fails (e.g. merge commit in range) | git exits non-zero; tinyexec calls `process.exit` (same pattern as existing ops) |
+| `--type` + `--subject` both provided | Prompts skipped entirely (same short-circuit as commit) |
 
 ---
 

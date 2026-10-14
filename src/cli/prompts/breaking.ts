@@ -2,12 +2,9 @@ import { confirm, text } from "@clack/prompts";
 
 import type { CreatedPromptOptions } from "@/cli/types";
 
-export const breaking = ({
-  autofill,
-  config,
-  initial,
-}: CreatedPromptOptions) => {
-  return () => {
+export const breaking =
+  ({ autofill, config, initial }: CreatedPromptOptions) =>
+  () => {
     if (autofill?.breaking !== undefined) {
       return Promise.resolve(autofill.breaking);
     }
@@ -26,4 +23,3 @@ export const breaking = ({
       placeholder: "skip when none",
     });
   };
-};

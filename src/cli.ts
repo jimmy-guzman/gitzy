@@ -16,9 +16,7 @@ export const cli = async () => {
       outputError: (error) => {
         log.error(error.replace("error: ", "").trim());
       },
-      writeErr: (str) => {
-        return process.stdout.write(str.replace("error: ", ""));
-      },
+      writeErr: (str) => process.stdout.write(str.replace("error: ", "")),
     })
     .version(version, "-v, --version")
     .description(lang.description)

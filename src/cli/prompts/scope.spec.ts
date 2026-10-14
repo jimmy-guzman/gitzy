@@ -1,26 +1,26 @@
+import * as clack from "@clack/prompts";
+
 import { defaultResolvedConfig } from "@/core/config/defaults";
 import { defaultMessageParts } from "@/core/conventional/types";
 
 import { scope } from "./scope";
 
-vi.mock("@clack/prompts", () => {
-  return { autocomplete: vi.fn().mockResolvedValue("build") };
-});
+vi.mock(import("@clack/prompts"));
 
-beforeEach(() => {
-  vi.clearAllMocks();
-});
-
-const setupScope = (configOverrides = {}, autofill = {}) => {
-  return scope({
+const setupScope = (configOverrides = {}, autofill = {}) =>
+  scope({
     answers: defaultMessageParts,
     autofill,
     config: { ...defaultResolvedConfig, ...configOverrides },
     flags: {},
   });
-};
 
-describe("scope", () => {
+describe(scope, () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(clack.autocomplete).mockResolvedValue("build");
+  });
+
   it("should return undefined from factory if no scopes", () => {
     const factory = setupScope();
 
@@ -30,7 +30,7 @@ describe("scope", () => {
   it("should skip prompt and return autofill value when provided", async () => {
     const factory = setupScope(
       { scopes: [{ name: "build" }] },
-      { scope: "build" },
+      { scope: "build" }
     );
 
     const result = await factory();
@@ -50,7 +50,7 @@ describe("scope", () => {
         maxItems: 10,
         message: "Choose the scope",
         options: [{ hint: undefined, label: "build", value: "build" }],
-      }),
+      })
     );
   });
 
@@ -72,7 +72,7 @@ describe("scope", () => {
           { hint: "dependency updates", label: "deps", value: "deps" },
           { hint: undefined, label: "build", value: "build" },
         ],
-      }),
+      })
     );
   });
 
@@ -98,7 +98,7 @@ describe("scope", () => {
     expect(autocomplete).toHaveBeenCalledWith(
       expect.objectContaining({
         initialValue: "build",
-      }),
+      })
     );
   });
 });

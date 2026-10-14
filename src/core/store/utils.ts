@@ -41,7 +41,9 @@ const directoryExists = (dirname: string, strict = true) => {
 };
 
 export const mkdir = (dirname: string) => {
-  if (directoryExists(dirname)) return;
+  if (directoryExists(dirname)) {
+    return;
+  }
 
   try {
     fs.mkdirSync(dirname, { recursive: true });
@@ -69,6 +71,5 @@ export const tryUnlink = (filepath: string) => {
  * const path = gitzyStorePath()
  * console.log(path) // /var/folders/17/{tmpdir}/T/gitzy/v7/gitzy-store.json
  */
-export const gitzyStorePath = () => {
-  return `${os.tmpdir()}/gitzy/v7/${path.basename(process.cwd())}-store.json`;
-};
+export const gitzyStorePath = () =>
+  `${os.tmpdir()}/gitzy/v7/${path.basename(process.cwd())}-store.json`;

@@ -2,9 +2,8 @@
  * Config command — display the resolved gitzy configuration
  */
 
-import type { Command } from "commander";
-
 import { log } from "@clack/prompts";
+import type { Command } from "commander";
 
 import { resolveConfig } from "@/core/config/resolver";
 

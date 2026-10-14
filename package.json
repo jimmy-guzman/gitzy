@@ -3,15 +3,19 @@
   "version": "7.2.2",
   "description": "Conventional commits and branch CLI",
   "keywords": [
-    "conventional commits",
     "cli",
+    "conventional commits",
     "git"
   ],
   "homepage": "https://github.com/jimmy-guzman/gitzy",
   "bugs": "https://github.com/jimmy-guzman/gitzy/issues",
-  "repository": "git+https://github.com/jimmy-guzman/gitzy.git",
   "license": "MIT",
   "author": "jimmy-guzman @jimmy-guzman",
+  "repository": "git+https://github.com/jimmy-guzman/gitzy.git",
+  "bin": "./dist/run.mjs",
+  "files": [
+    "dist"
+  ],
   "type": "module",
   "exports": {
     ".": {
@@ -19,39 +23,27 @@
       "import": "./dist/index.mjs"
     }
   },
-  "bin": "./dist/run.mjs",
-  "files": [
-    "dist"
-  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsdown",
     "precheck": "pnpm build",
     "check": "run-p knip lint format coverage typecheck",
     "coverage": "vitest run --coverage",
-    "format": "prettier --cache -c .",
-    "format:fix": "prettier --cache -w .",
+    "format": "oxfmt --check",
     "gitzy": "tsx src/run.ts",
     "knip": "knip",
-    "lint": "eslint --cache .",
-    "lint:fix": "pnpm lint --fix",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
     "prepack": "pnpm build && clean-pkg-json",
     "prepare": "is-ci || husky",
     "test": "vitest",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "format:fix": "oxfmt"
   },
-  "lint-staged": {
-    "*.{md,json,yml,yaml,ts}": [
-      "prettier -w"
-    ],
-    "*.ts": [
-      "eslint --fix"
-    ]
-  },
-  "prettier": "@jimmy.codes/prettier-config",
   "devDependencies": {
     "@clack/prompts": "1.8.1",
-    "@jimmy.codes/eslint-config": "8.0.1",
-    "@jimmy.codes/prettier-config": "2.1.2",
     "@leeoniya/ufuzzy": "1.0.19",
     "@total-typescript/ts-reset": "0.6.1",
     "@types/node": "24.19.2",
@@ -59,7 +51,6 @@
     "clean-pkg-json": "2.0.0",
     "commander": "15.0.0",
     "commitlint": "21.2.3",
-    "eslint": "10.12.0",
     "husky": "9.1.7",
     "is-ci": "4.1.0",
     "jiti": "2.7.0",
@@ -67,22 +58,26 @@
     "lilconfig": "3.1.3",
     "lint-staged": "17.6.0",
     "npm-run-all2": "9.0.3",
-    "prettier": "3.9.10",
+    "oxfmt": "0.71.0",
+    "oxlint": "1.87.0",
     "publint": "0.3.25",
     "tinyexec": "1.3.1",
     "tsdown": "0.23.1",
     "tsx": "4.23.15",
     "typescript": "5.9.3",
+    "ultracite": "8.0.0",
     "unrun": "0.3.1",
     "valibot": "1.5.0",
     "vite": "8.3.4",
     "vitest": "5.0.4"
   },
-  "packageManager": "pnpm@12.13.0",
+  "lint-staged": {
+    "*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,json,jsonc,css,scss,less,vue,svelte,astro,html,md,mdx,yaml,yml,graphql,gql}": [
+      "pnpm exec ultracite fix"
+    ]
+  },
   "engines": {
     "node": "^22.18.0 || >=24"
   },
-  "publishConfig": {
-    "access": "public"
-  }
+  "packageManager": "pnpm@12.13.0"
 }

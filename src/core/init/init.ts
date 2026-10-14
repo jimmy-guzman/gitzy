@@ -32,7 +32,7 @@ const CONFIG_TEMPLATE = `${JSON.stringify(
     types: ["chore", "docs", "feat", "fix", "refactor", "test", "style", "ci"],
   },
   null,
-  2,
+  2
 )}\n`;
 
 interface InitOptions {
@@ -55,13 +55,13 @@ interface InitResult {
  */
 export const init = (
   cwd = process.cwd(),
-  options: InitOptions = {},
+  options: InitOptions = {}
 ): InitResult => {
   const filePath = path.join(cwd, CONFIG_FILENAME);
   const exists = existsSync(filePath);
 
   if (!exists || options.force) {
-    writeFileSync(filePath, CONFIG_TEMPLATE, "utf8");
+    writeFileSync(filePath, CONFIG_TEMPLATE, "utf-8");
   }
 
   return { exists, filePath };

@@ -68,6 +68,4 @@ export interface ResolvedConfig {
 /**
  * Helper for typed config with editor autocomplete
  */
-export const defineConfig = (config: Config) => {
-  return config;
-};
+export const defineConfig = (config: Config) => config;

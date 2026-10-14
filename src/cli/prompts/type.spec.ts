@@ -1,36 +1,32 @@
+import * as clack from "@clack/prompts";
+
 import { defaultResolvedConfig } from "@/core/config/defaults";
 import { defaultMessageParts } from "@/core/conventional/types";
 
 import { createTypeOptions, type } from "./type";
 
-vi.mock("@clack/prompts", () => {
-  return { autocomplete: vi.fn().mockResolvedValue("feat") };
-});
+vi.mock(import("@clack/prompts"));
 
-const setupTypeOptions = (configOverrides = {}, flags = {}) => {
-  return createTypeOptions(
+const setupTypeOptions = (configOverrides = {}, flags = {}) =>
+  createTypeOptions(
     { ...defaultResolvedConfig, ...configOverrides },
-    { emoji: true, ...flags },
+    { emoji: true, ...flags }
   );
-};
 
-const setupType = (configOverrides = {}, autofill = {}, initial = {}) => {
-  return type({
+const setupType = (configOverrides = {}, autofill = {}, initial = {}) =>
+  type({
     answers: defaultMessageParts,
     autofill,
     config: { ...defaultResolvedConfig, ...configOverrides },
     flags: {},
     initial,
   });
-};
 
-describe("createTypeOptions", () => {
+describe(createTypeOptions, () => {
   it("should create options with emoji when enabled", () => {
     const options = setupTypeOptions();
 
-    const featOption = options.find((o) => {
-      return o.value === "feat";
-    });
+    const featOption = options.find((o) => o.value === "feat");
 
     expect(featOption).toStrictEqual({
       hint: "A new feature",
@@ -44,9 +40,7 @@ describe("createTypeOptions", () => {
       emoji: { ...defaultResolvedConfig.emoji, enabled: false },
     });
 
-    const featOption = options.find((o) => {
-      return o.value === "feat";
-    });
+    const featOption = options.find((o) => o.value === "feat");
 
     expect(featOption?.label).toBe("feat");
   });
@@ -54,9 +48,7 @@ describe("createTypeOptions", () => {
   it("should not have an emoji when --no-emoji", () => {
     const options = setupTypeOptions({}, { emoji: false });
 
-    const featOption = options.find((o) => {
-      return o.value === "feat";
-    });
+    const featOption = options.find((o) => o.value === "feat");
 
     expect(featOption?.label).toBe("feat");
   });
@@ -74,7 +66,11 @@ describe("createTypeOptions", () => {
   });
 });
 
-describe("type", () => {
+describe(type, () => {
+  beforeEach(() => {
+    vi.mocked(clack.autocomplete).mockResolvedValue("feat");
+  });
+
   it("should return a factory function", () => {
     const factory = setupType();
 
@@ -101,7 +97,7 @@ describe("type", () => {
         maxItems: 10,
         message: "Choose the type",
         options: expect.any(Array),
-      }),
+      })
     );
   });
 
@@ -119,7 +115,7 @@ describe("type", () => {
     await factory();
 
     expect(autocomplete).toHaveBeenCalledWith(
-      expect.objectContaining({ initialValue: "fix" }),
+      expect.objectContaining({ initialValue: "fix" })
     );
   });
 });

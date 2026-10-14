@@ -23,17 +23,17 @@ const GITHUB_PREFIXES = [
 
 const hasPrefixRegex = new RegExp(
   String.raw`^(${GITHUB_PREFIXES.join("|")})\s+`,
-  "i",
+  "iu"
 );
 
-const capitalize = (str: string) => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-};
+const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
 const parseGithubIssue = (issue: string, defaultPrefix: string) => {
   const trimmed = issue.trim();
 
-  if (!trimmed) return null;
+  if (!trimmed) {
+    return null;
+  }
 
   const match = hasPrefixRegex.exec(trimmed);
 
@@ -56,7 +56,7 @@ const parseJiraIssue = (issue: string) => {
 const createBreaking = (
   breaking: boolean | string,
   { breaking: breakingCfg, emoji: emojiCfg }: ResolvedConfig,
-  emojiEnabled: boolean,
+  emojiEnabled: boolean
 ) => {
   if (breakingCfg.format === "!" || typeof breaking === "boolean") {
     return "";
@@ -70,23 +70,25 @@ const createBreaking = (
 const createIssues = (
   issues: string[],
   { emoji: emojiCfg, issues: issuesCfg }: ResolvedConfig,
-  emojiEnabled: boolean,
+  emojiEnabled: boolean
 ) => {
-  if (issues.length === 0) return "";
+  if (issues.length === 0) {
+    return "";
+  }
 
   const isJira = issuesCfg.pattern === "jira";
   const defaultPrefix = issuesCfg.prefix ?? "closes";
 
   const formatted = issues
-    .map((issue) => {
-      return isJira
-        ? parseJiraIssue(issue)
-        : parseGithubIssue(issue, defaultPrefix);
-    })
+    .map((issue) =>
+      isJira ? parseJiraIssue(issue) : parseGithubIssue(issue, defaultPrefix)
+    )
     .filter(Boolean)
     .join(", ");
 
-  if (!formatted) return "";
+  if (!formatted) {
+    return "";
+  }
 
   const emojiStr = emojiEnabled ? `${emojiCfg.issues} ` : "";
 
@@ -94,34 +96,37 @@ const createIssues = (
 };
 
 const createCoAuthors = (coAuthors: string[] | undefined) => {
-  if (!coAuthors || coAuthors.length === 0) return "";
+  if (!coAuthors || coAuthors.length === 0) {
+    return "";
+  }
 
   return `\n\n${coAuthors
-    .map((author) => {
-      return `Co-authored-by: ${author}`;
-    })
+    .map((author) => `Co-authored-by: ${author}`)
     .join("\n")}`;
 };
 
 const createSignoff = (signoff: MessageParts["signoff"]) => {
-  if (typeof signoff !== "string") return "";
+  if (typeof signoff !== "string") {
+    return "";
+  }
 
   const trimmed = signoff.trim();
 
-  if (!trimmed) return "";
+  if (!trimmed) {
+    return "";
+  }
 
   return `\n\nSigned-off-by: ${trimmed}`;
 };
 
-const createScope = (scope: string) => {
-  return scope && scope !== "none" ? `(${scope})` : "";
-};
+const createScope = (scope: string) =>
+  scope && scope !== "none" ? `(${scope})` : "";
 
 const createHead = (
   parts: MessageParts,
   scope: string,
   config: ResolvedConfig,
-  emojiPrefix: string,
+  emojiPrefix: string
 ) => {
   const breakingIndicator =
     config.breaking.format !== "footer" && parts.breaking ? "!" : "";
@@ -132,14 +137,16 @@ const createHead = (
 export const wrap = (string: string, maxWidth = MAX_WIDTH) => {
   const regex = new RegExp(
     String.raw`(?![^\n]{1,${maxWidth.toString()}}$)([^\n]{1,${maxWidth.toString()}})\s`,
-    "g",
+    "gu"
   );
 
   return string.replaceAll(regex, "$1\n");
 };
 
 const isEmojiEnabled = (config: ResolvedConfig, emojiOverride: boolean) => {
-  if (process.env.GITZY_NO_EMOJI === "1") return false;
+  if (process.env.GITZY_NO_EMOJI === "1") {
+    return false;
+  }
 
   return config.emoji.enabled && emojiOverride;
 };
@@ -158,11 +165,9 @@ const isEmojiEnabled = (config: ResolvedConfig, emojiOverride: boolean) => {
 export const formatMessage = (
   config: ResolvedConfig,
   parts: MessageParts,
-  emoji: boolean,
+  emoji: boolean
 ) => {
-  const typeEntry = config.types.find((t) => {
-    return t.name === parts.type;
-  });
+  const typeEntry = config.types.find((t) => t.name === parts.type);
   const emojiEnabled = isEmojiEnabled(config, emoji);
   const emojiPrefix =
     emojiEnabled && typeEntry?.emoji ? `${typeEntry.emoji} ` : "";
@@ -177,7 +182,7 @@ export const formatMessage = (
 
   return wrap(
     `${head}${body}${breaking}${issues}${coAuthors}${signoff}`,
-    maxWidth,
+    maxWidth
   );
 };
 
@@ -192,9 +197,8 @@ interface CommitResult {
   parts: MessageParts;
 }
 
-const escapeRegex = (value: string) => {
-  return value.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
-};
+const escapeRegex = (value: string) =>
+  value.replaceAll(/[.*+?^${}()|[\]\\]/gu, String.raw`\$&`);
 
 // ReDoS is mitigated: all user-controlled inputs (config.emoji.breaking,
 // config.emoji.issues, config.issues.prefix) are escaped via escapeRegex, and
@@ -216,7 +220,7 @@ const getFooterStartRegex = (config: ResolvedConfig) => {
     ...new Set(configValues),
   ];
 
-  return new RegExp(`^(?:${patterns.join("|")})`, "i");
+  return new RegExp(`^(?:${patterns.join("|")})`, "iu");
 };
 
 /**
@@ -233,10 +237,10 @@ const getFooterStartRegex = (config: ResolvedConfig) => {
 export const formatMessageResult = (
   config: ResolvedConfig,
   parts: MessageParts,
-  emoji: boolean,
+  emoji: boolean
 ): CommitResult => {
   const message = formatMessage(config, parts, emoji);
-  const sections = message.split(/\n\n/);
+  const sections = message.split(/\n\n/u);
   const header = sections[0] ?? "";
   const footerStartRegex = getFooterStartRegex(config);
 
@@ -246,7 +250,7 @@ export const formatMessageResult = (
   if (sections.length > 1) {
     let footerStart = sections.length;
 
-    for (let i = sections.length - 1; i >= 1; i--) {
+    for (let i = sections.length - 1; i >= 1; i -= 1) {
       const section = sections[i] ?? "";
 
       if (footerStartRegex.test(section)) {

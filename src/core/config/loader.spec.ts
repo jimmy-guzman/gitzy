@@ -3,29 +3,30 @@ import * as valibot from "valibot";
 
 import { loadConfig } from "./loader";
 
-vi.mock("lilconfig");
-vi.mock("valibot", async () => {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-imports -- testing
-  const actual = await vi.importActual<typeof import("valibot")>("valibot");
+vi.mock(import("lilconfig"));
+vi.mock(import("valibot"), async (importOriginal) => {
+  const actual = await importOriginal();
 
   return {
     ...actual,
-    safeParse: vi.fn(actual.safeParse),
+    safeParse: vi.fn<typeof actual.safeParse>(actual.safeParse),
   };
 });
 
-describe("loadConfig", () => {
+type Searcher = ReturnType<typeof lilconfig>;
+
+describe(loadConfig, () => {
   const mockSchema = valibot.object({
     name: valibot.string(),
     version: valibot.string(),
   });
 
   const mockExplorer = {
-    clearCaches: vi.fn(),
-    clearLoadCache: vi.fn(),
-    clearSearchCache: vi.fn(),
-    load: vi.fn(),
-    search: vi.fn(),
+    clearCaches: vi.fn<Searcher["clearCaches"]>(),
+    clearLoadCache: vi.fn<Searcher["clearLoadCache"]>(),
+    clearSearchCache: vi.fn<Searcher["clearSearchCache"]>(),
+    load: vi.fn<Searcher["load"]>(),
+    search: vi.fn<Searcher["search"]>(),
   };
 
   beforeEach(() => {
@@ -48,7 +49,7 @@ describe("loadConfig", () => {
 
       await loadConfig("gitzy", mockSchema);
 
-      const config = vi.mocked(lilconfig).mock.calls[0][1];
+      const [[, config]] = vi.mocked(lilconfig).mock.calls;
 
       expect(config?.loaders).not.toHaveProperty(".yaml");
       expect(config?.loaders).not.toHaveProperty(".yml");
@@ -59,7 +60,7 @@ describe("loadConfig", () => {
 
       await loadConfig("gitzy", mockSchema);
 
-      const config = vi.mocked(lilconfig).mock.calls[0][1];
+      const [[, config]] = vi.mocked(lilconfig).mock.calls;
 
       expect(config?.loaders).toHaveProperty(".ts");
       expect(config?.loaders).toHaveProperty(".mts");
@@ -70,7 +71,7 @@ describe("loadConfig", () => {
 
       await loadConfig("gitzy", mockSchema);
 
-      const config = vi.mocked(lilconfig).mock.calls[0][1];
+      const [[, config]] = vi.mocked(lilconfig).mock.calls;
 
       expect(config?.searchPlaces).toStrictEqual([
         "package.json",
@@ -128,9 +129,9 @@ describe("loadConfig", () => {
         const loadTs = vi.mocked(lilconfig).mock.calls[0][1]?.loaders?.[".ts"];
 
         await expect(loadTs?.("gitzy.config.ts", "")).rejects.toThrow(
-          "TypeScript config files require Node.js >=22.18.0",
+          "TypeScript config files require Node.js >=22.18.0"
         );
-      },
+      }
     );
   });
 
@@ -209,7 +210,7 @@ describe("loadConfig", () => {
 
       await expect(loadConfig("gitzy", mockSchema)).rejects.toThrow(TypeError);
       await expect(loadConfig("gitzy", mockSchema)).rejects.toThrow(
-        "× Invalid type: Expected string but received 123\n  → at name",
+        "× Invalid type: Expected string but received 123\n  → at name"
       );
     });
 
@@ -261,7 +262,7 @@ describe("loadConfig", () => {
 
       expect(lilconfig).toHaveBeenCalledWith("commitlint", expect.any(Object));
 
-      const config = vi.mocked(lilconfig).mock.calls[0][1];
+      const [[, config]] = vi.mocked(lilconfig).mock.calls;
 
       expect(config?.searchPlaces).toContain(".commitlintrc.json");
       expect(config?.searchPlaces).toContain("commitlint.config.js");
@@ -272,7 +273,7 @@ describe("loadConfig", () => {
 
       await loadConfig("my-special-gitzy", mockSchema);
 
-      const config = vi.mocked(lilconfig).mock.calls[0][1];
+      const [[, config]] = vi.mocked(lilconfig).mock.calls;
 
       expect(config?.searchPlaces).toContain(".my-special-gitzyrc.json");
       expect(config?.searchPlaces).toContain("my-special-gitzy.config.js");

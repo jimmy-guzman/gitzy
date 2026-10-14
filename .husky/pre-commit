@@ -1,3 +1,5 @@
 #!/bin/sh
 
-npx lint-staged
+# ultracite
+pnpm exec lint-staged
+# ultracite end

@@ -1,24 +1,23 @@
+import type * as clack from "@clack/prompts";
+
 import { defaultResolvedConfig } from "@/core/config/defaults";
 import { defaultMessageParts } from "@/core/conventional/types";
 
 import { body } from "./body";
 
-vi.mock("@clack/prompts", () => {
-  return { multiline: vi.fn().mockResolvedValue("a longer description") };
-});
+vi.mock(import("@clack/prompts"), () => ({
+  multiline: vi
+    .fn<typeof clack.multiline>()
+    .mockResolvedValue("a longer description"),
+}));
 
-beforeEach(() => {
-  vi.clearAllMocks();
-});
-
-const setupBody = (configOverrides = {}, autofill = {}) => {
-  return body({
+const setupBody = (configOverrides = {}, autofill = {}) =>
+  body({
     answers: defaultMessageParts,
     autofill,
     config: { ...defaultResolvedConfig, ...configOverrides },
     flags: {},
   });
-};
 
 const getValidate = async (configOverrides = {}) => {
   const { multiline } = await import("@clack/prompts");
@@ -27,16 +26,20 @@ const getValidate = async (configOverrides = {}) => {
 
   await factory();
 
-  const call = vi.mocked(multiline).mock.calls[0][0];
+  const [[call]] = vi.mocked(multiline).mock.calls;
 
   expect(call.validate).toBeDefined();
 
   return call.validate as (
-    value: string | undefined,
+    value: string | undefined
   ) => Error | string | undefined;
 };
 
-describe("body", () => {
+describe(body, () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it("should return a factory function", () => {
     const factory = setupBody();
 
@@ -70,7 +73,7 @@ describe("body", () => {
       expect.objectContaining({
         message: "Add a longer description",
         placeholder: "Optional — press Enter twice to skip",
-      }),
+      })
     );
   });
 
@@ -107,7 +110,7 @@ describe("body", () => {
       });
 
       expect(validate("#".repeat(25))).toBe(
-        "Remove 5 characters (20 available)",
+        "Remove 5 characters (20 available)"
       );
     });
 
@@ -117,7 +120,7 @@ describe("body", () => {
       });
 
       expect(validate("#".repeat(21))).toBe(
-        "Remove 1 character (20 available)",
+        "Remove 1 character (20 available)"
       );
     });
 

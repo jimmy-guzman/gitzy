@@ -5,10 +5,10 @@ import { x } from "tinyexec";
 
 import { commit } from "./operations";
 
-vi.mock("node:fs");
-vi.mock("tinyexec");
+vi.mock(import("node:fs"));
+vi.mock(import("tinyexec"));
 
-describe("commit", () => {
+describe(commit, () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
@@ -28,7 +28,7 @@ describe("commit", () => {
 
     expect(writeFileSync).toHaveBeenCalledWith(
       path.join(".git", "COMMIT_EDITMSG"),
-      "feat: add feature",
+      "feat: add feature"
     );
     expect(result).toStrictEqual({
       committed: true,
@@ -45,7 +45,7 @@ describe("commit", () => {
 
       expect(writeFileSync).toHaveBeenCalledWith(
         path.join("/custom/git/dir", "COMMIT_EDITMSG"),
-        "feat: add feature",
+        "feat: add feature"
       );
       expect(result).toStrictEqual({
         committed: true,
@@ -64,7 +64,7 @@ describe("commit", () => {
     expect(x).toHaveBeenCalledWith(
       "git",
       ["commit", "-m", "feat: add feature"],
-      { nodeOptions: { stdio: "inherit" } },
+      { nodeOptions: { stdio: "inherit" } }
     );
     expect(result).toStrictEqual({
       committed: true,
@@ -80,7 +80,7 @@ describe("commit", () => {
     expect(x).toHaveBeenCalledWith(
       "git",
       ["commit", "-m", "feat: add feature", "--no-verify"],
-      { nodeOptions: { stdio: "inherit" } },
+      { nodeOptions: { stdio: "inherit" } }
     );
   });
 
@@ -92,7 +92,7 @@ describe("commit", () => {
     expect(x).toHaveBeenCalledWith(
       "git",
       ["commit", "-m", "feat: update feature", "--amend"],
-      { nodeOptions: { stdio: "inherit" } },
+      { nodeOptions: { stdio: "inherit" } }
     );
   });
 
@@ -104,7 +104,7 @@ describe("commit", () => {
     expect(x).toHaveBeenCalledWith(
       "git",
       ["commit", "-m", "feat: update feature", "--amend", "--no-verify"],
-      { nodeOptions: { stdio: "inherit" } },
+      { nodeOptions: { stdio: "inherit" } }
     );
   });
 
@@ -131,7 +131,7 @@ describe("commit", () => {
     expect(x).toHaveBeenCalledWith(
       "git",
       ["commit", "-m", "chore: update deps"],
-      { nodeOptions: { stdio: "inherit" } },
+      { nodeOptions: { stdio: "inherit" } }
     );
     expect(result).toStrictEqual({
       committed: true,

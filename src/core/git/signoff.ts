@@ -18,9 +18,9 @@ export const getSignoffTrailer = async () => {
     const result = await x("git", ["var", "GIT_COMMITTER_IDENT"], {
       throwOnError: true,
     });
-    const match = /^(.*>)/.exec(result.stdout.trim());
+    const match = /^(?<ident>.*>)/u.exec(result.stdout.trim());
 
-    return match?.[1] ?? "";
+    return match?.groups?.ident ?? "";
   } catch {
     return "";
   }

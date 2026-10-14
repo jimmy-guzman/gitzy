@@ -2,14 +2,13 @@
  * Commit command — interactive conventional commit flow
  */
 
-import type { Command } from "commander";
-
 import { log } from "@clack/prompts";
+import type { Command } from "commander";
 import { Option } from "commander";
 
-import type { Answers, CommitFlags, GitzyState } from "@/cli/types";
-
 import { createPrompts } from "@/cli/prompts/create-prompts";
+import type { Answers, CommitFlags, GitzyState } from "@/cli/types";
+import { readStdinJson } from "@/cli/utils/stdin";
 import { defaultResolvedConfig } from "@/core/config/defaults";
 import { resolveConfig } from "@/core/config/resolver";
 import {
@@ -28,27 +27,21 @@ import { getSignoffTrailer } from "@/core/git/signoff";
 import { GitzyStore } from "@/core/store/store";
 import { lang } from "@/lang";
 
-const promptQuestions = async (
+const promptQuestions = (
   state: GitzyState,
   flags: CommitFlags,
   autofillAnswers: Partial<Answers>,
-  amendInitial?: Partial<Answers>,
+  amendInitial?: Partial<Answers>
 ) => {
   if (flags.type && flags.subject) {
     const trimmedSubject = flags.subject.trim();
-    const validType = state.config.types.some((t) => {
-      return t.name === flags.type;
-    });
+    const validType = state.config.types.some((t) => t.name === flags.type);
 
     if (!validType) {
-      const allowed = state.config.types
-        .map((t) => {
-          return t.name;
-        })
-        .join(", ");
+      const allowed = state.config.types.map((t) => t.name).join(", ");
 
       throw new Error(
-        `Invalid --type "${flags.type}". Allowed types: ${allowed}`,
+        `Invalid --type "${flags.type}". Allowed types: ${allowed}`
       );
     }
 
@@ -69,10 +62,66 @@ const promptQuestions = async (
   return createPrompts(state, flags, autofillAnswers, amendInitial);
 };
 
+const toFlagAnswers = (flags: CommitFlags) => ({
+  ...(flags.body === undefined ? {} : { body: flags.body }),
+  ...(flags.breaking === undefined ? {} : { breaking: flags.breaking }),
+  ...(flags.coAuthor === undefined ? {} : { coAuthors: flags.coAuthor }),
+  ...(flags.issue === undefined ? {} : { issues: flags.issue }),
+  ...(flags.scope === undefined ? {} : { scope: flags.scope }),
+  ...(flags.signoff === undefined ? {} : { signoff: flags.signoff }),
+  ...(flags.subject === undefined ? {} : { subject: flags.subject }),
+  ...(flags.type === undefined ? {} : { type: flags.type }),
+});
+
+const loadAutofill = async (flags: CommitFlags, store: GitzyStore<Answers>) => {
+  const previous = flags.retry ? store.load() : {};
+
+  if (flags.retry && Object.keys(previous).length === 0) {
+    log.warn(`There is no previous gitzy commit to retry...`);
+  }
+
+  return {
+    ...previous,
+    ...(flags.stdin ? await readStdinJson<Partial<Answers>>() : {}),
+  };
+};
+
+const writeMessage = async (state: GitzyState, flags: CommitFlags) => {
+  const emojiEnabled = flags.noEmoji === true ? false : (flags.emoji ?? true);
+
+  if (flags.json) {
+    const result = formatMessageResult(
+      state.config,
+      state.answers,
+      emojiEnabled
+    );
+
+    process.stdout.write(`${JSON.stringify(result)}\n`);
+
+    return;
+  }
+
+  const message = formatMessage(state.config, state.answers, emojiEnabled);
+
+  if (flags.dryRun) {
+    log.info(`Message...`);
+    log.message(`\n${message}\n`);
+
+    return;
+  }
+
+  await commit(message, {
+    amend: flags.amend,
+    dryRun: flags.dryRun,
+    hook: flags.hook,
+    noVerify: flags.noVerify,
+  });
+};
+
 export const registerCommitCommand = (program: Command) => {
   const noVerifyOption = new Option(
     "-n, --no-verify",
-    lang.commit.flags.noVerify,
+    lang.commit.flags.noVerify
   );
 
   noVerifyOption.negate = false;
@@ -123,7 +172,7 @@ export const registerCommitCommand = (program: Command) => {
           state.config.breaking.format === "!"
         ) {
           log.warn(
-            "--breaking message ignored when using '!' format. Use --breaking (without value) instead.",
+            "--breaking message ignored when using '!' format. Use --breaking (without value) instead."
           );
         }
 
@@ -144,53 +193,8 @@ export const registerCommitCommand = (program: Command) => {
           amendInitial = await getAmendParts();
         }
 
-        let autofillAnswers: Partial<Answers> = {};
-
-        if (flags.retry) {
-          const previousAnswers = store.load();
-
-          if (Object.keys(previousAnswers).length === 0) {
-            log.warn(`There is no previous gitzy commit to retry...`);
-          }
-
-          autofillAnswers = { ...autofillAnswers, ...previousAnswers };
-        }
-
-        if (flags.stdin) {
-          const raw = await new Promise<string>((resolve) => {
-            let data = "";
-
-            process.stdin.setEncoding("utf8");
-            process.stdin.on("data", (chunk) => {
-              data += String(chunk);
-            });
-            process.stdin.on("end", () => {
-              resolve(data);
-            });
-          });
-
-          try {
-            autofillAnswers = {
-              ...autofillAnswers,
-              ...(JSON.parse(raw) as Partial<Answers>),
-            };
-          } catch {
-            throw new Error("Invalid JSON provided to --stdin");
-          }
-        }
-
-        const flagAnswers = {
-          ...(flags.body === undefined ? {} : { body: flags.body }),
-          ...(flags.breaking === undefined ? {} : { breaking: flags.breaking }),
-          ...(flags.coAuthor === undefined
-            ? {}
-            : { coAuthors: flags.coAuthor }),
-          ...(flags.issue === undefined ? {} : { issues: flags.issue }),
-          ...(flags.scope === undefined ? {} : { scope: flags.scope }),
-          ...(flags.signoff === undefined ? {} : { signoff: flags.signoff }),
-          ...(flags.subject === undefined ? {} : { subject: flags.subject }),
-          ...(flags.type === undefined ? {} : { type: flags.type }),
-        };
+        const autofillAnswers = await loadAutofill(flags, store);
+        const flagAnswers = toFlagAnswers(flags);
 
         if (
           !process.stdin.isTTY &&
@@ -199,7 +203,7 @@ export const registerCommitCommand = (program: Command) => {
           !flags.stdin
         ) {
           command.error(
-            "No TTY detected. Run gitzy commit --help for non-interactive usage.",
+            "No TTY detected. Run gitzy commit --help for non-interactive usage."
           );
         }
 
@@ -207,7 +211,7 @@ export const registerCommitCommand = (program: Command) => {
           state,
           flags,
           { ...autofillAnswers, ...flagAnswers },
-          amendInitial,
+          amendInitial
         );
 
         store.save(answers);
@@ -226,36 +230,7 @@ export const registerCommitCommand = (program: Command) => {
           state.answers.signoff = await getSignoffTrailer();
         }
 
-        const emojiEnabled =
-          flags.noEmoji === true ? false : (flags.emoji ?? true);
-
-        if (flags.json) {
-          const result = formatMessageResult(
-            state.config,
-            state.answers,
-            emojiEnabled,
-          );
-
-          process.stdout.write(`${JSON.stringify(result)}\n`);
-        } else {
-          const message = formatMessage(
-            state.config,
-            state.answers,
-            emojiEnabled,
-          );
-
-          if (flags.dryRun) {
-            log.info(`Message...`);
-            log.message(`\n${message}\n`);
-          } else {
-            await commit(message, {
-              amend: flags.amend,
-              dryRun: flags.dryRun,
-              hook: flags.hook,
-              noVerify: flags.noVerify,
-            });
-          }
-        }
+        await writeMessage(state, flags);
       } catch (error: unknown) {
         log.error(error instanceof Error ? error.message : String(error));
         process.exit(1);

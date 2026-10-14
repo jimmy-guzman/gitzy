@@ -1,19 +1,15 @@
+import type * as clack from "@clack/prompts";
+
 import { defaultResolvedConfig } from "@/core/config/defaults";
 
 import { issues } from "./issues";
 
-vi.mock("@clack/prompts", () => {
-  return {
-    text: vi.fn().mockResolvedValue(""),
-  };
-});
+vi.mock(import("@clack/prompts"), () => ({
+  text: vi.fn<typeof clack.text>().mockResolvedValue(""),
+}));
 
-beforeEach(() => {
-  vi.clearAllMocks();
-});
-
-const setupIssues = (autofill = {}) => {
-  return issues({
+const setupIssues = (autofill = {}) =>
+  issues({
     answers: {
       body: "",
       breaking: "",
@@ -26,9 +22,12 @@ const setupIssues = (autofill = {}) => {
     config: defaultResolvedConfig,
     flags: {},
   });
-};
 
-describe("issues", () => {
+describe(issues, () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it("should return a factory function", () => {
     const factory = setupIssues();
 
@@ -54,7 +53,7 @@ describe("issues", () => {
       expect.objectContaining({
         message: "Add issues this commit closes (closes:)",
         placeholder: "#123, #456, resolves #789, org/repo#100",
-      }),
+      })
     );
   });
 
@@ -87,7 +86,7 @@ describe("issues", () => {
     expect(text).toHaveBeenCalledWith(
       expect.objectContaining({
         initialValue: "#789",
-      }),
+      })
     );
   });
 });

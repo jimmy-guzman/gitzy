@@ -14,7 +14,7 @@ export const checkIfStaged = async () => {
 
   if (result.exitCode === 0) {
     throw new Error(
-      'No files staged \nYou can use "git add" to stage files before committing',
+      'No files staged \nYou can use "git add" to stage files before committing'
     );
   }
 
@@ -46,7 +46,7 @@ export const checkIfGitRepo = async () => {
  * Determines whether or not to perform git checks based on flags
  */
 export const shouldDoGitChecks = (
-  cliFlags: { amend?: boolean; dryRun?: boolean; hook?: boolean } = {},
+  cliFlags: { amend?: boolean; dryRun?: boolean; hook?: boolean } = {}
 ) => {
   if (cliFlags.dryRun || cliFlags.hook || cliFlags.amend) {
     return false;

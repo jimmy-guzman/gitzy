@@ -8,8 +8,7 @@ assignees: jimmy-guzman
 
 ---
 
-name: 💡 Feature Request
-about: I have a suggestion (and might want to implement myself 🙂)!
+name: 💡 Feature Request about: I have a suggestion (and might want to implement myself 🙂)!
 
 ---
 
