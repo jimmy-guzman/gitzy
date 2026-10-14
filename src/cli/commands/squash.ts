@@ -12,7 +12,7 @@ import { resolveConfigWithWarnings } from "@/cli/utils/config";
 import { notice } from "@/cli/utils/log";
 import { formatMessageResult } from "@/core/conventional/message";
 import { getAmendParts } from "@/core/git/amend";
-import { checkIfGitRepo } from "@/core/git/checks";
+import { checkIfGitRepo, checkIfNothingStaged } from "@/core/git/checks";
 import { commit } from "@/core/git/operations";
 import {
   checkCanSquash,
@@ -85,6 +85,10 @@ export const registerSquashCommand = (program: Command) => {
         const count = await resolveCount(flags);
 
         await checkCanSquash(count);
+
+        if (flags.dryRun !== true && flags.json !== true) {
+          await checkIfNothingStaged();
+        }
 
         const answers = await collectAnswers(
           config,

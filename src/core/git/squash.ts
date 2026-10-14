@@ -22,9 +22,13 @@ export const getDefaultBranch = async () => {
  */
 export const countCommitsAhead = async (base: string) => {
   try {
-    const result = await x("git", ["rev-list", "--count", "HEAD", `^${base}`], {
-      throwOnError: true,
-    });
+    const result = await x(
+      "git",
+      ["rev-list", "--first-parent", "--count", "HEAD", `^${base}`],
+      {
+        throwOnError: true,
+      }
+    );
 
     return Number(result.stdout.trim());
   } catch (error) {

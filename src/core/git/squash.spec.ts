@@ -43,6 +43,17 @@ describe(countCommitsAhead, () => {
     await expect(countCommitsAhead("main")).resolves.toBe(3);
   });
 
+  it("should not count commits brought in by a merge", async () => {
+    await git("checkout", "-b", "other");
+    await addCommit("x");
+    await addCommit("y");
+    await git("checkout", "-b", "feat/squash", "main");
+    await addCommit("a");
+    await git("merge", "--no-ff", "--message", "merge other", "other");
+
+    await expect(countCommitsAhead("main")).resolves.toBe(2);
+  });
+
   it("should throw when the base does not exist", async () => {
     await expect(countCommitsAhead("origin/main")).rejects.toThrow(
       "Unable to determine commits ahead of origin/main. Use --count to set it."

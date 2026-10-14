@@ -71,7 +71,7 @@ src/
       schema.ts           # PartialMessagePartsSchema — validates answers from stdin and the retry store
       message.ts          # formatMessageResult() (header/body/footer + full message), wrap(), isEmojiEnabled() and formatBody() (shared by prompts), GITZY_NO_EMOJI support
     git/
-      checks.ts           # checkIfGitRepo(), checkIfStaged()
+      checks.ts           # checkIfGitRepo(), checkIfStaged(), checkIfNothingStaged()
       operations.ts       # commit() — runs git commit -m, or writes COMMIT_EDITMSG in hook mode; getGitDir()
       branch.ts           # createBranch(), renameBranch(), getCurrentBranch()
       squash.ts           # getDefaultBranch(), countCommitsAhead(), checkCanSquash(), softReset()
@@ -91,7 +91,7 @@ The codebase is split into two layers with a thin orchestration layer connecting
 
 - **`src/core/`** — pure business logic with no CLI dependencies: config loading/validation, conventional commit message formatting, branch name formatting, git operations, retry state store. All modules are UI-agnostic.
 - **`src/cli/`** — all UI concerns: Commander flags, `@clack/prompts` prompt definitions, subcommand registrations.
-- **`src/cli.ts`** — thin orchestrator that registers all four Commander subcommands.
+- **`src/cli.ts`** — thin orchestrator that registers all five Commander subcommands.
 - **`src/run.ts`** — the shebang entrypoint; one-liner that calls `cli()`.
 - **`src/index.ts`** — public Node API (`defineConfig`, `Config`), re-exported from `src/core/` only.
 
@@ -104,7 +104,7 @@ The codebase is split into two layers with a thin orchestration layer connecting
 - **Config normalization:** `normalizeConfig()` converts `string` type entries (short form) to full `TypeEntry` objects by looking them up in `builtinTypes`.
 - **Logging:** All CLI output goes through `@clack/prompts` (`log.*`, `cancel`). Errors, warnings and notices go to stderr through `notice` in `src/cli/utils/log.ts`; stdout only carries command results. No `console.*` calls and no color library.
 - **Emoji:** Controlled by `config.emoji.enabled` (config), the `GITZY_NO_EMOJI` env var, and the commit `--no-emoji` flag (Commander maps it to `flags.emoji === false`). Always resolve it through `isEmojiEnabled()` in `src/core/conventional/message.ts`.
-- **`--stdin`:** Both `commit` and `branch` commands accept JSON answers piped via stdin, validated with a valibot schema and merged with CLI flags (flags take priority over stdin).
+- **`--stdin`:** `commit`, `branch`, and `squash` accept JSON answers piped via stdin, validated with a valibot schema and merged with CLI flags (flags take priority over stdin).
 - **`--amend` (commit):** Parses HEAD commit message with `getAmendParts()` to pre-fill prompts (best-effort regex parsing).
 - **`--amend` (branch):** Renames the current branch via `git branch -m`. Warns if a remote tracking ref exists.
 - **Store (retry mode):** Previous answers persisted as JSON in `<git dir>/gitzy/retry.json` (falling back to `os.tmpdir()/gitzy/v7/<cwd-basename>-store.json` outside a git repo) at mode `0o0600`; reads are validated with `PartialMessagePartsSchema`, so a corrupt or unexpected file loads as `{}`.

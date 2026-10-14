@@ -142,7 +142,7 @@ When used with `--amend`, also includes the previous branch name:
 
 ### `gitzy squash` flags
 
-Runs `git reset --soft HEAD~N`, then commits the staged result through the same prompt flow as `gitzy commit`, pre-filled from the HEAD commit. Undo with `git reset --soft ORIG_HEAD`.
+Prompts through the same flow as `gitzy commit`, pre-filled from the HEAD commit, then runs `git reset --soft HEAD~N` and commits the result. Refuses to run with changes already staged. Undo with `git reset --soft ORIG_HEAD`.
 
 | Flag | Alias | Description |
 | --- | --- | --- |

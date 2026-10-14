@@ -537,5 +537,41 @@ describe("gitzy", () => {
 
       expect(output).toContain("Must be an integer of at least 2.");
     });
+
+    it("should refuse to squash with changes already staged", () => {
+      writeFileSync(path.join(repo, "wip"), "wip");
+      inRepo("git add wip");
+
+      let output = "";
+
+      try {
+        inRepo(
+          `node "${BIN}" squash --count 2 --type feat -m "add letters" 2>&1`
+        );
+      } catch (error: unknown) {
+        if (error instanceof Error && "stdout" in error) {
+          output = String(error.stdout);
+        }
+      }
+
+      expect(output).toContain("Staged changes found");
+      expect(inRepo("git log --format=%s")).toMatchInlineSnapshot(`
+        "feat: add c
+        feat: add b
+        feat: add a
+        "
+      `);
+    });
+
+    it("should output JSON with changes already staged", () => {
+      writeFileSync(path.join(repo, "wip"), "wip");
+      inRepo("git add wip");
+
+      const output = inRepo(
+        `node "${BIN}" squash --count 2 --json --type feat -m "add letters"`
+      );
+
+      expect(JSON.parse(output)).toMatchObject({ count: 2 });
+    });
   });
 });
