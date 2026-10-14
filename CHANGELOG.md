@@ -1,3 +1,5 @@
+# Changelog
+
 ## [7.2.2](https://github.com/jimmy-guzman/gitzy/compare/v7.2.1...v7.2.2) (2026-06-24)
 
 
