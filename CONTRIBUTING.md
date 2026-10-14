@@ -26,7 +26,7 @@ Run tests in watch mode
 pnpm test
 ```
 
-Run all checks (build, knip, lint, format, coverage, typecheck)
+Run all checks (build, knip, lint, coverage)
 
 ```bash
 pnpm check
@@ -38,13 +38,7 @@ Run the commit CLI
 pnpm gitzy
 ```
 
-Fix formatting issues
-
-```bash
-pnpm format:fix
-```
-
-Fix linting issues
+Fix linting and formatting issues
 
 ```bash
 pnpm lint:fix
