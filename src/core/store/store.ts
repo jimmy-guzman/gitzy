@@ -31,7 +31,11 @@ export const storePath = async () => {
  */
 export const saveAnswers = (file: string, data: StoredAnswers) => {
   fs.mkdirSync(path.dirname(file), { recursive: true });
-  fs.writeFileSync(file, JSON.stringify(data, null, 2), { mode: 0o0600 });
+  fs.rmSync(file, { force: true });
+  fs.writeFileSync(file, JSON.stringify(data, null, 2), {
+    flag: "wx",
+    mode: 0o0600,
+  });
 };
 
 /**

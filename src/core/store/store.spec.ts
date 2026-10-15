@@ -1,4 +1,5 @@
 import {
+  chmodSync,
   mkdirSync,
   mkdtempSync,
   rmSync,
@@ -38,6 +39,15 @@ describe(loadAnswers, () => {
   });
 
   it("should save a file only the owner can read and write", () => {
+    saveAnswers(file, { subject: "add retry", type: "feat" });
+
+    expect(statSync(file).mode.toString(8).slice(-3)).toBe("600");
+  });
+
+  it("should make an existing file private when saving over it", () => {
+    writeRaw("{}");
+    chmodSync(file, 0o644);
+
     saveAnswers(file, { subject: "add retry", type: "feat" });
 
     expect(statSync(file).mode.toString(8).slice(-3)).toBe("600");
