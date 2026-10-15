@@ -126,6 +126,26 @@ describe(body, () => {
       );
     });
 
+    it("should count the hanging indent of wrapped list items toward max", async () => {
+      const validate = await getValidate({
+        body: { ...defaultResolvedConfig.body, max: 75 },
+      });
+
+      expect(validate(`- ${"word ".repeat(14)}abc`)).toBe(
+        "Remove 2 characters (75 available)"
+      );
+    });
+
+    it("should count an indented line untouched by wrapping toward max", async () => {
+      const validate = await getValidate({
+        body: { ...defaultResolvedConfig.body, max: 75 },
+      });
+
+      expect(validate(`    - ${"word ".repeat(14)}abc`)).toBe(
+        "Remove 4 characters (75 available)"
+      );
+    });
+
     it("should return undefined when length is within bounds", async () => {
       const validate = await getValidate({
         body: { ...defaultResolvedConfig.body, max: 20, min: 5 },
@@ -134,12 +154,11 @@ describe(body, () => {
       expect(validate("#".repeat(10))).toBeUndefined();
     });
 
-    it("should trim before validating", async () => {
+    it("should allow surrounding whitespace that still meets the minimum", async () => {
       const validate = await getValidate({
         body: { ...defaultResolvedConfig.body, min: 5 },
       });
 
-      // 5 chars + whitespace, trimmed length = 5, should pass
       expect(validate("  hello  ")).toBeUndefined();
     });
   });

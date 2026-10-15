@@ -129,6 +129,64 @@ export const wrap = (string: string, maxWidth = MAX_WIDTH) => {
   return string.replaceAll(regex, "$1\n");
 };
 
+const FENCE_REGEX = /^ {0,3}(?:(?<backtick>`{3,})[^`]*|(?<tilde>~{3,}).*)$/u;
+const INDENTED_REGEX = /^(?: {4}|\t)/u;
+const HANGING_INDENT_REGEX = /^ {0,3}(?:(?:[-*]|\d{1,9}\.)\s{1,4})?/u;
+
+const wrapBody = (body: string, maxWidth: number) => {
+  let fence = "";
+
+  return body
+    .split("\n")
+    .map((line) => {
+      const { backtick, tilde } = FENCE_REGEX.exec(line)?.groups ?? {};
+      const delimiter = backtick ?? tilde ?? "";
+
+      if (fence) {
+        if (
+          delimiter.length >= fence.length &&
+          delimiter.startsWith(fence[0] ?? "") &&
+          line.trim() === delimiter
+        ) {
+          fence = "";
+        }
+
+        return line;
+      }
+
+      if (delimiter) {
+        fence = delimiter;
+
+        return line;
+      }
+
+      if (INDENTED_REGEX.test(line)) {
+        return line;
+      }
+
+      const [marker] = HANGING_INDENT_REGEX.exec(line) ?? [""];
+      const indent = " ".repeat(marker.length);
+
+      return wrap(line.slice(marker.length), maxWidth - marker.length)
+        .split("\n")
+        .map((part, index) => `${index === 0 ? marker : indent}${part}`)
+        .join("\n");
+    })
+    .join("\n");
+};
+
+/**
+ * Wrap a commit body to the message width, leaving code blocks untouched
+ *
+ * @param config - Resolved configuration
+ *
+ * @param body - Raw body text
+ *
+ * @returns The wrapped body, or an empty string when the body is blank
+ */
+export const formatBody = (config: ResolvedConfig, body: string) =>
+  body.trim() ? wrapBody(body, Math.max(config.header.max, MAX_WIDTH)) : "";
+
 /**
  * Whether emoji should be rendered, honoring `GITZY_NO_EMOJI`, the config, and the CLI override
  *
@@ -187,7 +245,7 @@ export const formatMessageResult = (
     createHead(parts, createScope(parts.scope), config, emojiPrefix),
     maxWidth
   );
-  const body = parts.body.trim() ? wrap(parts.body, maxWidth) : "";
+  const body = formatBody(config, parts.body);
   const notes = wrap(
     [
       createBreaking(parts.breaking, config, emojiEnabled),
