@@ -1,7 +1,10 @@
+import { writeFileSync } from "node:fs";
+
 import { defaultResolvedConfig } from "@/core/config/defaults";
 import type { ResolvedConfig } from "@/core/config/types";
 import type { MessageParts } from "@/core/conventional/types";
 import { defaultMessageParts } from "@/core/conventional/types";
+import { git, useTempGitRepo } from "@/core/git/test-utils";
 
 import { formatMessageResult, wrap } from "./message";
 
@@ -582,6 +585,80 @@ describe("formatCommitMessage", () => {
       "feat(*): ✨ a cool new feature
 
       this an amazing feature, lots of details"
+    `);
+  });
+
+  it("should group co-authors and Signed-off-by into one trailer paragraph", () => {
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
+      coAuthors: ["Alice <alice@example.com>", "Bob <bob@example.com>"],
+      signoff: "Jane Doe <jane@example.com>",
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*): ✨ a cool new feature
+
+      this an amazing feature, lots of details
+
+      BREAKING CHANGE: 💥 breaks everything
+
+      🏁 Closes #123
+
+      Co-authored-by: Alice <alice@example.com>
+      Co-authored-by: Bob <bob@example.com>
+      Signed-off-by: Jane Doe <jane@example.com>"
+    `);
+  });
+
+  it("should not wrap long co-author trailers", () => {
+    const formattedMessage = setupFormatCommitMessage(defaultResolvedConfig, {
+      breaking:
+        "the config file format changed and every existing config must be migrated by hand",
+      coAuthors: [
+        "Jane Q. Developer-Longname <jane.developer-longname@some-company.example.com>",
+      ],
+    });
+
+    expect(formattedMessage).toMatchInlineSnapshot(`
+      "feat(*): ✨ a cool new feature
+
+      this an amazing feature, lots of details
+
+      BREAKING CHANGE: 💥 the config file format changed and every existing
+      config must be migrated by hand
+
+      🏁 Closes #123
+
+      Co-authored-by: Jane Q. Developer-Longname <jane.developer-longname@some-company.example.com>"
+    `);
+  });
+});
+
+describe("git trailers", () => {
+  useTempGitRepo();
+
+  it("should parse every co-author and Signed-off-by as a git trailer", async () => {
+    const { message } = setupFormatMessageResult(
+      {},
+      {
+        breaking: "breaks everything",
+        coAuthors: [
+          "Alice <alice@example.com>",
+          "Jane Q. Developer-Longname <jane.developer-longname@some-company.example.com>",
+        ],
+        issues: ["#123"],
+        signoff: "Jane Doe <jane@example.com>",
+        subject: "add thing",
+        type: "feat",
+      }
+    );
+
+    writeFileSync("COMMIT_EDITMSG", message);
+
+    await expect(git("interpret-trailers", "--parse", "COMMIT_EDITMSG"))
+      .resolves.toMatchInlineSnapshot(`
+      "Co-authored-by: Alice <alice@example.com>
+      Co-authored-by: Jane Q. Developer-Longname <jane.developer-longname@some-company.example.com>
+      Signed-off-by: Jane Doe <jane@example.com>"
     `);
   });
 });
