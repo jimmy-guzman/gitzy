@@ -30,12 +30,20 @@ export const storePath = async () => {
  * Persists the previous commit answers so `--retry` can reuse them
  */
 export const saveAnswers = (file: string, data: StoredAnswers) => {
+  const tmp = `${file}.${process.pid}.tmp`;
+
   fs.mkdirSync(path.dirname(file), { recursive: true });
-  fs.rmSync(file, { force: true });
-  fs.writeFileSync(file, JSON.stringify(data, null, 2), {
-    flag: "wx",
-    mode: 0o0600,
-  });
+
+  try {
+    fs.writeFileSync(tmp, JSON.stringify(data, null, 2), {
+      flag: "wx",
+      mode: 0o0600,
+    });
+    fs.renameSync(tmp, file);
+  } catch (error) {
+    fs.rmSync(tmp, { force: true });
+    throw error;
+  }
 };
 
 /**
