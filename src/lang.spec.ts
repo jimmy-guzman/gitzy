@@ -71,6 +71,24 @@ describe("lang strings", () => {
     `);
   });
 
+  it("should create squash strings", () => {
+    expect(lang.squash).toMatchInlineSnapshot(`
+      {
+        "description": "Squash the last N commits into a single conventional commit",
+        "examples": "
+        $ gitzy squash
+        $ gitzy squash --count 3
+        $ gitzy squash --count 3 --type feat -m "add dark mode"
+        $ gitzy squash --count 3 --dry-run
+          ",
+        "flags": {
+          "count": "Number of commits to squash (default: commits ahead of origin)",
+          "dryRun": "Show commit message without squashing",
+        },
+      }
+    `);
+  });
+
   it("should create description", () => {
     expect(lang.description).toBe("Conventional commits and branch CLI");
   });

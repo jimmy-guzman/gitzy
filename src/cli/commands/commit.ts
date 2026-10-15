@@ -157,6 +157,63 @@ const loadAutofill = async (flags: CommitFlags, retryFile: string) => {
   return { ...previous, ...(await readStdinJson(PartialMessagePartsSchema)) };
 };
 
+/**
+ * Resolve the commit answers from flags, stdin, retry store and prompts
+ */
+export const collectAnswers = async (
+  config: ResolvedConfig,
+  flags: CommitFlags,
+  command: Command,
+  initial?: Partial<MessageParts>
+) => {
+  if (
+    isString(flags.breaking) &&
+    flags.breaking &&
+    config.breaking.format === "!"
+  ) {
+    notice.warn(
+      "--breaking message ignored when using '!' format. Use --breaking (without value) instead."
+    );
+  }
+
+  const retryFile = await storePath();
+  const autofillAnswers = await loadAutofill(flags, retryFile);
+  const flagAnswers = toFlagAnswers(flags);
+
+  if (!process.stdin.isTTY && !canSkipPrompts(flags)) {
+    command.error(
+      `No TTY detected. Run gitzy ${command.name()} --help for non-interactive usage.`
+    );
+  }
+
+  const answers: MessageParts = await promptQuestions(
+    config,
+    flags,
+    { ...autofillAnswers, ...flagAnswers },
+    initial
+  );
+
+  saveAnswers(retryFile, answers);
+
+  if (flags.coAuthor) {
+    answers.coAuthors = flags.coAuthor;
+  }
+
+  if (
+    flags.signoff !== undefined &&
+    flags.signoff !== false &&
+    flags.signoff !== ""
+  ) {
+    answers.signoff = flags.signoff;
+  }
+
+  if (answers.signoff === true) {
+    answers.signoff = await getSignoffTrailer();
+  }
+
+  return answers;
+};
+
 const writeMessage = async (
   config: ResolvedConfig,
   answers: MessageParts,
@@ -242,16 +299,6 @@ export const registerCommitCommand = (program: Command) => {
         const config = await resolveConfigWithWarnings();
 
         if (
-          isString(flags.breaking) &&
-          flags.breaking &&
-          config.breaking.format === "!"
-        ) {
-          notice.warn(
-            "--breaking message ignored when using '!' format. Use --breaking (without value) instead."
-          );
-        }
-
-        if (
           flags.dryRun !== true &&
           flags.hook !== true &&
           flags.amend !== true
@@ -260,42 +307,12 @@ export const registerCommitCommand = (program: Command) => {
           await checkIfStaged();
         }
 
-        const amendInitial =
-          flags.amend === true ? await getAmendParts() : undefined;
-        const retryFile = await storePath();
-        const autofillAnswers = await loadAutofill(flags, retryFile);
-        const flagAnswers = toFlagAnswers(flags);
-
-        if (!process.stdin.isTTY && !canSkipPrompts(flags)) {
-          command.error(
-            "No TTY detected. Run gitzy commit --help for non-interactive usage."
-          );
-        }
-
-        const answers: MessageParts = await promptQuestions(
+        const answers = await collectAnswers(
           config,
           flags,
-          { ...autofillAnswers, ...flagAnswers },
-          amendInitial
+          command,
+          flags.amend === true ? await getAmendParts() : undefined
         );
-
-        saveAnswers(retryFile, answers);
-
-        if (flags.coAuthor) {
-          answers.coAuthors = flags.coAuthor;
-        }
-
-        if (
-          flags.signoff !== undefined &&
-          flags.signoff !== false &&
-          flags.signoff !== ""
-        ) {
-          answers.signoff = flags.signoff;
-        }
-
-        if (answers.signoff === true) {
-          answers.signoff = await getSignoffTrailer();
-        }
 
         await writeMessage(config, answers, flags, hookInferredFrom);
       } catch (error: unknown) {

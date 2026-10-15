@@ -23,6 +23,7 @@
 
 - Interactive conventional commit flow (`type`, `scope`, `subject`, `body`, `breaking`, `issues`)
 - Branch name generation from conventional commit prompts
+- Squash the last N commits into a single conventional commit (`gitzy squash`)
 - Partial commitlint configuration support
 - Config validation via schema
 - Multiple breaking-change formats (`!`, `footer`, `both`)
@@ -35,7 +36,7 @@
 - Retry (`--retry`), dry-run (`--dry-run`), amend (`--amend`), and hook (`--hook`) modes
 - JSON output (`--json`) for scripting and CI
 - `--no-emoji` flag (precedence: `--no-emoji` > `GITZY_NO_EMOJI` env > `emoji.enabled` config)
-- `--stdin` for piping answers as JSON (both `commit` and `branch`)
+- `--stdin` for piping answers as JSON (`commit`, `branch`, and `squash`)
 - ⚡ [Lightweight (~170 kB install)][packagephobia]
 
 ## Usage
@@ -47,6 +48,7 @@ npm install -g gitzy
 gitzy
 gitzy commit --type feat -m "add dark mode"
 gitzy branch --type feat -m "add dark mode" --scope ui
+gitzy squash --count 3
 ```
 
 ## Subcommands
@@ -58,6 +60,7 @@ gitzy branch --type feat -m "add dark mode" --scope ui
 | `gitzy` | Alias for `gitzy commit` |
 | `gitzy commit` | Interactive conventional commit flow (default) |
 | `gitzy branch` | Generate a branch name from a conventional commit prompt |
+| `gitzy squash` | Squash the last N commits into a single conventional commit |
 | `gitzy init` | Generate a starter `.gitzyrc.json` in the current dir (`--force` to overwrite) |
 | `gitzy config` | Display the resolved config as JSON |
 
@@ -135,6 +138,35 @@ When used with `--amend`, also includes the previous branch name:
   "dryRun": false,
   "oldName": "feat/dark-mode"
 }
+```
+
+### `gitzy squash` flags
+
+Prompts through the same flow as `gitzy commit`, pre-filled from the HEAD commit, then runs `git reset --soft HEAD~N` and commits the result. Refuses to run with changes already staged. Undo with `git reset --soft ORIG_HEAD`.
+
+| Flag | Alias | Description |
+| --- | --- | --- |
+| `--count <n>` |  | number of commits to squash (default: commits ahead of `origin/HEAD`) |
+| `--type <type>` |  | set type inline (with `--subject`, skips all prompts) |
+| `--scope <scope>` |  | set scope inline |
+| `--subject <subject>` | `-m` | set subject inline (with `--type`, skips all prompts) |
+| `--body <body>` |  | set body inline |
+| `--breaking [breaking]` |  | mark as breaking; add message for `footer`/`both` formats |
+| `--issue <issue...>` |  | set issues inline (repeatable: `--issue '#123' --issue '#456'`) |
+| `--co-author <coAuthor...>` |  | add co-authors (repeatable: `--co-author "Name <email>"`) |
+| `--dry-run` | `-D` | show commit message without squashing |
+| `--no-verify` | `-n` | skip git hooks |
+| `--no-emoji` |  | disable emoji in commit message |
+| `--json` |  | output result as JSON, without squashing (see shape below) |
+| `--stdin` |  | read answers from stdin as JSON (CLI flags take priority) |
+| `--help` | `-h` | display help for command |
+
+#### `squash --json` output shape
+
+Same as [`commit --json`](#commit---json-output-shape), plus `count`:
+
+```json
+{ "count": 3, "header": "feat: ✨ add dark mode", "...": "..." }
 ```
 
 ## Configuration

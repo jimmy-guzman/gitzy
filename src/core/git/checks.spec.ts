@@ -1,6 +1,6 @@
 import { rmSync, writeFileSync } from "node:fs";
 
-import { checkIfGitRepo, checkIfStaged } from "./checks";
+import { checkIfGitRepo, checkIfNothingStaged, checkIfStaged } from "./checks";
 import { git, useTempGitRepo } from "./test-utils";
 
 describe(checkIfStaged, () => {
@@ -29,6 +29,23 @@ describe(checkIfStaged, () => {
     vi.stubEnv("PATH", "");
 
     await expect(checkIfStaged()).rejects.toThrow("ENOENT");
+  });
+});
+
+describe(checkIfNothingStaged, () => {
+  useTempGitRepo();
+
+  it("should resolve when no files are staged", async () => {
+    await expect(checkIfNothingStaged()).resolves.toBeUndefined();
+  });
+
+  it("should throw when files are staged", async () => {
+    writeFileSync("file.txt", "hello");
+    await git("add", "file.txt");
+
+    await expect(checkIfNothingStaged()).rejects.toThrow(
+      "Staged changes found"
+    );
   });
 });
 
