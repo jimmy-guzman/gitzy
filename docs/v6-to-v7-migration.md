@@ -31,7 +31,6 @@ The flat config schema has been replaced with a nested structure. If you have a 
 | ------------ | --- | --- |
 | `header.max` | 64  | 50  |
 | `header.min` | 3   | 5   |
-| `body.max`   | —   | 70  |
 | `body.min`   | —   | 5   |
 
 > **Note:** The default type list is unchanged — all 11 built-in types (`chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refactor`, `release`, `revert`, `style`, `test`) are still available by default.

@@ -49,7 +49,6 @@ export const builtinTypes: readonly TypeEntry[] = [
 ];
 
 export const defaultBodyConfig: BodyConfig = {
-  max: 70,
   min: 5,
 };
 
