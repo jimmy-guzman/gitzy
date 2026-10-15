@@ -7,17 +7,6 @@ import { x } from "tinyexec";
 import type { MessageParts } from "@/core/conventional/types";
 
 /**
- * Parsed result from HEAD commit message
- * All fields are optional — regex-based best-effort parsing
- */
-type ParsedCommit = Partial<
-  Pick<
-    MessageParts,
-    "body" | "breaking" | "issues" | "scope" | "signoff" | "subject" | "type"
-  >
->;
-
-/**
  * Matches: type(scope)!: subject  or  type!: subject  or  type(scope): subject  or  type: subject
  * Strips leading emoji if present (e.g. "✨ subject" → "subject")
  */
@@ -54,7 +43,7 @@ export const getHeadCommitMessage = async () => {
  *
  * @returns Partial MessageParts — only fields that could be parsed are set
  */
-export const parseConventionalCommit = (message: string): ParsedCommit => {
+export const parseConventionalCommit = (message: string) => {
   const lines = message.split("\n");
   const header = lines[0] ?? "";
   const rest = lines.slice(1).join("\n").trim();
@@ -66,7 +55,7 @@ export const parseConventionalCommit = (message: string): ParsedCommit => {
   }
 
   const { breaking: bangBreaking, scope, subject, type } = headerMatch.groups;
-  const result: ParsedCommit = { subject, type };
+  const result: Partial<MessageParts> = { subject, type };
 
   if (scope) {
     result.scope = scope;
@@ -113,7 +102,7 @@ export const parseConventionalCommit = (message: string): ParsedCommit => {
  *
  * @returns Parsed commit parts from HEAD, or empty object if parsing fails
  */
-export const getAmendParts = async (): Promise<ParsedCommit> => {
+export const getAmendParts = async () => {
   try {
     const message = await getHeadCommitMessage();
 

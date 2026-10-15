@@ -11,7 +11,7 @@ An interactive CLI tool for creating [Conventional Commits](https://www.conventi
 - **Build tool:** `tsdown` (Rollup-based TypeScript bundler, outputs `dist/run.mjs` and `dist/index.mjs`)
 - **CLI framework:** `commander`
 - **Interactive prompts:** `@clack/prompts`
-- **Config loading:** `lilconfig` (cosmiconfig-compatible, supports JSON/JS — no YAML, no `.ts`)
+- **Config loading:** `lilconfig` (cosmiconfig-compatible, supports JSON/JS/TS — `.ts`/`.mts` load via Node's built-in type stripping; no YAML)
 - **Config validation:** `valibot` (schema-first, tree-shakeable)
 - **Fuzzy search:** `@leeoniya/ufuzzy`
 - **Git execution:** `tinyexec` (lightweight `child_process` wrapper)
@@ -34,7 +34,6 @@ src/
   cli/
     types.ts              # Core TS interfaces: CommitFlags, BranchFlags, CreatedPromptOptions, Prompter
     prompts/              # One file per interactive question
-      constants.ts        # Shared prompt constants
       create-prompts.ts   # Assembles the active prompt list from config.prompts
       type.ts             # Autocomplete prompt with emoji-prefixed choices + fuzzy suggest
       scope.ts            # Autocomplete prompt (only shown when scopes are configured)
@@ -42,12 +41,15 @@ src/
       body.ts             # Multiline text prompt
       breaking.ts         # Confirm or text prompt depending on breaking.format
       issues.ts           # Text prompt for issue references
+      co-authors.ts       # Text prompt for Co-authored-by trailers (opt-in via config.prompts)
+      signoff.ts          # Text prompt for a Signed-off-by trailer, pre-filled from git identity (opt-in via config.prompts)
+      test-utils.ts       # createFakePrompter() for prompt tests
     commands/
-      commit.ts           # Default subcommand: full conventional commit flow
-      branch.ts           # Branch name generation flow
-      squash.ts           # Squash last N commits via soft reset, reusing commit's collectAnswers()
-      init.ts             # Generates a starter gitzy.config.js
-      config.ts           # Displays resolved config (--json for machine-readable output)
+      commit.ts           # Default subcommand: full conventional commit flow; exports addMessageOptions() + collectAnswers()
+      branch.ts           # Branch name generation flow (reuses the type/scope prompt factories)
+      squash.ts           # Squash last N commits via soft reset
+      init.ts             # Generates a starter .gitzyrc.json (--force to overwrite)
+      config.ts           # Prints the resolved config as JSON on stdout
     utils/
       config.ts           # resolveConfigWithWarnings() — resolveConfig() + prints its warnings to stderr
       fuzzy-search.ts     # Generic multi-key fuzzy search via uFuzzy
@@ -66,19 +68,24 @@ src/
       types.ts            # BranchParts interface
       formatter.ts        # formatBranchName(), slugify()
       parser.ts           # parseBranchName() — recovers parts from a branch name (--amend)
+      validate.ts         # validateBranchParts() — type/scope/subject rules for non-interactive input
     conventional/
       types.ts            # MessageParts interface + defaultMessageParts
       schema.ts           # PartialMessagePartsSchema — validates answers from stdin and the retry store
       message.ts          # formatMessageResult() (header/body/footer + full message), wrap(), isEmojiEnabled() and formatBody() (shared by prompts), GITZY_NO_EMOJI support
+      validate.ts         # validateMessageParts(), validateTypeAndScope() — business rules for flags, --stdin and --retry
     git/
       checks.ts           # checkIfGitRepo(), checkIfStaged(), checkIfNothingStaged()
       operations.ts       # commit() — runs git commit -m, or writes COMMIT_EDITMSG in hook mode; getGitDir()
       branch.ts           # createBranch(), renameBranch(), getCurrentBranch()
       squash.ts           # getDefaultBranch(), countCommitsAhead(), checkCanSquash(), softReset()
       amend.ts            # getAmendParts(), parseConventionalCommit() — pre-fill from HEAD
+      signoff.ts          # getSignoffTrailer() — "Name <email>" from git var GIT_COMMITTER_IDENT
+      test-utils.ts       # useTempGitRepo(), git() — real temp repos for tests
     init/
-      init.ts             # init() — generates gitzy.config.js in cwd
+      init.ts             # init() — generates .gitzyrc.json in cwd
     guards.ts             # isString() type predicate (keeps `typeof` inside a named guard)
+    pluralize.ts          # pluralize(count, word) for validation messages
     store/
       store.ts            # loadAnswers(file), saveAnswers(file, data), storePath() — retry answers JSON in the git dir (OS temp dir outside a repo)
 e2e/
@@ -104,6 +111,7 @@ The codebase is split into two layers with a thin orchestration layer connecting
 - **Config normalization:** `normalizeConfig()` converts `string` type entries (short form) to full `TypeEntry` objects by looking them up in `builtinTypes`.
 - **Logging:** All CLI output goes through `@clack/prompts` (`log.*`, `cancel`). Errors, warnings and notices go to stderr through `notice` in `src/cli/utils/log.ts`; stdout only carries command results. No `console.*` calls and no color library.
 - **Emoji:** Controlled by `config.emoji.enabled` (config), the `GITZY_NO_EMOJI` env var, and the commit `--no-emoji` flag (Commander maps it to `flags.emoji === false`). Always resolve it through `isEmojiEnabled()` in `src/core/conventional/message.ts`.
+- **Shared message flags:** flags shared by `commit` and `squash` go in `addMessageOptions()` (`src/cli/commands/commit.ts`).
 - **`--stdin`:** `commit`, `branch`, and `squash` accept JSON answers piped via stdin, validated with a valibot schema and merged with CLI flags (flags take priority over stdin).
 - **`--amend` (commit):** Parses HEAD commit message with `getAmendParts()` to pre-fill prompts (best-effort regex parsing).
 - **`--amend` (branch):** Renames the current branch via `git branch -m`. Warns if a remote tracking ref exists.

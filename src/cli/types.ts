@@ -13,7 +13,6 @@ export interface Prompter {
   cancel: typeof clack.cancel;
   confirm: typeof clack.confirm;
   group: typeof clack.group;
-  isCancel: typeof clack.isCancel;
   multiline: typeof clack.multiline;
   text: typeof clack.text;
 }

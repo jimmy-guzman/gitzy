@@ -4,9 +4,9 @@
 
 import { log } from "@clack/prompts";
 import type { Command } from "commander";
-import { InvalidArgumentError, Option } from "commander";
+import { InvalidArgumentError } from "commander";
 
-import { collectAnswers } from "@/cli/commands/commit";
+import { addMessageOptions, collectAnswers } from "@/cli/commands/commit";
 import type { SquashFlags } from "@/cli/types";
 import { resolveConfigWithWarnings } from "@/cli/utils/config";
 import { notice } from "@/cli/utils/log";
@@ -48,29 +48,13 @@ const resolveCount = async (flags: SquashFlags) => {
 };
 
 export const registerSquashCommand = (program: Command) => {
-  const noVerifyOption = new Option(
-    "-n, --no-verify",
-    lang.commit.flags.noVerify
-  );
-
-  noVerifyOption.negate = false;
-
-  program
-    .command("squash")
-    .description(lang.squash.description)
-    .option("--count <n>", lang.squash.flags.count, parseCount)
-    .option("--body <body>", lang.commit.flags.body)
-    .option("--breaking [breaking]", lang.commit.flags.breaking)
-    .option("-D, --dry-run", lang.squash.flags.dryRun)
-    .option("--issue <issue...>", lang.commit.flags.issue)
-    .option("--json", lang.commit.flags.json)
-    .option("--no-emoji", lang.commit.flags.noEmoji)
-    .option("--scope <scope>", lang.commit.flags.scope)
-    .option("-m, --subject <subject>", lang.commit.flags.subject)
-    .option("--type <type>", lang.commit.flags.type)
-    .addOption(noVerifyOption)
-    .option("--co-author <coAuthor...>", lang.commit.flags.coAuthor)
-    .option("--stdin", lang.commit.flags.stdin)
+  addMessageOptions(
+    program
+      .command("squash")
+      .description(lang.squash.description)
+      .option("--count <n>", lang.squash.flags.count, parseCount),
+    lang.squash.flags.dryRun
+  )
     .addHelpText("after", `\nExamples:\n      ${lang.squash.examples}\n    `)
     .action(async (flags: SquashFlags, command: Command) => {
       if (flags.dryRun === true) {

@@ -2,13 +2,14 @@
  * Branch command — interactive branch name generation flow
  */
 
-import { autocomplete, cancel, group, log, text } from "@clack/prompts";
+import * as clack from "@clack/prompts";
 import type { Command } from "commander";
 import { object, partial, string } from "valibot";
 
+import { scope } from "@/cli/prompts/scope";
+import { type } from "@/cli/prompts/type";
 import type { BranchFlags } from "@/cli/types";
 import { resolveConfigWithWarnings } from "@/cli/utils/config";
-import { createFuzzyFilter } from "@/cli/utils/fuzzy-search";
 import { notice } from "@/cli/utils/log";
 import { readStdinJson } from "@/cli/utils/stdin";
 import { formatBranchName } from "@/core/branch/formatter";
@@ -64,54 +65,34 @@ const promptBranchQuestions = async (
     });
   }
 
-  const typeOptions = config.types.map((t) => ({
-    hint: t.description,
-    label: t.name,
-    value: t.name,
-  }));
+  const options = {
+    autofill,
+    config,
+    flags: { emoji: false },
+    initial: amendInitial,
+    prompter: clack,
+  };
 
-  const scopeOptions = config.scopes.map((s) => ({
-    hint: s.description,
-    label: s.name,
-    value: s.name,
-  }));
-
-  return await group(
+  return await clack.group(
     {
       issue: async () => {
         if (autofill.issue !== undefined) {
           return autofill.issue;
         }
 
-        return await text({
+        return await clack.text({
           initialValue: amendInitial?.issue,
           message: "Add an issue reference",
           placeholder: "skip when none",
         });
       },
-      scope: async () => {
-        if (config.scopes.length === 0) {
-          return "";
-        }
-
-        if (autofill.scope !== undefined) {
-          return autofill.scope;
-        }
-
-        return await autocomplete({
-          filter: createFuzzyFilter(scopeOptions),
-          initialValue: amendInitial?.scope,
-          maxItems: 10,
-          message: "Choose the scope",
-          options: scopeOptions,
-        });
-      },
+      scope: scope(options),
       subject: async () => {
         if (autofill.subject !== undefined) {
           return autofill.subject;
         }
 
-        return await text({
+        return await clack.text({
           initialValue: amendInitial?.subject,
           message: "Add a short description",
           validate: (input) =>
@@ -120,50 +101,24 @@ const promptBranchQuestions = async (
               : undefined,
         });
       },
-      type: async () => {
-        if (autofill.type !== undefined) {
-          return autofill.type;
-        }
-
-        return await autocomplete({
-          filter: createFuzzyFilter(typeOptions),
-          initialValue: amendInitial?.type,
-          maxItems: 10,
-          message: "Choose the type",
-          options: typeOptions,
-        });
-      },
+      type: type(options),
     },
     {
       onCancel: () => {
-        cancel("Cancelled.");
+        clack.cancel("Cancelled.");
         process.exit(0);
       },
     }
   );
 };
 
-const toFlagAnswers = (opts: BranchFlags) => {
-  const answers: Partial<BranchParts> = {};
-
-  if (opts.issue !== undefined && opts.issue !== "") {
-    answers.issue = opts.issue;
-  }
-
-  if (opts.scope !== undefined && opts.scope !== "") {
-    answers.scope = opts.scope;
-  }
-
-  if (opts.subject !== undefined && opts.subject !== "") {
-    answers.subject = opts.subject;
-  }
-
-  if (opts.type !== undefined && opts.type !== "") {
-    answers.type = opts.type;
-  }
-
-  return answers;
-};
+const toFlagAnswers = (opts: BranchFlags) => ({
+  ...(opts.issue !== undefined && opts.issue !== "" && { issue: opts.issue }),
+  ...(opts.scope !== undefined && opts.scope !== "" && { scope: opts.scope }),
+  ...(opts.subject !== undefined &&
+    opts.subject !== "" && { subject: opts.subject }),
+  ...(opts.type !== undefined && opts.type !== "" && { type: opts.type }),
+});
 
 const writeResult = (
   opts: BranchFlags,
@@ -175,7 +130,7 @@ const writeResult = (
       `${JSON.stringify({ branchName, dryRun: opts.dryRun ?? false, oldName })}\n`
     );
   } else if (opts.dryRun === true) {
-    log.info(`Branch name: ${branchName}`);
+    clack.log.info(`Branch name: ${branchName}`);
   }
 };
 

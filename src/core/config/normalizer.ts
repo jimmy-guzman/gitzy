@@ -30,13 +30,8 @@ const resolveTypeEntry = (entry: string | TypeEntry): TypeEntry => {
   };
 };
 
-const resolveScopeEntry = (entry: ScopeEntry | string): ScopeEntry => {
-  if (isString(entry)) {
-    return { name: entry };
-  }
-
-  return entry;
-};
+const resolveScopeEntry = (entry: ScopeEntry | string) =>
+  isString(entry) ? { name: entry } : entry;
 
 export const normalizeConfig = (config: Config | null): ResolvedConfig => {
   const types = (config?.types ?? builtinTypes.map((t) => t.name)).map(

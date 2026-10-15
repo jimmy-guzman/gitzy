@@ -35,15 +35,6 @@ const CONFIG_TEMPLATE = `${JSON.stringify(
   2
 )}\n`;
 
-interface InitOptions {
-  force?: boolean;
-}
-
-interface InitResult {
-  exists: boolean;
-  filePath: string;
-}
-
 /**
  * Generate a starter gitzy config file in the given directory
  *
@@ -53,14 +44,11 @@ interface InitResult {
  *
  * @returns Result with the file path and whether it already existed
  */
-export const init = (
-  cwd = process.cwd(),
-  options: InitOptions = {}
-): InitResult => {
+export const init = (cwd = process.cwd(), { force = false } = {}) => {
   const filePath = path.join(cwd, CONFIG_FILENAME);
   const exists = existsSync(filePath);
 
-  if (!exists || options.force === true) {
+  if (!exists || force) {
     writeFileSync(filePath, CONFIG_TEMPLATE, "utf-8");
   }
 

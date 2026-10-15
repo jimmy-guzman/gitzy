@@ -78,11 +78,6 @@ export const createPrompts = async (
     },
   });
 
-  if (prompter.isCancel(result)) {
-    prompter.cancel("Cancelled.");
-    process.exit(0);
-  }
-
   return {
     body: (result.body ?? "").trim(),
     breaking: result.breaking ?? "",

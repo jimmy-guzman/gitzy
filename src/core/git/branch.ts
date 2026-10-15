@@ -4,16 +4,6 @@
 
 import { x } from "tinyexec";
 
-interface RenameBranchOptions {
-  dryRun?: boolean;
-}
-
-interface RenameBranchResult {
-  hasRemote: boolean;
-  newName: string;
-  oldName: string;
-}
-
 /**
  * Get the current branch name
  */
@@ -64,16 +54,14 @@ const runGit = async (args: string[], errorPrefix: string) => {
  */
 export const renameBranch = async (
   newName: string,
-  { dryRun = false }: RenameBranchOptions = {}
-): Promise<RenameBranchResult> => {
+  { dryRun = false } = {}
+) => {
   const oldName = await getCurrentBranch();
   const hasRemote = await hasRemoteTracking(oldName);
 
-  if (dryRun) {
-    return { hasRemote, newName, oldName };
+  if (!dryRun) {
+    await runGit(["branch", "-m", oldName, newName], "git branch -m");
   }
-
-  await runGit(["branch", "-m", oldName, newName], "git branch -m");
 
   return { hasRemote, newName, oldName };
 };
