@@ -14,6 +14,7 @@ import type { ResolvedConfig } from "@/core/config/types";
 import { formatMessageResult } from "@/core/conventional/message";
 import { PartialMessagePartsSchema } from "@/core/conventional/schema";
 import type { MessageParts } from "@/core/conventional/types";
+import { validateMessageParts } from "@/core/conventional/validate";
 import { getAmendParts } from "@/core/git/amend";
 import { checkIfGitRepo, checkIfStaged } from "@/core/git/checks";
 import { commit } from "@/core/git/operations";
@@ -21,6 +22,20 @@ import { getSignoffTrailer } from "@/core/git/signoff";
 import { isString } from "@/core/guards";
 import { loadAnswers, saveAnswers } from "@/core/store/store";
 import { lang } from "@/lang";
+
+const assertValid = (
+  config: ResolvedConfig,
+  parts: MessageParts,
+  emoji: boolean
+) => {
+  const problems = validateMessageParts(config, parts, emoji);
+
+  if (problems.length > 0) {
+    throw new TypeError(problems.join("\n"));
+  }
+
+  return parts;
+};
 
 const promptQuestions = async (
   config: ResolvedConfig,
@@ -34,31 +49,30 @@ const promptQuestions = async (
     flags.subject !== undefined
   ) {
     const trimmedSubject = flags.subject.trim();
-    const validType = config.types.some((t) => t.name === flags.type);
-
-    if (!validType) {
-      const allowed = config.types.map((t) => t.name).join(", ");
-
-      throw new Error(
-        `Invalid --type "${flags.type}". Allowed types: ${allowed}`
-      );
-    }
 
     if (trimmedSubject) {
-      return {
-        body: "",
-        breaking: "",
-        coAuthors: [],
-        issues: [],
-        scope: "",
-        ...autofillAnswers,
-        subject: trimmedSubject,
-        type: flags.type,
-      };
+      return assertValid(
+        config,
+        {
+          body: "",
+          breaking: "",
+          coAuthors: [],
+          issues: [],
+          scope: "",
+          ...autofillAnswers,
+          subject: trimmedSubject,
+          type: flags.type,
+        },
+        flags.emoji ?? true
+      );
     }
   }
 
-  return await createPrompts(config, flags, autofillAnswers, amendInitial);
+  return assertValid(
+    config,
+    await createPrompts(config, flags, autofillAnswers, amendInitial),
+    flags.emoji ?? true
+  );
 };
 
 const canSkipPrompts = (flags: CommitFlags) =>

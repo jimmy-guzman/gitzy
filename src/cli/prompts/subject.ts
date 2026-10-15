@@ -1,25 +1,10 @@
 import type { CreatedPromptOptions } from "@/cli/types";
-import { isEmojiEnabled } from "@/core/conventional/message";
+import { formatMessageResult } from "@/core/conventional/message";
+import { defaultMessageParts } from "@/core/conventional/types";
 import type { MessageParts } from "@/core/conventional/types";
-
-import { pluralize } from "./utils/pluralize";
-
-const EMOJI_LENGTH = 3;
+import { pluralize } from "@/core/pluralize";
 
 type LabelParts = Partial<Pick<MessageParts, "scope" | "type">>;
-
-export const leadingLabel = (answers?: LabelParts) => {
-  const scope =
-    answers?.scope !== undefined &&
-    answers.scope !== "" &&
-    answers.scope !== "none"
-      ? `(${answers.scope})`
-      : "";
-
-  return answers?.type !== undefined && answers.type !== ""
-    ? `${answers.type}${scope}: `
-    : "";
-};
 
 export const subject = ({
   autofill,
@@ -29,19 +14,25 @@ export const subject = ({
   prompter,
 }: CreatedPromptOptions) => {
   const { max, min } = config.header;
-  const emojiLength = isEmojiEnabled(config, flags.emoji ?? true)
-    ? EMOJI_LENGTH
-    : 0;
 
   return async (context?: { results: LabelParts }) => {
     const validate = (value = "") => {
-      const label = leadingLabel(context?.results);
-
       if (value.length < min) {
         return `Add ${pluralize(min - value.length, "more character")} (minimum ${min})`;
       }
 
-      const remaining = max - label.length - emojiLength;
+      const { header } = formatMessageResult(
+        config,
+        {
+          ...defaultMessageParts,
+          ...autofill,
+          ...context?.results,
+          subject: value,
+        },
+        flags.emoji ?? true
+      );
+      const prefixLength = header.length - value.length;
+      const remaining = max - prefixLength;
       const overBy = value.length - remaining;
 
       return overBy > 0

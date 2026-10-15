@@ -241,9 +241,11 @@ export const formatMessageResult = (
       ? `${typeEntry.emoji} `
       : "";
   const maxWidth = Math.max(config.header.max, MAX_WIDTH);
-  const header = wrap(
-    createHead(parts, createScope(parts.scope), config, emojiPrefix),
-    maxWidth
+  const header = createHead(
+    parts,
+    createScope(parts.scope),
+    config,
+    emojiPrefix
   );
   const body = formatBody(config, parts.body);
   const notes = wrap(

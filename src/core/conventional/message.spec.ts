@@ -380,7 +380,7 @@ describe("formatCommitMessage", () => {
     expect(formattedMessage).toHaveLength(73);
   });
 
-  it("should leverage default width (72) when header.max is less", () => {
+  it("should never wrap the header, even when it exceeds header.max", () => {
     const formattedMessage = setupFormatCommitMessage(
       { header: { max: 71, min: 3 } },
       {
@@ -392,11 +392,10 @@ describe("formatCommitMessage", () => {
       }
     );
 
-    expect(formattedMessage).toMatchInlineSnapshot(`
-      "feat(*): ✨ this is a very very very very very very very very very
-      subject"
-    `);
-    expect(formattedMessage.split("\n")[0]).toHaveLength(65);
+    expect(formattedMessage).toMatchInlineSnapshot(
+      `"feat(*): ✨ this is a very very very very very very very very very subject"`
+    );
+    expect(formattedMessage).not.toContain("\n");
   });
 
   it("should add '!' when breaking.format is '!' and there is a breaking change", () => {
