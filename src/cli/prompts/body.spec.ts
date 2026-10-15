@@ -100,6 +100,12 @@ describe(body, () => {
       expect(validate("hello you")).toBe("Add 1 more character (minimum 10)");
     });
 
+    it("should not cap body length by default", async () => {
+      const validate = await getValidate();
+
+      expect(validate("#".repeat(500))).toBeUndefined();
+    });
+
     it("should return actionable max error with characters to remove", async () => {
       const validate = await getValidate({
         body: { ...defaultResolvedConfig.body, max: 20 },

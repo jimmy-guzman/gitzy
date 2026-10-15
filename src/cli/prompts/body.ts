@@ -27,7 +27,7 @@ export const body =
           return `Add ${pluralize(min - trimmedLength, "more character")} (minimum ${min})`;
         }
 
-        return trimmedLength > max
+        return max !== undefined && trimmedLength > max
           ? `Remove ${pluralize(trimmedLength - max, "character")} (${max} available)`
           : undefined;
       },

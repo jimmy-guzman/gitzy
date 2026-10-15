@@ -1,5 +1,5 @@
 export interface BodyConfig {
-  max: number;
+  max?: number;
   min: number;
 }
 

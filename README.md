@@ -227,10 +227,12 @@ header: {
 
 Controls the commit body length validation. The body prompt is optional — press **Enter** twice (submit an empty line) to skip it.
 
+`max` caps the total body length and has no default; set it here or via commitlint's `body-max-length` rule.
+
 ```js
 body: {
-  max: 70, // default
-  min: 5,  // default
+  max: 500, // optional, no default
+  min: 5,   // default
 }
 ```
 
