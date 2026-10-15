@@ -8,6 +8,7 @@ import { Option } from "commander";
 
 import { createPrompts } from "@/cli/prompts/create-prompts";
 import type { CommitFlags } from "@/cli/types";
+import { notice } from "@/cli/utils/log";
 import { readStdinJson } from "@/cli/utils/stdin";
 import { resolveConfig } from "@/core/config/resolver";
 import type { ResolvedConfig } from "@/core/config/types";
@@ -146,7 +147,7 @@ const loadAutofill = async (flags: CommitFlags) => {
   const previous = flags.retry === true ? loadAnswers() : {};
 
   if (flags.retry === true && Object.keys(previous).length === 0) {
-    log.warn(`There is no previous gitzy commit to retry...`);
+    notice.warn(`There is no previous gitzy commit to retry...`);
   }
 
   if (flags.stdin !== true) {
@@ -186,9 +187,8 @@ const writeMessage = async (
   });
 
   if (hookInferredFrom !== undefined && "commitMsgPath" in result) {
-    log.warn(
-      `Inferred hook mode from ${hookInferredFrom}: wrote ${result.commitMsgPath} instead of running git commit. Pass --hook to make this explicit.`,
-      { output: process.stderr }
+    notice.warn(
+      `Inferred hook mode from ${hookInferredFrom}: wrote ${result.commitMsgPath} instead of running git commit. Pass --hook to make this explicit.`
     );
   }
 };
@@ -235,7 +235,7 @@ export const registerCommitCommand = (program: Command) => {
       };
 
       if (flags.dryRun === true) {
-        log.info("Running in dry mode...");
+        notice.info("Running in dry mode...");
       }
 
       try {
@@ -246,7 +246,7 @@ export const registerCommitCommand = (program: Command) => {
           flags.breaking &&
           config.breaking.format === "!"
         ) {
-          log.warn(
+          notice.warn(
             "--breaking message ignored when using '!' format. Use --breaking (without value) instead."
           );
         }
@@ -298,7 +298,7 @@ export const registerCommitCommand = (program: Command) => {
 
         await writeMessage(config, answers, flags, hookInferredFrom);
       } catch (error: unknown) {
-        log.error(error instanceof Error ? error.message : String(error));
+        notice.error(error instanceof Error ? error.message : String(error));
         process.exit(1);
       }
     });

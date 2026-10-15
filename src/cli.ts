@@ -1,4 +1,3 @@
-import { log } from "@clack/prompts";
 import { Command } from "commander";
 import { version } from "package.json" with { type: "json" };
 
@@ -6,6 +5,7 @@ import { registerBranchCommand } from "@/cli/commands/branch";
 import { registerCommitCommand } from "@/cli/commands/commit";
 import { registerConfigCommand } from "@/cli/commands/config";
 import { registerInitCommand } from "@/cli/commands/init";
+import { notice } from "@/cli/utils/log";
 import { lang } from "@/lang";
 
 export const cli = async () => {
@@ -14,10 +14,10 @@ export const cli = async () => {
   program
     .configureOutput({
       outputError: (error) => {
-        log.error(error.replace("error: ", "").trim());
+        notice.error(error.replace("error: ", "").trim());
       },
       writeErr: (str) => {
-        process.stdout.write(str.replace("error: ", ""));
+        process.stderr.write(str.replace("error: ", ""));
       },
     })
     .version(version, "-v, --version")

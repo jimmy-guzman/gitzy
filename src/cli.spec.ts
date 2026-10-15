@@ -1,9 +1,8 @@
 import { writeFileSync } from "node:fs";
 import path from "node:path";
 
-import { log } from "@clack/prompts";
-
 import { cli } from "./cli";
+import { notice } from "./cli/utils/log";
 import * as stdinUtils from "./cli/utils/stdin";
 import { defaultResolvedConfig } from "./core/config/defaults";
 import * as config from "./core/config/resolver";
@@ -135,9 +134,7 @@ describe(cli, () => {
     const exitSpy = vi.spyOn(process, "exit").mockImplementation((code) => {
       throw new Error(`process.exit(${String(code)})`);
     });
-    const errorSpy = vi.spyOn(log, "error").mockImplementation(() => {
-      // noop
-    });
+    const stderrSpy = vi.spyOn(process.stderr, "write").mockReturnValue(true);
 
     vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce();
     vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce();
@@ -150,7 +147,7 @@ describe(cli, () => {
     await expect(cli()).rejects.toThrow("process.exit(1)");
 
     expect(exitSpy).toHaveBeenCalledExactlyOnceWith(1);
-    const [[message]] = errorSpy.mock.calls;
+    const message = stderrSpy.mock.calls.map(([chunk]) => chunk).join("");
 
     expect(message).toContain('Invalid type "nope"');
     expect(message).toContain("Add 3 more characters (minimum 5)");
@@ -160,7 +157,7 @@ describe(cli, () => {
     const exitSpy = vi.spyOn(process, "exit").mockImplementation((code) => {
       throw new Error(`process.exit(${String(code)})`);
     });
-    const errorSpy = vi.spyOn(log, "error").mockImplementation(() => {
+    const errorSpy = vi.spyOn(notice, "error").mockImplementation(() => {
       // noop
     });
 
@@ -188,7 +185,7 @@ describe(cli, () => {
     const exitSpy = vi.spyOn(process, "exit").mockImplementation((code) => {
       throw new Error(`process.exit(${String(code)})`);
     });
-    const errorSpy = vi.spyOn(log, "error").mockImplementation(() => {
+    const errorSpy = vi.spyOn(notice, "error").mockImplementation(() => {
       // noop
     });
 
@@ -246,10 +243,10 @@ describe(cli, () => {
     vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
       defaultResolvedConfig
     );
-    vi.spyOn(log, "error").mockImplementation(() => {
+    vi.spyOn(notice, "error").mockImplementation(() => {
       // noop
     });
-    vi.spyOn(log, "warn").mockImplementation(() => {
+    vi.spyOn(notice, "warn").mockImplementation(() => {
       // noop
     });
     Object.defineProperty(process.stdin, "isTTY", {

@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process";
+import { execSync, spawnSync } from "node:child_process";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -83,6 +83,14 @@ const runCommit = (args: string, stdin?: string) => {
     .join("\n")
     .trim();
 };
+
+const run = (args: string[], cwd = E2E_CWD) =>
+  spawnSync("node", [BIN, ...args], {
+    cwd,
+    encoding: "utf-8",
+    env: { ...process.env, TEMP: E2E_CWD, TMP: E2E_CWD, TMPDIR: E2E_CWD },
+    timeout: 30_000,
+  });
 
 const runBranch = (args: string, stdin?: string) => {
   const input = stdin === undefined ? undefined : Buffer.from(stdin);
@@ -268,22 +276,45 @@ describe("gitzy", () => {
       `);
     });
 
-    it("should error when no TTY is detected", () => {
-      let output = "";
+    it("should print the no TTY error on stderr only", () => {
+      const { status, stderr, stdout } = run(["commit", "--dry-run"]);
 
-      try {
-        execSync(`node "${BIN}" commit --dry-run`, {
-          cwd: E2E_CWD,
-          encoding: "utf-8",
-          timeout: 5000,
-        });
-      } catch (error: unknown) {
-        if (error instanceof Error && "stdout" in error) {
-          output = String(error.stdout);
-        }
-      }
+      expect(status).toBe(1);
+      expect(stdout).toBe("");
+      expect(stderr).toContain("No TTY detected");
+    });
 
-      expect(output).toContain("No TTY detected");
+    it("should print the no files staged error on stderr only", () => {
+      const repo = mkdtempSync(path.join(E2E_CWD, "repo-"));
+
+      execSync("git init -q", { cwd: repo });
+
+      const { status, stderr, stdout } = run(
+        ["commit", "--type", "feat", "-m", "hello there", "--json"],
+        repo
+      );
+
+      expect(status).toBe(1);
+      expect(stdout).toBe("");
+      expect(stderr).toContain("No files staged");
+    });
+
+    it("should print only JSON on stdout with --dry-run --json", () => {
+      const { status, stderr, stdout } = run([
+        "commit",
+        "--type",
+        "feat",
+        "-m",
+        "hello there",
+        "-D",
+        "--json",
+      ]);
+
+      expect(status).toBe(0);
+      expect(JSON.parse(stdout)).toMatchObject({
+        header: "feat: ✨ hello there",
+      });
+      expect(stderr).toContain("Running in dry mode");
     });
 
     it("should reject an invalid type from --stdin without prompting", () => {
@@ -301,8 +332,8 @@ describe("gitzy", () => {
           timeout: 5000,
         });
       } catch (error: unknown) {
-        if (error instanceof Error && "stdout" in error) {
-          output = String(error.stdout);
+        if (error instanceof Error && "stderr" in error) {
+          output = String(error.stderr);
         }
       }
 
@@ -321,8 +352,8 @@ describe("gitzy", () => {
           timeout: 5000,
         });
       } catch (error: unknown) {
-        if (error instanceof Error && "stdout" in error) {
-          output = String(error.stdout);
+        if (error instanceof Error && "stderr" in error) {
+          output = String(error.stderr);
         }
       }
 
@@ -386,22 +417,12 @@ describe("gitzy", () => {
       expect(result).toMatchInlineSnapshot(`"feat/ui/add-dark-mode"`);
     });
 
-    it("should error when no TTY is detected", () => {
-      let output = "";
+    it("should print the no TTY error on stderr only", () => {
+      const { status, stderr, stdout } = run(["branch", "--dry-run"]);
 
-      try {
-        execSync(`node "${BIN}" branch --dry-run`, {
-          cwd: E2E_CWD,
-          encoding: "utf-8",
-          timeout: 5000,
-        });
-      } catch (error: unknown) {
-        if (error instanceof Error && "stdout" in error) {
-          output = String(error.stdout);
-        }
-      }
-
-      expect(output).toContain("No TTY detected");
+      expect(status).toBe(1);
+      expect(stdout).toBe("");
+      expect(stderr).toContain("No TTY detected");
     });
 
     it("should reject an invalid type from --stdin without prompting", () => {
@@ -419,8 +440,8 @@ describe("gitzy", () => {
           timeout: 5000,
         });
       } catch (error: unknown) {
-        if (error instanceof Error && "stdout" in error) {
-          output = String(error.stdout);
+        if (error instanceof Error && "stderr" in error) {
+          output = String(error.stderr);
         }
       }
 
@@ -439,8 +460,8 @@ describe("gitzy", () => {
           timeout: 5000,
         });
       } catch (error: unknown) {
-        if (error instanceof Error && "stdout" in error) {
-          output = String(error.stdout);
+        if (error instanceof Error && "stderr" in error) {
+          output = String(error.stderr);
         }
       }
 
