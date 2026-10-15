@@ -8,9 +8,9 @@ import { Option } from "commander";
 
 import { createPrompts } from "@/cli/prompts/create-prompts";
 import type { CommitFlags } from "@/cli/types";
+import { resolveConfigWithWarnings } from "@/cli/utils/config";
 import { notice } from "@/cli/utils/log";
 import { readStdinJson } from "@/cli/utils/stdin";
-import { resolveConfig } from "@/core/config/resolver";
 import type { ResolvedConfig } from "@/core/config/types";
 import { formatMessageResult } from "@/core/conventional/message";
 import { PartialMessagePartsSchema } from "@/core/conventional/schema";
@@ -239,7 +239,7 @@ export const registerCommitCommand = (program: Command) => {
       }
 
       try {
-        const config = await resolveConfig();
+        const config = await resolveConfigWithWarnings();
 
         if (
           isString(flags.breaking) &&

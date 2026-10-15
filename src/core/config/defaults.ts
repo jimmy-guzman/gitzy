@@ -18,6 +18,8 @@ export const defaultPrompts = [
   "issues",
 ] as const;
 
+export const promptNames = [...defaultPrompts, "coAuthors", "signoff"] as const;
+
 /**
  * Built-in type defaults based on https://gitmoji.dev/
  * - except for refactor due to its narrower rendering in most terminals

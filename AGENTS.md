@@ -48,6 +48,7 @@ src/
       init.ts             # Generates a starter gitzy.config.js
       config.ts           # Displays resolved config (--json for machine-readable output)
     utils/
+      config.ts           # resolveConfigWithWarnings() — resolveConfig() + prints its warnings to stderr
       fuzzy-search.ts     # Generic multi-key fuzzy search via uFuzzy
       log.ts              # notice.{error,info,warn}: clack log lines on stderr, colored for stderr
       stdin.ts            # readStdinJson(schema) — reads --stdin JSON and validates it with valibot
@@ -55,10 +56,10 @@ src/
     config/
       types.ts            # Config, ResolvedConfig, TypeEntry, ScopeEntry, defineConfig() interfaces
       defaults.ts         # defaultResolvedConfig, builtinTypes, per-section defaults
-      schema.ts           # Valibot ConfigSchema (validates shape only, no defaults)
-      loader.ts           # Generic loadConfig() via lilconfig + valibot safeParse
+      schema.ts           # Valibot ConfigSchema (validates shape only, no defaults) + validateConfig() warnings
+      loader.ts           # Generic loadConfig() via lilconfig + valibot safeParse; returns { input, output }
       normalizer.ts       # normalizeConfig() — merges per-section defaults, resolves string type names to TypeEntry objects
-      resolver.ts         # resolveConfig() — auto-detects gitzy + commitlint config
+      resolver.ts         # resolveConfig() — auto-detects gitzy + commitlint config; returns { config, warnings }
       commitlint.ts       # CommitlintConfigSchema + extractCommitlintRules() maps commitlint rules → gitzy config
     branch/
       types.ts            # BranchParts interface
@@ -97,7 +98,7 @@ The codebase is split into two layers with a thin orchestration layer connecting
 - **Path alias** `@/*` maps to `./src/*`.
 - **Subcommands:** `gitzy` alone runs the default `commit` subcommand. Explicit subcommands: `branch`, `init`, `config`.
 - **Prompt pattern:** Each question (`type`, `scope`, `subject`, `body`, `breaking`, `issues`, `coAuthors`, `signoff`) is an exported factory that takes the prompt options and returns a function that either resolves the autofilled answer, calls a `@clack/prompts` prompt, or returns `undefined` to skip. Factories call clack through the injected `prompter` (a `Prompter` from `src/cli/types.ts`); `createPrompts()` defaults it to `@clack/prompts`, collects the prompts listed in `config.prompts`, and runs them with `prompter.group()`.
-- **Config schema:** Every config file is loaded through a valibot schema with `safeParse`. The schema only validates shape; it applies no defaults, so absent keys stay absent and commitlint-derived values are not overwritten when configs merge. Defaults are merged once, in `normalizeConfig()`, from the per-section objects in `defaults.ts`. Invalid config throws a `TypeError` with a human-readable summary.
+- **Config schema:** Every config file is loaded through a valibot schema with `safeParse`. The schema only validates shape; it applies no defaults, so absent keys stay absent and commitlint-derived values are not overwritten when configs merge. Defaults are merged once, in `normalizeConfig()`, from the per-section objects in `defaults.ts`. Invalid config throws a `TypeError` with a human-readable summary. Mistakes that still parse (unknown keys or prompt names, negative lengths, a min above its max) become warnings from `validateConfig()`, which commands print to stderr via `resolveConfigWithWarnings()`.
 - **Config normalization:** `normalizeConfig()` converts `string` type entries (short form) to full `TypeEntry` objects by looking them up in `builtinTypes`.
 - **Logging:** All CLI output goes through `@clack/prompts` (`log.*`, `cancel`). Errors, warnings and notices go to stderr through `notice` in `src/cli/utils/log.ts`; stdout only carries command results. No `console.*` calls and no color library.
 - **Emoji:** Controlled by `config.emoji.enabled` (config), the `GITZY_NO_EMOJI` env var, and the commit `--no-emoji` flag (Commander maps it to `flags.emoji === false`). Always resolve it through `isEmojiEnabled()` in `src/core/conventional/message.ts`.

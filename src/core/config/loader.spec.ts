@@ -83,7 +83,10 @@ describe(loadConfig, () => {
   ])("should load config from %s", async (file) => {
     writeConfig(file);
 
-    await expect(loadConfig("gitzy", schema)).resolves.toStrictEqual(config);
+    await expect(loadConfig("gitzy", schema)).resolves.toStrictEqual({
+      input: config,
+      output: config,
+    });
   });
 
   it.each([".gitzyrc.yaml", ".gitzyrc.yml"])(
@@ -99,9 +102,10 @@ describe(loadConfig, () => {
     writeConfig(".commitlintrc.json");
 
     await expect(loadConfig("gitzy", schema)).resolves.toBeNull();
-    await expect(loadConfig("commitlint", schema)).resolves.toStrictEqual(
-      config
-    );
+    await expect(loadConfig("commitlint", schema)).resolves.toStrictEqual({
+      input: config,
+      output: config,
+    });
   });
 
   it("should return null when package.json has no matching key", async () => {
@@ -118,7 +122,7 @@ describe(loadConfig, () => {
       valibot.object({ name: valibot.optional(valibot.string(), "fallback") })
     );
 
-    expect(result).toStrictEqual({ name: "fallback" });
+    expect(result).toStrictEqual({ input: {}, output: { name: "fallback" } });
   });
 
   it("should throw a TypeError summarizing validation issues", async () => {

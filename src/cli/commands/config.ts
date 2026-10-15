@@ -4,8 +4,8 @@
 
 import type { Command } from "commander";
 
+import { resolveConfigWithWarnings } from "@/cli/utils/config";
 import { notice } from "@/cli/utils/log";
-import { resolveConfig } from "@/core/config/resolver";
 
 export const registerConfigCommand = (program: Command) => {
   program
@@ -13,7 +13,7 @@ export const registerConfigCommand = (program: Command) => {
     .description("Display the resolved gitzy configuration")
     .action(async () => {
       try {
-        const config = await resolveConfig();
+        const config = await resolveConfigWithWarnings();
 
         process.stdout.write(`${JSON.stringify(config, null, 2)}\n`);
       } catch (error: unknown) {

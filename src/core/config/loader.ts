@@ -75,5 +75,5 @@ export const loadConfig = async <const TSchema extends GenericSchema>(
     throw new TypeError(summarize(parsed.issues));
   }
 
-  return parsed.output;
+  return { input: config, output: parsed.output };
 };

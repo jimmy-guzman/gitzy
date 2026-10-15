@@ -12,12 +12,14 @@
  *   Gitzy entries NOT in the commitlint enum are excluded.
  */
 
+import { parse } from "valibot";
+
 import { isString } from "@/core/guards";
 
 import { CommitlintConfigSchema, extractCommitlintRules } from "./commitlint";
 import { loadConfig } from "./loader";
 import { normalizeConfig } from "./normalizer";
-import { ConfigSchema } from "./schema";
+import { ConfigSchema, KeyTreeSchema, validateConfig } from "./schema";
 import type { Config, ScopeEntry, TypeEntry } from "./types";
 
 const toName = (entry: ScopeEntry | string | TypeEntry) =>
@@ -55,16 +57,26 @@ const mergeConfigs = (base: Config, overrides: Config): Config => ({
 });
 
 export const resolveConfig = async () => {
-  const [config, commitlintConfig] = await Promise.all([
+  const [gitzy, commitlint] = await Promise.all([
     loadConfig("gitzy", ConfigSchema),
     loadConfig("commitlint", CommitlintConfigSchema),
   ]);
 
-  if (commitlintConfig) {
-    const commitlintOverrides = extractCommitlintRules(commitlintConfig);
+  const config = normalizeConfig(
+    commitlint
+      ? mergeConfigs(
+          extractCommitlintRules(commitlint.output),
+          gitzy?.output ?? {}
+        )
+      : (gitzy?.output ?? null)
+  );
 
-    return normalizeConfig(mergeConfigs(commitlintOverrides, config ?? {}));
-  }
-
-  return normalizeConfig(config);
+  return {
+    config,
+    warnings: validateConfig(
+      parse(KeyTreeSchema, gitzy?.input),
+      gitzy?.output ?? {},
+      config
+    ),
+  };
 };
