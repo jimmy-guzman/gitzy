@@ -1,7 +1,6 @@
 import type { CreatedPromptOptions } from "@/cli/types";
 import { formatBody } from "@/core/conventional/message";
-
-import { pluralize } from "./utils/pluralize";
+import { pluralize } from "@/core/pluralize";
 
 export const body =
   ({ autofill, config, initial, prompter }: CreatedPromptOptions) =>

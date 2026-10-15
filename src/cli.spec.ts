@@ -1,6 +1,8 @@
 import { writeFileSync } from "node:fs";
 import path from "node:path";
 
+import { log } from "@clack/prompts";
+
 import { cli } from "./cli";
 import { defaultResolvedConfig } from "./core/config/defaults";
 import * as config from "./core/config/resolver";
@@ -126,6 +128,31 @@ describe(cli, () => {
         noVerify: undefined,
       })
     );
+  });
+
+  it("should exit 1 and list every problem when flags fail validation", async () => {
+    const exitSpy = vi.spyOn(process, "exit").mockImplementation((code) => {
+      throw new Error(`process.exit(${String(code)})`);
+    });
+    const errorSpy = vi.spyOn(log, "error").mockImplementation(() => {
+      // noop
+    });
+
+    vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce();
+    vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce();
+    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
+      defaultResolvedConfig
+    );
+
+    process.argv = ["node", "gitzy", "--type", "nope", "-m", "hi"];
+
+    await expect(cli()).rejects.toThrow("process.exit(1)");
+
+    expect(exitSpy).toHaveBeenCalledExactlyOnceWith(1);
+    const [[message]] = errorSpy.mock.calls;
+
+    expect(message).toContain('Invalid type "nope"');
+    expect(message).toContain("Add 3 more characters (minimum 5)");
   });
 
   describe("when hook mode is inferred from the environment", () => {

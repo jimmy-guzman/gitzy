@@ -1,7 +1,7 @@
 import { defaultResolvedConfig } from "@/core/config/defaults";
 import type { MessageParts } from "@/core/conventional/types";
 
-import { leadingLabel, subject } from "./subject";
+import { subject } from "./subject";
 import { createFakePrompter } from "./test-utils";
 
 const prompter = createFakePrompter();
@@ -13,11 +13,6 @@ const setupSubject = (configOverrides = {}, autofill = {}) =>
     flags: {},
     prompter,
   });
-
-const answers: Partial<MessageParts> = {
-  scope: "*",
-  type: "feat",
-};
 
 const getValidate = async (
   configOverrides = {},
@@ -39,20 +34,6 @@ const getValidate = async (
 
   return validate;
 };
-
-describe(leadingLabel, () => {
-  it("should create subject's leading label with scope", () => {
-    expect(leadingLabel(answers)).toBe("feat(*): ");
-  });
-
-  it("should create subject's leading label with scope & no answers", () => {
-    expect(leadingLabel({})).toBe("");
-  });
-
-  it("should create subject leading label with no scope", () => {
-    expect(leadingLabel({ ...answers, scope: "" })).toBe("feat: ");
-  });
-});
 
 describe(subject, () => {
   beforeEach(() => {
@@ -115,9 +96,10 @@ describe(subject, () => {
     it("should singularize when one character is over", async () => {
       const validate = await getValidate({}, { scope: "*", type: "feat" });
 
-      // remaining = 64 - 9 - 3 = 52, input = 53, overBy = 1
-      expect(validate("#".repeat(53))).toBe(
-        "Remove 1 character (52 available)"
+      // header prefix "feat(*): ✨ " = 11 chars, max = 64
+      // remaining = 64 - 11 = 53, input = 54, overBy = 1
+      expect(validate("#".repeat(54))).toBe(
+        "Remove 1 character (53 available)"
       );
     });
 
@@ -139,11 +121,10 @@ describe(subject, () => {
         { scope: "*", type: "feat" }
       );
 
-      // leadingLabel("feat(*): ") = 9 chars, emoji = 3, max = 64
-      // remaining = 64 - 9 - 3 = 52
-      expect(validate("#".repeat(52))).toBeUndefined();
-      expect(validate("#".repeat(53))).toBe(
-        "Remove 1 character (52 available)"
+      // header prefix "feat(*): ✨ " = 11 chars, max = 64, remaining = 53
+      expect(validate("#".repeat(53))).toBeUndefined();
+      expect(validate("#".repeat(54))).toBe(
+        "Remove 1 character (53 available)"
       );
     });
 
@@ -153,7 +134,8 @@ describe(subject, () => {
         { scope: "*", type: "feat" }
       );
 
-      expect(validate("#".repeat(41))).toBeUndefined();
+      // header prefix "feat(*): " = 9 chars, max = 64, remaining = 55
+      expect(validate("#".repeat(55))).toBeUndefined();
     });
   });
 });
