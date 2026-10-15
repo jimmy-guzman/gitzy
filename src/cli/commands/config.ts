@@ -2,9 +2,9 @@
  * Config command — display the resolved gitzy configuration
  */
 
-import { log } from "@clack/prompts";
 import type { Command } from "commander";
 
+import { notice } from "@/cli/utils/log";
 import { resolveConfig } from "@/core/config/resolver";
 
 export const registerConfigCommand = (program: Command) => {
@@ -17,7 +17,7 @@ export const registerConfigCommand = (program: Command) => {
 
         process.stdout.write(`${JSON.stringify(config, null, 2)}\n`);
       } catch (error: unknown) {
-        log.error(error instanceof Error ? error.message : String(error));
+        notice.error(error instanceof Error ? error.message : String(error));
         process.exit(1);
       }
     });

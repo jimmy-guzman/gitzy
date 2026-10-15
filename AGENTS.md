@@ -49,6 +49,7 @@ src/
       config.ts           # Displays resolved config (--json for machine-readable output)
     utils/
       fuzzy-search.ts     # Generic multi-key fuzzy search via uFuzzy
+      log.ts              # notice.{error,info,warn}: clack log lines on stderr, colored for stderr
       stdin.ts            # readStdinJson(schema) — reads --stdin JSON and validates it with valibot
   core/
     config/
@@ -78,7 +79,7 @@ src/
     store/
       store.ts            # loadAnswers(), saveAnswers(), storePath() — JSON file in OS temp dir (for --retry)
 e2e/
-  e2e.spec.ts             # E2E tests: runs the built binary via execSync with --dry-run/--stdin
+  e2e.spec.ts             # E2E tests: runs the built binary via execSync/spawnSync
 ```
 
 ## Architecture
@@ -98,7 +99,7 @@ The codebase is split into two layers with a thin orchestration layer connecting
 - **Prompt pattern:** Each question (`type`, `scope`, `subject`, `body`, `breaking`, `issues`, `coAuthors`, `signoff`) is an exported factory that takes the prompt options and returns a function that either resolves the autofilled answer, calls a `@clack/prompts` prompt, or returns `undefined` to skip. Factories call clack through the injected `prompter` (a `Prompter` from `src/cli/types.ts`); `createPrompts()` defaults it to `@clack/prompts`, collects the prompts listed in `config.prompts`, and runs them with `prompter.group()`.
 - **Config schema:** Every config file is loaded through a valibot schema with `safeParse`. The schema only validates shape; it applies no defaults, so absent keys stay absent and commitlint-derived values are not overwritten when configs merge. Defaults are merged once, in `normalizeConfig()`, from the per-section objects in `defaults.ts`. Invalid config throws a `TypeError` with a human-readable summary.
 - **Config normalization:** `normalizeConfig()` converts `string` type entries (short form) to full `TypeEntry` objects by looking them up in `builtinTypes`.
-- **Logging:** All CLI output goes through `@clack/prompts` (`log.*`, `cancel`). No `console.*` calls and no color library.
+- **Logging:** All CLI output goes through `@clack/prompts` (`log.*`, `cancel`). Errors, warnings and notices go to stderr through `notice` in `src/cli/utils/log.ts`; stdout only carries command results. No `console.*` calls and no color library.
 - **Emoji:** Controlled by `config.emoji.enabled` (config), the `GITZY_NO_EMOJI` env var, and the commit `--no-emoji` flag (Commander maps it to `flags.emoji === false`). Always resolve it through `isEmojiEnabled()` in `src/core/conventional/message.ts`.
 - **`--stdin`:** Both `commit` and `branch` commands accept JSON answers piped via stdin, validated with a valibot schema and merged with CLI flags (flags take priority over stdin).
 - **`--amend` (commit):** Parses HEAD commit message with `getAmendParts()` to pre-fill prompts (best-effort regex parsing).

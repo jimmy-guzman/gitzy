@@ -8,6 +8,7 @@ import { object, partial, string } from "valibot";
 
 import type { BranchFlags } from "@/cli/types";
 import { createFuzzyFilter } from "@/cli/utils/fuzzy-search";
+import { notice } from "@/cli/utils/log";
 import { readStdinJson } from "@/cli/utils/stdin";
 import { formatBranchName } from "@/core/branch/formatter";
 import { parseBranchName } from "@/core/branch/parser";
@@ -232,7 +233,7 @@ export const registerBranchCommand = (program: Command) => {
           });
 
           if (result.hasRemote) {
-            log.warn(
+            notice.warn(
               `Remote tracking ref exists for "${result.oldName}". You must manually push and delete the remote branch.`
             );
           }
@@ -251,7 +252,7 @@ export const registerBranchCommand = (program: Command) => {
           writeResult(opts, branchName);
         }
       } catch (error: unknown) {
-        log.error(error instanceof Error ? error.message : String(error));
+        notice.error(error instanceof Error ? error.message : String(error));
         process.exit(1);
       }
     });

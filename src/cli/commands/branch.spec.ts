@@ -1,6 +1,5 @@
-import { log } from "@clack/prompts";
-
 import { cli } from "@/cli";
+import { notice } from "@/cli/utils/log";
 import * as stdinUtils from "@/cli/utils/stdin";
 import { defaultResolvedConfig } from "@/core/config/defaults";
 import * as config from "@/core/config/resolver";
@@ -49,7 +48,7 @@ describe("branch command", () => {
     const exitSpy = vi.spyOn(process, "exit").mockImplementation((code) => {
       throw new Error(`process.exit(${String(code)})`);
     });
-    const errorSpy = vi.spyOn(log, "error").mockImplementation(() => {
+    const errorSpy = vi.spyOn(notice, "error").mockImplementation(() => {
       // noop
     });
 
@@ -72,7 +71,7 @@ describe("branch command", () => {
     const exitSpy = vi.spyOn(process, "exit").mockImplementation((code) => {
       throw new Error(`process.exit(${String(code)})`);
     });
-    const errorSpy = vi.spyOn(log, "error").mockImplementation(() => {
+    const errorSpy = vi.spyOn(notice, "error").mockImplementation(() => {
       // noop
     });
 
@@ -92,7 +91,7 @@ describe("branch command", () => {
     const exitSpy = vi.spyOn(process, "exit").mockImplementation((code) => {
       throw new Error(`process.exit(${String(code)})`);
     });
-    const errorSpy = vi.spyOn(log, "error").mockImplementation(() => {
+    const errorSpy = vi.spyOn(notice, "error").mockImplementation(() => {
       // noop
     });
 
