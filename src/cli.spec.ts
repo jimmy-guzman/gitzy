@@ -1,6 +1,14 @@
 // cspell:ignore headr
 
-import { writeFileSync } from "node:fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  realpathSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import os from "node:os";
 import path from "node:path";
 
 import { cli } from "./cli";
@@ -12,11 +20,14 @@ import * as gitChecks from "./core/git/checks";
 import * as gitOperations from "./core/git/operations";
 import * as gitSignoff from "./core/git/signoff";
 import { git, useTempGitRepo } from "./core/git/test-utils";
+import { loadAnswers } from "./core/store/store";
 
 const answerArgs = ["node", "gitzy", "--type", "feat", "-m", "test commit"];
 
 describe(cli, () => {
   const originalArgv = process.argv;
+
+  useTempGitRepo();
 
   beforeEach(() => {
     vi.resetAllMocks();
@@ -271,9 +282,97 @@ describe(cli, () => {
     expect(exitSpy).toHaveBeenCalledWith(1);
   });
 
-  describe("when hook mode is inferred from the environment", () => {
-    useTempGitRepo();
+  describe("when retrying", () => {
+    const retryFile = path.join(".git", "gitzy", "retry.json");
 
+    beforeEach(async () => {
+      writeFileSync("file.txt", "hello");
+      await git("add", "file.txt");
+      vi.spyOn(config, "resolveConfig").mockResolvedValueOnce({
+        config: defaultResolvedConfig,
+        warnings: [],
+      });
+    });
+
+    it("should read the previous answers from the git dir", async () => {
+      const performCommitSpy = vi
+        .spyOn(gitOperations, "commit")
+        .mockResolvedValueOnce({ message: "" });
+
+      mkdirSync(path.dirname(retryFile), { recursive: true });
+      writeFileSync(
+        retryFile,
+        JSON.stringify({
+          body: "",
+          breaking: "",
+          coAuthors: [],
+          issues: [],
+          scope: "",
+          subject: "from git dir",
+          type: "feat",
+        })
+      );
+      process.argv = ["node", "gitzy", "--retry"];
+
+      await cli();
+
+      expect(performCommitSpy).toHaveBeenCalledWith(
+        expect.stringContaining("from git dir"),
+        expect.any(Object)
+      );
+    });
+
+    it("should save the answers to the git dir", async () => {
+      vi.spyOn(gitOperations, "commit").mockResolvedValueOnce({ message: "" });
+
+      await cli();
+
+      expect(JSON.parse(readFileSync(retryFile, "utf-8"))).toMatchObject({
+        subject: "test commit",
+        type: "feat",
+      });
+    });
+  });
+
+  describe("when retrying outside a git repo", () => {
+    const originalCwd = process.cwd();
+    let dir = "";
+    let tempFile = "";
+
+    beforeEach(() => {
+      dir = realpathSync(mkdtempSync(path.join(os.tmpdir(), "gitzy-plain-")));
+      tempFile = path.join(
+        os.tmpdir(),
+        "gitzy",
+        "v7",
+        `${path.basename(dir)}-store.json`
+      );
+      process.chdir(dir);
+    });
+
+    afterEach(() => {
+      rmSync(tempFile, { force: true });
+      process.chdir(originalCwd);
+      rmSync(dir, { force: true, recursive: true });
+    });
+
+    it("should save the answers to the temp dir", async () => {
+      vi.spyOn(config, "resolveConfig").mockResolvedValueOnce({
+        config: defaultResolvedConfig,
+        warnings: [],
+      });
+      process.argv = [...answerArgs, "--dry-run"];
+
+      await cli();
+
+      expect(loadAnswers(tempFile)).toMatchObject({
+        subject: "test commit",
+        type: "feat",
+      });
+    });
+  });
+
+  describe("when hook mode is inferred from the environment", () => {
     it.each([
       ["GIT_DIR", ".git"],
       ["GIT_INDEX_FILE", path.join(".git", "index")],
