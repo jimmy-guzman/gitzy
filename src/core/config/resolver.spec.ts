@@ -1,3 +1,5 @@
+// cspell:ignore headr tpye
+
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -42,7 +44,7 @@ describe(resolveConfig, () => {
 
   describe("basic gitzy config loading", () => {
     it("should return normalized defaults when no config files exist", async () => {
-      const result = await resolveConfig();
+      const { config: result } = await resolveConfig();
 
       expect(result).toStrictEqual(normalizeConfig(null));
     });
@@ -55,7 +57,7 @@ describe(resolveConfig, () => {
 
       writeConfigs(gitzyConfig, null);
 
-      const result = await resolveConfig();
+      const { config: result } = await resolveConfig();
 
       expect(result).toStrictEqual(normalizeConfig(gitzyConfig));
     });
@@ -72,7 +74,7 @@ describe(resolveConfig, () => {
 
       writeConfigs(gitzyConfig, null);
 
-      const result = await resolveConfig();
+      const { config: result } = await resolveConfig();
 
       expect(result.scopes).toStrictEqual([
         { description: "dependency updates", name: "deps" },
@@ -92,7 +94,7 @@ describe(resolveConfig, () => {
 
       writeConfigs(gitzyConfig, commitlintConfig);
 
-      const result = await resolveConfig();
+      const { config: result } = await resolveConfig();
 
       expect(result.scopes).toStrictEqual([
         { description: "dependency updates", name: "deps" },
@@ -109,7 +111,7 @@ describe(resolveConfig, () => {
 
       writeConfigs(null, commitlintConfig);
 
-      const result = await resolveConfig();
+      const { config: result } = await resolveConfig();
 
       expect(result.scopes).toStrictEqual([{ name: "api" }, { name: "ui" }]);
     });
@@ -131,7 +133,7 @@ describe(resolveConfig, () => {
 
       writeConfigs(gitzyConfig, commitlintConfig);
 
-      const result = await resolveConfig();
+      const { config: result } = await resolveConfig();
 
       expect(result.header.max).toBe(50);
       expect(result.scopes.map((s) => s.name)).toStrictEqual(["ui"]);
@@ -151,7 +153,7 @@ describe(resolveConfig, () => {
 
       writeConfigs(gitzyConfig, commitlintConfig);
 
-      const result = await resolveConfig();
+      const { config: result } = await resolveConfig();
 
       expect(result.scopes.map((s) => s.name)).toStrictEqual(["api", "ui"]);
     });
@@ -166,7 +168,7 @@ describe(resolveConfig, () => {
 
       writeConfigs(gitzyConfig, commitlintConfig);
 
-      const result = await resolveConfig();
+      const { config: result } = await resolveConfig();
 
       expect(result.types.map((t) => t.name)).toStrictEqual(["feat", "fix"]);
     });
@@ -180,7 +182,7 @@ describe(resolveConfig, () => {
 
       writeConfigs(null, commitlintConfig);
 
-      const result = await resolveConfig();
+      const { config: result } = await resolveConfig();
 
       expect(result.types.map((t) => t.name)).toStrictEqual(["feat", "fix"]);
     });
@@ -188,7 +190,7 @@ describe(resolveConfig, () => {
     it("should load a commitlint config with a disabled rule", async () => {
       writeConfigs(null, { rules: { "body-max-length": [0] } });
 
-      const result = await resolveConfig();
+      const { config: result } = await resolveConfig();
 
       expect(result).toStrictEqual(normalizeConfig({}));
     });
@@ -198,7 +200,7 @@ describe(resolveConfig, () => {
 
       writeConfigs(gitzyConfig, null);
 
-      const result = await resolveConfig();
+      const { config: result } = await resolveConfig();
 
       expect(result).toStrictEqual(normalizeConfig(gitzyConfig));
     });
@@ -213,7 +215,7 @@ describe(resolveConfig, () => {
 
       writeConfigs(gitzyConfig, commitlintConfig);
 
-      const result = await resolveConfig();
+      const { config: result } = await resolveConfig();
 
       expect(result.header.max).toBe(72);
       expect(result.header.min).toBe(3);
@@ -227,7 +229,7 @@ describe(resolveConfig, () => {
 
       writeConfigs(gitzyConfig, commitlintConfig);
 
-      const result = await resolveConfig();
+      const { config: result } = await resolveConfig();
 
       expect(result.header.max).toBe(50);
       expect(result.header.min).toBe(3);
@@ -243,7 +245,7 @@ describe(resolveConfig, () => {
 
       writeConfigs(null, commitlintConfig);
 
-      const result = await resolveConfig();
+      const { config: result } = await resolveConfig();
 
       expect(result.header.max).toBe(100);
       expect(result.header.min).toBe(5);
@@ -263,7 +265,7 @@ describe(resolveConfig, () => {
 
       writeConfigs(gitzyConfig, commitlintConfig);
 
-      const result = await resolveConfig();
+      const { config: result } = await resolveConfig();
 
       expect(result.scopes).toStrictEqual([
         { description: "Purchase Plan", name: "pp" },
@@ -285,7 +287,7 @@ describe(resolveConfig, () => {
 
       writeConfigs(gitzyConfig, commitlintConfig);
 
-      const result = await resolveConfig();
+      const { config: result } = await resolveConfig();
 
       expect(result.scopes).toStrictEqual([
         { description: "Purchase Plan", name: "pp" },
@@ -304,7 +306,7 @@ describe(resolveConfig, () => {
 
       writeConfigs(gitzyConfig, commitlintConfig);
 
-      const result = await resolveConfig();
+      const { config: result } = await resolveConfig();
 
       expect(result.scopes.map((s) => s.name)).toStrictEqual(["api", "ui"]);
     });
@@ -321,7 +323,7 @@ describe(resolveConfig, () => {
 
       writeConfigs(gitzyConfig, commitlintConfig);
 
-      const result = await resolveConfig();
+      const { config: result } = await resolveConfig();
 
       expect(result.types.map((t) => t.name)).toStrictEqual([
         "feat",
@@ -343,7 +345,7 @@ describe(resolveConfig, () => {
 
       writeConfigs(gitzyConfig, commitlintConfig);
 
-      const result = await resolveConfig();
+      const { config: result } = await resolveConfig();
 
       expect(result.types).toStrictEqual([
         { description: "New feature", emoji: "✨", name: "feat" },
@@ -363,7 +365,7 @@ describe(resolveConfig, () => {
 
       writeConfigs(gitzyConfig, commitlintConfig);
 
-      const result = await resolveConfig();
+      const { config: result } = await resolveConfig();
 
       expect(result.types.map((t) => t.name)).toStrictEqual(["feat", "fix"]);
     });
@@ -380,7 +382,7 @@ describe(resolveConfig, () => {
 
       writeConfigs(gitzyConfig, commitlintConfig);
 
-      const result = await resolveConfig();
+      const { config: result } = await resolveConfig();
 
       expect(result.scopes.map((s) => s.name)).toStrictEqual(["api", "ui"]);
     });
@@ -388,7 +390,7 @@ describe(resolveConfig, () => {
     it("should return undefined scopes when neither gitzy nor commitlint defines them", async () => {
       writeConfigs({}, { rules: {} });
 
-      const result = await resolveConfig();
+      const { config: result } = await resolveConfig();
 
       expect(result.scopes).toStrictEqual([]);
     });
@@ -401,9 +403,41 @@ describe(resolveConfig, () => {
 
       writeConfigs(gitzyConfig, commitlintConfig);
 
-      const result = await resolveConfig();
+      const { config: result } = await resolveConfig();
 
       expect(result.types.map((t) => t.name)).toStrictEqual(["feat"]);
+    });
+
+    it("should warn about typos and impossible values in the gitzy config", async () => {
+      writeConfigs({ headr: { max: 1 }, prompts: ["tpye"] }, null);
+
+      const { warnings } = await resolveConfig();
+
+      expect(warnings).toStrictEqual([
+        'Unknown config key "headr"',
+        'Unknown prompt "tpye"',
+      ]);
+    });
+
+    it("should not overflow on self-referencing config values", async () => {
+      writeFileSync(
+        path.join(dir, "gitzy.config.cjs"),
+        "const o = {}; o.self = o; module.exports = { extra: o };"
+      );
+      writeFileSync(
+        path.join(dir, ".commitlintrc.cjs"),
+        "const p = {}; p.self = p; module.exports = { plugins: [p], rules: {} };"
+      );
+
+      const { warnings } = await resolveConfig();
+
+      expect(warnings).toStrictEqual(['Unknown config key "extra"']);
+    });
+
+    it("should not warn when no config files exist", async () => {
+      const { warnings } = await resolveConfig();
+
+      expect(warnings).toStrictEqual([]);
     });
 
     it("should reject an invalid gitzy config", async () => {

@@ -19,7 +19,10 @@ describe("branch command", () => {
       configurable: true,
       value: true,
     });
-    vi.spyOn(config, "resolveConfig").mockResolvedValue(defaultResolvedConfig);
+    vi.spyOn(config, "resolveConfig").mockResolvedValue({
+      config: defaultResolvedConfig,
+      warnings: [],
+    });
     process.argv = [...baseArgs];
   });
 
@@ -96,8 +99,8 @@ describe("branch command", () => {
     });
 
     vi.spyOn(config, "resolveConfig").mockResolvedValueOnce({
-      ...defaultResolvedConfig,
-      scopes: [{ name: "api" }],
+      config: { ...defaultResolvedConfig, scopes: [{ name: "api" }] },
+      warnings: [],
     });
     vi.spyOn(stdinUtils, "readStdinJson").mockResolvedValueOnce({
       scope: "bogus",

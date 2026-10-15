@@ -1,3 +1,5 @@
+// cspell:ignore headr
+
 import { writeFileSync } from "node:fs";
 import path from "node:path";
 
@@ -41,9 +43,10 @@ describe(cli, () => {
 
     vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce();
     vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce();
-    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
-      defaultResolvedConfig
-    );
+    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce({
+      config: defaultResolvedConfig,
+      warnings: [],
+    });
 
     process.argv = [...answerArgs, "-n"];
 
@@ -65,9 +68,10 @@ describe(cli, () => {
     );
     vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce();
     vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce();
-    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
-      defaultResolvedConfig
-    );
+    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce({
+      config: defaultResolvedConfig,
+      warnings: [],
+    });
 
     process.argv = [...answerArgs, "-s"];
 
@@ -86,9 +90,10 @@ describe(cli, () => {
 
     vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce();
     vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce();
-    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
-      defaultResolvedConfig
-    );
+    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce({
+      config: defaultResolvedConfig,
+      warnings: [],
+    });
 
     process.argv = [...answerArgs, "--signoff", "Bot <bot@example.com>"];
 
@@ -113,7 +118,7 @@ describe(cli, () => {
 
     const getUserConfigSpy = vi
       .spyOn(config, "resolveConfig")
-      .mockResolvedValueOnce(defaultResolvedConfig);
+      .mockResolvedValueOnce({ config: defaultResolvedConfig, warnings: [] });
 
     await cli();
 
@@ -138,9 +143,10 @@ describe(cli, () => {
 
     vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce();
     vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce();
-    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
-      defaultResolvedConfig
-    );
+    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce({
+      config: defaultResolvedConfig,
+      warnings: [],
+    });
 
     process.argv = ["node", "gitzy", "--type", "nope", "-m", "hi"];
 
@@ -163,9 +169,10 @@ describe(cli, () => {
 
     vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce();
     vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce();
-    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
-      defaultResolvedConfig
-    );
+    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce({
+      config: defaultResolvedConfig,
+      warnings: [],
+    });
     vi.spyOn(stdinUtils, "readStdinJson").mockResolvedValueOnce({
       subject: "hello there",
       type: "nope",
@@ -191,9 +198,10 @@ describe(cli, () => {
 
     vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce();
     vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce();
-    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
-      defaultResolvedConfig
-    );
+    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce({
+      config: defaultResolvedConfig,
+      warnings: [],
+    });
     vi.spyOn(stdinUtils, "readStdinJson").mockResolvedValueOnce({
       subject: "hello there",
     });
@@ -215,9 +223,10 @@ describe(cli, () => {
 
     vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce();
     vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce();
-    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
-      defaultResolvedConfig
-    );
+    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce({
+      config: defaultResolvedConfig,
+      warnings: [],
+    });
     vi.spyOn(stdinUtils, "readStdinJson").mockResolvedValueOnce({
       subject: "add dark mode",
       type: "feat",
@@ -240,9 +249,10 @@ describe(cli, () => {
 
     vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce();
     vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce();
-    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
-      defaultResolvedConfig
-    );
+    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce({
+      config: defaultResolvedConfig,
+      warnings: [],
+    });
     vi.spyOn(notice, "error").mockImplementation(() => {
       // noop
     });
@@ -273,9 +283,10 @@ describe(cli, () => {
         writeFileSync("file.txt", "hello");
         await git("add", "file.txt");
         vi.stubEnv(name, value);
-        vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
-          defaultResolvedConfig
-        );
+        vi.spyOn(config, "resolveConfig").mockResolvedValueOnce({
+          config: defaultResolvedConfig,
+          warnings: [],
+        });
         const stderrSpy = vi
           .spyOn(process.stderr, "write")
           .mockReturnValue(true);
@@ -293,9 +304,10 @@ describe(cli, () => {
 
     it("should not warn when --hook is passed", async () => {
       vi.stubEnv("GIT_DIR", ".git");
-      vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
-        defaultResolvedConfig
-      );
+      vi.spyOn(config, "resolveConfig").mockResolvedValueOnce({
+        config: defaultResolvedConfig,
+        warnings: [],
+      });
       const stderrSpy = vi.spyOn(process.stderr, "write").mockReturnValue(true);
 
       process.argv = [...answerArgs, "--hook"];
@@ -306,5 +318,22 @@ describe(cli, () => {
 
       expect(stderr).not.toContain("Inferred hook mode");
     });
+  });
+
+  it("should print config warnings to stderr", async () => {
+    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce({
+      config: defaultResolvedConfig,
+      warnings: ['Unknown config key "headr"'],
+    });
+    vi.spyOn(process.stdout, "write").mockReturnValue(true);
+    const stderrSpy = vi.spyOn(process.stderr, "write").mockReturnValue(true);
+
+    process.argv = ["node", "gitzy", "config"];
+
+    await cli();
+
+    const stderr = stderrSpy.mock.calls.map(([chunk]) => chunk).join("");
+
+    expect(stderr).toContain('Unknown config key "headr"');
   });
 });

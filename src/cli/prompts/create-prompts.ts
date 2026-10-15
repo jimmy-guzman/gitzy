@@ -2,6 +2,7 @@ import * as clack from "@clack/prompts";
 import type { PromptGroup } from "@clack/prompts";
 
 import type { CommitFlags, CreatedPromptOptions, Prompter } from "@/cli/types";
+import type { promptNames } from "@/core/config/defaults";
 import type { ResolvedConfig } from "@/core/config/types";
 import { splitList } from "@/core/conventional/schema";
 import type { MessageParts } from "@/core/conventional/types";
@@ -26,7 +27,7 @@ interface RawGroupResult {
   type?: string | symbol;
 }
 
-type PromptName = keyof RawGroupResult;
+type PromptName = (typeof promptNames)[number];
 
 type PromptFactories = {
   [K in PromptName]: (

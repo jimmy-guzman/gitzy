@@ -7,6 +7,7 @@ import type { Command } from "commander";
 import { object, partial, string } from "valibot";
 
 import type { BranchFlags } from "@/cli/types";
+import { resolveConfigWithWarnings } from "@/cli/utils/config";
 import { createFuzzyFilter } from "@/cli/utils/fuzzy-search";
 import { notice } from "@/cli/utils/log";
 import { readStdinJson } from "@/cli/utils/stdin";
@@ -14,7 +15,6 @@ import { formatBranchName } from "@/core/branch/formatter";
 import { parseBranchName } from "@/core/branch/parser";
 import type { BranchParts } from "@/core/branch/types";
 import { validateBranchParts } from "@/core/branch/validate";
-import { resolveConfig } from "@/core/config/resolver";
 import type { ResolvedConfig } from "@/core/config/types";
 import {
   createBranch,
@@ -196,7 +196,7 @@ export const registerBranchCommand = (program: Command) => {
     .addHelpText("after", `\nExamples:\n      ${lang.branch.examples}\n    `)
     .action(async (opts: BranchFlags, cmd: Command) => {
       try {
-        const config = await resolveConfig();
+        const config = await resolveConfigWithWarnings();
 
         const amendInitial =
           opts.amend === true
