@@ -16,11 +16,12 @@ const setupSubject = (configOverrides = {}, autofill = {}) =>
 
 const getValidate = async (
   configOverrides = {},
-  results: Partial<MessageParts> = {}
+  results: Partial<MessageParts> = {},
+  autofill: Partial<MessageParts> = {}
 ) => {
   const { text } = prompter;
 
-  const factory = setupSubject(configOverrides);
+  const factory = setupSubject(configOverrides, autofill);
 
   await factory({ results });
 
@@ -136,6 +137,20 @@ describe(subject, () => {
 
       // header prefix "feat(*): " = 9 chars, max = 64, remaining = 55
       expect(validate("#".repeat(55))).toBeUndefined();
+    });
+
+    it("should account for a breaking marker already known via autofill", async () => {
+      const validate = await getValidate(
+        { breaking: { format: "!" }, header: { max: 20, min: 5 } },
+        { scope: "", type: "feat" },
+        { breaking: "oh no", scope: "", type: "feat" }
+      );
+
+      // header prefix "feat!: ✨ " = 9 chars, max = 20, remaining = 11
+      expect(validate("#".repeat(11))).toBeUndefined();
+      expect(validate("#".repeat(12))).toBe(
+        "Remove 1 character (11 available)"
+      );
     });
   });
 });

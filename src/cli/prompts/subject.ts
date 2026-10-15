@@ -23,7 +23,12 @@ export const subject = ({
 
       const { header } = formatMessageResult(
         config,
-        { ...defaultMessageParts, ...context?.results, subject: value },
+        {
+          ...defaultMessageParts,
+          ...autofill,
+          ...context?.results,
+          subject: value,
+        },
         flags.emoji ?? true
       );
       const prefixLength = header.length - value.length;
