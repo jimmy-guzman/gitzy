@@ -11,7 +11,7 @@ import { x } from "tinyexec";
 /**
  * Get the absolute path of the git directory, wherever in the work tree we are
  */
-const getGitDir = async () => {
+export const getGitDir = async () => {
   try {
     const result = await x("git", ["rev-parse", "--absolute-git-dir"], {
       throwOnError: true,

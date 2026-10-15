@@ -21,7 +21,7 @@ import { checkIfGitRepo, checkIfStaged } from "@/core/git/checks";
 import { commit } from "@/core/git/operations";
 import { getSignoffTrailer } from "@/core/git/signoff";
 import { isString } from "@/core/guards";
-import { loadAnswers, saveAnswers } from "@/core/store/store";
+import { loadAnswers, saveAnswers, storePath } from "@/core/store/store";
 import { lang } from "@/lang";
 
 const assertValid = (
@@ -143,8 +143,8 @@ const toFlagAnswers = (flags: CommitFlags) => {
   return answers;
 };
 
-const loadAutofill = async (flags: CommitFlags) => {
-  const previous = flags.retry === true ? loadAnswers() : {};
+const loadAutofill = async (flags: CommitFlags, retryFile: string) => {
+  const previous = flags.retry === true ? loadAnswers(retryFile) : {};
 
   if (flags.retry === true && Object.keys(previous).length === 0) {
     notice.warn(`There is no previous gitzy commit to retry...`);
@@ -262,7 +262,8 @@ export const registerCommitCommand = (program: Command) => {
 
         const amendInitial =
           flags.amend === true ? await getAmendParts() : undefined;
-        const autofillAnswers = await loadAutofill(flags);
+        const retryFile = await storePath();
+        const autofillAnswers = await loadAutofill(flags, retryFile);
         const flagAnswers = toFlagAnswers(flags);
 
         if (!process.stdin.isTTY && !canSkipPrompts(flags)) {
@@ -278,7 +279,7 @@ export const registerCommitCommand = (program: Command) => {
           amendInitial
         );
 
-        saveAnswers(answers);
+        saveAnswers(retryFile, answers);
 
         if (flags.coAuthor) {
           answers.coAuthors = flags.coAuthor;

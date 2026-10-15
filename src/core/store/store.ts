@@ -6,26 +6,30 @@ import type { InferOutput } from "valibot";
 import { parseJson, pipe, safeParse, string } from "valibot";
 
 import { PartialMessagePartsSchema } from "@/core/conventional/schema";
+import { getGitDir } from "@/core/git/operations";
 
 type StoredAnswers = InferOutput<typeof PartialMessagePartsSchema>;
 
 /**
- * Path of the file holding the previous commit answers, e.g. `$TMPDIR/gitzy/v7/<cwd-basename>-store.json`
+ * Path of the file holding the previous commit answers: `<git dir>/gitzy/retry.json`, or `$TMPDIR/gitzy/v7/<cwd-basename>-store.json` outside a git repo
  */
-export const storePath = () =>
-  path.join(
-    os.tmpdir(),
-    "gitzy",
-    "v7",
-    `${path.basename(process.cwd())}-store.json`
-  );
+export const storePath = async () => {
+  try {
+    return path.join(await getGitDir(), "gitzy", "retry.json");
+  } catch {
+    return path.join(
+      os.tmpdir(),
+      "gitzy",
+      "v7",
+      `${path.basename(process.cwd())}-store.json`
+    );
+  }
+};
 
 /**
  * Persists the previous commit answers so `--retry` can reuse them
  */
-export const saveAnswers = (data: StoredAnswers) => {
-  const file = storePath();
-
+export const saveAnswers = (file: string, data: StoredAnswers) => {
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, JSON.stringify(data, null, 2), { mode: 0o0600 });
 };
@@ -33,11 +37,11 @@ export const saveAnswers = (data: StoredAnswers) => {
 /**
  * Loads the previous commit answers, or `{}` when missing or invalid
  */
-export const loadAnswers = (): StoredAnswers => {
+export const loadAnswers = (file: string): StoredAnswers => {
   let raw: string;
 
   try {
-    raw = fs.readFileSync(storePath(), "utf-8");
+    raw = fs.readFileSync(file, "utf-8");
   } catch (error) {
     if (error instanceof Error && "code" in error && error.code === "EACCES") {
       throw new Error("gitzy does not have permission to load this file", {

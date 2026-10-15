@@ -71,14 +71,14 @@ src/
       message.ts          # formatMessageResult() (header/body/footer + full message), wrap(), isEmojiEnabled() and formatBody() (shared by prompts), GITZY_NO_EMOJI support
     git/
       checks.ts           # checkIfGitRepo(), checkIfStaged()
-      operations.ts       # commit() — runs git commit -m, or writes COMMIT_EDITMSG in hook mode
+      operations.ts       # commit() — runs git commit -m, or writes COMMIT_EDITMSG in hook mode; getGitDir()
       branch.ts           # createBranch(), renameBranch(), getCurrentBranch()
       amend.ts            # getAmendParts(), parseConventionalCommit() — pre-fill from HEAD
     init/
       init.ts             # init() — generates gitzy.config.js in cwd
     guards.ts             # isString() type predicate (keeps `typeof` inside a named guard)
     store/
-      store.ts            # loadAnswers(), saveAnswers(), storePath() — JSON file in OS temp dir (for --retry)
+      store.ts            # loadAnswers(file), saveAnswers(file, data), storePath() — retry answers JSON in the git dir (OS temp dir outside a repo)
 e2e/
   e2e.spec.ts             # E2E tests: runs the built binary via execSync/spawnSync
 ```
@@ -105,7 +105,7 @@ The codebase is split into two layers with a thin orchestration layer connecting
 - **`--stdin`:** Both `commit` and `branch` commands accept JSON answers piped via stdin, validated with a valibot schema and merged with CLI flags (flags take priority over stdin).
 - **`--amend` (commit):** Parses HEAD commit message with `getAmendParts()` to pre-fill prompts (best-effort regex parsing).
 - **`--amend` (branch):** Renames the current branch via `git branch -m`. Warns if a remote tracking ref exists.
-- **Store (retry mode):** Previous answers persisted as JSON in `os.tmpdir()/gitzy/v7/<cwd-basename>-store.json` at mode `0o0600`; reads are validated with `PartialMessagePartsSchema`, so a corrupt or unexpected file loads as `{}`.
+- **Store (retry mode):** Previous answers persisted as JSON in `<git dir>/gitzy/retry.json` (falling back to `os.tmpdir()/gitzy/v7/<cwd-basename>-store.json` outside a git repo) at mode `0o0600`; reads are validated with `PartialMessagePartsSchema`, so a corrupt or unexpected file loads as `{}`.
 - **Bundling:** `tsdown` bundles every runtime package listed in `deps.onlyBundle` (`tsdown.config.ts`): `@clack/prompts` and its dependencies, `commander`, `valibot`, `@leeoniya/ufuzzy`, `lilconfig`, `tinyexec`. The published package has no runtime `dependencies`.
 - **Node API:** `src/index.ts` is the second tsdown entry → `dist/index.mjs`. The `exports` map in `package.json` points `"."` to this file.
 - Use `satisfies` for type narrowing when possible (e.g., `lang.ts` config objects).
