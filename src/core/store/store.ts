@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -30,7 +31,7 @@ export const storePath = async () => {
  * Persists the previous commit answers so `--retry` can reuse them
  */
 export const saveAnswers = (file: string, data: StoredAnswers) => {
-  const tmp = `${file}.${process.pid}.tmp`;
+  const tmp = `${file}.${process.pid}.${randomUUID()}.tmp`;
 
   fs.mkdirSync(path.dirname(file), { recursive: true });
 

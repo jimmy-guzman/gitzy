@@ -46,6 +46,18 @@ describe(loadAnswers, () => {
     expect(fs.statSync(file).mode.toString(8).slice(-3)).toBe("600");
   });
 
+  it("should save when an earlier save left a temp file behind", () => {
+    writeRaw("{}");
+    fs.writeFileSync(`${file}.${process.pid}.tmp`, "{}");
+
+    saveAnswers(file, { subject: "add retry", type: "feat" });
+
+    expect(loadAnswers(file)).toStrictEqual({
+      subject: "add retry",
+      type: "feat",
+    });
+  });
+
   it("should keep the previous answers when saving fails", () => {
     saveAnswers(file, { subject: "add retry", type: "feat" });
     vi.spyOn(fs, "writeFileSync").mockImplementationOnce(() => {
