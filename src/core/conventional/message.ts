@@ -129,7 +129,7 @@ export const wrap = (string: string, maxWidth = MAX_WIDTH) => {
   return string.replaceAll(regex, "$1\n");
 };
 
-const FENCE_REGEX = /^ {0,3}(?<delimiter>`{3,}|~{3,})[^`~]*$/u;
+const FENCE_REGEX = /^ {0,3}(?:(?<backtick>`{3,})[^`]*|(?<tilde>~{3,}).*)$/u;
 const INDENTED_REGEX = /^(?: {4}|\t)/u;
 const HANGING_INDENT_REGEX = /^ {0,3}(?:(?:[-*]|\d{1,9}\.)\s{1,4})?/u;
 
@@ -139,7 +139,8 @@ const wrapBody = (body: string, maxWidth: number) => {
   return body
     .split("\n")
     .map((line) => {
-      const delimiter = FENCE_REGEX.exec(line)?.groups?.delimiter ?? "";
+      const { backtick, tilde } = FENCE_REGEX.exec(line)?.groups ?? {};
+      const delimiter = backtick ?? tilde ?? "";
 
       if (fence) {
         if (

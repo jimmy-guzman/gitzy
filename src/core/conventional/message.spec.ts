@@ -999,6 +999,21 @@ describe(formatMessageResult, () => {
     `);
   });
 
+  it("should allow a backtick in a tilde fence's info string", () => {
+    const result = setupFormatMessageResult(
+      {},
+      {
+        body: "~~~ts `inline`\nconst result = formatMessageResult(config, parts, emoji) ?? fallbackValue;\n~~~",
+      }
+    );
+
+    expect(result.body).toMatchInlineSnapshot(`
+      "~~~ts \`inline\`
+      const result = formatMessageResult(config, parts, emoji) ?? fallbackValue;
+      ~~~"
+    `);
+  });
+
   it("should not close a tilde fence on a nested backtick fence", () => {
     const result = setupFormatMessageResult(
       {},
