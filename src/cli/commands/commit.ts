@@ -37,6 +37,14 @@ const assertValid = (
   return parts;
 };
 
+const canSkipPrompts = (flags: CommitFlags) =>
+  (flags.type !== undefined &&
+    flags.type !== "" &&
+    flags.subject !== undefined &&
+    flags.subject !== "") ||
+  flags.retry === true ||
+  flags.stdin === true;
+
 const promptQuestions = async (
   config: ResolvedConfig,
   flags: CommitFlags,
@@ -68,20 +76,33 @@ const promptQuestions = async (
     }
   }
 
+  // --stdin always answers from JSON, and a missing TTY can't prompt at all
+  // (e.g. --retry with nothing stored) — build the answers directly and let
+  // the shared validator report every problem at once instead of hanging on
+  // a prompt that has no terminal to render into.
+  if (flags.stdin === true || !process.stdin.isTTY) {
+    return assertValid(
+      config,
+      {
+        body: "",
+        breaking: "",
+        coAuthors: [],
+        issues: [],
+        scope: "",
+        type: "",
+        ...autofillAnswers,
+        subject: (autofillAnswers.subject ?? "").trim(),
+      },
+      flags.emoji ?? true
+    );
+  }
+
   return assertValid(
     config,
     await createPrompts(config, flags, autofillAnswers, amendInitial),
     flags.emoji ?? true
   );
 };
-
-const canSkipPrompts = (flags: CommitFlags) =>
-  (flags.type !== undefined &&
-    flags.type !== "" &&
-    flags.subject !== undefined &&
-    flags.subject !== "") ||
-  flags.retry === true ||
-  flags.stdin === true;
 
 const toFlagAnswers = (flags: CommitFlags) => {
   const answers: Partial<MessageParts> = {};

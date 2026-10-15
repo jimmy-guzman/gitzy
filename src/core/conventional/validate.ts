@@ -13,20 +13,18 @@ import type { MessageParts } from "./types";
 const hasScope = (scope: string) => scope !== "" && scope !== "none";
 
 /**
- * Validate message parts against a resolved config's business rules
+ * Validate a type/scope pair against a resolved config's allowed values.
+ * Shared by commit and branch, the only two business rules they both enforce.
  *
  * @param config - Resolved configuration
  *
- * @param parts - The message data to validate
- *
- * @param emoji - Whether emoji are enabled, for measuring the real header length
+ * @param parts - The type and scope to validate
  *
  * @returns A list of human-readable problems, empty when `parts` is valid
  */
-export const validateMessageParts = (
+export const validateTypeAndScope = (
   config: ResolvedConfig,
-  parts: MessageParts,
-  emoji: boolean
+  parts: { scope: string; type: string }
 ): string[] => {
   const problems: string[] = [];
 
@@ -45,6 +43,27 @@ export const validateMessageParts = (
 
     problems.push(`Invalid scope "${parts.scope}". Allowed scopes: ${allowed}`);
   }
+
+  return problems;
+};
+
+/**
+ * Validate message parts against a resolved config's business rules
+ *
+ * @param config - Resolved configuration
+ *
+ * @param parts - The message data to validate
+ *
+ * @param emoji - Whether emoji are enabled, for measuring the real header length
+ *
+ * @returns A list of human-readable problems, empty when `parts` is valid
+ */
+export const validateMessageParts = (
+  config: ResolvedConfig,
+  parts: MessageParts,
+  emoji: boolean
+): string[] => {
+  const problems = validateTypeAndScope(config, parts);
 
   const { min: subjectMin } = config.header;
 

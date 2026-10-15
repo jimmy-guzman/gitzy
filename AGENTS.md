@@ -136,6 +136,8 @@ pnpm build        # 3. Production build (MUST pass)
 
 If any step fails, fix the issue and re-run from that step. Do not move on until all pass.
 
+Passing verification means the change is _ready_ to commit — it does not mean commit it. Only commit when the user explicitly asks (see Branching & Commits).
+
 ## Conventions
 
 - **TypeScript:** strict mode with `noUnusedLocals`, `noUnusedParameters`, `noImplicitReturns`, `strictNullChecks` all enforced.
@@ -157,6 +159,7 @@ If any step fails, fix the issue and re-run from that step. Do not move on until
 
 ## Branching & Commits
 
+- **Only commit when asked:** Never run `git commit` / `pnpm gitzy` on your own initiative after finishing a change or passing verification. Wait for the user to explicitly ask you to commit (e.g., "commit this", "ship it").
 - **Commits:** Use `pnpm gitzy` to create commits. It enforces Conventional Commits format. Two approaches:
   - **Interactive mode:** Run `pnpm gitzy` and answer prompts.
   - **CLI flags (for automation/non-TTY):** Use flags inline. Example: `pnpm gitzy --type feat -m "add dry-run flag" -D`. Available flags: `--type`, `-m/--subject`, `--scope`, `--body`, `--breaking`, `--issue`, `-D/--dry-run`, `-a/--amend`, `-n/--no-verify`, `--co-author`.
