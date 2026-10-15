@@ -126,6 +126,26 @@ describe(body, () => {
       );
     });
 
+    it("should count the hanging indent of wrapped list items toward max", async () => {
+      const validate = await getValidate({
+        body: { ...defaultResolvedConfig.body, max: 75 },
+      });
+
+      expect(validate(`- ${"word ".repeat(14)}abc`)).toBe(
+        "Remove 2 characters (75 available)"
+      );
+    });
+
+    it("should trim before wrapping when counting toward max", async () => {
+      const validate = await getValidate({
+        body: { ...defaultResolvedConfig.body, max: 75 },
+      });
+
+      expect(validate(`    - ${"word ".repeat(14)}abc`)).toBe(
+        "Remove 2 characters (75 available)"
+      );
+    });
+
     it("should return undefined when length is within bounds", async () => {
       const validate = await getValidate({
         body: { ...defaultResolvedConfig.body, max: 20, min: 5 },

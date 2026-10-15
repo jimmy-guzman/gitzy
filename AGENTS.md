@@ -66,7 +66,7 @@ src/
     conventional/
       types.ts            # MessageParts interface + defaultMessageParts
       schema.ts           # PartialMessagePartsSchema — validates answers from stdin and the retry store
-      message.ts          # formatMessageResult() (header/body/footer + full message), wrap(), isEmojiEnabled() (shared by prompts), GITZY_NO_EMOJI support
+      message.ts          # formatMessageResult() (header/body/footer + full message), wrap(), isEmojiEnabled() and formatBody() (shared by prompts), GITZY_NO_EMOJI support
     git/
       checks.ts           # checkIfGitRepo(), checkIfStaged()
       operations.ts       # commit() — runs git commit -m, or writes COMMIT_EDITMSG in hook mode

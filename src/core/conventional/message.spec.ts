@@ -868,6 +868,136 @@ describe(formatMessageResult, () => {
       `"Signed-off-by: Jane Doe <jane@example.com>"`
     );
   });
+
+  it("should wrap a long bullet item with a hanging indent", () => {
+    const result = setupFormatMessageResult(
+      {},
+      {
+        body: "- this bullet item is long enough that it has to wrap onto a second line of the body",
+      }
+    );
+
+    expect(result.body).toMatchInlineSnapshot(`
+      "- this bullet item is long enough that it has to wrap onto a second line
+        of the body"
+    `);
+  });
+
+  it("should wrap a long numbered item with a hanging indent", () => {
+    const result = setupFormatMessageResult(
+      {},
+      {
+        body: "1. this numbered item is long enough that it has to wrap onto a second line of the body",
+      }
+    );
+
+    expect(result.body).toMatchInlineSnapshot(`
+      "1. this numbered item is long enough that it has to wrap onto a second
+         line of the body"
+    `);
+  });
+
+  it("should leave fenced code blocks untouched", () => {
+    const result = setupFormatMessageResult(
+      {},
+      {
+        body: "```ts\nconst result = formatMessageResult(config, parts, emoji) ?? fallbackValue;\n```",
+      }
+    );
+
+    expect(result.body).toMatchInlineSnapshot(`
+      "\`\`\`ts
+      const result = formatMessageResult(config, parts, emoji) ?? fallbackValue;
+      \`\`\`"
+    `);
+  });
+
+  it("should not treat a backtick line inside an indented block as a fence", () => {
+    const result = setupFormatMessageResult(
+      {},
+      {
+        body: "    ```\n\nthis prose comes after the indented block and is long enough that it has to wrap",
+      }
+    );
+
+    expect(result.body).toMatchInlineSnapshot(`
+      "    \`\`\`
+
+      this prose comes after the indented block and is long enough that it has
+      to wrap"
+    `);
+  });
+
+  it("should keep the indent of a list item continuation line", () => {
+    const result = setupFormatMessageResult(
+      {},
+      {
+        body: "- item\n  this continuation line is long enough that it has to wrap onto another line",
+      }
+    );
+
+    expect(result.body).toMatchInlineSnapshot(`
+      "- item
+        this continuation line is long enough that it has to wrap onto another
+        line"
+    `);
+  });
+
+  it("should not throw when a list marker is followed by a run of spaces", () => {
+    const result = setupFormatMessageResult(
+      {},
+      { body: `-${" ".repeat(72)}text` }
+    );
+
+    expect(result.body).toBe(`-${" ".repeat(71)}\n     text`);
+  });
+
+  it("should leave code inside a four-backtick fence untouched", () => {
+    const result = setupFormatMessageResult(
+      {},
+      {
+        body: "````md\nconst result = formatMessageResult(config, parts, emoji) ?? fallbackValue;\n````",
+      }
+    );
+
+    expect(result.body).toMatchInlineSnapshot(`
+      "\`\`\`\`md
+      const result = formatMessageResult(config, parts, emoji) ?? fallbackValue;
+      \`\`\`\`"
+    `);
+  });
+
+  it("should not close a four-backtick fence on a nested triple-backtick fence", () => {
+    const result = setupFormatMessageResult(
+      {},
+      {
+        body: "````md\n```ts\nconst result = formatMessageResult(config, parts, emoji) ?? fallbackValue;\n```\n````",
+      }
+    );
+
+    expect(result.body).toMatchInlineSnapshot(`
+      "\`\`\`\`md
+      \`\`\`ts
+      const result = formatMessageResult(config, parts, emoji) ?? fallbackValue;
+      \`\`\`
+      \`\`\`\`"
+    `);
+  });
+
+  it("should leave indented code blocks untouched", () => {
+    const result = setupFormatMessageResult(
+      {},
+      {
+        body: "example:\n\n    const result = formatMessageResult(config, parts, emoji) ?? fallbackValue;",
+      }
+    );
+
+    expect(result.body).toMatchInlineSnapshot(`
+      "example:
+
+          const result = formatMessageResult(config, parts, emoji) ?? fallbackValue;"
+    `);
+  });
 });
 
 describe(wrap, () => {
