@@ -984,6 +984,38 @@ describe(formatMessageResult, () => {
     `);
   });
 
+  it("should leave a tilde-fenced code block untouched", () => {
+    const result = setupFormatMessageResult(
+      {},
+      {
+        body: "~~~ts\nconst result = formatMessageResult(config, parts, emoji) ?? fallbackValue;\n~~~",
+      }
+    );
+
+    expect(result.body).toMatchInlineSnapshot(`
+      "~~~ts
+      const result = formatMessageResult(config, parts, emoji) ?? fallbackValue;
+      ~~~"
+    `);
+  });
+
+  it("should not close a tilde fence on a nested backtick fence", () => {
+    const result = setupFormatMessageResult(
+      {},
+      {
+        body: "~~~md\n```ts\nconst result = formatMessageResult(config, parts, emoji) ?? fallbackValue;\n```\n~~~",
+      }
+    );
+
+    expect(result.body).toMatchInlineSnapshot(`
+      "~~~md
+      \`\`\`ts
+      const result = formatMessageResult(config, parts, emoji) ?? fallbackValue;
+      \`\`\`
+      ~~~"
+    `);
+  });
+
   it("should leave indented code blocks untouched", () => {
     const result = setupFormatMessageResult(
       {},

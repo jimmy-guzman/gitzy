@@ -17,7 +17,7 @@ export const body =
       message: "Add a longer description",
       placeholder: "Optional — press Enter twice to skip",
       validate: (value) => {
-        const trimmedLength = formatBody(config, (value ?? "").trim()).length;
+        const trimmedLength = formatBody(config, value ?? "").length;
 
         if (trimmedLength > 0 && trimmedLength < min) {
           return `Add ${pluralize(min - trimmedLength, "more character")} (minimum ${min})`;
