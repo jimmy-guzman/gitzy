@@ -285,6 +285,49 @@ describe("gitzy", () => {
 
       expect(output).toContain("No TTY detected");
     });
+
+    it("should reject an invalid type from --stdin without prompting", () => {
+      const stdin = JSON.stringify({
+        ...defaultCommitPayload(),
+        type: "nope",
+      });
+      let output = "";
+
+      try {
+        execSync(`node "${BIN}" commit --dry-run --stdin`, {
+          cwd: E2E_CWD,
+          encoding: "utf-8",
+          input: Buffer.from(stdin),
+          timeout: 5000,
+        });
+      } catch (error: unknown) {
+        if (error instanceof Error && "stdout" in error) {
+          output = String(error.stdout);
+        }
+      }
+
+      expect(output).toContain('Invalid type "nope"');
+    });
+
+    it("should reject stdin missing the required type without prompting", () => {
+      const stdin = JSON.stringify({ subject: "hello there" });
+      let output = "";
+
+      try {
+        execSync(`node "${BIN}" commit --dry-run --stdin`, {
+          cwd: E2E_CWD,
+          encoding: "utf-8",
+          input: Buffer.from(stdin),
+          timeout: 5000,
+        });
+      } catch (error: unknown) {
+        if (error instanceof Error && "stdout" in error) {
+          output = String(error.stdout);
+        }
+      }
+
+      expect(output).toContain('Invalid type ""');
+    });
   });
 
   describe("branch", () => {
@@ -359,6 +402,49 @@ describe("gitzy", () => {
       }
 
       expect(output).toContain("No TTY detected");
+    });
+
+    it("should reject an invalid type from --stdin without prompting", () => {
+      const stdin = JSON.stringify({
+        ...defaultBranchPayload(),
+        type: "nope",
+      });
+      let output = "";
+
+      try {
+        execSync(`node "${BIN}" branch --dry-run --stdin`, {
+          cwd: E2E_CWD,
+          encoding: "utf-8",
+          input: Buffer.from(stdin),
+          timeout: 5000,
+        });
+      } catch (error: unknown) {
+        if (error instanceof Error && "stdout" in error) {
+          output = String(error.stdout);
+        }
+      }
+
+      expect(output).toContain('Invalid type "nope"');
+    });
+
+    it("should reject stdin missing the required subject without prompting", () => {
+      const stdin = JSON.stringify({ type: "feat" });
+      let output = "";
+
+      try {
+        execSync(`node "${BIN}" branch --dry-run --stdin`, {
+          cwd: E2E_CWD,
+          encoding: "utf-8",
+          input: Buffer.from(stdin),
+          timeout: 5000,
+        });
+      } catch (error: unknown) {
+        if (error instanceof Error && "stdout" in error) {
+          output = String(error.stdout);
+        }
+      }
+
+      expect(output).toContain("Subject is required");
     });
   });
 });

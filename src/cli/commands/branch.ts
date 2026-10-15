@@ -12,6 +12,7 @@ import { readStdinJson } from "@/cli/utils/stdin";
 import { formatBranchName } from "@/core/branch/formatter";
 import { parseBranchName } from "@/core/branch/parser";
 import type { BranchParts } from "@/core/branch/types";
+import { validateBranchParts } from "@/core/branch/validate";
 import { resolveConfig } from "@/core/config/resolver";
 import type { ResolvedConfig } from "@/core/config/types";
 import {
@@ -30,27 +31,36 @@ const PartialBranchAnswersSchema = partial(
   })
 );
 
+const assertValid = (config: ResolvedConfig, parts: BranchParts) => {
+  const problems = validateBranchParts(config, parts);
+
+  if (problems.length > 0) {
+    throw new TypeError(problems.join("\n"));
+  }
+
+  return parts;
+};
+
+const canSkipPrompts = (opts: BranchFlags, autofill: Partial<BranchParts>) =>
+  opts.stdin === true ||
+  (autofill.type !== undefined &&
+    autofill.type !== "" &&
+    autofill.subject !== undefined &&
+    autofill.subject !== "");
+
 const promptBranchQuestions = async (
   config: ResolvedConfig,
+  opts: BranchFlags,
   autofill: Partial<BranchParts>,
   amendInitial?: Partial<BranchParts>
 ) => {
-  if (
-    autofill.type !== undefined &&
-    autofill.type !== "" &&
-    autofill.subject !== undefined
-  ) {
-    const trimmedSubject = autofill.subject.trim();
-    const validType = config.types.some((t) => t.name === autofill.type);
-
-    if (trimmedSubject && validType) {
-      return {
-        issue: autofill.issue,
-        scope: autofill.scope,
-        subject: trimmedSubject,
-        type: autofill.type,
-      };
-    }
+  if (canSkipPrompts(opts, autofill)) {
+    return assertValid(config, {
+      issue: autofill.issue,
+      scope: autofill.scope ?? "",
+      subject: (autofill.subject ?? "").trim(),
+      type: autofill.type ?? "",
+    });
   }
 
   const typeOptions = config.types.map((t) => ({
@@ -199,13 +209,9 @@ export const registerBranchCommand = (program: Command) => {
             ? await readStdinJson(PartialBranchAnswersSchema)
             : {};
         const flagAnswers = toFlagAnswers(opts);
+        const autofillAnswers = { ...stdinAnswers, ...flagAnswers };
 
-        if (
-          !process.stdin.isTTY &&
-          (flagAnswers.type === undefined ||
-            flagAnswers.subject === undefined) &&
-          opts.stdin !== true
-        ) {
+        if (!process.stdin.isTTY && !canSkipPrompts(opts, autofillAnswers)) {
           cmd.error(
             "No TTY detected. Run gitzy branch --help for non-interactive usage."
           );
@@ -213,7 +219,8 @@ export const registerBranchCommand = (program: Command) => {
 
         const answers = await promptBranchQuestions(
           config,
-          { ...stdinAnswers, ...flagAnswers },
+          opts,
+          autofillAnswers,
           amendInitial
         );
 

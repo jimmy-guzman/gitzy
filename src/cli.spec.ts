@@ -4,6 +4,7 @@ import path from "node:path";
 import { log } from "@clack/prompts";
 
 import { cli } from "./cli";
+import * as stdinUtils from "./cli/utils/stdin";
 import { defaultResolvedConfig } from "./core/config/defaults";
 import * as config from "./core/config/resolver";
 import * as gitChecks from "./core/git/checks";
@@ -153,6 +154,114 @@ describe(cli, () => {
 
     expect(message).toContain('Invalid type "nope"');
     expect(message).toContain("Add 3 more characters (minimum 5)");
+  });
+
+  it("should exit 1 and report an invalid type from --stdin without prompting", async () => {
+    const exitSpy = vi.spyOn(process, "exit").mockImplementation((code) => {
+      throw new Error(`process.exit(${String(code)})`);
+    });
+    const errorSpy = vi.spyOn(log, "error").mockImplementation(() => {
+      // noop
+    });
+
+    vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce();
+    vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce();
+    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
+      defaultResolvedConfig
+    );
+    vi.spyOn(stdinUtils, "readStdinJson").mockResolvedValueOnce({
+      subject: "hello there",
+      type: "nope",
+    });
+
+    process.argv = ["node", "gitzy", "--stdin"];
+
+    await expect(cli()).rejects.toThrow("process.exit(1)");
+
+    expect(exitSpy).toHaveBeenCalledExactlyOnceWith(1);
+    expect(errorSpy).toHaveBeenCalledExactlyOnceWith(
+      expect.stringContaining('Invalid type "nope"')
+    );
+  });
+
+  it("should exit 1 and report a missing type from --stdin without prompting", async () => {
+    const exitSpy = vi.spyOn(process, "exit").mockImplementation((code) => {
+      throw new Error(`process.exit(${String(code)})`);
+    });
+    const errorSpy = vi.spyOn(log, "error").mockImplementation(() => {
+      // noop
+    });
+
+    vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce();
+    vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce();
+    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
+      defaultResolvedConfig
+    );
+    vi.spyOn(stdinUtils, "readStdinJson").mockResolvedValueOnce({
+      subject: "hello there",
+    });
+
+    process.argv = ["node", "gitzy", "--stdin"];
+
+    await expect(cli()).rejects.toThrow("process.exit(1)");
+
+    expect(exitSpy).toHaveBeenCalledExactlyOnceWith(1);
+    expect(errorSpy).toHaveBeenCalledExactlyOnceWith(
+      expect.stringContaining('Invalid type ""')
+    );
+  });
+
+  it("should commit from valid --stdin answers with only type and subject", async () => {
+    const performCommitSpy = vi
+      .spyOn(gitOperations, "commit")
+      .mockResolvedValueOnce({ message: "" });
+
+    vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce();
+    vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce();
+    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
+      defaultResolvedConfig
+    );
+    vi.spyOn(stdinUtils, "readStdinJson").mockResolvedValueOnce({
+      subject: "add dark mode",
+      type: "feat",
+    });
+
+    process.argv = ["node", "gitzy", "--stdin"];
+
+    await cli();
+
+    expect(performCommitSpy).toHaveBeenCalledWith(
+      expect.stringContaining("feat: ✨ add dark mode"),
+      expect.any(Object)
+    );
+  });
+
+  it("should error when no TTY is detected even with --retry and nothing stored", async () => {
+    const exitSpy = vi.spyOn(process, "exit").mockImplementation((code) => {
+      throw new Error(`process.exit(${String(code)})`);
+    });
+
+    vi.spyOn(gitChecks, "checkIfGitRepo").mockResolvedValueOnce();
+    vi.spyOn(gitChecks, "checkIfStaged").mockResolvedValueOnce();
+    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce(
+      defaultResolvedConfig
+    );
+    vi.spyOn(log, "error").mockImplementation(() => {
+      // noop
+    });
+    vi.spyOn(log, "warn").mockImplementation(() => {
+      // noop
+    });
+    Object.defineProperty(process.stdin, "isTTY", {
+      configurable: true,
+      value: undefined,
+    });
+
+    process.argv = ["node", "gitzy", "--retry"];
+
+    await expect(cli()).rejects.toThrow("process.exit(1)");
+
+    expect(exitSpy).toHaveBeenCalledWith(1);
   });
 
   describe("when hook mode is inferred from the environment", () => {
