@@ -61,6 +61,8 @@ const promptQuestions = async (
     hasTypeAndSubject || flags.stdin === true || !process.stdin.isTTY
       ? {
           ...defaultMessageParts,
+          coAuthors: amendInitial?.coAuthors ?? defaultMessageParts.coAuthors,
+          signoff: amendInitial?.signoff,
           ...autofillAnswers,
           subject: (autofillAnswers.subject ?? "").trim(),
         }

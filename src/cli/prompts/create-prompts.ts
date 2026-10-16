@@ -81,10 +81,13 @@ export const createPrompts = async (
   return {
     body: (result.body ?? "").trim(),
     breaking: result.breaking ?? "",
-    coAuthors: splitList(result.coAuthors),
+    coAuthors:
+      result.coAuthors === undefined
+        ? (autofill?.coAuthors ?? initial?.coAuthors ?? [])
+        : splitList(result.coAuthors),
     issues: splitList(result.issues),
     scope: result.scope ?? "",
-    signoff: result.signoff ?? false,
+    signoff: result.signoff ?? autofill?.signoff ?? initial?.signoff ?? false,
     subject: result.subject ?? "",
     type: result.type ?? "",
   };

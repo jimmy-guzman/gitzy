@@ -127,4 +127,43 @@ describe(createPrompts, () => {
 
     expect(result.signoff).toBe("Jane Doe <jane@example.com>");
   });
+
+  it("should keep parsed trailers when their prompts are not configured", async () => {
+    const result = await createPrompts(
+      defaultResolvedConfig,
+      {},
+      undefined,
+      { coAuthors: ["A <a@b.c>"], signoff: "B <b@c.d>" },
+      prompter
+    );
+
+    expect(result.coAuthors).toStrictEqual(["A <a@b.c>"]);
+    expect(result.signoff).toBe("B <b@c.d>");
+  });
+
+  it("should prefer autofilled trailers over parsed trailers when their prompts are not configured", async () => {
+    const result = await createPrompts(
+      defaultResolvedConfig,
+      {},
+      { coAuthors: ["X <x@y.z>"], signoff: "S <s@t.u>" },
+      { coAuthors: ["A <a@b.c>"], signoff: "B <b@c.d>" },
+      prompter
+    );
+
+    expect(result.coAuthors).toStrictEqual(["X <x@y.z>"]);
+    expect(result.signoff).toBe("S <s@t.u>");
+  });
+
+  it("should prefer configured trailer prompt answers over parsed trailers", async () => {
+    const result = await createPrompts(
+      { ...defaultResolvedConfig, prompts: ["coAuthors", "signoff"] },
+      {},
+      undefined,
+      { coAuthors: ["A <a@b.c>"], signoff: "B <b@c.d>" },
+      prompter
+    );
+
+    expect(result.coAuthors).toStrictEqual([]);
+    expect(result.signoff).toBe("");
+  });
 });

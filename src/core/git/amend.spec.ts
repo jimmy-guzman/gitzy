@@ -138,6 +138,32 @@ describe(parseConventionalCommit, () => {
     });
   });
 
+  it("should capture a Co-authored-by trailer", () => {
+    const result = parseConventionalCommit(
+      "fix: thing\n\nCo-authored-by: A <a@b.c>"
+    );
+
+    expect(result).toStrictEqual({
+      coAuthors: ["A <a@b.c>"],
+      subject: "thing",
+      type: "fix",
+    });
+  });
+
+  it("should capture every Co-authored-by trailer alongside Signed-off-by", () => {
+    const result = parseConventionalCommit(
+      "fix: thing\n\nThis is the body.\n\nCo-authored-by: A <a@b.c>\nCo-authored-by: C <c@d.e>\nSigned-off-by: B <b@c.d>"
+    );
+
+    expect(result).toStrictEqual({
+      body: "This is the body.",
+      coAuthors: ["A <a@b.c>", "C <c@d.e>"],
+      signoff: "B <b@c.d>",
+      subject: "thing",
+      type: "fix",
+    });
+  });
+
   it("should handle scope with breaking ! indicator", () => {
     const result = parseConventionalCommit(
       "refactor(core)!: rewrite internals\n\nBREAKING CHANGE: new API shape"
