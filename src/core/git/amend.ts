@@ -38,18 +38,25 @@ const BREAKING_FOOTER_REGEX = new RegExp(
 const ISSUE_REF = String.raw`[\w.-]+\/[\w.-]+#\d+|#\d+|https?:\/\/\S+|[A-Za-z][A-Za-z0-9]*-\d+`;
 
 /**
- * Closes/Fixes/Resolves followed by a possible issue reference, with an
- * optional leading emoji and an optional colon (e.g. "🏁 Closes: #123")
+ * One Closes/Fixes/Resolves clause with a possible issue reference and an
+ * optional colon (e.g. "Closes: #123"). Has a single `ref` capture group so
+ * it's safe to reuse with `matchAll` to pull every clause out of a line.
  */
-const ISSUES_LINE_REGEX = new RegExp(
-  String.raw`^(?:${EMOJI}\s)?(?:Closes|Fixes|Resolves):?\s+(?<ref>${ISSUE_REF})\s*$`,
-  "imu"
+const ISSUE_CLAUSE_REGEX = new RegExp(
+  String.raw`(?:Closes|Fixes|Resolves):?\s+(?<ref>${ISSUE_REF})`,
+  "gimu"
 );
 
 /**
- * Matches: Closes/Fixes/Resolves <ref> — with optional leading emoji and colon
+ * Matches a whole line made of one or more comma-separated Closes/Fixes/
+ * Resolves clauses, with an optional leading emoji (e.g. "🏁 Closes #1,
+ * Fixes #2") — this is the shape `formatMessageResult` writes for multiple
+ * issues on one line
  */
-const ISSUES_FOOTER_REGEX = new RegExp(ISSUES_LINE_REGEX.source, "gimu");
+const ISSUES_LINE_REGEX = new RegExp(
+  String.raw`^(?:${EMOJI}\s)?(?:${ISSUE_CLAUSE_REGEX.source}(?:,\s*)?)+$`,
+  "imu"
+);
 
 /** Matches a BREAKING CHANGE or trailer line on its own */
 const BREAKING_OR_TRAILER_LINE_REGEX =
@@ -66,21 +73,30 @@ const isRealIssueRef = (ref: string) =>
   !JIRA_KEY_REGEX.test(ref) || UPPERCASE_JIRA_KEY_REGEX.test(ref);
 
 /**
- * Whether a line anchors a footer: BREAKING CHANGE, a trailer, or
- * Closes/Fixes/Resolves followed by a real issue reference. An indented
- * continuation line only counts as part of the footer once an anchor has
- * already appeared in the same paragraph — otherwise an indented body
- * paragraph (a quoted snippet, a code block) would be mistaken for one.
+ * Extracts every real issue reference from a footer line, or an empty array
+ * when the line isn't a Closes/Fixes/Resolves line or any of its refs are fake
  */
-const isFooterAnchorLine = (line: string) => {
-  if (BREAKING_OR_TRAILER_LINE_REGEX.test(line)) {
-    return true;
+const issueRefsInLine = (line: string): string[] => {
+  if (!ISSUES_LINE_REGEX.test(line)) {
+    return [];
   }
 
-  const ref = ISSUES_LINE_REGEX.exec(line)?.groups?.ref;
+  const refs = [...line.matchAll(ISSUE_CLAUSE_REGEX)].map(
+    (m) => m.groups?.ref ?? ""
+  );
 
-  return ref !== undefined && isRealIssueRef(ref);
+  return refs.every(isRealIssueRef) ? refs : [];
 };
+
+/**
+ * Whether a line anchors a footer: BREAKING CHANGE, a trailer, or
+ * Closes/Fixes/Resolves followed by one or more real issue references. An
+ * indented continuation line only counts as part of the footer once an
+ * anchor has already appeared in the same paragraph — otherwise an indented
+ * body paragraph (a quoted snippet, a code block) would be mistaken for one.
+ */
+const isFooterAnchorLine = (line: string) =>
+  BREAKING_OR_TRAILER_LINE_REGEX.test(line) || issueRefsInLine(line).length > 0;
 
 /**
  * Whether a whole paragraph is a footer: every line is either a footer
@@ -164,9 +180,7 @@ export const parseConventionalCommit = (message: string) => {
     result.breaking = true;
   }
 
-  const issueMatches = [...footerText.matchAll(ISSUES_FOOTER_REGEX)]
-    .map((m) => m.groups?.ref ?? "")
-    .filter((ref) => ref !== "" && isRealIssueRef(ref));
+  const issueMatches = footerText.split("\n").flatMap(issueRefsInLine);
 
   if (issueMatches.length > 0) {
     result.issues = issueMatches;

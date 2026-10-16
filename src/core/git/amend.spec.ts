@@ -129,6 +129,30 @@ describe(parseConventionalCommit, () => {
     });
   });
 
+  it("should parse comma-separated issue references on one line", () => {
+    const result = parseConventionalCommit(
+      "fix: resolve bug\n\n🏁 Closes #1, Closes #2, Closes #3"
+    );
+
+    expect(result).toStrictEqual({
+      issues: ["#1", "#2", "#3"],
+      subject: "resolve bug",
+      type: "fix",
+    });
+  });
+
+  it("should reject a comma-separated line with a fake issue reference", () => {
+    const result = parseConventionalCommit(
+      "fix: resolve bug\n\nCloses #1, Fixes windows-10"
+    );
+
+    expect(result).toStrictEqual({
+      body: "Closes #1, Fixes windows-10",
+      subject: "resolve bug",
+      type: "fix",
+    });
+  });
+
   it("should capture the Signed-off-by signature and keep it out of the body", () => {
     const result = parseConventionalCommit(
       "feat: add feature\n\nThis is the body.\n\nSigned-off-by: Jane Doe <jane@example.com>"
@@ -450,6 +474,25 @@ describe(parseConventionalCommit, () => {
 
     expect(parseConventionalCommit(message)).toStrictEqual({
       issues: ["#123"],
+      subject: "thing",
+      type: "fix",
+    });
+  });
+
+  it("should round-trip multiple issues formatted on one comma-separated line", () => {
+    const { message } = formatMessageResult(
+      defaultResolvedConfig,
+      {
+        ...defaultMessageParts,
+        issues: ["#1", "#2", "#3"],
+        subject: "thing",
+        type: "fix",
+      },
+      true
+    );
+
+    expect(parseConventionalCommit(message)).toStrictEqual({
+      issues: ["#1", "#2", "#3"],
       subject: "thing",
       type: "fix",
     });
