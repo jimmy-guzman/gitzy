@@ -32,10 +32,12 @@ const BREAKING_FOOTER_REGEX = new RegExp(
 
 /**
  * An issue reference: #123, org/repo#123, an issue URL, or a Jira key like PROJ-123.
- * Matches a lowercase Jira-shaped key too (e.g. "task-1") so it can be rejected by
- * `isRealIssueRef` below — Node's regex engine has no inline case-insensitivity toggle.
+ * The URL stops before a comma so a comma-separated line (e.g. "Closes <url>,
+ * Fixes #5") doesn't pull the delimiter into the reference. Matches a lowercase
+ * Jira-shaped key too (e.g. "task-1") so it can be rejected by `isRealIssueRef`
+ * below — Node's regex engine has no inline case-insensitivity toggle.
  */
-const ISSUE_REF = String.raw`[\w.-]+\/[\w.-]+#\d+|#\d+|https?:\/\/\S+|[A-Za-z][A-Za-z0-9]*-\d+`;
+const ISSUE_REF = String.raw`[\w.-]+\/[\w.-]+#\d+|#\d+|https?:\/\/[^\s,]+|[A-Za-z][A-Za-z0-9]*-\d+`;
 
 /**
  * One Closes/Fixes/Resolves clause with a possible issue reference and an

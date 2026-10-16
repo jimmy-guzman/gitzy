@@ -153,6 +153,18 @@ describe(parseConventionalCommit, () => {
     });
   });
 
+  it("should not pull a trailing comma into a URL reference", () => {
+    const result = parseConventionalCommit(
+      "fix: resolve bug\n\nCloses https://github.com/acme/widgets/issues/42, Fixes #5"
+    );
+
+    expect(result).toStrictEqual({
+      issues: ["https://github.com/acme/widgets/issues/42", "#5"],
+      subject: "resolve bug",
+      type: "fix",
+    });
+  });
+
   it("should capture the Signed-off-by signature and keep it out of the body", () => {
     const result = parseConventionalCommit(
       "feat: add feature\n\nThis is the body.\n\nSigned-off-by: Jane Doe <jane@example.com>"
