@@ -7,23 +7,119 @@ import { x } from "tinyexec";
 import type { MessageParts } from "@/core/conventional/types";
 
 /**
+ * A single emoji, including multi-codepoint sequences (skin-tone modifiers,
+ * ZWJ joins like "👩‍💻", and the "️" variation selector used by "⚡️")
+ */
+const EMOJI = String.raw`\p{Extended_Pictographic}(?:\p{Emoji_Modifier}|️)?(?:‍\p{Extended_Pictographic}(?:\p{Emoji_Modifier}|️)?)*`;
+
+/**
  * Matches: type(scope)!: subject  or  type!: subject  or  type(scope): subject  or  type: subject
- * Strips leading emoji if present (e.g. "✨ subject" → "subject")
+ * Strips a leading emoji if present (e.g. "✨ subject" → "subject")
  */
-const HEADER_REGEX =
-  /^(?<type>[a-z]+)(?:\((?<scope>[^)]*)\))?(?<breaking>!)?: (?:\p{Emoji_Presentation}\s)?(?<subject>.+)$/u;
+const HEADER_REGEX = new RegExp(
+  String.raw`^(?<type>[\w-]+)(?:\((?<scope>[^)]*)\))?(?<breaking>!)?: (?:${EMOJI}\s)?(?<subject>.+)$`,
+  "u"
+);
 
 /**
- * Matches: BREAKING CHANGE: <text> or BREAKING-CHANGE: <text> (optionally preceded by emoji)
+ * Matches a BREAKING CHANGE/BREAKING-CHANGE footer, optional leading emoji,
+ * continuing through any indented wrapped lines that follow it
  */
-const BREAKING_FOOTER_REGEX =
-  /^BREAKING[ -]CHANGE: (?:\p{Emoji_Presentation}\s)?(?<breaking>.+)$/mu;
+const BREAKING_FOOTER_REGEX = new RegExp(
+  String.raw`^BREAKING[ -]CHANGE:\s*(?:${EMOJI}\s)?(?<breaking>.+(?:\n[ \t]+\S.*)*)$`,
+  "imu"
+);
 
 /**
- * Matches: Closes/Fixes/Resolves <ref> — with optional leading emoji (e.g. "🏁 Closes #123")
+ * An issue reference: #123, org/repo#123, an issue URL, or a Jira key like PROJ-123.
+ * The URL stops before a comma so a comma-separated line (e.g. "Closes <url>,
+ * Fixes #5") doesn't pull the delimiter into the reference. Matches a lowercase
+ * Jira-shaped key too (e.g. "task-1") so it can be rejected by `isRealIssueRef`
+ * below — Node's regex engine has no inline case-insensitivity toggle.
  */
-const ISSUES_FOOTER_REGEX =
-  /^(?:\p{Emoji_Presentation}\s)?(?:Closes|Fixes|Resolves) (?<ref>\S.*)$/gimu;
+const ISSUE_REF = String.raw`[\w.-]+\/[\w.-]+#\d+|#\d+|https?:\/\/[^\s,]+|[A-Za-z][A-Za-z0-9]*-\d+`;
+
+/**
+ * One Closes/Fixes/Resolves clause with a possible issue reference and an
+ * optional colon (e.g. "Closes: #123"). Has a single `ref` capture group so
+ * it's safe to reuse with `matchAll` to pull every clause out of a line.
+ */
+const ISSUE_CLAUSE_REGEX = new RegExp(
+  String.raw`(?:Closes|Fixes|Resolves):?\s+(?<ref>${ISSUE_REF})`,
+  "gimu"
+);
+
+/**
+ * Matches a whole line made of one or more comma-separated Closes/Fixes/
+ * Resolves clauses, with an optional leading emoji (e.g. "🏁 Closes #1,
+ * Fixes #2") — this is the shape `formatMessageResult` writes for multiple
+ * issues on one line
+ */
+const ISSUES_LINE_REGEX = new RegExp(
+  String.raw`^(?:${EMOJI}\s)?(?:${ISSUE_CLAUSE_REGEX.source}(?:,\s*)?)+$`,
+  "imu"
+);
+
+/** Matches a BREAKING CHANGE or trailer line on its own */
+const BREAKING_OR_TRAILER_LINE_REGEX =
+  /^(?:BREAKING[ -]CHANGE:.+|Co-authored-by:.+|Signed-off-by:.+)$/imu;
+
+/** Matches an indented continuation of a wrapped footer line */
+const CONTINUATION_LINE_REGEX = /^[ \t]+\S/u;
+
+/** A Jira key is only real when it's genuinely uppercase, never case-insensitively */
+const JIRA_KEY_REGEX = /^[A-Za-z][A-Za-z0-9]*-\d+$/u;
+const UPPERCASE_JIRA_KEY_REGEX = /^[A-Z][A-Z0-9]*-\d+$/u;
+
+const isRealIssueRef = (ref: string) =>
+  !JIRA_KEY_REGEX.test(ref) || UPPERCASE_JIRA_KEY_REGEX.test(ref);
+
+/**
+ * Extracts every real issue reference from a footer line, or an empty array
+ * when the line isn't a Closes/Fixes/Resolves line or any of its refs are fake
+ */
+const issueRefsInLine = (line: string): string[] => {
+  if (!ISSUES_LINE_REGEX.test(line)) {
+    return [];
+  }
+
+  const refs = [...line.matchAll(ISSUE_CLAUSE_REGEX)].map(
+    (m) => m.groups?.ref ?? ""
+  );
+
+  return refs.every(isRealIssueRef) ? refs : [];
+};
+
+/**
+ * Whether a line anchors a footer: BREAKING CHANGE, a trailer, or
+ * Closes/Fixes/Resolves followed by one or more real issue references. An
+ * indented continuation line only counts as part of the footer once an
+ * anchor has already appeared in the same paragraph — otherwise an indented
+ * body paragraph (a quoted snippet, a code block) would be mistaken for one.
+ */
+const isFooterAnchorLine = (line: string) =>
+  BREAKING_OR_TRAILER_LINE_REGEX.test(line) || issueRefsInLine(line).length > 0;
+
+/**
+ * Whether a whole paragraph is a footer: every line is either a footer
+ * anchor or an indented continuation of one, and at least one anchor exists
+ */
+const isFooterParagraph = (paragraph: string) => {
+  let sawAnchor = false;
+
+  for (const line of paragraph.split("\n")) {
+    if (isFooterAnchorLine(line)) {
+      sawAnchor = true;
+      continue;
+    }
+
+    if (!(sawAnchor && CONTINUATION_LINE_REGEX.test(line))) {
+      return false;
+    }
+  }
+
+  return sawAnchor;
+};
 
 /**
  * Get the HEAD commit message
@@ -61,17 +157,24 @@ export const parseConventionalCommit = (message: string) => {
     result.scope = scope;
   }
 
-  const footerStart = rest.search(
-    /^(?:\p{Emoji_Presentation}\s)?(?:BREAKING[ -]CHANGE|Co-authored-by|Signed-off-by|Closes|Fixes|Resolves)/imu
-  );
-  const bodyText =
-    footerStart === -1 ? rest : rest.slice(0, footerStart).trim();
+  const paragraphs = rest.split(/\n\s*\n/u).filter(Boolean);
+  let footerStart = paragraphs.length;
+
+  while (
+    footerStart > 0 &&
+    isFooterParagraph(paragraphs[footerStart - 1] ?? "")
+  ) {
+    footerStart -= 1;
+  }
+
+  const bodyText = paragraphs.slice(0, footerStart).join("\n\n").trim();
+  const footerText = paragraphs.slice(footerStart).join("\n\n");
 
   if (bodyText) {
     result.body = bodyText;
   }
 
-  const breakingMatch = BREAKING_FOOTER_REGEX.exec(rest);
+  const breakingMatch = BREAKING_FOOTER_REGEX.exec(footerText);
 
   if (breakingMatch?.groups?.breaking !== undefined) {
     result.breaking = breakingMatch.groups.breaking;
@@ -79,24 +182,21 @@ export const parseConventionalCommit = (message: string) => {
     result.breaking = true;
   }
 
-  const issueMatches = [...rest.matchAll(ISSUES_FOOTER_REGEX)];
+  const issueMatches = footerText.split("\n").flatMap(issueRefsInLine);
 
   if (issueMatches.length > 0) {
-    result.issues = issueMatches
-      .map((m) => m.groups?.ref ?? "")
-      .filter(Boolean);
+    result.issues = issueMatches;
   }
 
-  const signoffMatch = /^Signed-off-by:(?<signoff>.+)$/imu.exec(rest);
+  const signoffMatch = /^Signed-off-by:(?<signoff>.+)$/imu.exec(footerText);
   const signoff = signoffMatch?.groups?.signoff.trim();
 
   if (signoff !== undefined && signoff !== "") {
     result.signoff = signoff;
   }
 
-  const trailers = rest.split(/\n\s*\n/u).at(-1) ?? "";
   const coAuthors = [
-    ...trailers.matchAll(/^Co-authored-by:(?<coAuthor>.+)$/gimu),
+    ...footerText.matchAll(/^Co-authored-by:(?<coAuthor>.+)$/gimu),
   ]
     .map((m) => m.groups?.coAuthor.trim() ?? "")
     .filter(Boolean);
