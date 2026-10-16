@@ -164,4 +164,31 @@ describe(formatBranchName, () => {
 
     expect(result).toMatchInlineSnapshot(`"feat/x"`);
   });
+
+  it("should strip Spanish accents", () => {
+    const result = formatBranchName(
+      { subject: "añadir modo oscuro", type: "feat" },
+      defaultBranchConfig
+    );
+
+    expect(result).toMatchInlineSnapshot(`"feat/anadir-modo-oscuro"`);
+  });
+
+  it("should strip French accents", () => {
+    const result = formatBranchName(
+      { subject: "éléments à côté", type: "feat" },
+      defaultBranchConfig
+    );
+
+    expect(result).toMatchInlineSnapshot(`"feat/elements-a-cote"`);
+  });
+
+  it("should strip German umlauts", () => {
+    const result = formatBranchName(
+      { subject: "Änderung für Käse", type: "feat" },
+      defaultBranchConfig
+    );
+
+    expect(result).toMatchInlineSnapshot(`"feat/anderung-fur-kase"`);
+  });
 });

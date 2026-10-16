@@ -16,6 +16,7 @@ import { formatBranchName } from "@/core/branch/formatter";
 import { parseBranchName } from "@/core/branch/parser";
 import type { BranchParts } from "@/core/branch/types";
 import { validateBranchParts } from "@/core/branch/validate";
+import { defaultBranchConfig } from "@/core/config/defaults";
 import type { ResolvedConfig } from "@/core/config/types";
 import {
   createBranch,
@@ -154,7 +155,8 @@ export const registerBranchCommand = (program: Command) => {
         const config = await resolveConfigWithWarnings();
 
         const amendInitial =
-          opts.amend === true
+          opts.amend === true &&
+          config.branch.pattern === defaultBranchConfig.pattern
             ? parseBranchName(
                 await getCurrentBranch().catch(() => ""),
                 config.scopes.map((s) => s.name)
