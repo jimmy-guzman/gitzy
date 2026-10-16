@@ -55,7 +55,7 @@ describe("lang strings", () => {
           "breaking": "Mark as breaking; add message for "footer"/"both" formats, or the flag for "!" format",
           "coAuthor": "Add co-authors (repeatable: --co-author "Name <email>")",
           "dryRun": "Show commit message without committing",
-          "hook": "Enable running inside a git hook (e.g. pre-commit)",
+          "hook": "Enable running inside a git hook (e.g. prepare-commit-msg)",
           "issue": "Set issues inline (repeatable: --issue '#123' --issue '#456')",
           "json": "Output result as JSON",
           "noEmoji": "Disable emoji in commit message",
