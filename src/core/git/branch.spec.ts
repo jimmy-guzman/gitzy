@@ -52,6 +52,13 @@ describe(renameBranch, () => {
       "git branch -m failed with exit code 128: fatal: a branch named 'taken' already exists"
     );
   });
+
+  it("should throw when git rejects the branch name", async () => {
+    await expect(renameBranch("bad..name")).rejects.toThrow(
+      '"bad..name" is not a valid git branch name'
+    );
+    await expect(getCurrentBranch()).resolves.toBe("main");
+  });
 });
 
 describe(createBranch, () => {
@@ -59,6 +66,19 @@ describe(createBranch, () => {
     await createBranch("feat/my-branch", true, true);
 
     await expect(listBranches()).resolves.toBe("main");
+  });
+
+  it("should throw when git rejects the branch name", async () => {
+    await expect(createBranch("feat/a b")).rejects.toThrow(
+      '"feat/a b" is not a valid git branch name'
+    );
+    await expect(listBranches()).resolves.toBe("main");
+  });
+
+  it("should throw when git rejects the branch name on a dry run", async () => {
+    await expect(createBranch("feat/a.lock", true, true)).rejects.toThrow(
+      '"feat/a.lock" is not a valid git branch name'
+    );
   });
 
   it("should checkout new branch when checkout is true", async () => {

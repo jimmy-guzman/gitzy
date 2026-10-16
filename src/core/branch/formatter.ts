@@ -52,23 +52,39 @@ const applyPattern = (
  * Format branch parts into a branch name string
  *
  * @param parts - The branch parts (type, scope, issue, subject)
- *   Issue refs are kept as-is (e.g. "PROJ-123", "#42") — no slug conversion
+ *   Issue refs keep their case (e.g. "PROJ-123", "#42"); whitespace, control
+ *   characters, "..", "@{" and ~ ^ : ? * [ \ become a dash
  *
- * @param config - Branch configuration (pattern, separator, max)
+ * @param config - Branch configuration (pattern, max)
  *
- * @returns Formatted branch name, truncated to config.max characters
+ * @returns Formatted branch name. Each "/" segment collapses runs of dots and
+ *   drops leading dashes, underscores and dots, and trailing dots and ".lock";
+ *   the name is then truncated to config.max characters with trailing dashes,
+ *   underscores, slashes, dots and ".lock" removed
  */
 export const formatBranchName = (parts: BranchParts, config: BranchConfig) => {
   const { max, pattern } = config;
 
   const tokens = {
-    issue: parts.issue?.trim() ?? "",
+    issue:
+      parts.issue
+        ?.trim()
+        .replaceAll(/(?:\.\.|@\{|[\s\p{Cc}~^:?*[\\])+/gu, "-") ?? "",
     scope: parts.scope === undefined ? "" : slugify(parts.scope),
     subject: slugify(parts.subject),
     type: slugify(parts.type),
   } satisfies Record<string, string>;
 
-  const formatted = applyPattern(pattern, tokens);
+  const formatted = applyPattern(pattern, tokens)
+    .split("/")
+    .map((segment) =>
+      segment
+        .replaceAll(/\.{2,}/gu, ".")
+        .replace(/^[-_.]+/u, "")
+        .replace(/(?:\.lock|\.)+$/u, "")
+    )
+    .filter(Boolean)
+    .join("/");
 
-  return formatted.slice(0, max);
+  return formatted.slice(0, max).replace(/(?:\.lock|[-_/.])+$/u, "");
 };

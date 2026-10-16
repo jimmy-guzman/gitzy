@@ -40,6 +40,14 @@ const runGit = async (args: string[], errorPrefix: string) => {
   }
 };
 
+const assertValidBranchName = async (branchName: string) => {
+  const result = await x("git", ["check-ref-format", "--branch", branchName]);
+
+  if (result.exitCode !== 0) {
+    throw new Error(`"${branchName}" is not a valid git branch name`);
+  }
+};
+
 /**
  * Rename the current branch using `git branch -m`
  * Warns if a remote tracking ref exists (manual push/delete required)
@@ -56,6 +64,8 @@ export const renameBranch = async (
   newName: string,
   { dryRun = false } = {}
 ) => {
+  await assertValidBranchName(newName);
+
   const oldName = await getCurrentBranch();
   const hasRemote = await hasRemoteTracking(oldName);
 
@@ -83,6 +93,8 @@ export const createBranch = async (
   dryRun = false,
   from?: string
 ) => {
+  await assertValidBranchName(branchName);
+
   if (dryRun) {
     return;
   }

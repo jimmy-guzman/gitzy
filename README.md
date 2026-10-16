@@ -338,7 +338,6 @@ Controls branch name generation.
 ```js
 branch: {
   pattern: "{type}/{scope}/{issue}-{subject}", // default
-  separator: "/",    // separator used within each slugified segment (type, scope, subject)
   max: 72,           // max branch name length
   checkout: true,    // auto-checkout after creation
 }
@@ -350,10 +349,10 @@ branch: {
 
 | type | scope | issue | subject | output |
 | --- | --- | --- | --- | --- |
-| `feat` | `ui` |  | `add dark mode` | `feat/ui/add/dark/mode` |
-| `fix` |  | `#42` | `login crash` | `fix/#42-login/crash` |
-| `chore` | `deps` |  | `bump typescript` | `chore/deps/bump/typescript` |
-| `feat` |  | `PROJ-1` | `new dashboard` | `feat/PROJ-1-new/dashboard` |
+| `feat` | `ui` |  | `add dark mode` | `feat/ui/add-dark-mode` |
+| `fix` |  | `#42` | `login crash` | `fix/#42-login-crash` |
+| `chore` | `deps` |  | `bump typescript` | `chore/deps/bump-typescript` |
+| `feat` |  | `PROJ-1` | `new dashboard` | `feat/PROJ-1-new-dashboard` |
 
 ### commitlint integration
 
