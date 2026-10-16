@@ -1,10 +1,11 @@
 import { cli } from "@/cli";
 import { notice } from "@/cli/utils/log";
 import * as stdinUtils from "@/cli/utils/stdin";
+import * as parser from "@/core/branch/parser";
 import { defaultResolvedConfig } from "@/core/config/defaults";
 import * as config from "@/core/config/resolver";
 import { getCurrentBranch } from "@/core/git/branch";
-import { useTempGitRepo } from "@/core/git/test-utils";
+import { git, useTempGitRepo } from "@/core/git/test-utils";
 
 const baseArgs = ["node", "gitzy", "branch"];
 
@@ -124,6 +125,57 @@ describe("branch command", () => {
     await cli();
 
     await expect(getCurrentBranch()).resolves.toBe("feat/add-dark-mode");
+  });
+
+  it("should prefill --amend from the branch name with the default pattern", async () => {
+    const parseSpy = vi.spyOn(parser, "parseBranchName");
+
+    await git("switch", "-c", "feat/dark-mode");
+
+    process.argv = [
+      ...baseArgs,
+      "--amend",
+      "--type",
+      "feat",
+      "-m",
+      "dark mode",
+      "-D",
+    ];
+
+    await cli();
+
+    expect(parseSpy).toHaveBeenCalledExactlyOnceWith("feat/dark-mode", []);
+  });
+
+  it("should not prefill --amend with a custom pattern", async () => {
+    const parseSpy = vi.spyOn(parser, "parseBranchName");
+
+    vi.spyOn(config, "resolveConfig").mockResolvedValueOnce({
+      config: {
+        ...defaultResolvedConfig,
+        branch: {
+          ...defaultResolvedConfig.branch,
+          pattern: "{issue}/{type}-{subject}",
+        },
+      },
+      warnings: [],
+    });
+
+    await git("switch", "-c", "PROJ-1/feat-dark-mode");
+
+    process.argv = [
+      ...baseArgs,
+      "--amend",
+      "--type",
+      "feat",
+      "-m",
+      "dark mode",
+      "-D",
+    ];
+
+    await cli();
+
+    expect(parseSpy).not.toHaveBeenCalled();
   });
 
   it("should error when no TTY is detected and --stdin is not used", async () => {

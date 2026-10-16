@@ -9,11 +9,13 @@ import type { BranchParts } from "./types";
 
 /**
  * Slugify a string segment for use in branch names
- * Lowercases, replaces non-alphanumeric chars (except dash/dot) with a dash,
- * and collapses consecutive dashes
+ * Strips accents (e.g. "ñ" → "n"), lowercases, replaces non-alphanumeric
+ * chars (except dash/dot) with a dash, and collapses consecutive dashes
  */
 export const slugify = (value: string) =>
   value
+    .normalize("NFKD")
+    .replaceAll(/\p{M}/gu, "")
     .toLowerCase()
     .trim()
     .replaceAll(/[^a-z0-9.]+/gu, "-")
