@@ -28,7 +28,6 @@ export const createFuzzyFilter = <Value>(
 
     if (search !== lastNeedle) {
       lastNeedle = search;
-      matchingValues = new Set();
 
       const haystack = options.map((opt) => {
         const label = opt.label ?? String(opt.value);
@@ -37,24 +36,14 @@ export const createFuzzyFilter = <Value>(
         return `${label}|${hint}`;
       });
 
-      const [indexes, _info, order] = uf.search(
+      const [indexes] = uf.search(
         uFuzzy.latinize(haystack),
         uFuzzy.latinize(search)
       );
 
-      if (indexes && order && indexes.length > 0) {
-        for (const orderIdx of order) {
-          matchingValues.add(options[indexes[orderIdx]].value);
-        }
-      } else {
-        const lowerNeedle = search.toLowerCase();
-
-        for (const [idx, item] of haystack.entries()) {
-          if (item.toLowerCase().includes(lowerNeedle)) {
-            matchingValues.add(options[idx].value);
-          }
-        }
-      }
+      matchingValues = new Set(
+        (indexes ?? []).map((idx) => options[idx].value)
+      );
     }
 
     return matchingValues.has(option.value);

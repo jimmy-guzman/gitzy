@@ -14,6 +14,7 @@ import { readStdinJson } from "@/cli/utils/stdin";
 import type { ResolvedConfig } from "@/core/config/types";
 import { formatMessageResult } from "@/core/conventional/message";
 import { PartialMessagePartsSchema } from "@/core/conventional/schema";
+import { defaultMessageParts } from "@/core/conventional/types";
 import type { MessageParts } from "@/core/conventional/types";
 import { validateMessageParts } from "@/core/conventional/validate";
 import { getAmendParts } from "@/core/git/amend";
@@ -52,96 +53,32 @@ const promptQuestions = async (
   autofillAnswers: Partial<MessageParts>,
   amendInitial?: Partial<MessageParts>
 ) => {
-  if (
+  const hasTypeAndSubject =
     flags.type !== undefined &&
     flags.type !== "" &&
-    flags.subject !== undefined
-  ) {
-    const trimmedSubject = flags.subject.trim();
-
-    if (trimmedSubject) {
-      return assertValid(
-        config,
-        {
-          body: "",
-          breaking: "",
-          coAuthors: [],
-          issues: [],
-          scope: "",
+    (flags.subject?.trim() ?? "") !== "";
+  const parts =
+    hasTypeAndSubject || flags.stdin === true || !process.stdin.isTTY
+      ? {
+          ...defaultMessageParts,
           ...autofillAnswers,
-          subject: trimmedSubject,
-          type: flags.type,
-        },
-        flags.emoji ?? true
-      );
-    }
-  }
+          subject: (autofillAnswers.subject ?? "").trim(),
+        }
+      : await createPrompts(config, flags, autofillAnswers, amendInitial);
 
-  // --stdin always answers from JSON, and a missing TTY can't prompt at all
-  // (e.g. --retry with nothing stored) — build the answers directly and let
-  // the shared validator report every problem at once instead of hanging on
-  // a prompt that has no terminal to render into.
-  if (flags.stdin === true || !process.stdin.isTTY) {
-    return assertValid(
-      config,
-      {
-        body: "",
-        breaking: "",
-        coAuthors: [],
-        issues: [],
-        scope: "",
-        type: "",
-        ...autofillAnswers,
-        subject: (autofillAnswers.subject ?? "").trim(),
-      },
-      flags.emoji ?? true
-    );
-  }
-
-  return assertValid(
-    config,
-    await createPrompts(config, flags, autofillAnswers, amendInitial),
-    flags.emoji ?? true
-  );
+  return assertValid(config, parts, flags.emoji ?? true);
 };
 
-const toFlagAnswers = (flags: CommitFlags) => {
-  const answers: Partial<MessageParts> = {};
-
-  if (flags.body !== undefined) {
-    answers.body = flags.body;
-  }
-
-  if (flags.breaking !== undefined) {
-    answers.breaking = flags.breaking;
-  }
-
-  if (flags.coAuthor !== undefined) {
-    answers.coAuthors = flags.coAuthor;
-  }
-
-  if (flags.issue !== undefined) {
-    answers.issues = flags.issue;
-  }
-
-  if (flags.scope !== undefined) {
-    answers.scope = flags.scope;
-  }
-
-  if (flags.signoff !== undefined) {
-    answers.signoff = flags.signoff;
-  }
-
-  if (flags.subject !== undefined) {
-    answers.subject = flags.subject;
-  }
-
-  if (flags.type !== undefined) {
-    answers.type = flags.type;
-  }
-
-  return answers;
-};
+const toFlagAnswers = (flags: CommitFlags) => ({
+  ...(flags.body !== undefined && { body: flags.body }),
+  ...(flags.breaking !== undefined && { breaking: flags.breaking }),
+  ...(flags.coAuthor !== undefined && { coAuthors: flags.coAuthor }),
+  ...(flags.issue !== undefined && { issues: flags.issue }),
+  ...(flags.scope !== undefined && { scope: flags.scope }),
+  ...(flags.signoff !== undefined && { signoff: flags.signoff }),
+  ...(flags.subject !== undefined && { subject: flags.subject }),
+  ...(flags.type !== undefined && { type: flags.type }),
+});
 
 const loadAutofill = async (flags: CommitFlags, retryFile: string) => {
   const previous = flags.retry === true ? loadAnswers(retryFile) : {};
@@ -250,7 +187,10 @@ const writeMessage = async (
   }
 };
 
-export const registerCommitCommand = (program: Command) => {
+/**
+ * Add the message flags shared by `commit` and `squash`
+ */
+export const addMessageOptions = (command: Command, dryRun: string) => {
   const noVerifyOption = new Option(
     "-n, --no-verify",
     lang.commit.flags.noVerify
@@ -258,25 +198,32 @@ export const registerCommitCommand = (program: Command) => {
 
   noVerifyOption.negate = false;
 
-  program
-    .command("commit", { isDefault: true })
-    .description(lang.commit.description)
+  return command
     .option("--body <body>", lang.commit.flags.body)
     .option("--breaking [breaking]", lang.commit.flags.breaking)
-    .option("-D, --dry-run", lang.commit.flags.dryRun)
+    .option("-D, --dry-run", dryRun)
     .option("--issue <issue...>", lang.commit.flags.issue)
     .option("--json", lang.commit.flags.json)
     .option("--no-emoji", lang.commit.flags.noEmoji)
     .option("--scope <scope>", lang.commit.flags.scope)
     .option("-m, --subject <subject>", lang.commit.flags.subject)
     .option("--type <type>", lang.commit.flags.type)
+    .addOption(noVerifyOption)
+    .option("--co-author <coAuthor...>", lang.commit.flags.coAuthor)
+    .option("--stdin", lang.commit.flags.stdin);
+};
+
+export const registerCommitCommand = (program: Command) => {
+  addMessageOptions(
+    program
+      .command("commit", { isDefault: true })
+      .description(lang.commit.description),
+    lang.commit.flags.dryRun
+  )
     .option("--retry", lang.commit.flags.retry)
     .option("--hook", lang.commit.flags.hook)
     .option("-a, --amend", lang.commit.flags.amend)
-    .addOption(noVerifyOption)
     .option("-s, --signoff [signoff]", lang.commit.flags.signoff)
-    .option("--co-author <coAuthor...>", lang.commit.flags.coAuthor)
-    .option("--stdin", lang.commit.flags.stdin)
     .addHelpText("after", `\nExamples:\n      ${lang.commit.examples}\n    `)
     .action(async (opts: CommitFlags, command: Command) => {
       const hookInferredFrom =

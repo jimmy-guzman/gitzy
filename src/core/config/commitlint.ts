@@ -5,7 +5,7 @@
 import type { GenericSchema, InferOutput } from "valibot";
 import { array, is, number, object, optional, string, unknown } from "valibot";
 
-import type { BodyConfig, Config } from "./types";
+import type { Config } from "./types";
 
 const RuleSchema = array(unknown());
 
@@ -24,23 +24,13 @@ export const CommitlintConfigSchema = object({
 
 type CommitlintConfig = InferOutput<typeof CommitlintConfigSchema>;
 
-const toRange = (max: number | undefined, min: number | undefined) => {
-  if (max === undefined && min === undefined) {
-    return null;
-  }
-
-  const range: Partial<BodyConfig> = {};
-
-  if (max !== undefined) {
-    range.max = max;
-  }
-
-  if (min !== undefined) {
-    range.min = min;
-  }
-
-  return range;
-};
+const toRange = (max: number | undefined, min: number | undefined) =>
+  max === undefined && min === undefined
+    ? null
+    : {
+        ...(max !== undefined && { max }),
+        ...(min !== undefined && { min }),
+      };
 
 const ruleValue = <T extends GenericSchema>(
   rule: unknown[] | undefined,

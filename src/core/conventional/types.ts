@@ -26,7 +26,8 @@ export interface MessageParts {
  */
 export const defaultMessageParts: MessageParts = {
   body: "",
-  breaking: false,
+  breaking: "",
+  coAuthors: [],
   issues: [],
   scope: "",
   subject: "",

@@ -57,19 +57,17 @@ export const commit = async (
     return { commitMsgPath, message };
   }
 
-  const extraFlags: string[] = [];
-
-  if (amend) {
-    extraFlags.push("--amend");
-  }
-
-  if (noVerify) {
-    extraFlags.push("--no-verify");
-  }
-
-  const result = await x("git", ["commit", "-m", message, ...extraFlags], {
-    nodeOptions: { stdio: "inherit" },
-  });
+  const result = await x(
+    "git",
+    [
+      "commit",
+      "-m",
+      message,
+      ...(amend ? ["--amend"] : []),
+      ...(noVerify ? ["--no-verify"] : []),
+    ],
+    { nodeOptions: { stdio: "inherit" } }
+  );
 
   // This is restoring previous behavior where we exit the process on failure
   // https://github.com/jimmy-guzman/gitzy/blob/v6.1.0/src/utils/executeCommand.ts#L20-L24

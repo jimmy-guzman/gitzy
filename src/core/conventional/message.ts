@@ -10,22 +10,7 @@ import type { MessageParts } from "./types";
 
 const MAX_WIDTH = 72;
 
-const GITHUB_PREFIXES = [
-  "close",
-  "closed",
-  "closes",
-  "fix",
-  "fixed",
-  "fixes",
-  "resolve",
-  "resolved",
-  "resolves",
-] as const;
-
-const hasPrefixRegex = new RegExp(
-  String.raw`^(${GITHUB_PREFIXES.join("|")})\s+`,
-  "iu"
-);
+const hasPrefixRegex = /^(?<prefix>close[ds]?|fix(?:e[ds])?|resolve[ds]?)\s+/iu;
 
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
@@ -46,12 +31,6 @@ const parseGithubIssue = (issue: string, defaultPrefix: string) => {
   }
 
   return `${capitalize(defaultPrefix)} ${trimmed}`;
-};
-
-const parseJiraIssue = (issue: string) => {
-  const trimmed = issue.trim();
-
-  return trimmed || null;
 };
 
 const createBreaking = (
@@ -78,7 +57,7 @@ const createIssues = (
 
   const formatted = issues
     .map((issue) =>
-      isJira ? parseJiraIssue(issue) : parseGithubIssue(issue, defaultPrefix)
+      isJira ? issue.trim() || null : parseGithubIssue(issue, defaultPrefix)
     )
     .filter(Boolean)
     .join(", ");
@@ -208,17 +187,6 @@ export const isEmojiEnabled = (
 };
 
 /**
- * Structured result for --json output
- */
-interface CommitResult {
-  body: string;
-  footer: string;
-  header: string;
-  message: string;
-  parts: MessageParts;
-}
-
-/**
  * Format message parts into a structured commit result
  *
  * @param config - Resolved configuration for formatting
@@ -233,7 +201,7 @@ export const formatMessageResult = (
   config: ResolvedConfig,
   parts: MessageParts,
   emoji: boolean
-): CommitResult => {
+) => {
   const typeEntry = config.types.find((t) => t.name === parts.type);
   const emojiEnabled = isEmojiEnabled(config, emoji);
   const emojiPrefix =
