@@ -66,21 +66,41 @@ const isRealIssueRef = (ref: string) =>
   !JIRA_KEY_REGEX.test(ref) || UPPERCASE_JIRA_KEY_REGEX.test(ref);
 
 /**
- * Whether a single line of a trailing paragraph counts as a footer line:
- * BREAKING CHANGE (and its wrapped continuation), a trailer, or
- * Closes/Fixes/Resolves followed by a real issue reference
+ * Whether a line anchors a footer: BREAKING CHANGE, a trailer, or
+ * Closes/Fixes/Resolves followed by a real issue reference. An indented
+ * continuation line only counts as part of the footer once an anchor has
+ * already appeared in the same paragraph — otherwise an indented body
+ * paragraph (a quoted snippet, a code block) would be mistaken for one.
  */
-const isFooterLine = (line: string) => {
-  if (
-    CONTINUATION_LINE_REGEX.test(line) ||
-    BREAKING_OR_TRAILER_LINE_REGEX.test(line)
-  ) {
+const isFooterAnchorLine = (line: string) => {
+  if (BREAKING_OR_TRAILER_LINE_REGEX.test(line)) {
     return true;
   }
 
   const ref = ISSUES_LINE_REGEX.exec(line)?.groups?.ref;
 
   return ref !== undefined && isRealIssueRef(ref);
+};
+
+/**
+ * Whether a whole paragraph is a footer: every line is either a footer
+ * anchor or an indented continuation of one, and at least one anchor exists
+ */
+const isFooterParagraph = (paragraph: string) => {
+  let sawAnchor = false;
+
+  for (const line of paragraph.split("\n")) {
+    if (isFooterAnchorLine(line)) {
+      sawAnchor = true;
+      continue;
+    }
+
+    if (!(sawAnchor && CONTINUATION_LINE_REGEX.test(line))) {
+      return false;
+    }
+  }
+
+  return sawAnchor;
 };
 
 /**
@@ -124,9 +144,7 @@ export const parseConventionalCommit = (message: string) => {
 
   while (
     footerStart > 0 &&
-    (paragraphs[footerStart - 1] ?? "")
-      .split("\n")
-      .every((line) => isFooterLine(line))
+    isFooterParagraph(paragraphs[footerStart - 1] ?? "")
   ) {
     footerStart -= 1;
   }

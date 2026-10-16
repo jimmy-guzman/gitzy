@@ -299,6 +299,30 @@ describe(parseConventionalCommit, () => {
     });
   });
 
+  it("should keep an indented body paragraph with no footer anchor as body", () => {
+    const result = parseConventionalCommit(
+      "fix: thing\n\nNormal body text.\n  indented continuation that is not a footer"
+    );
+
+    expect(result).toStrictEqual({
+      body: "Normal body text.\n  indented continuation that is not a footer",
+      subject: "thing",
+      type: "fix",
+    });
+  });
+
+  it("should keep a wholly indented body paragraph with no anchor as body", () => {
+    const result = parseConventionalCommit(
+      "fix: thing\n\n  a quoted snippet\n  another indented line"
+    );
+
+    expect(result).toStrictEqual({
+      body: "a quoted snippet\n  another indented line",
+      subject: "thing",
+      type: "fix",
+    });
+  });
+
   it("should extract a lowercase breaking change footer", () => {
     const result = parseConventionalCommit(
       "feat!: thing\n\nbreaking change: removes the old API"
