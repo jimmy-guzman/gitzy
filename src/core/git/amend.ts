@@ -11,19 +11,39 @@ import type { MessageParts } from "@/core/conventional/types";
  * Strips leading emoji if present (e.g. "✨ subject" → "subject")
  */
 const HEADER_REGEX =
-  /^(?<type>[a-z]+)(?:\((?<scope>[^)]*)\))?(?<breaking>!)?: (?:\p{Emoji_Presentation}\s)?(?<subject>.+)$/u;
+  /^(?<type>[\w-]+)(?:\((?<scope>[^)]*)\))?(?<breaking>!)?: (?:\p{Extended_Pictographic}️?\s)?(?<subject>.+)$/u;
 
 /**
  * Matches: BREAKING CHANGE: <text> or BREAKING-CHANGE: <text> (optionally preceded by emoji)
  */
 const BREAKING_FOOTER_REGEX =
-  /^BREAKING[ -]CHANGE: (?:\p{Emoji_Presentation}\s)?(?<breaking>.+)$/mu;
+  /^BREAKING[ -]CHANGE: (?:\p{Extended_Pictographic}️?\s)?(?<breaking>.+)$/mu;
+
+/**
+ * An issue reference: #123, org/repo#123, an issue URL, or a Jira key like PROJ-123
+ */
+const ISSUE_REF = String.raw`[\w.-]+\/[\w.-]+#\d+|#\d+|https?:\/\/\S+|(?-i:[A-Z][A-Z0-9]*-\d+)`;
+
+/**
+ * Closes/Fixes/Resolves followed by a real issue reference, with optional
+ * leading emoji (e.g. "🏁 Closes #123"). Shared by FOOTER_LINE_REGEX and
+ * ISSUES_FOOTER_REGEX so the two stay in sync.
+ */
+const ISSUES_LINE = String.raw`(?:\p{Extended_Pictographic}️?\s)?(?:Closes|Fixes|Resolves)\s+(?<ref>${ISSUE_REF})\s*`;
+
+/**
+ * Matches a whole line that is a footer line: BREAKING CHANGE, Co-authored-by,
+ * Signed-off-by, or Closes/Fixes/Resolves followed by a real issue reference
+ */
+const FOOTER_LINE_REGEX = new RegExp(
+  String.raw`^(?:BREAKING[ -]CHANGE: .+|Co-authored-by:.+|Signed-off-by:.+|${ISSUES_LINE})$`,
+  "imu"
+);
 
 /**
  * Matches: Closes/Fixes/Resolves <ref> — with optional leading emoji (e.g. "🏁 Closes #123")
  */
-const ISSUES_FOOTER_REGEX =
-  /^(?:\p{Emoji_Presentation}\s)?(?:Closes|Fixes|Resolves) (?<ref>\S.*)$/gimu;
+const ISSUES_FOOTER_REGEX = new RegExp(String.raw`^${ISSUES_LINE}$`, "gimu");
 
 /**
  * Get the HEAD commit message
@@ -61,17 +81,26 @@ export const parseConventionalCommit = (message: string) => {
     result.scope = scope;
   }
 
-  const footerStart = rest.search(
-    /^(?:\p{Emoji_Presentation}\s)?(?:BREAKING[ -]CHANGE|Co-authored-by|Signed-off-by|Closes|Fixes|Resolves)/imu
-  );
-  const bodyText =
-    footerStart === -1 ? rest : rest.slice(0, footerStart).trim();
+  const paragraphs = rest.split(/\n\s*\n/u).filter(Boolean);
+  let footerStart = paragraphs.length;
+
+  while (
+    footerStart > 0 &&
+    (paragraphs[footerStart - 1] ?? "")
+      .split("\n")
+      .every((line) => FOOTER_LINE_REGEX.test(line))
+  ) {
+    footerStart -= 1;
+  }
+
+  const bodyText = paragraphs.slice(0, footerStart).join("\n\n").trim();
+  const footerText = paragraphs.slice(footerStart).join("\n\n");
 
   if (bodyText) {
     result.body = bodyText;
   }
 
-  const breakingMatch = BREAKING_FOOTER_REGEX.exec(rest);
+  const breakingMatch = BREAKING_FOOTER_REGEX.exec(footerText);
 
   if (breakingMatch?.groups?.breaking !== undefined) {
     result.breaking = breakingMatch.groups.breaking;
@@ -79,7 +108,7 @@ export const parseConventionalCommit = (message: string) => {
     result.breaking = true;
   }
 
-  const issueMatches = [...rest.matchAll(ISSUES_FOOTER_REGEX)];
+  const issueMatches = [...footerText.matchAll(ISSUES_FOOTER_REGEX)];
 
   if (issueMatches.length > 0) {
     result.issues = issueMatches
@@ -87,16 +116,15 @@ export const parseConventionalCommit = (message: string) => {
       .filter(Boolean);
   }
 
-  const signoffMatch = /^Signed-off-by:(?<signoff>.+)$/imu.exec(rest);
+  const signoffMatch = /^Signed-off-by:(?<signoff>.+)$/imu.exec(footerText);
   const signoff = signoffMatch?.groups?.signoff.trim();
 
   if (signoff !== undefined && signoff !== "") {
     result.signoff = signoff;
   }
 
-  const trailers = rest.split(/\n\s*\n/u).at(-1) ?? "";
   const coAuthors = [
-    ...trailers.matchAll(/^Co-authored-by:(?<coAuthor>.+)$/gimu),
+    ...footerText.matchAll(/^Co-authored-by:(?<coAuthor>.+)$/gimu),
   ]
     .map((m) => m.groups?.coAuthor.trim() ?? "")
     .filter(Boolean);
