@@ -276,6 +276,50 @@ describe(parseConventionalCommit, () => {
     });
   });
 
+  it("should parse Closes/Fixes/Resolves followed by a colon", () => {
+    const result = parseConventionalCommit("fix: thing\n\nCloses: #123");
+
+    expect(result).toStrictEqual({
+      issues: ["#123"],
+      subject: "thing",
+      type: "fix",
+    });
+  });
+
+  it("should keep a wrapped BREAKING CHANGE footer's continuation lines", () => {
+    const result = parseConventionalCommit(
+      "feat!: thing\n\nBREAKING CHANGE: removes the old API and callers\n  must switch to the new one before upgrading."
+    );
+
+    expect(result).toStrictEqual({
+      breaking:
+        "removes the old API and callers\n  must switch to the new one before upgrading.",
+      subject: "thing",
+      type: "feat",
+    });
+  });
+
+  it("should extract a lowercase breaking change footer", () => {
+    const result = parseConventionalCommit(
+      "feat!: thing\n\nbreaking change: removes the old API"
+    );
+
+    expect(result).toStrictEqual({
+      breaking: "removes the old API",
+      subject: "thing",
+      type: "feat",
+    });
+  });
+
+  it("should strip a compound ZWJ emoji from the subject", () => {
+    const result = parseConventionalCommit("feat: 👩‍💻 pairing session");
+
+    expect(result).toStrictEqual({
+      subject: "pairing session",
+      type: "feat",
+    });
+  });
+
   it("should parse a type with digits and dashes, no scope", () => {
     const result = parseConventionalCommit("feat-ui: thing");
 

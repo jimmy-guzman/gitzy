@@ -7,43 +7,81 @@ import { x } from "tinyexec";
 import type { MessageParts } from "@/core/conventional/types";
 
 /**
+ * A single emoji, including multi-codepoint sequences (skin-tone modifiers,
+ * ZWJ joins like "👩‍💻", and the "️" variation selector used by "⚡️")
+ */
+const EMOJI = String.raw`\p{Extended_Pictographic}(?:\p{Emoji_Modifier}|️)?(?:‍\p{Extended_Pictographic}(?:\p{Emoji_Modifier}|️)?)*`;
+
+/**
  * Matches: type(scope)!: subject  or  type!: subject  or  type(scope): subject  or  type: subject
- * Strips leading emoji if present (e.g. "✨ subject" → "subject")
+ * Strips a leading emoji if present (e.g. "✨ subject" → "subject")
  */
-const HEADER_REGEX =
-  /^(?<type>[\w-]+)(?:\((?<scope>[^)]*)\))?(?<breaking>!)?: (?:\p{Extended_Pictographic}️?\s)?(?<subject>.+)$/u;
+const HEADER_REGEX = new RegExp(
+  String.raw`^(?<type>[\w-]+)(?:\((?<scope>[^)]*)\))?(?<breaking>!)?: (?:${EMOJI}\s)?(?<subject>.+)$`,
+  "u"
+);
 
 /**
- * Matches: BREAKING CHANGE: <text> or BREAKING-CHANGE: <text> (optionally preceded by emoji)
+ * Matches a BREAKING CHANGE/BREAKING-CHANGE footer, optional leading emoji,
+ * continuing through any indented wrapped lines that follow it
  */
-const BREAKING_FOOTER_REGEX =
-  /^BREAKING[ -]CHANGE: (?:\p{Extended_Pictographic}️?\s)?(?<breaking>.+)$/mu;
-
-/**
- * An issue reference: #123, org/repo#123, an issue URL, or a Jira key like PROJ-123
- */
-const ISSUE_REF = String.raw`[\w.-]+\/[\w.-]+#\d+|#\d+|https?:\/\/\S+|(?-i:[A-Z][A-Z0-9]*-\d+)`;
-
-/**
- * Closes/Fixes/Resolves followed by a real issue reference, with optional
- * leading emoji (e.g. "🏁 Closes #123"). Shared by FOOTER_LINE_REGEX and
- * ISSUES_FOOTER_REGEX so the two stay in sync.
- */
-const ISSUES_LINE = String.raw`(?:\p{Extended_Pictographic}️?\s)?(?:Closes|Fixes|Resolves)\s+(?<ref>${ISSUE_REF})\s*`;
-
-/**
- * Matches a whole line that is a footer line: BREAKING CHANGE, Co-authored-by,
- * Signed-off-by, or Closes/Fixes/Resolves followed by a real issue reference
- */
-const FOOTER_LINE_REGEX = new RegExp(
-  String.raw`^(?:BREAKING[ -]CHANGE: .+|Co-authored-by:.+|Signed-off-by:.+|${ISSUES_LINE})$`,
+const BREAKING_FOOTER_REGEX = new RegExp(
+  String.raw`^BREAKING[ -]CHANGE:\s*(?:${EMOJI}\s)?(?<breaking>.+(?:\n[ \t]+\S.*)*)$`,
   "imu"
 );
 
 /**
- * Matches: Closes/Fixes/Resolves <ref> — with optional leading emoji (e.g. "🏁 Closes #123")
+ * An issue reference: #123, org/repo#123, an issue URL, or a Jira key like PROJ-123.
+ * Matches a lowercase Jira-shaped key too (e.g. "task-1") so it can be rejected by
+ * `isRealIssueRef` below — Node's regex engine has no inline case-insensitivity toggle.
  */
-const ISSUES_FOOTER_REGEX = new RegExp(String.raw`^${ISSUES_LINE}$`, "gimu");
+const ISSUE_REF = String.raw`[\w.-]+\/[\w.-]+#\d+|#\d+|https?:\/\/\S+|[A-Za-z][A-Za-z0-9]*-\d+`;
+
+/**
+ * Closes/Fixes/Resolves followed by a possible issue reference, with an
+ * optional leading emoji and an optional colon (e.g. "🏁 Closes: #123")
+ */
+const ISSUES_LINE_REGEX = new RegExp(
+  String.raw`^(?:${EMOJI}\s)?(?:Closes|Fixes|Resolves):?\s+(?<ref>${ISSUE_REF})\s*$`,
+  "imu"
+);
+
+/**
+ * Matches: Closes/Fixes/Resolves <ref> — with optional leading emoji and colon
+ */
+const ISSUES_FOOTER_REGEX = new RegExp(ISSUES_LINE_REGEX.source, "gimu");
+
+/** Matches a BREAKING CHANGE or trailer line on its own */
+const BREAKING_OR_TRAILER_LINE_REGEX =
+  /^(?:BREAKING[ -]CHANGE:.+|Co-authored-by:.+|Signed-off-by:.+)$/imu;
+
+/** Matches an indented continuation of a wrapped footer line */
+const CONTINUATION_LINE_REGEX = /^[ \t]+\S/u;
+
+/** A Jira key is only real when it's genuinely uppercase, never case-insensitively */
+const JIRA_KEY_REGEX = /^[A-Za-z][A-Za-z0-9]*-\d+$/u;
+const UPPERCASE_JIRA_KEY_REGEX = /^[A-Z][A-Z0-9]*-\d+$/u;
+
+const isRealIssueRef = (ref: string) =>
+  !JIRA_KEY_REGEX.test(ref) || UPPERCASE_JIRA_KEY_REGEX.test(ref);
+
+/**
+ * Whether a single line of a trailing paragraph counts as a footer line:
+ * BREAKING CHANGE (and its wrapped continuation), a trailer, or
+ * Closes/Fixes/Resolves followed by a real issue reference
+ */
+const isFooterLine = (line: string) => {
+  if (
+    CONTINUATION_LINE_REGEX.test(line) ||
+    BREAKING_OR_TRAILER_LINE_REGEX.test(line)
+  ) {
+    return true;
+  }
+
+  const ref = ISSUES_LINE_REGEX.exec(line)?.groups?.ref;
+
+  return ref !== undefined && isRealIssueRef(ref);
+};
 
 /**
  * Get the HEAD commit message
@@ -88,7 +126,7 @@ export const parseConventionalCommit = (message: string) => {
     footerStart > 0 &&
     (paragraphs[footerStart - 1] ?? "")
       .split("\n")
-      .every((line) => FOOTER_LINE_REGEX.test(line))
+      .every((line) => isFooterLine(line))
   ) {
     footerStart -= 1;
   }
@@ -108,12 +146,12 @@ export const parseConventionalCommit = (message: string) => {
     result.breaking = true;
   }
 
-  const issueMatches = [...footerText.matchAll(ISSUES_FOOTER_REGEX)];
+  const issueMatches = [...footerText.matchAll(ISSUES_FOOTER_REGEX)]
+    .map((m) => m.groups?.ref ?? "")
+    .filter((ref) => ref !== "" && isRealIssueRef(ref));
 
   if (issueMatches.length > 0) {
-    result.issues = issueMatches
-      .map((m) => m.groups?.ref ?? "")
-      .filter(Boolean);
+    result.issues = issueMatches;
   }
 
   const signoffMatch = /^Signed-off-by:(?<signoff>.+)$/imu.exec(footerText);
