@@ -96,4 +96,72 @@ describe(formatBranchName, () => {
 
     expect(result).toMatchInlineSnapshot(`"fix/fix-null-pointer-exception"`);
   });
+
+  it("should replace whitespace in the issue with a dash", () => {
+    const result = formatBranchName(
+      { issue: "PROJ 12", subject: "x", type: "feat" },
+      defaultBranchConfig
+    );
+
+    expect(result).toMatchInlineSnapshot(`"feat/PROJ-12-x"`);
+  });
+
+  it("should replace characters git rejects in the issue with a dash", () => {
+    const result = formatBranchName(
+      { issue: "A~B^C:D?E*F[G\\H..I@{J\tK\u0000L", subject: "x", type: "feat" },
+      defaultBranchConfig
+    );
+
+    expect(result).toMatchInlineSnapshot(`"feat/A-B-C-D-E-F-G-H-I-J-K-L-x"`);
+  });
+
+  it("should not end with a dash after truncating", () => {
+    const result = formatBranchName(
+      { scope: "ui", subject: "a a a a a a a", type: "feat" },
+      { ...defaultBranchConfig, max: 20 }
+    );
+
+    expect(result).toMatchInlineSnapshot(`"feat/ui/a-a-a-a-a-a"`);
+  });
+
+  it("should clean dots git rejects in any segment", () => {
+    const result = formatBranchName(
+      {
+        issue: "a/.b",
+        scope: "x.lock",
+        subject: "v1..2 release",
+        type: "feat",
+      },
+      defaultBranchConfig
+    );
+
+    expect(result).toMatchInlineSnapshot(`"feat/x/a/b-v1.2-release"`);
+  });
+
+  it("should not start a segment with a dash left by a removed dot", () => {
+    const result = formatBranchName(
+      { issue: "a/._", subject: "x", type: "feat" },
+      defaultBranchConfig
+    );
+
+    expect(result).toMatchInlineSnapshot(`"feat/a/x"`);
+  });
+
+  it("should drop a leading dot from the subject", () => {
+    const result = formatBranchName(
+      { subject: ".gitignore update", type: "chore" },
+      defaultBranchConfig
+    );
+
+    expect(result).toMatchInlineSnapshot(`"chore/gitignore-update"`);
+  });
+
+  it("should not end with .lock or a dot after truncating", () => {
+    const result = formatBranchName(
+      { subject: "x.lock.yz", type: "feat" },
+      { ...defaultBranchConfig, max: 12 }
+    );
+
+    expect(result).toMatchInlineSnapshot(`"feat/x"`);
+  });
 });
