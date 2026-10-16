@@ -94,6 +94,17 @@ export const parseConventionalCommit = (message: string) => {
     result.signoff = signoff;
   }
 
+  const trailers = rest.split(/\n\s*\n/u).at(-1) ?? "";
+  const coAuthors = [
+    ...trailers.matchAll(/^Co-authored-by:(?<coAuthor>.+)$/gimu),
+  ]
+    .map((m) => m.groups?.coAuthor.trim() ?? "")
+    .filter(Boolean);
+
+  if (coAuthors.length > 0) {
+    result.coAuthors = coAuthors;
+  }
+
   return result;
 };
 
