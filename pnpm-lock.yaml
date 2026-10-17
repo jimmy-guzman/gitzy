@@ -233,8 +233,8 @@ importers:
         specifier: 7.0.2
         version: 7.0.2
       ultracite:
-        specifier: 8.0.0
-        version: 8.0.0(eslint@10.12.0(jiti@2.7.0))(oxfmt@0.71.0)(oxlint@1.87.0(oxlint-tsgolint@7.0.2004))(prettier@3.9.10)
+        specifier: 8.0.1
+        version: 8.0.1(eslint@10.12.0(jiti@2.7.0))(oxfmt@0.71.0)(oxlint@1.87.0(oxlint-tsgolint@7.0.2004))(prettier@3.9.10)
       unrun:
         specifier: 0.3.1
         version: 0.3.1(synckit@0.11.13)
@@ -2792,8 +2792,8 @@ packages:
   ufo@1.6.4:
     resolution: {integrity: sha512-JFNbkD1Svwe0KvGi8GOeLcP4kAWQ609twvCdcHxq1oSL8svv39ZuSvajcD8B+5D0eL4+s1Is2D/O6KN3qcTeRA==}
 
-  ultracite@8.0.0:
-    resolution: {integrity: sha512-52y2Zzp6ngUPJIjvcnoyM2p4qSDwOCzrWwHvKfxNcOdRRuhmrTLqzwMpGhnhz2LC2POEO8GV7EcggbwTRmHEdA==}
+  ultracite@8.0.1:
+    resolution: {integrity: sha512-4XtB3My7o/O8uveSBPjMO6aPwkO7LEGDf2RCuR4jMVSJ4JByLNIb8+xpCR5M+HssgPrl0aSTQ/40od80ItmiqQ==}
     engines: {node: '>=22.18.0'}
     hasBin: true
     peerDependencies:
@@ -5243,7 +5243,7 @@ snapshots:
 
   ufo@1.6.4: {}
 
-  ultracite@8.0.0(eslint@10.12.0(jiti@2.7.0))(oxfmt@0.71.0)(oxlint@1.87.0(oxlint-tsgolint@7.0.2004))(prettier@3.9.10):
+  ultracite@8.0.1(eslint@10.12.0(jiti@2.7.0))(oxfmt@0.71.0)(oxlint@1.87.0(oxlint-tsgolint@7.0.2004))(prettier@3.9.10):
     dependencies:
       '@clack/prompts': 1.8.1
       cli-truncate: 6.1.1
