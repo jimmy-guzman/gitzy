@@ -1,5 +1,33 @@
 # Changelog
 
+## [7.3.0](https://github.com/jimmy-guzman/gitzy/compare/v7.2.2...v7.3.0) (2026-10-17)
+
+
+### Features
+
+* **cli:** ✨ add `squash` command ([#673](https://github.com/jimmy-guzman/gitzy/issues/673)) ([2f83539](https://github.com/jimmy-guzman/gitzy/commit/2f83539c5efc3a870f04b619431634b1b15d3ce9))
+* **config:** ✨ warn on typos & impossible values ([#750](https://github.com/jimmy-guzman/gitzy/issues/750)) ([fcd6d90](https://github.com/jimmy-guzman/gitzy/commit/fcd6d902db6a3da82098525ff9afe86639be5d10))
+
+
+### Bug Fixes
+
+* 🐛 honor commitlint limits & simplify core ([#742](https://github.com/jimmy-guzman/gitzy/issues/742)) ([cce0333](https://github.com/jimmy-guzman/gitzy/commit/cce03337e6589f52ac07bbbf6642518b8286bbfc))
+* 🐛 keep trailers when amending ([#753](https://github.com/jimmy-guzman/gitzy/issues/753)) ([6f94013](https://github.com/jimmy-guzman/gitzy/commit/6f94013097ac155248990f5e9a0400e92ca174db))
+* 🐛 require node 22.18 for type stripping ([#735](https://github.com/jimmy-guzman/gitzy/issues/735)) ([44b6d20](https://github.com/jimmy-guzman/gitzy/commit/44b6d20c74d475d819a456b167bbe391a83cdd7c))
+* 🐛 stop amend from eating body as issues ([#755](https://github.com/jimmy-guzman/gitzy/issues/755)) ([7312aa0](https://github.com/jimmy-guzman/gitzy/commit/7312aa08e1dff78853fde0bbf75e6e4f181d19dd))
+* 🐛 store retry answers per repo ([#749](https://github.com/jimmy-guzman/gitzy/issues/749)) ([73f0124](https://github.com/jimmy-guzman/gitzy/commit/73f0124e8813f2f8f1f001d3642ecdd76f365b85))
+* 🐛 validate --stdin before prompting ([#747](https://github.com/jimmy-guzman/gitzy/issues/747)) ([45e4994](https://github.com/jimmy-guzman/gitzy/commit/45e4994d81adf18f5b3cfcb841e790ff21608d9d))
+* 🐛 validate commit flags before writing ([#746](https://github.com/jimmy-guzman/gitzy/issues/746)) ([3f5a9ff](https://github.com/jimmy-guzman/gitzy/commit/3f5a9ff1eab7d4807410c7ad1b20f817167da702))
+* 🐛 wrap body without mangling lists & code ([#745](https://github.com/jimmy-guzman/gitzy/issues/745)) ([9d656c8](https://github.com/jimmy-guzman/gitzy/commit/9d656c8cc714bb5988d76b0e15c11f608ba8e3ab))
+* 🐛 write co-authors as git trailers ([#743](https://github.com/jimmy-guzman/gitzy/issues/743)) ([e6b07dc](https://github.com/jimmy-guzman/gitzy/commit/e6b07dcfc2107deb36ee8a070a7c9bcdc9390912))
+* **branch:** 🐛 keep accented chars & fix --amend ([#754](https://github.com/jimmy-guzman/gitzy/issues/754)) ([db5a47f](https://github.com/jimmy-guzman/gitzy/commit/db5a47f5bed7ef1cf070587204f9eeaf36d15823))
+* **branch:** 🐛 keep branch names valid for git ([#752](https://github.com/jimmy-guzman/gitzy/issues/752)) ([f382a37](https://github.com/jimmy-guzman/gitzy/commit/f382a3759b1f70064d3b72da191e87f1bbed9d36))
+* **cli:** 🐛 print errors & notices to stderr ([#748](https://github.com/jimmy-guzman/gitzy/issues/748)) ([0d1ebca](https://github.com/jimmy-guzman/gitzy/commit/0d1ebca824ba5216aac8db6cd01f4f8e45f9c0f7))
+* **cli:** 🐛 warn when hook mode is inferred ([#740](https://github.com/jimmy-guzman/gitzy/issues/740)) ([b350813](https://github.com/jimmy-guzman/gitzy/commit/b3508133435ee20bdda0c6cbbadb3d031c4a30fb))
+* **config:** 🐛 drop default body max length ([#744](https://github.com/jimmy-guzman/gitzy/issues/744)) ([ab0ce4e](https://github.com/jimmy-guzman/gitzy/commit/ab0ce4e1a6ed147138cccbe5280ea2f7a4422c74))
+* **config:** 🐛 honor commitlint rule severity ([#741](https://github.com/jimmy-guzman/gitzy/issues/741)) ([5ee5434](https://github.com/jimmy-guzman/gitzy/commit/5ee543482e523ec129922ecceed2da7c4d4fa841))
+* **deps:** 🐛 bump clack, tinyexec & valibot ([#732](https://github.com/jimmy-guzman/gitzy/issues/732)) ([c5f0066](https://github.com/jimmy-guzman/gitzy/commit/c5f0066a396c088d5040f794f02da2fd70786194))
+
 ## [7.2.2](https://github.com/jimmy-guzman/gitzy/compare/v7.2.1...v7.2.2) (2026-06-24)
 
 
