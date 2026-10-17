@@ -78,11 +78,11 @@ gitzy squash --count 3
 | `--retry` |  | retry last commit and skip prompts |
 | `--amend` | `-a` | amend the previous commit (pre-fills prompts from HEAD) |
 | `--no-verify` | `-n` | skip git hooks |
-| `--json` |  | output structured JSON (see shape below) |
+| `--json` |  | output structured JSON without committing (see shape below) |
 | `--no-emoji` |  | disable emoji in commit message |
 | `--co-author <coAuthor...>` |  | add co-authors (repeatable: `--co-author "Name <email>"`) |
 | `--signoff [signoff]` | `-s` | add a Signed-off-by trailer (derives your git identity; pass `"Name <email>"` to override) |
-| `--hook` |  | enable running inside a git hook (e.g. `pre-commit`); inferred, with a warning, when omitted inside a hook |
+| `--hook` |  | enable running inside a git hook (e.g. `prepare-commit-msg`); inferred, with a warning, when omitted inside a hook |
 | `--stdin` |  | read answers from stdin as JSON (CLI flags take priority) |
 | `--version` | `-v` | display version number |
 | `--help` | `-h` | display help for command |
@@ -120,7 +120,7 @@ gitzy squash --count 3
 | `--amend` | `-a` | rename the current branch instead of creating a new one |
 | `--no-checkout` |  | do not checkout the new branch after creating it |
 | `--dry-run` | `-D` | show branch name without creating it |
-| `--json` |  | output result as JSON (see shape below) |
+| `--json` |  | output result as JSON without creating the branch (see shape below) |
 | `--stdin` |  | read answers from stdin as JSON (CLI flags take priority) |
 | `--help` | `-h` | display help for command |
 
