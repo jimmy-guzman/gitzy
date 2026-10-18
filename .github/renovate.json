@@ -10,7 +10,9 @@
   "schedule": ["every weekend"],
   "packageRules": [
     {
+      "description": "`matchIsBreaking` keeps 0.x and prerelease bumps out; `matchUpdateTypes` keeps out GitHub Actions majors, which Renovate's github-actions versioning reports as non-breaking",
       "groupName": "non-breaking dependencies",
+      "matchIsBreaking": false,
       "matchUpdateTypes": ["minor", "patch"]
     }
   ]
