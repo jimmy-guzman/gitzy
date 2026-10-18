@@ -47,7 +47,7 @@
     "@vitest/coverage-v8": "5.0.5",
     "clean-pkg-json": "2.0.0",
     "commander": "15.0.0",
-    "commitlint": "21.2.3",
+    "commitlint": "21.2.4",
     "cspell": "10.3.6",
     "husky": "9.1.7",
     "jiti": "2.7.0",
