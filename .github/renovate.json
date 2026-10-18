@@ -10,12 +10,8 @@
   "schedule": ["every weekend"],
   "packageRules": [
     {
-      "groupName": "eslint",
-      "matchPackageNames": ["/eslint/"]
-    },
-    {
-      "groupName": "rollup",
-      "matchPackageNames": ["/rollup/"]
+      "groupName": "non-breaking dependencies",
+      "matchUpdateTypes": ["minor", "patch"]
     }
   ]
 }
