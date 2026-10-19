@@ -175,7 +175,7 @@ Passing verification means the change is _ready_ to commit — it does not mean 
 - **Commits:** Use `pnpm gitzy` to create commits. It enforces Conventional Commits format. Two approaches:
   - **Interactive mode:** Run `pnpm gitzy` and answer prompts.
   - **CLI flags (for automation/non-TTY):** Use flags inline. Example: `pnpm gitzy --type feat -m "add dry-run flag" -D`. Available flags: `--type`, `-m/--subject`, `--scope`, `--body`, `--breaking`, `--issue`, `-D/--dry-run`, `-a/--amend`, `-n/--no-verify`, `--co-author`.
-- **Allowed types:** `test`, `feat`, `fix`, `chore`, `docs`, `refactor`, `style`, `ci`
+- **Allowed types:** `test`, `feat`, `fix`, `perf`, `chore`, `docs`, `refactor`, `style`, `ci`
 - **Allowed scopes:** `deps`, `build`, `*`, `api`, `branch`, `cli`, `config`, `release`, `prompts`
 - **Header rules:** 5–50 characters, lowercase type and scope, no trailing period on subject.
 - **Pull requests:** Branch off `main`, push, and open a PR with `gh pr create`. Merge commits are disabled — use squash merge.
