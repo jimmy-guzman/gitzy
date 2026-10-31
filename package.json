@@ -43,7 +43,7 @@
     "@clack/prompts": "1.8.1",
     "@leeoniya/ufuzzy": "1.0.19",
     "@total-typescript/ts-reset": "0.6.1",
-    "@types/node": "24.19.2",
+    "@types/node": "26.6.6",
     "@vitest/coverage-v8": "5.0.5",
     "clean-pkg-json": "2.0.0",
     "commander": "15.0.0",
